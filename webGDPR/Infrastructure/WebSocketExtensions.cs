@@ -6,6 +6,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using webGDPR.Data;
 
 namespace AgendaSignalR.Infrastructure
 {
@@ -26,7 +28,7 @@ namespace AgendaSignalR.Infrastructure
 			_next = next;
 		}
 
-		public async Task Invoke(HttpContext context, ICustomWebSocketFactory wsFactory, ICustomWebSocketMessageHandler wsmHandler)
+		public async Task Invoke(HttpContext context, ICustomWebSocketFactory wsFactory, ICustomWebSocketMessageHandler wsmHandler, SignInManager<ApplicationUser> signInManager)
 		{
 			if (context.Request.Path == "/ws")
 			{
@@ -35,19 +37,24 @@ namespace AgendaSignalR.Infrastructure
 					string username = context.Request.Query["u"];
 					string password = context.Request.Query["p"];
 					if (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password))
-					{
-						WebSocket webSocket = await context.WebSockets.AcceptWebSocketAsync();
-						CustomWebSocket userWebSocket = new CustomWebSocket()
+					{						
+						var result = await signInManager.PasswordSignInAsync(username, password, false, lockoutOnFailure: true);
+						if (result.Succeeded)
 						{
-							WebSocket = webSocket,
-							Username = username,
-							Guid = Guid.NewGuid()
-						};
-						wsFactory.Add(userWebSocket);
-						await wsmHandler.SendInitialMessages(userWebSocket);
-						await Listen(context, userWebSocket, wsFactory, wsmHandler);
-
+							WebSocket webSocket = await context.WebSockets.AcceptWebSocketAsync();
+							CustomWebSocket userWebSocket = new CustomWebSocket()
+							{
+								WebSocket = webSocket,
+								Username = username,
+								Guid = Guid.NewGuid()
+							};
+							wsFactory.Add(userWebSocket);
+							await wsmHandler.SendInitialMessages(userWebSocket);
+							await Listen(context, userWebSocket, wsFactory, wsmHandler);
+						}
+						//log sthing
 					}
+					//log sthing
 				}
 				else
 				{
