@@ -16,8 +16,8 @@ namespace AgendaSignalR.Infrastructure
 			WebSocket webSocket = userWebSocket.WebSocket;
 			var mockItems = new List<Base>
 			{
-				new Base { Id = Guid.NewGuid().ToString(), Name="Bluegiga CR Demo", IsConnected= true, IsPlugged = true, IsCharging = true, Battery=80, HasBattery = true, Radio=50, Text = "First item", Description="This is an item description." },
-				new Base { Id = Guid.NewGuid().ToString(), Name="[TV] Samsung 7 Series (55) 2", IsConnected= false, IsPlugged = false, IsCharging = false, Battery=0, HasBattery = true, Radio=80, Text = "Second item", Description="This is an item description." },
+				new Base { BaseId = Guid.NewGuid().ToString(), Name="Bluegiga CR Demo", IsConnected= true, IsPlugged = true, IsCharging = true, Battery=80, HasBattery = true, Radio=50, Text = "First item", Description="This is an item description." },
+				new Base { BaseId = Guid.NewGuid().ToString(), Name="[TV] Samsung 7 Series (55) 2", IsConnected= false, IsPlugged = false, IsCharging = false, Battery=0, HasBattery = true, Radio=80, Text = "Second item", Description="This is an item description." },
 			};
 			string serialisedText = JsonConvert.SerializeObject(mockItems);
 			var msg = new CustomWebSocketMessage
@@ -34,8 +34,8 @@ namespace AgendaSignalR.Infrastructure
 
 			var mockCollars = new List<Collar>
 			{
-				new Collar { Id = Guid.NewGuid().ToString(), Name="Peppa", IsConnected= true, IsGPSConnected= false, Battery=100, Radio=90, Description="This is an item description." },
-				new Collar { Id = Guid.NewGuid().ToString(), Name="Hunter", IsConnected= false, IsGPSConnected = true,  Battery=50, Radio=20, Description="This is an item description." },
+				new Collar { CollarId = Guid.NewGuid().ToString(), Name="Peppa", IsConnected= true, IsGPSConnected= false, Battery=100, Radio=90, Description="This is an item description." },
+				new Collar { CollarId = Guid.NewGuid().ToString(), Name="Hunter", IsConnected= false, IsGPSConnected = true,  Battery=50, Radio=20, Description="This is an item description." },
 			};
 			string serialisedText2 = JsonConvert.SerializeObject(mockCollars);
 			var msg2 = new CustomWebSocketMessage
