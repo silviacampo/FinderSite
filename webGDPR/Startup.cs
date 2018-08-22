@@ -11,6 +11,8 @@ using webGDPR.Infrastructure;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Authorization;
 using webGDPR.Authorization;
+using AgendaSignalR.Infrastructure;
+using System;
 
 namespace webGDPR
 {
@@ -60,6 +62,9 @@ namespace webGDPR
 			services.AddSingleton<IAuthorizationHandler, UserAdministratorsAuthorizationHandler>();
 			services.AddSingleton<IAuthorizationHandler, UserManagerAuthorizationHandler>();
 
+			services.AddSingleton<ICustomWebSocketFactory, CustomWebSocketFactory>();
+			services.AddSingleton<ICustomWebSocketMessageHandler, CustomWebSocketMessageHandler>();
+
 		}
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -82,7 +87,16 @@ namespace webGDPR
 
             app.UseAuthentication();
 
-            app.UseMvc(routes =>
+			var webSocketOptions = new WebSocketOptions()
+			{
+				KeepAliveInterval = TimeSpan.FromSeconds(120),
+				ReceiveBufferSize = 4 * 1024
+			};
+			app.UseWebSockets(webSocketOptions);
+
+			app.UseCustomWebSocketManager();
+
+			app.UseMvc(routes =>
             {
                 routes.MapRoute(
                     name: "default",
