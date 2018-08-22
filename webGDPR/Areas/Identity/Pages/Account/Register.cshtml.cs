@@ -67,7 +67,17 @@ namespace webGDPR.Areas.Identity.Pages.Account
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
-        }
+
+			[Required]
+			[DataType(DataType.Text)]
+			[Display(Name = "Base Code")]
+			public string BaseHWId { get; set; }
+
+			[Required]
+			[DataType(DataType.Text)]
+			[Display(Name = "Collar Code")]
+			public string CollarHWId { get; set; }
+		}
 
         public void OnGet(string returnUrl = null)
         {
