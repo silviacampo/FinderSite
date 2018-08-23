@@ -1,0 +1,103 @@
+@model IEnumerable<AgendaSignalR.Infrastructure.Base>
+
+@{
+   // Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+</head>
+<body>
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.HWId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsConnected)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsPlugged)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsCharging)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Battery)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.HasBattery)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Radio)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Text)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserId)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.HWId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsConnected)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsPlugged)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsCharging)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Battery)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.HasBattery)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Radio)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Text)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UserId)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.BaseId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.BaseId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.BaseId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+</body>
+</html>

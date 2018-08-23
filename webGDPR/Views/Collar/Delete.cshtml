@@ -1,0 +1,78 @@
+@model AgendaSignalR.Infrastructure.Collar
+
+@{
+   // Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Delete</title>
+</head>
+<body>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>Collar</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.HWId)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.HWId)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.IsConnected)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.IsConnected)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.IsGPSConnected)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.IsGPSConnected)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Battery)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Battery)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Radio)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Radio)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.UserId)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.UserId)
+        </dd>
+    </dl>
+    
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="CollarId" />
+        <input type="submit" value="Delete" class="btn btn-default" /> |
+        <a asp-action="Index">Back to List</a>
+    </form>
+</div>
+</body>
+</html>
