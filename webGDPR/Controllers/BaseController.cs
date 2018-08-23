@@ -9,22 +9,28 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using AgendaSignalR.Infrastructure;
 using webGDPR.Data;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace webGDPR.Controllers
 {
-    public class BaseController : Controller
+	[Authorize]
+	public class BaseController : Controller
     {
         private readonly ApplicationDbContext _context;
+		UserManager<ApplicationUser> _userManager;
 
-        public BaseController(ApplicationDbContext context)
+
+		public BaseController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+			_userManager = userManager;
         }
 
         // GET: Base
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Base.ToListAsync());
+			return View(await _context.Base.ToListAsync());
         }
 
         // GET: Base/Details/5
@@ -60,7 +66,8 @@ namespace webGDPR.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(@base);
+				@base.UserId = _userManager.GetUserId(User);
+				_context.Add(@base);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }

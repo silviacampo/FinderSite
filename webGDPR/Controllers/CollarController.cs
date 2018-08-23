@@ -9,17 +9,22 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using AgendaSignalR.Infrastructure;
 using webGDPR.Data;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace webGDPR.Controllers
 {
-    public class CollarController : Controller
+	[Authorize]
+	public class CollarController : Controller
     {
         private readonly ApplicationDbContext _context;
+		UserManager<ApplicationUser> _userManager;
 
-        public CollarController(ApplicationDbContext context)
+		public CollarController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
-        }
+			_userManager = userManager;
+		}
 
         // GET: Collar
         public async Task<IActionResult> Index()
@@ -60,7 +65,8 @@ namespace webGDPR.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(collar);
+				collar.UserId = _userManager.GetUserId(User);
+				_context.Add(collar);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
