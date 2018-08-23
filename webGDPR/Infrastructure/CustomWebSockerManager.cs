@@ -18,7 +18,7 @@ namespace webGDPR.Infrastructure
 			_next = next;
 		}
 
-		public async Task Invoke(HttpContext context, ICustomWebSocketFactory wsFactory, ICustomWebSocketMessageHandler wsmHandler, SignInManager<ApplicationUser> signInManager)
+		public async Task Invoke(HttpContext context, ICustomWebSocketFactory wsFactory, ICustomWebSocketMessageHandler wsmHandler, SignInManager<ApplicationUser> signInManager, ApplicationDbContext dbContext)
 		{
 			if (context.Request.Path == "/ws")
 			{
@@ -39,8 +39,8 @@ namespace webGDPR.Infrastructure
 								Guid = Guid.NewGuid()
 							};
 							wsFactory.Add(userWebSocket);
-							await wsmHandler.SendInitialMessages(userWebSocket);
-							await Listen(context, userWebSocket, wsFactory, wsmHandler);
+							await wsmHandler.SendInitialMessages(userWebSocket, dbContext);
+							await Listen(context, userWebSocket, wsFactory, wsmHandler,dbContext);
 						}
 						//log sthing
 					}
@@ -54,14 +54,14 @@ namespace webGDPR.Infrastructure
 			await _next(context);
 		}
 
-		private async Task Listen(HttpContext context, CustomWebSocket userWebSocket, ICustomWebSocketFactory wsFactory, ICustomWebSocketMessageHandler wsmHandler)
+		private async Task Listen(HttpContext context, CustomWebSocket userWebSocket, ICustomWebSocketFactory wsFactory, ICustomWebSocketMessageHandler wsmHandler, ApplicationDbContext dbContext)
 		{
 			WebSocket webSocket = userWebSocket.WebSocket;
 			var buffer = new byte[1024 * 4];
 			WebSocketReceiveResult result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
 			while (!result.CloseStatus.HasValue)
 			{
-				await wsmHandler.HandleMessage(result, buffer, userWebSocket, wsFactory);
+				await wsmHandler.HandleMessage(result, buffer, userWebSocket, wsFactory, dbContext);
 
 				buffer = new byte[1024 * 4];
 				result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);

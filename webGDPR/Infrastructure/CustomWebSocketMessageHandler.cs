@@ -5,21 +5,21 @@ using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using webGDPR.Data;
 
 namespace AgendaSignalR.Infrastructure
 {
 	public class CustomWebSocketMessageHandler : ICustomWebSocketMessageHandler
 	{
-		public async Task SendInitialMessages(CustomWebSocket userWebSocket)
+		public async Task SendInitialMessages(CustomWebSocket userWebSocket, ApplicationDbContext dbContext)
 		{
 			WebSocket webSocket = userWebSocket.WebSocket;
-			var mockItems = new List<Base>
-			{
-				new Base { BaseId = Guid.NewGuid().ToString(), Name="Bluegiga CR Demo", IsConnected= true, IsPlugged = true, IsCharging = true, Battery=80, HasBattery = true, Radio=50, Text = "First item", Description="This is an item description." },
-				new Base { BaseId = Guid.NewGuid().ToString(), Name="[TV] Samsung 7 Series (55) 2", IsConnected= false, IsPlugged = false, IsCharging = false, Battery=0, HasBattery = true, Radio=80, Text = "Second item", Description="This is an item description." },
-			};
-			string serialisedText = JsonConvert.SerializeObject(mockItems);
+			string UserId = dbContext.User.FirstOrDefault(u => u.Email == userWebSocket.Username).UserID;
+
+			List<Base> bases = await dbContext.Base.AsNoTracking().Where(b=>b.UserId == UserId).ToListAsync();
+			string serialisedText = JsonConvert.SerializeObject(bases);
 			var msg = new CustomWebSocketMessage
 			{
 				MessagDateTime = DateTime.Now,
@@ -32,12 +32,8 @@ namespace AgendaSignalR.Infrastructure
 			byte[] bytes = Encoding.ASCII.GetBytes(serialisedMessage);
 			await webSocket.SendAsync(new ArraySegment<byte>(bytes, 0, bytes.Length), WebSocketMessageType.Text, true, CancellationToken.None);
 
-			var mockCollars = new List<Collar>
-			{
-				new Collar { CollarId = Guid.NewGuid().ToString(), Name="Peppa", IsConnected= true, IsGPSConnected= false, Battery=100, Radio=90, Description="This is an item description." },
-				new Collar { CollarId = Guid.NewGuid().ToString(), Name="Hunter", IsConnected= false, IsGPSConnected = true,  Battery=50, Radio=20, Description="This is an item description." },
-			};
-			string serialisedText2 = JsonConvert.SerializeObject(mockCollars);
+			List<Collar> collars = await dbContext.Collar.AsNoTracking().Where(b => b.UserId == UserId).ToListAsync();
+			string serialisedText2 = JsonConvert.SerializeObject(collars);
 			var msg2 = new CustomWebSocketMessage
 			{
 				MessagDateTime = DateTime.Now,
@@ -52,21 +48,28 @@ namespace AgendaSignalR.Infrastructure
 			await webSocket.SendAsync(new ArraySegment<byte>(bytes2, 0, bytes2.Length), WebSocketMessageType.Text, true, CancellationToken.None);
 		}
 
-		public async Task HandleMessage(WebSocketReceiveResult result, byte[] buffer, CustomWebSocket userWebSocket, ICustomWebSocketFactory wsFactory)
+		public async Task HandleMessage(WebSocketReceiveResult result, byte[] buffer, CustomWebSocket userWebSocket, ICustomWebSocketFactory wsFactory, ApplicationDbContext dbContext)
 		{
 			string msg = Encoding.ASCII.GetString(buffer);
 			try
-			{
+			{ 
+				//{"Text":"{\"BaseId\":\"0ca407e1-5575-462c-9019-80643a9099e0\",\"HWId\":\"12345678\",\"Name\":\"Home\",\"IsConnected\":false,\"IsPlugged\":false,\"IsNotPlugged\":true,\"IsCharging\":false,\"Battery\":0,\"HasBattery\":false,\"IsMissingBattery\":true,\"Radio\":0,\"RadioPercentage\":\"0%\",\"Text\":null,\"Description\":null,\"UserId\":\"bee7b8af-c902-4771-89f8-969a3318cbdb\"}","MessagDateTime":"2018-08-23T13:10:58.6645939-04:00","IsIncoming":true,"UserId":"11","Type":1}
+
+				//{ "Text":"{\"CollarId\":\"68b73ced-1659-483c-929e-274a97706405\",\"HWId\":\"87654321\",\"Name\":\"Pepa\",\"IsConnected\":false,\"IsGPSConnected\":false,\"IsNotGPSConnected\":true,\"Battery\":0,\"Radio\":0,\"RadioPercentage\":\"0%\",\"Description\":null,\"UserId\":\"bee7b8af-c902-4771-89f8-969a3318cbdb\"}","MessagDateTime":"2018-08-23T13:33:00.5057737-04:00","IsIncoming":true,"UserId":"22","Type":2}
+
 				var message = JsonConvert.DeserializeObject<CustomWebSocketMessage>(msg);
 				if (message.Type == WSMessageType.Base)
 				{
-					//save and send to others in same account
-					//{"Text":"[]","MessagDateTime":"2018-08-22T09:01:35.1117305-04:00","IsIncoming":true,"UserId":"user3","Type":1}
+					Base b = JsonConvert.DeserializeObject<Base>(message.Text);
+					dbContext.Update(b);
+					await dbContext.SaveChangesAsync();
 					await BroadcastOthers(buffer, userWebSocket, wsFactory);
 				}
 				else if (message.Type == WSMessageType.Collar)
 				{
-					//save and send to others in same account
+					Collar c = JsonConvert.DeserializeObject < Collar>(message.Text);
+					dbContext.Update(c);
+					await dbContext.SaveChangesAsync();
 					await BroadcastOthers(buffer, userWebSocket, wsFactory);
 				}
 			}

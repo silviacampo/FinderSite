@@ -65,7 +65,7 @@ namespace webGDPR.Controllers
         {
             if (ModelState.IsValid)
             {
-				collar.UserId = _userManager.GetUserId(User);
+				collar.UserId = _context.User.FirstOrDefault(u => u.OwnerID == _userManager.GetUserId(User)).UserID;
 				_context.Add(collar);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
