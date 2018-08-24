@@ -23,5 +23,6 @@ namespace AgendaSignalR.Infrastructure
 		Collar,
 		Bases,
 		Collars,
+		Device
 	}
 }

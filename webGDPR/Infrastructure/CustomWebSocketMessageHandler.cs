@@ -5,9 +5,11 @@ using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using webGDPR.Data;
+using webGDPR.Models;
 
 namespace AgendaSignalR.Infrastructure
 {
@@ -67,10 +69,20 @@ namespace AgendaSignalR.Infrastructure
 				}
 				else if (message.Type == WSMessageType.Collar)
 				{
-					Collar c = JsonConvert.DeserializeObject < Collar>(message.Text);
+					Collar c = JsonConvert.DeserializeObject<Collar>(message.Text);
 					dbContext.Update(c);
 					await dbContext.SaveChangesAsync();
 					await BroadcastOthers(buffer, userWebSocket, wsFactory);
+				}
+				else if (message.Type == WSMessageType.Device)
+				{
+					Device c = JsonConvert.DeserializeObject<Device>(message.Text);
+					c.UserId = dbContext.User.FirstOrDefault(u => u.Email == message.UserId).UserID;
+					dbContext.Add(c);
+					await dbContext.SaveChangesAsync();
+					//notify someone
+					//return guid
+					string test = c.DeviceId;
 				}
 			}
 			catch (Exception e)
