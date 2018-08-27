@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using webGDPR.Data;
 
 namespace webGDPR.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180827165332_basestatus2")]
+    partial class basestatus2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -240,36 +242,6 @@ namespace webGDPR.Data.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
-                });
-
-            modelBuilder.Entity("webGDPR.Models.BaseStatus", b =>
-                {
-                    b.Property<string>("BaseStatusId")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("BaseId");
-
-                    b.Property<int>("Battery");
-
-                    b.Property<DateTime>("CreationDate");
-
-                    b.Property<bool>("HasBattery");
-
-                    b.Property<bool>("IsActive");
-
-                    b.Property<bool>("IsCharging");
-
-                    b.Property<bool>("IsConnected");
-
-                    b.Property<bool>("IsPlugged");
-
-                    b.Property<int>("Radio");
-
-                    b.Property<string>("UserId");
-
-                    b.HasKey("BaseStatusId");
-
-                    b.ToTable("BaseStatus");
                 });
 
             modelBuilder.Entity("webGDPR.Models.Device", b =>

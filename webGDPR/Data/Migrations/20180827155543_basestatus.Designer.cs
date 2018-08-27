@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using webGDPR.Data;
 
 namespace webGDPR.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180827155543_basestatus")]
+    partial class basestatus
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -29,8 +31,6 @@ namespace webGDPR.Data.Migrations
                     b.Property<string>("Description");
 
                     b.Property<string>("HWId");
-
-                    b.Property<string>("LastStatusId");
 
                     b.Property<string>("Name");
 
@@ -240,36 +240,6 @@ namespace webGDPR.Data.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
-                });
-
-            modelBuilder.Entity("webGDPR.Models.BaseStatus", b =>
-                {
-                    b.Property<string>("BaseStatusId")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("BaseId");
-
-                    b.Property<int>("Battery");
-
-                    b.Property<DateTime>("CreationDate");
-
-                    b.Property<bool>("HasBattery");
-
-                    b.Property<bool>("IsActive");
-
-                    b.Property<bool>("IsCharging");
-
-                    b.Property<bool>("IsConnected");
-
-                    b.Property<bool>("IsPlugged");
-
-                    b.Property<int>("Radio");
-
-                    b.Property<string>("UserId");
-
-                    b.HasKey("BaseStatusId");
-
-                    b.ToTable("BaseStatus");
                 });
 
             modelBuilder.Entity("webGDPR.Models.Device", b =>

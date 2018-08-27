@@ -17,37 +17,69 @@ namespace AgendaSignalR.Infrastructure
 	{
 		public async Task SendInitialMessages(CustomWebSocket userWebSocket, ApplicationDbContext dbContext)
 		{
-			WebSocket webSocket = userWebSocket.WebSocket;
-			string UserId = dbContext.User.FirstOrDefault(u => u.Email == userWebSocket.Username).UserID;
-
-			List<Base> bases = await dbContext.Base.AsNoTracking().Where(b=>b.UserId == UserId).ToListAsync();
-			string serialisedText = JsonConvert.SerializeObject(bases);
-			var msg = new CustomWebSocketMessage
+			try
 			{
-				MessagDateTime = DateTime.Now,
-				Type = WSMessageType.Bases,
-				Text = serialisedText,
-				UserId = CustomWebSocketMessage.SystemUserId
-			};
+				WebSocket webSocket = userWebSocket.WebSocket;
+				string UserId = dbContext.User.FirstOrDefault(u => u.Email == userWebSocket.Username).UserID;
 
-			string serialisedMessage = JsonConvert.SerializeObject(msg);
-			byte[] bytes = Encoding.ASCII.GetBytes(serialisedMessage);
-			await webSocket.SendAsync(new ArraySegment<byte>(bytes, 0, bytes.Length), WebSocketMessageType.Text, true, CancellationToken.None);
+				List<Base> bases = await dbContext.Base.AsNoTracking().Where(b => b.UserId == UserId).ToListAsync();
+				List<BaseStatus> basesStatus = await dbContext.BaseStatus.AsNoTracking().Where(b => b.UserId == UserId && b.IsActive == true).ToListAsync();
+				List<webGDPR.Infrastructure.CustomWebSockets.Messages.Base> msgBases = new List<webGDPR.Infrastructure.CustomWebSockets.Messages.Base>();
+				foreach (var b in bases)
+				{
+					BaseStatus bs = basesStatus.FirstOrDefault(a => a.BaseId == b.BaseId) ?? new BaseStatus() { IsConnected = false, IsPlugged = false, IsCharging = false, Battery = 0, HasBattery = false, Radio = 0 };
+					
+					webGDPR.Infrastructure.CustomWebSockets.Messages.Base mb = new webGDPR.Infrastructure.CustomWebSockets.Messages.Base
+					{
+						BaseId = b.BaseId,
+						HWId = b.HWId,
+						Name = b.Name,
+						BaseNumber = b.BaseNumber,
+						Text = b.Text,
+						Description = b.Description,
+						UserId = b.UserId,
+						IsConnected = bs.IsConnected,
+						IsPlugged = bs.IsPlugged,
+						IsCharging = bs.IsCharging,
+						Battery = bs.Battery,
+						HasBattery = bs.HasBattery,
+						Radio = bs.Radio
+					};
+					msgBases.Add(mb);
+				}
+				string serialisedText = JsonConvert.SerializeObject(msgBases);
+				var msg = new CustomWebSocketMessage
+				{
+					MessagDateTime = DateTime.Now,
+					Type = WSMessageType.Bases,
+					Text = serialisedText,
+					UserId = CustomWebSocketMessage.SystemUserId
+				};
 
-			List<Collar> collars = await dbContext.Collar.AsNoTracking().Where(b => b.UserId == UserId).ToListAsync();
-			string serialisedText2 = JsonConvert.SerializeObject(collars);
-			var msg2 = new CustomWebSocketMessage
+				string serialisedMessage = JsonConvert.SerializeObject(msg);
+				byte[] bytes = Encoding.ASCII.GetBytes(serialisedMessage);
+				await webSocket.SendAsync(new ArraySegment<byte>(bytes, 0, bytes.Length), WebSocketMessageType.Text, true, CancellationToken.None);
+
+				List<Collar> collars = await dbContext.Collar.AsNoTracking().Where(b => b.UserId == UserId).ToListAsync();
+				string serialisedText2 = JsonConvert.SerializeObject(collars);
+				var msg2 = new CustomWebSocketMessage
+				{
+					MessagDateTime = DateTime.Now,
+					Type = WSMessageType.Collars,
+					Text = serialisedText2,
+					UserId = CustomWebSocketMessage.SystemUserId
+				};
+
+				string serialisedMessage2 = JsonConvert.SerializeObject(msg2);
+
+				byte[] bytes2 = Encoding.ASCII.GetBytes(serialisedMessage2);
+				await webSocket.SendAsync(new ArraySegment<byte>(bytes2, 0, bytes2.Length), WebSocketMessageType.Text, true, CancellationToken.None);
+
+			}
+			catch (Exception e)
 			{
-				MessagDateTime = DateTime.Now,
-				Type = WSMessageType.Collars,
-				Text = serialisedText2,
-				UserId = CustomWebSocketMessage.SystemUserId
-			};
-
-			string serialisedMessage2 = JsonConvert.SerializeObject(msg2);
-
-			byte[] bytes2 = Encoding.ASCII.GetBytes(serialisedMessage2);
-			await webSocket.SendAsync(new ArraySegment<byte>(bytes2, 0, bytes2.Length), WebSocketMessageType.Text, true, CancellationToken.None);
+				string test = e.Message;
+			}
 		}
 
 		public async Task HandleMessage(WebSocketReceiveResult result, byte[] buffer, CustomWebSocket userWebSocket, ICustomWebSocketFactory wsFactory, ApplicationDbContext dbContext)
@@ -64,9 +96,28 @@ namespace AgendaSignalR.Infrastructure
 				var message = JsonConvert.DeserializeObject<CustomWebSocketMessage>(msg);
 				if (message.Type == WSMessageType.Base)
 				{
-					Base b = JsonConvert.DeserializeObject<Base>(message.Text);
-					dbContext.Update(b);
+					webGDPR.Infrastructure.CustomWebSockets.Messages.Base b = JsonConvert.DeserializeObject<webGDPR.Infrastructure.CustomWebSockets.Messages.Base>(message.Text);
+
+					BaseStatus lastStatus = dbContext.BaseStatus.First(f => f.BaseId == b.BaseId && f.IsActive == true);
+					lastStatus.IsActive = false;
+					dbContext.Update(lastStatus);
+
+					BaseStatus baseStatus = new BaseStatus
+					{
+						BaseId = b.BaseId,
+						UserId = b.UserId,
+						IsActive = true,
+						CreationDate = DateTime.Now,
+						IsConnected = b.IsConnected,
+						IsPlugged = b.IsPlugged,
+						IsCharging = b.IsCharging,
+						Battery = b.Battery,
+						HasBattery = b.HasBattery,
+						Radio = b.Radio
+					};
+					dbContext.Add(baseStatus);
 					await dbContext.SaveChangesAsync();
+
 					await BroadcastOthers(buffer, userWebSocket, wsFactory);
 				}
 				else if (message.Type == WSMessageType.Collar)
