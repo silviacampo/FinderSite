@@ -66,6 +66,22 @@ namespace webGDPR.Controllers
             if (ModelState.IsValid)
             {
 				collar.UserId = _context.User.FirstOrDefault(u => u.OwnerID == _userManager.GetUserId(User)).UserID;
+				try
+				{
+					collar.BaseNumber = Convert.ToByte(_context.Base.Count());
+				}
+				catch (Exception e)
+				{
+					collar.BaseNumber = 0;
+				}
+				try
+				{
+					collar.CollarNumber = Convert.ToByte(_context.Collar.Count() +1);
+				}
+				catch (Exception e)
+				{
+					collar.CollarNumber = 0;
+				}
 				_context.Add(collar);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

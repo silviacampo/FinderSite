@@ -5,6 +5,9 @@
 		public string CollarId { get; set; }
 		public string HWId { get; set; }
 		public string Name { get; set; }
+		public byte CollarNumber { get; set; }
+		public byte BaseNumber { get; set; }
+
 		public bool IsConnected { get; set; }
 		public bool IsGPSConnected { get; set; }
 

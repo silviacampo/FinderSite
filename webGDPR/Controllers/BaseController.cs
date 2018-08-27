@@ -67,6 +67,13 @@ namespace webGDPR.Controllers
             if (ModelState.IsValid)
             {
 				@base.UserId = _context.User.FirstOrDefault(u => u.OwnerID == _userManager.GetUserId(User)).UserID;
+				try
+				{
+					@base.BaseNumber = Convert.ToByte(_context.Base.Count() + 1);
+				}
+				catch (Exception e) {
+					@base.BaseNumber = 0;
+				}
 				_context.Add(@base);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

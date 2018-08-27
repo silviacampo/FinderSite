@@ -5,6 +5,8 @@
 		public string BaseId { get; set; }
 		public string HWId { get; set; }
 		public string Name { get; set; }
+		public byte BaseNumber { get; set; }
+
 		public bool IsConnected { get; set; }
 		public bool IsPlugged { get; set; }
 
