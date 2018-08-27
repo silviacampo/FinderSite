@@ -2,14 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace webGDPR.Infrastructure.CustomWebSockets.Messages
 {
 		public class Base
 		{
-			public string BaseId { get; set; }
-			public string HWId { get; set; }
-			public string Name { get; set; }
+		[JsonIgnore]
+		public string BaseId { get; set; }
+		[JsonIgnore]
+		public string HWId { get; set; }
+
+		public string Name { get; set; }
 			public byte BaseNumber { get; set; }
 
 			public bool IsConnected { get; set; }
@@ -26,12 +30,13 @@ namespace webGDPR.Infrastructure.CustomWebSockets.Messages
 
 			public int Radio { get; set; }
 
-			//public string RadioPercentage	{ get {	return Radio.ToString() + "%";	}	}
-
-			public string Text { get; set; }
-			public string Description { get; set; }
-
-			public string UserId { get; set; }
+		//public string RadioPercentage	{ get {	return Radio.ToString() + "%";	}	}
+		[JsonIgnore]
+		public string Text { get; set; }
+		[JsonIgnore]
+		public string Description { get; set; }
+		[JsonIgnore]
+		public string UserId { get; set; }
 		}
 	}
 
