@@ -13,9 +13,11 @@ namespace webGDPR.Controllers
 	//[ServiceFilter(typeof(HostFilter))]
 	public class HomeController : Controller
     {
-		
+		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
 		public IActionResult Index()
 		{
+			log.Info("test");
 			//ViewData["Host"] = Request.Host.Host;
 			var test = ViewData["Host"];
 			return View("AddFileIndex");

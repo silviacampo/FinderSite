@@ -14,6 +14,7 @@ using webGDPR.Authorization;
 using AgendaSignalR.Infrastructure;
 using System;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.Extensions.Logging;
 
 namespace webGDPR
 {
@@ -69,7 +70,7 @@ namespace webGDPR
 		}
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             if (env.IsDevelopment())
             {
@@ -119,6 +120,8 @@ Environment=ASPNETCORE_ENVIRONMENT=Production
 [Install]
 WantedBy=multi-user.target
 			 */
+
+			loggerFactory.AddLog4Net();
 
 			app.UseHttpsRedirection();
             app.UseStaticFiles();
