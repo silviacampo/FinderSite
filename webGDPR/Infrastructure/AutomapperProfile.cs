@@ -10,7 +10,9 @@ namespace webGDPR.Infrastructure
     {
 		public AutomapperProfile()
 		{
-			CreateMap<AgendaSignalR.Infrastructure.Base, CustomWebSockets.Messages.Base>();
+			CreateMap<AgendaSignalR.Infrastructure.Base, CustomWebSockets.Messages.Base>()
+				.ForMember(dest => dest.BaseNumber, opts => opts.MapFrom(src => src.BaseId))
+				.ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.Name)); 
 		}
 	}
 }
