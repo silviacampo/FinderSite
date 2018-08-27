@@ -15,6 +15,7 @@ using AgendaSignalR.Infrastructure;
 using System;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Logging;
+using AutoMapper;
 
 namespace webGDPR
 {
@@ -50,6 +51,8 @@ namespace webGDPR
 			// dotnet tool install--global dotnet-aspnet - codegenerator
 			// in powershell:
 			//dotnet aspnet-codegenerator identity - dc webGDPR.Data.ApplicationDbContext --force
+
+			services.AddAutoMapper();
 
 			services.AddMvc(options =>
 			{

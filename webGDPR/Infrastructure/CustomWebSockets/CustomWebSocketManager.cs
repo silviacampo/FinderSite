@@ -3,6 +3,7 @@ using System.Net.WebSockets;
 using System.Threading;
 using System.Threading.Tasks;
 using AgendaSignalR.Infrastructure;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using webGDPR.Data;
@@ -18,8 +19,11 @@ namespace webGDPR.Infrastructure
 			_next = next;
 		}
 
-		public async Task Invoke(HttpContext context, ICustomWebSocketFactory wsFactory, ICustomWebSocketMessageHandler wsmHandler, SignInManager<ApplicationUser> signInManager, ApplicationDbContext dbContext)
+		public async Task Invoke(HttpContext context, ICustomWebSocketFactory wsFactory, ICustomWebSocketMessageHandler wsmHandler, SignInManager<ApplicationUser> signInManager, ApplicationDbContext dbContext, IMapper mapper)
 		{
+			//https://dotnetcoretutorials.com/2017/09/23/using-automapper-asp-net-core/
+			//var test = mapper.Map<Base>(new webGDPR.Infrastructure.CustomWebSockets.Messages.Base());
+
 			if (context.Request.Path == "/ws")
 			{
 				if (context.WebSockets.IsWebSocketRequest)
