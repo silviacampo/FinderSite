@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Authorization;
 using webGDPR.Authorization;
 using AgendaSignalR.Infrastructure;
 using System;
+using Microsoft.AspNetCore.HttpOverrides;
 
 namespace webGDPR
 {
@@ -81,7 +82,45 @@ namespace webGDPR
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+			app.UseForwardedHeaders(new ForwardedHeadersOptions
+			{
+				ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+			});
+
+			/* https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/linux-apache?view=aspnetcore-2.1&tabs=aspnetcore2x
+			 * at the top, in any or all files
+			 <VirtualHost *:*>
+    RequestHeader set "X-Forwarded-Proto" expr=%{REQUEST_SCHEME}
+</VirtualHost>
+
+			<VirtualHost *:443>
+    ProxyPreserveHost On
+    ProxyPass / http://127.0.0.1:8095/
+    ProxyPassReverse / http://127.0.0.1:8095/
+    ServerName test.whereisfinder.com
+    ServerAlias test.whereisfinder.com
+    ErrorLog ${APACHE_LOG_DIR}testfinder-error.log
+    CustomLog ${APACHE_LOG_DIR}testfinder-access.log common
+</VirtualHost>
+
+			[Unit]
+Description=Test Finder
+
+[Service]
+WorkingDirectory=/var/www/finder
+ExecStart=/usr/local/bin/dotnet /var/www/finder/publish/finder.dll
+Restart=always
+# Restart service after 10 seconds if the dotnet service crashes:
+RestartSec=10
+SyslogIdentifier=dotnet-finder
+User=apache
+Environment=ASPNETCORE_ENVIRONMENT=Production 
+
+[Install]
+WantedBy=multi-user.target
+			 */
+
+			app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
 
