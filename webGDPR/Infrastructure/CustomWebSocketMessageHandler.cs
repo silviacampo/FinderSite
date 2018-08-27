@@ -27,7 +27,7 @@ namespace AgendaSignalR.Infrastructure
 				MessagDateTime = DateTime.Now,
 				Type = WSMessageType.Bases,
 				Text = serialisedText,
-				UserId = "system"
+				UserId = CustomWebSocketMessage.SystemUserId
 			};
 
 			string serialisedMessage = JsonConvert.SerializeObject(msg);
@@ -41,7 +41,7 @@ namespace AgendaSignalR.Infrastructure
 				MessagDateTime = DateTime.Now,
 				Type = WSMessageType.Collars,
 				Text = serialisedText2,
-				UserId = "system"
+				UserId = CustomWebSocketMessage.SystemUserId
 			};
 
 			string serialisedMessage2 = JsonConvert.SerializeObject(msg2);
@@ -54,10 +54,12 @@ namespace AgendaSignalR.Infrastructure
 		{
 			string msg = Encoding.ASCII.GetString(buffer);
 			try
-			{ 
+			{
 				//{"Text":"{\"BaseId\":\"0ca407e1-5575-462c-9019-80643a9099e0\",\"HWId\":\"12345678\",\"Name\":\"Home\",\"IsConnected\":false,\"IsPlugged\":false,\"IsNotPlugged\":true,\"IsCharging\":false,\"Battery\":0,\"HasBattery\":false,\"IsMissingBattery\":true,\"Radio\":0,\"RadioPercentage\":\"0%\",\"Text\":null,\"Description\":null,\"UserId\":\"bee7b8af-c902-4771-89f8-969a3318cbdb\"}","MessagDateTime":"2018-08-23T13:10:58.6645939-04:00","IsIncoming":true,"UserId":"11","Type":1}
 
 				//{ "Text":"{\"CollarId\":\"68b73ced-1659-483c-929e-274a97706405\",\"HWId\":\"87654321\",\"Name\":\"Pepa\",\"IsConnected\":false,\"IsGPSConnected\":false,\"IsNotGPSConnected\":true,\"Battery\":0,\"Radio\":0,\"RadioPercentage\":\"0%\",\"Description\":null,\"UserId\":\"bee7b8af-c902-4771-89f8-969a3318cbdb\"}","MessagDateTime":"2018-08-23T13:33:00.5057737-04:00","IsIncoming":true,"UserId":"22","Type":2}
+
+				//{ "Text":"{\"DeviceId\":\"68b73ced-1659-483c-929e-274a97706405\",\"Name\":\"Silvia's Phone\",\"Model\":\"Nexus 5\",\"Manufacturer\":\"LG\",\"Type\":\"Phone\",\"Platform\":\"Android\",\"UserId\":\"bee7b8af-c902-4771-89f8-969a3318cbdb\"}","MessagDateTime":"2018-08-23T13:33:00.5057737-04:00","UserId":"scampo@test.com","Type":5}
 
 				var message = JsonConvert.DeserializeObject<CustomWebSocketMessage>(msg);
 				if (message.Type == WSMessageType.Base)
@@ -76,19 +78,46 @@ namespace AgendaSignalR.Infrastructure
 				}
 				else if (message.Type == WSMessageType.Device)
 				{
-					Device c = JsonConvert.DeserializeObject<Device>(message.Text);
-					c.UserId = dbContext.User.FirstOrDefault(u => u.Email == message.UserId).UserID;
-					dbContext.Add(c);
+					Device d = JsonConvert.DeserializeObject<Device>(message.Text);
+					d.UserId = dbContext.User.FirstOrDefault(u => u.Email == message.UserId).UserID;
+					Device found = dbContext.Device.FirstOrDefault(c => c.UserId == d.UserId && c.Type == d.Type && c.Platform == d.Platform && c.Manufacturer == d.Manufacturer && c.Model == d.Model && c.OSVersion == d.OSVersion);
+					if (found != null)
+					{
+						found.Name = d.Name; // maybe the user update the phone's name
+						dbContext.Update(found);
+						d = found;
+					}
+					else
+					{
+						dbContext.Add(d);
+					}
 					await dbContext.SaveChangesAsync();
 					//notify someone
 					//return guid
-					string test = c.DeviceId;
+					userWebSocket.DeviceId = d.DeviceId;
+					await SendDeviceInformation(userWebSocket, d);
 				}
 			}
 			catch (Exception e)
 			{
 				await userWebSocket.WebSocket.SendAsync(new ArraySegment<byte>(buffer, 0, result.Count), result.MessageType, result.EndOfMessage, CancellationToken.None);
 			}
+		}
+
+		private async Task SendDeviceInformation(CustomWebSocket userWebSocket, Device c)
+		{
+			string serialisedText = JsonConvert.SerializeObject(c);
+			var msg = new CustomWebSocketMessage
+			{
+				MessagDateTime = DateTime.Now,
+				Type = WSMessageType.Device,
+				Text = serialisedText,
+				UserId = CustomWebSocketMessage.SystemUserId
+			};
+
+			string serialisedMessage = JsonConvert.SerializeObject(msg);
+			byte[] bytes = Encoding.ASCII.GetBytes(serialisedMessage);
+			await userWebSocket.WebSocket.SendAsync(new ArraySegment<byte>(bytes, 0, bytes.Length), WebSocketMessageType.Text, true, CancellationToken.None);
 		}
 
 		//any change coming from one device

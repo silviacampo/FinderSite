@@ -95,8 +95,8 @@ namespace webGDPR
 
 			<VirtualHost *:443>
     ProxyPreserveHost On
-    ProxyPass / http://127.0.0.1:8095/
-    ProxyPassReverse / http://127.0.0.1:8095/
+    ProxyPass / http://127.0.0.1:8060/
+    ProxyPassReverse / http://127.0.0.1:8060/
     ServerName test.whereisfinder.com
     ServerAlias test.whereisfinder.com
     ErrorLog ${APACHE_LOG_DIR}testfinder-error.log

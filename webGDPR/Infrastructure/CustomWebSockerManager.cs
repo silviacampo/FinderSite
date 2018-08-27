@@ -26,6 +26,7 @@ namespace webGDPR.Infrastructure
 				{
 					string username = context.Request.Query["u"];
 					string password = context.Request.Query["p"];
+					string deviceId = context.Request.Query["g"];
 					if (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password))
 					{
 						var result = await signInManager.PasswordSignInAsync(username, password, false, lockoutOnFailure: true);
@@ -36,6 +37,7 @@ namespace webGDPR.Infrastructure
 							{
 								WebSocket = webSocket,
 								Username = username,
+								DeviceId = deviceId,
 								Guid = Guid.NewGuid()
 							};
 							wsFactory.Add(userWebSocket);

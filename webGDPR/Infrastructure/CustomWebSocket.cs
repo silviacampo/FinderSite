@@ -10,6 +10,7 @@ namespace AgendaSignalR.Infrastructure
 	{
 		public WebSocket WebSocket { get; set; }
 		public string Username { get; set; }
+		public string DeviceId { get; set; }
 		public Guid Guid { get; set; }
 	}
 }
