@@ -37,10 +37,14 @@ namespace webGDPR.Controllers
 			List<CollarViewModel> model = new List<CollarViewModel>();
 			string UserId = _context.User.FirstOrDefault(u => u.OwnerID == _userManager.GetUserId(User)).UserID;
 
-			List<Collar> collars = await _context.Collar.AsNoTracking().Where(b => b.UserId == UserId).Include(b => b.LastStatus).ToListAsync();
+			List<Collar> collars = await _context.Collar.AsNoTracking().Where(b => b.UserId == UserId).Include(b => b.LastStatus).ThenInclude(c => c.BaseConnectedTo).ToListAsync();
 			foreach (var c in collars)
 			{
 				CollarViewModel cvm = _mapper.Map<CollarViewModel>(new Tuple<Collar, CollarStatus>(c, c.LastStatus));
+				if (c.LastStatus != null)
+				{
+					cvm.BaseConnectedTo = c.LastStatus.BaseConnectedTo;
+				}
 				model.Add(cvm);
 			}
 
