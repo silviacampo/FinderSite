@@ -21,9 +21,6 @@ namespace webGDPR.Infrastructure
 
 		public async Task Invoke(HttpContext context, ICustomWebSocketFactory wsFactory, ICustomWebSocketMessageHandler wsmHandler, SignInManager<ApplicationUser> signInManager, ApplicationDbContext dbContext, IMapper mapper)
 		{
-			//https://dotnetcoretutorials.com/2017/09/23/using-automapper-asp-net-core/
-			//var test = mapper.Map<Base>(new webGDPR.Infrastructure.CustomWebSockets.Messages.Base());
-
 			if (context.Request.Path == "/ws")
 			{
 				if (context.WebSockets.IsWebSocketRequest)
@@ -45,8 +42,8 @@ namespace webGDPR.Infrastructure
 								Guid = Guid.NewGuid()
 							};
 							wsFactory.Add(userWebSocket);
-							await wsmHandler.SendInitialMessages(userWebSocket, dbContext);
-							await Listen(context, userWebSocket, wsFactory, wsmHandler,dbContext);
+							await wsmHandler.SendInitialMessages(userWebSocket, dbContext, mapper);
+							await Listen(context, userWebSocket, wsFactory, wsmHandler,dbContext, mapper);
 						}
 						//log sthing
 					}
@@ -60,14 +57,14 @@ namespace webGDPR.Infrastructure
 			await _next(context);
 		}
 
-		private async Task Listen(HttpContext context, CustomWebSocket userWebSocket, ICustomWebSocketFactory wsFactory, ICustomWebSocketMessageHandler wsmHandler, ApplicationDbContext dbContext)
+		private async Task Listen(HttpContext context, CustomWebSocket userWebSocket, ICustomWebSocketFactory wsFactory, ICustomWebSocketMessageHandler wsmHandler, ApplicationDbContext dbContext, IMapper mapper)
 		{
 			WebSocket webSocket = userWebSocket.WebSocket;
 			var buffer = new byte[1024 * 4];
 			WebSocketReceiveResult result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
 			while (!result.CloseStatus.HasValue)
 			{
-				await wsmHandler.HandleMessage(result, buffer, userWebSocket, wsFactory, dbContext);
+				await wsmHandler.HandleMessage(result, buffer, userWebSocket, wsFactory, dbContext, mapper);
 
 				buffer = new byte[1024 * 4];
 				result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);

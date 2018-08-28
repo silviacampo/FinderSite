@@ -8,7 +8,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets.Messages
 {
 		public class Base
 		{
-		[JsonIgnore]
+		//[JsonIgnore]
 		public string BaseId { get; set; }
 		[JsonIgnore]
 		public string HWId { get; set; }
@@ -35,7 +35,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets.Messages
 		public string Text { get; set; }
 		[JsonIgnore]
 		public string Description { get; set; }
-		[JsonIgnore]
+		//[JsonIgnore]
 		public string UserId { get; set; }
 		}
 	}

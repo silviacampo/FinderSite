@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using webGDPR.Models;
 
 namespace AgendaSignalR.Infrastructure
@@ -16,6 +17,9 @@ namespace AgendaSignalR.Infrastructure
 		public string UserId { get; set; }
 
 		public string LastStatusId { get; set; }
+
+		[ForeignKey("LastStatusId")]
+		public BaseStatus LastStatus { get; set; }
 
 	}
 }
