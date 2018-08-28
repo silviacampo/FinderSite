@@ -11,6 +11,9 @@ using AgendaSignalR.Infrastructure;
 using webGDPR.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using webGDPR.ViewModels;
+using AutoMapper;
+using webGDPR.Models;
 
 namespace webGDPR.Controllers
 {
@@ -19,18 +22,30 @@ namespace webGDPR.Controllers
     {
         private readonly ApplicationDbContext _context;
 		UserManager<ApplicationUser> _userManager;
+		IMapper _mapper;
 
 
-		public BaseController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+		public BaseController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IMapper mapper)
         {
             _context = context;
 			_userManager = userManager;
+			_mapper = mapper;
         }
 
         // GET: Base
         public async Task<IActionResult> Index()
         {
-			return View(await _context.Base.ToListAsync());
+			List<BaseViewModel> model = new List<BaseViewModel>();
+			string UserId = _context.User.FirstOrDefault(u => u.OwnerID == _userManager.GetUserId(User)).UserID;
+
+			List<Base> bases = await _context.Base.AsNoTracking().Where(b => b.UserId == UserId).Include(b => b.LastStatus).ToListAsync();
+			foreach (var b in bases)
+			{
+				BaseViewModel mb = _mapper.Map<BaseViewModel>(new Tuple<Base, BaseStatus>(b, b.LastStatus));
+				model.Add(mb);
+			}
+
+			return View(model);
         }
 
         // GET: Base/Details/5
@@ -41,8 +56,7 @@ namespace webGDPR.Controllers
                 return NotFound();
             }
 
-            var @base = await _context.Base
-                .FirstOrDefaultAsync(m => m.BaseId == id);
+            var @base = await _context.Base.FirstOrDefaultAsync(m => m.BaseId == id);
             if (@base == null)
             {
                 return NotFound();
@@ -62,14 +76,14 @@ namespace webGDPR.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("BaseId,HWId,Name,IsConnected,IsPlugged,IsCharging,Battery,HasBattery,Radio,Text,Description,UserId")] Base @base)
+        public async Task<IActionResult> Create([Bind("BaseId,HWId,Name,Text,Description")] Base @base)
         {
             if (ModelState.IsValid)
             {
 				@base.UserId = _context.User.FirstOrDefault(u => u.OwnerID == _userManager.GetUserId(User)).UserID;
 				try
 				{
-					@base.BaseNumber = Convert.ToByte(_context.Base.Count() + 1);
+					@base.BaseNumber = Convert.ToByte(_context.Base.Where(b => b.UserId == @base.UserId).Count() + 1);
 				}
 				catch (Exception e) {
 					@base.BaseNumber = 0;
@@ -102,7 +116,7 @@ namespace webGDPR.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("BaseId,HWId,Name,IsConnected,IsPlugged,IsCharging,Battery,HasBattery,Radio,Text,Description,UserId")] Base @base)
+        public async Task<IActionResult> Edit(string id, [Bind("BaseId,HWId,Name,Text,Description")] Base @base)
         {
             if (id != @base.BaseId)
             {
@@ -113,7 +127,10 @@ namespace webGDPR.Controllers
             {
                 try
                 {
-                    _context.Update(@base);
+					var found = await _context.Base.AsNoTracking().FirstAsync(c=>c.BaseId == id);
+					@base.UserId = found.UserId;
+					@base.BaseNumber = found.BaseNumber;
+					_context.Update(@base);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
