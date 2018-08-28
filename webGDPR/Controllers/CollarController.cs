@@ -11,6 +11,9 @@ using AgendaSignalR.Infrastructure;
 using webGDPR.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using AutoMapper;
+using webGDPR.ViewModels;
+using webGDPR.Models;
 
 namespace webGDPR.Controllers
 {
@@ -19,17 +22,29 @@ namespace webGDPR.Controllers
     {
         private readonly ApplicationDbContext _context;
 		UserManager<ApplicationUser> _userManager;
+		IMapper _mapper;
 
-		public CollarController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
-        {
+		public CollarController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IMapper mapper)
+		{
             _context = context;
 			_userManager = userManager;
+			_mapper = mapper;
 		}
 
         // GET: Collar
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Collar.ToListAsync());
+			List<CollarViewModel> model = new List<CollarViewModel>();
+			string UserId = _context.User.FirstOrDefault(u => u.OwnerID == _userManager.GetUserId(User)).UserID;
+
+			List<Collar> collars = await _context.Collar.AsNoTracking().Where(b => b.UserId == UserId).Include(b => b.LastStatus).ToListAsync();
+			foreach (var c in collars)
+			{
+				CollarViewModel cvm = _mapper.Map<CollarViewModel>(new Tuple<Collar, CollarStatus>(c, c.LastStatus));
+				model.Add(cvm);
+			}
+
+			return View(model);
         }
 
         // GET: Collar/Details/5
@@ -61,14 +76,14 @@ namespace webGDPR.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CollarId,HWId,Name,IsConnected,IsGPSConnected,Battery,Radio,Description,UserId")] Collar collar)
+        public async Task<IActionResult> Create([Bind("CollarId,HWId,Name,Description")] Collar collar)
         {
             if (ModelState.IsValid)
             {
 				collar.UserId = _context.User.FirstOrDefault(u => u.OwnerID == _userManager.GetUserId(User)).UserID;
 				try
 				{
-					collar.BaseNumber = Convert.ToByte(_context.Base.Count());
+					collar.BaseNumber = Convert.ToByte(_context.Base.Where(b => b.UserId == collar.UserId).Count());
 				}
 				catch (Exception e)
 				{
@@ -76,7 +91,7 @@ namespace webGDPR.Controllers
 				}
 				try
 				{
-					collar.CollarNumber = Convert.ToByte(_context.Collar.Count() +1);
+					collar.CollarNumber = Convert.ToByte(_context.Collar.Where(b => b.UserId == collar.UserId).Count() +1);
 				}
 				catch (Exception e)
 				{
@@ -110,7 +125,7 @@ namespace webGDPR.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("CollarId,HWId,Name,IsConnected,IsGPSConnected,Battery,Radio,Description,UserId")] Collar collar)
+        public async Task<IActionResult> Edit(string id, [Bind("CollarId,HWId,Name,Description")] Collar collar)
         {
             if (id != collar.CollarId)
             {
@@ -121,7 +136,11 @@ namespace webGDPR.Controllers
             {
                 try
                 {
-                    _context.Update(collar);
+					var found = await _context.Collar.AsNoTracking().FirstAsync(c => c.CollarId == id);
+					collar.UserId = found.UserId;
+					collar.CollarNumber = found.CollarNumber;
+					collar.BaseNumber = found.BaseNumber;
+					_context.Update(collar);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
