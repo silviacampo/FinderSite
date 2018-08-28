@@ -1,4 +1,7 @@
-﻿namespace AgendaSignalR.Infrastructure
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using webGDPR.Models;
+
+namespace AgendaSignalR.Infrastructure
 {
 	public class Collar
 	{
@@ -8,25 +11,14 @@
 		public byte CollarNumber { get; set; }
 		public byte BaseNumber { get; set; }
 
-		public bool IsConnected { get; set; }
-		public bool IsGPSConnected { get; set; }
-
-		public bool IsNotGPSConnected { get { return !IsGPSConnected; } }
-
-		public int Battery { get; set; }
-		public int Radio { get; set; }
-
-		public string RadioPercentage
-		{
-			get
-			{
-				return Radio.ToString() + "%";
-			}
-		}
-
 		public string Description { get; set; }
 
 		public string UserId { get; set; }
+
+		public string LastStatusId { get; set; }
+
+		[ForeignKey("LastStatusId")]
+		public CollarStatus LastStatus { get; set; }
 	}
 }
 

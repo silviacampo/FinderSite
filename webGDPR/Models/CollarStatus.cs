@@ -2,30 +2,23 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AgendaSignalR.Infrastructure;
 
 namespace webGDPR.Models
 {
-    public class BaseStatus
+    public class CollarStatus
     {
-		public string BaseStatusId { get; set; }
-		public string BaseId { get; set; }
+		public string CollarStatusId { get; set; }
+		public string CollarId { get; set; }
 		public string UserId { get; set; }
 
 		public bool IsActive { get; set; }
 
 		public bool IsConnected { get; set; }
-		public bool IsPlugged { get; set; }
+		public bool IsGPSConnected { get; set; }
 
-		public bool IsNotPlugged { get { return !IsPlugged; } }
+		public bool IsNotGPSConnected { get { return !IsGPSConnected; } }
 
-		public bool IsCharging { get; set; }
 		public int Battery { get; set; }
-
-		public bool HasBattery { get; set; }
-
-		public bool IsMissingBattery { get { return !HasBattery; } }
-
 		public int Radio { get; set; }
 
 		public string RadioPercentage
@@ -37,6 +30,5 @@ namespace webGDPR.Models
 		}
 
 		public DateTime CreationDate { get; set; }
-
 	}
 }

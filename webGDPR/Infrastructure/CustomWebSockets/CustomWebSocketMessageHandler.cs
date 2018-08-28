@@ -44,8 +44,16 @@ namespace AgendaSignalR.Infrastructure
 				byte[] bytes = Encoding.ASCII.GetBytes(serialisedMessage);
 				await webSocket.SendAsync(new ArraySegment<byte>(bytes, 0, bytes.Length), WebSocketMessageType.Text, true, CancellationToken.None);
 
-				List<Collar> collars = await dbContext.Collar.AsNoTracking().Where(b => b.UserId == UserId).ToListAsync();
-				string serialisedText2 = JsonConvert.SerializeObject(collars);
+				List<Collar> collars = await dbContext.Collar.AsNoTracking().Where(b => b.UserId == UserId).Include(b => b.LastStatus).ToListAsync();
+
+				List<webGDPR.Infrastructure.CustomWebSockets.Messages.Collar> msgCollars = new List<webGDPR.Infrastructure.CustomWebSockets.Messages.Collar>();
+				foreach (var b in collars)
+				{
+					webGDPR.Infrastructure.CustomWebSockets.Messages.Collar mb = mapper.Map<webGDPR.Infrastructure.CustomWebSockets.Messages.Collar>(new Tuple<Collar, CollarStatus>(b, b.LastStatus));
+					msgCollars.Add(mb);
+				}
+
+				string serialisedText2 = JsonConvert.SerializeObject(msgCollars);
 				var msg2 = new CustomWebSocketMessage
 				{
 					MessagDateTime = DateTime.Now,
@@ -73,7 +81,7 @@ namespace AgendaSignalR.Infrastructure
 			{
 				//{"Text":"{\"BaseId\":\"0ca407e1-5575-462c-9019-80643a9099e0\",\"BaseNumber\":\"1\",\"Name\":\"Home\",\"IsConnected\":true,\"IsPlugged\":false,\"IsCharging\":true,\"Battery\":50,\"HasBattery\":true,\"Radio\":95,\"Description\":\"Home Description\",\"UserId\":\"bee7b8af-c902-4771-89f8-969a3318cbdb\"}","MessagDateTime":"2018-08-23T13:10:58.6645939-04:00","IsIncoming":true,"UserId":"scampo@test.com","Type":1}
 
-				//{ "Text":"{\"CollarId\":\"68b73ced-1659-483c-929e-274a97706405\",\"HWId\":\"87654321\",\"Name\":\"Pepa\",\"IsConnected\":false,\"IsGPSConnected\":false,\"IsNotGPSConnected\":true,\"Battery\":0,\"Radio\":0,\"RadioPercentage\":\"0%\",\"Description\":null,\"UserId\":\"bee7b8af-c902-4771-89f8-969a3318cbdb\"}","MessagDateTime":"2018-08-23T13:33:00.5057737-04:00","IsIncoming":true,"UserId":"22","Type":2}
+				//{ "Text":"{\"CollarId\":\"68b73ced-1659-483c-929e-274a97706405\",\"BaseNumber\":\"1\", \"CollarNumber\":\"1\",\"Name\":\"Pepa\",\"IsConnected\":true,\"IsGPSConnected\":true,\"Battery\":60,\"Radio\":40,\"Description\":null,\"UserId\":\"bee7b8af-c902-4771-89f8-969a3318cbdb\"}","MessagDateTime":"2018-08-23T13:33:00.5057737-04:00","IsIncoming":true,"UserId":"scampo@test.com","Type":2}
 
 				//{ "Text":"{\"DeviceId\":\"68b73ced-1659-483c-929e-274a97706405\",\"Name\":\"Silvia's Phone\",\"Model\":\"Nexus 5\",\"Manufacturer\":\"LG\",\"Type\":\"Phone\",\"Platform\":\"Android\",\"UserId\":\"bee7b8af-c902-4771-89f8-969a3318cbdb\"}","MessagDateTime":"2018-08-23T13:33:00.5057737-04:00","UserId":"scampo@test.com","Type":5}
 
@@ -92,7 +100,7 @@ namespace AgendaSignalR.Infrastructure
 					Base @base = mapper.Map<Base>(b);
 					@base.LastStatus = mapper.Map<BaseStatus>(b);
 
-					@base.LastStatus.CreationDate = message.MessagDateTime; //or now?
+					@base.LastStatus.CreationDate = message.MessagDateTime; //TODO: or now?
 					@base.LastStatus.IsActive = true;
 					dbContext.Add(@base.LastStatus);
 
@@ -105,8 +113,25 @@ namespace AgendaSignalR.Infrastructure
 				}
 				else if (message.Type == WSMessageType.Collar)
 				{
-					Collar c = JsonConvert.DeserializeObject<Collar>(message.Text);
-					dbContext.Update(c);
+					webGDPR.Infrastructure.CustomWebSockets.Messages.Collar c = JsonConvert.DeserializeObject<webGDPR.Infrastructure.CustomWebSockets.Messages.Collar>(message.Text);
+
+					CollarStatus lastStatus = dbContext.CollarStatus.FirstOrDefault(f => f.CollarId == c.CollarId && f.IsActive == true);
+					if (lastStatus != null)
+					{
+						lastStatus.IsActive = false;
+						dbContext.Update(lastStatus);
+					}
+
+					Collar collar = mapper.Map<Collar>(c);
+					collar.LastStatus = mapper.Map<CollarStatus>(c);
+
+					collar.LastStatus.CreationDate = message.MessagDateTime; //TODO: or now?
+					collar.LastStatus.IsActive = true;
+					dbContext.Add(collar.LastStatus);
+
+					collar.LastStatusId = collar.LastStatus.CollarStatusId;
+
+					dbContext.Update(collar);
 					await dbContext.SaveChangesAsync();
 					await BroadcastOthers(buffer, userWebSocket, wsFactory);
 				}

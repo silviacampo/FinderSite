@@ -11,22 +11,7 @@ namespace webGDPR.Infrastructure
     {
 		public AutomapperProfile()
 		{
-			//DB to message
-			/*
-			BaseId = b.BaseId,
-			HWId = b.HWId,
-			Name = b.Name,
-			BaseNumber = b.BaseNumber,
-			Text = b.Text,
-			Description = b.Description,
-			UserId = b.UserId,
-			IsConnected = bs.IsConnected,
-			IsPlugged = bs.IsPlugged,
-			IsCharging = bs.IsCharging,
-			Battery = bs.Battery,
-			HasBattery = bs.HasBattery,
-			Radio = bs.Radio
-			 */
+			#region Base
 			CreateMap<System.Tuple<AgendaSignalR.Infrastructure.Base, Models.BaseStatus>, CustomWebSockets.Messages.Base>()
 				.ForMember(dest => dest.BaseId, opts => opts.MapFrom(src => src.Item1.BaseId))
 				.ForMember(dest => dest.BaseNumber, opts => opts.MapFrom(src => src.Item1.BaseNumber))
@@ -49,20 +34,6 @@ namespace webGDPR.Infrastructure
 
 			CreateMap<CustomWebSockets.Messages.Base, AgendaSignalR.Infrastructure.Base>().ReverseMap();
 
-			//BaseStatus baseStatus = new BaseStatus
-			//{
-			//	BaseId = b.BaseId,
-			//	UserId = b.UserId,
-			//	IsActive = true,
-			//	CreationDate = DateTime.Now,
-			//	IsConnected = b.IsConnected,
-			//	IsPlugged = b.IsPlugged,
-			//	IsCharging = b.IsCharging,
-			//	Battery = b.Battery,
-			//	HasBattery = b.HasBattery,
-			//	Radio = b.Radio
-			//};
-
 			CreateMap<CustomWebSockets.Messages.Base, Models.BaseStatus>()
 				.ForMember(dest => dest.BaseId, opts => opts.MapFrom(src => src.BaseId))
 				.ForMember(dest => dest.IsConnected, opts => opts.MapFrom(src => src.IsConnected))
@@ -73,6 +44,41 @@ namespace webGDPR.Infrastructure
 				.ForMember(dest => dest.Radio, opts => opts.MapFrom(src => src.Radio));
 
 			CreateMap<CustomWebSockets.Messages.Base, Models.BaseStatus>().ReverseMap();
+			#endregion
+
+			#region Collar
+			CreateMap<System.Tuple<AgendaSignalR.Infrastructure.Collar, Models.CollarStatus>, CustomWebSockets.Messages.Collar>()
+				.ForMember(dest => dest.CollarId, opts => opts.MapFrom(src => src.Item1.CollarId))
+				.ForMember(dest => dest.BaseNumber, opts => opts.MapFrom(src => src.Item1.BaseNumber))
+				.ForMember(dest => dest.CollarNumber, opts => opts.MapFrom(src => src.Item1.CollarNumber))
+				.ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.Item1.Name))
+				.ForMember(dest => dest.Description, opts => opts.MapFrom(src => src.Item1.Description))
+				.ForMember(dest => dest.UserId, opts => opts.MapFrom(src => src.Item1.UserId))
+				.ForMember(dest => dest.IsConnected, opts => opts.MapFrom(src => src.Item2.IsConnected))
+				.ForMember(dest => dest.IsGPSConnected, opts => opts.MapFrom(src => src.Item2.IsGPSConnected))
+				.ForMember(dest => dest.Battery, opts => opts.MapFrom(src => src.Item2.Battery))
+				.ForMember(dest => dest.Radio, opts => opts.MapFrom(src => src.Item2.Radio));
+
+			CreateMap<CustomWebSockets.Messages.Collar, AgendaSignalR.Infrastructure.Collar>()
+				.ForMember(dest => dest.CollarId, opts => opts.MapFrom(src => src.CollarId))
+				.ForMember(dest => dest.UserId, opts => opts.MapFrom(src => src.UserId))
+				.ForMember(dest => dest.BaseNumber, opts => opts.MapFrom(src => src.BaseNumber))
+				.ForMember(dest => dest.CollarNumber, opts => opts.MapFrom(src => src.CollarNumber))
+				.ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.Name))
+				.ForMember(dest => dest.Description, opts => opts.MapFrom(src => src.Description));
+
+			CreateMap<CustomWebSockets.Messages.Collar, AgendaSignalR.Infrastructure.Collar>().ReverseMap();
+
+			CreateMap<CustomWebSockets.Messages.Collar, Models.CollarStatus>()
+				.ForMember(dest => dest.CollarId, opts => opts.MapFrom(src => src.CollarId))
+				.ForMember(dest => dest.IsConnected, opts => opts.MapFrom(src => src.IsConnected))
+				.ForMember(dest => dest.IsGPSConnected, opts => opts.MapFrom(src => src.IsGPSConnected))
+				.ForMember(dest => dest.Battery, opts => opts.MapFrom(src => src.Battery))
+				.ForMember(dest => dest.Radio, opts => opts.MapFrom(src => src.Radio));
+
+			CreateMap<CustomWebSockets.Messages.Collar, Models.CollarStatus>().ReverseMap();
+			#endregion
+
 		}
 	}
 }

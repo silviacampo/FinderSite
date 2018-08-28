@@ -16,6 +16,7 @@ namespace webGDPR.Data
 		public DbSet<Base> Base { get; set; }
 		public DbSet<BaseStatus> BaseStatus { get; set; }
 		public DbSet<Collar> Collar { get; set; }
+		public DbSet<CollarStatus> CollarStatus { get; set; }
 		public DbSet<Device> Device { get; set; }
 	}
 }
