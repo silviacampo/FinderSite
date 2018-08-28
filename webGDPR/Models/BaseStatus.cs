@@ -17,14 +17,14 @@ namespace webGDPR.Models
 		public bool IsConnected { get; set; }
 		public bool IsPlugged { get; set; }
 
-		public bool IsNotPlugged { get { return !IsPlugged; } }
+		//public bool IsNotPlugged { get { return !IsPlugged; } }
 
 		public bool IsCharging { get; set; }
 		public int Battery { get; set; }
 
 		public bool HasBattery { get; set; }
 
-		public bool IsMissingBattery { get { return !HasBattery; } }
+		//public bool IsMissingBattery { get { return !HasBattery; } }
 
 		public int Radio { get; set; }
 

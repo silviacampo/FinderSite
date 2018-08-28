@@ -33,7 +33,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets.Messages
 		//public string RadioPercentage	{ get {	return Radio.ToString() + "%";	}	}
 		[JsonIgnore]
 		public string Text { get; set; }
-		[JsonIgnore]
+		//[JsonIgnore]
 		public string Description { get; set; }
 		//[JsonIgnore]
 		public string UserId { get; set; }

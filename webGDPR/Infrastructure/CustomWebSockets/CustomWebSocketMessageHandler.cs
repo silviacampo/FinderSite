@@ -23,35 +23,12 @@ namespace AgendaSignalR.Infrastructure
 				WebSocket webSocket = userWebSocket.WebSocket;
 				string UserId = dbContext.User.FirstOrDefault(u => u.Email == userWebSocket.Username).UserID;
 
-				List<Base> bases = await dbContext.Base.AsNoTracking().Where(b => b.UserId == UserId).ToListAsync();
+				List<Base> bases = await dbContext.Base.AsNoTracking().Where(b => b.UserId == UserId).Include(b => b.LastStatus).ToListAsync();
 
-				//https://dotnetcoretutorials.com/2017/09/23/using-automapper-asp-net-core/
-				//https://cpratt.co/using-automapper-creating-mappings/
-				var test = mapper.Map<webGDPR.Infrastructure.CustomWebSockets.Messages.Base>(bases.First());
-				var test2 = mapper.Map<Base>(test);
-
-				//List<BaseStatus> basesStatus = await dbContext.BaseStatus.AsNoTracking().Where(b => b.UserId == UserId && b.IsActive == true).ToListAsync();
 				List<webGDPR.Infrastructure.CustomWebSockets.Messages.Base> msgBases = new List<webGDPR.Infrastructure.CustomWebSockets.Messages.Base>();
 				foreach (var b in bases)
 				{
-					//BaseStatus bs = basesStatus.FirstOrDefault(a => a.BaseId == b.BaseId) ?? new BaseStatus() { IsConnected = false, IsPlugged = false, IsCharging = false, Battery = 0, HasBattery = false, Radio = 0 };
-					webGDPR.Infrastructure.CustomWebSockets.Messages.Base mb = mapper.Map<webGDPR.Infrastructure.CustomWebSockets.Messages.Base>(b);
-					//webGDPR.Infrastructure.CustomWebSockets.Messages.Base mb = new webGDPR.Infrastructure.CustomWebSockets.Messages.Base
-					//{
-					//	BaseId = b.BaseId,
-					//	HWId = b.HWId,
-					//	Name = b.Name,
-					//	BaseNumber = b.BaseNumber,
-					//	Text = b.Text,
-					//	Description = b.Description,
-					//	UserId = b.UserId,
-					//	IsConnected = bs.IsConnected,
-					//	IsPlugged = bs.IsPlugged,
-					//	IsCharging = bs.IsCharging,
-					//	Battery = bs.Battery,
-					//	HasBattery = bs.HasBattery,
-					//	Radio = bs.Radio
-					//};
+					webGDPR.Infrastructure.CustomWebSockets.Messages.Base mb = mapper.Map<webGDPR.Infrastructure.CustomWebSockets.Messages.Base>(new Tuple<Base, BaseStatus>(b, b.LastStatus));
 					msgBases.Add(mb);
 				}
 				string serialisedText = JsonConvert.SerializeObject(msgBases);
@@ -94,7 +71,7 @@ namespace AgendaSignalR.Infrastructure
 			string msg = Encoding.ASCII.GetString(buffer);
 			try
 			{
-				//{"Text":"{\"BaseId\":\"0ca407e1-5575-462c-9019-80643a9099e0\",\"BaseNumber\":\"1\",\"Name\":\"Home\",\"IsConnected\":true,\"IsPlugged\":false,\"IsCharging\":true,\"Battery\":10,\"HasBattery\":true,\"Radio\":55,\"Description\":\"Home Description\",\"UserId\":\"bee7b8af-c902-4771-89f8-969a3318cbdb\"}","MessagDateTime":"2018-08-23T13:10:58.6645939-04:00","IsIncoming":true,"UserId":"scampo@test.com","Type":1}
+				//{"Text":"{\"BaseId\":\"0ca407e1-5575-462c-9019-80643a9099e0\",\"BaseNumber\":\"1\",\"Name\":\"Home\",\"IsConnected\":true,\"IsPlugged\":false,\"IsCharging\":true,\"Battery\":50,\"HasBattery\":true,\"Radio\":95,\"Description\":\"Home Description\",\"UserId\":\"bee7b8af-c902-4771-89f8-969a3318cbdb\"}","MessagDateTime":"2018-08-23T13:10:58.6645939-04:00","IsIncoming":true,"UserId":"scampo@test.com","Type":1}
 
 				//{ "Text":"{\"CollarId\":\"68b73ced-1659-483c-929e-274a97706405\",\"HWId\":\"87654321\",\"Name\":\"Pepa\",\"IsConnected\":false,\"IsGPSConnected\":false,\"IsNotGPSConnected\":true,\"Battery\":0,\"Radio\":0,\"RadioPercentage\":\"0%\",\"Description\":null,\"UserId\":\"bee7b8af-c902-4771-89f8-969a3318cbdb\"}","MessagDateTime":"2018-08-23T13:33:00.5057737-04:00","IsIncoming":true,"UserId":"22","Type":2}
 
@@ -115,7 +92,7 @@ namespace AgendaSignalR.Infrastructure
 					Base @base = mapper.Map<Base>(b);
 					@base.LastStatus = mapper.Map<BaseStatus>(b);
 
-					@base.LastStatus.CreationDate = message.MessagDateTime;
+					@base.LastStatus.CreationDate = message.MessagDateTime; //or now?
 					@base.LastStatus.IsActive = true;
 					dbContext.Add(@base.LastStatus);
 
