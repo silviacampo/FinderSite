@@ -15,6 +15,9 @@ namespace webGDPR.ViewModels
 		public byte BaseNumber { get; set; }
 
 		public bool IsConnected { get; set; }
+
+		public string ConnectedTo { get; set; }
+
 		public bool IsPlugged { get; set; }
 
 		public bool IsNotPlugged { get { return !IsPlugged; } }

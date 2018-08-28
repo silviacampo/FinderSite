@@ -79,7 +79,7 @@ namespace AgendaSignalR.Infrastructure
 			string msg = Encoding.ASCII.GetString(buffer);
 			try
 			{
-				//{"Text":"{\"BaseId\":\"0ca407e1-5575-462c-9019-80643a9099e0\",\"BaseNumber\":\"1\",\"Name\":\"Home\",\"IsConnected\":true,\"IsPlugged\":false,\"IsCharging\":true,\"Battery\":50,\"HasBattery\":true,\"Radio\":95,\"Description\":\"Home Description\",\"UserId\":\"bee7b8af-c902-4771-89f8-969a3318cbdb\"}","MessagDateTime":"2018-08-23T13:10:58.6645939-04:00","IsIncoming":true,"UserId":"scampo@test.com","Type":1}
+				//{"Text":"{\"BaseId\":\"0ca407e1-5575-462c-9019-80643a9099e0\",\"BaseNumber\":\"1\",\"Name\":\"Home\",\"IsConnected\":true,\"ConnectedTo\":\"68b73ced-1659-483c-929e-274a97706405\",\"IsPlugged\":false,\"IsCharging\":true,\"Battery\":50,\"HasBattery\":true,\"Radio\":95,\"Description\":\"Home Description\",\"UserId\":\"bee7b8af-c902-4771-89f8-969a3318cbdb\"}","MessagDateTime":"2018-08-23T13:10:58.6645939-04:00","IsIncoming":true,"UserId":"scampo@test.com","Type":1}
 
 				//{ "Text":"{\"CollarId\":\"68b73ced-1659-483c-929e-274a97706405\",\"BaseNumber\":\"1\", \"CollarNumber\":\"1\",\"Name\":\"Pepa\",\"IsConnected\":true,\"IsGPSConnected\":true,\"Battery\":60,\"Radio\":40,\"Description\":null,\"UserId\":\"bee7b8af-c902-4771-89f8-969a3318cbdb\"}","MessagDateTime":"2018-08-23T13:33:00.5057737-04:00","IsIncoming":true,"UserId":"scampo@test.com","Type":2}
 
@@ -89,7 +89,9 @@ namespace AgendaSignalR.Infrastructure
 				if (message.Type == WSMessageType.Base)
 				{
 					webGDPR.Infrastructure.CustomWebSockets.Messages.Base b = JsonConvert.DeserializeObject<webGDPR.Infrastructure.CustomWebSockets.Messages.Base>(message.Text);
-
+					//if (b.ConnectedTo != userWebSocket.DeviceId) {
+					//	throw new Exception("Wrong Device Id");
+					//}
 					BaseStatus lastStatus = dbContext.BaseStatus.FirstOrDefault(f => f.BaseId == b.BaseId && f.IsActive == true);
 					if (lastStatus != null)
 					{

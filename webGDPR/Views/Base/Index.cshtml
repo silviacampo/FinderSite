@@ -37,6 +37,9 @@
 				@Html.DisplayNameFor(model => model.IsConnected)
 			</th>
 			<th>
+				@Html.DisplayNameFor(model => model.ConnectedTo)
+			</th>
+			<th>
 				@Html.DisplayNameFor(model => model.IsPlugged)
 			</th>
 			<th>
@@ -79,6 +82,9 @@
 			</td>
 			<td>
 				@Html.DisplayFor(modelItem => item.IsConnected)
+			</td>
+			<td>
+				@Html.DisplayFor(modelItem => item.ConnectedTo)
 			</td>
 			<td>
 				@Html.DisplayFor(modelItem => item.IsPlugged)
