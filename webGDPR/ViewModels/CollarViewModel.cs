@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using AgendaSignalR.Infrastructure;
 
 namespace webGDPR.ViewModels
 {
-    public class CollarViewModel
+	public class CollarViewModel
     {
 		public string CollarId { get; set; }
 
@@ -16,6 +14,11 @@ namespace webGDPR.ViewModels
 		public byte BaseNumber { get; set; }
 
 		public bool IsConnected { get; set; }
+		public string ConnectedTo { get; set; }
+
+		[ForeignKey("ConnectedTo")]
+		public Base BaseConnectedTo { get; set; }
+
 		public bool IsGPSConnected { get; set; }
 
 		public bool IsNotGPSConnected { get { return !IsGPSConnected; } }

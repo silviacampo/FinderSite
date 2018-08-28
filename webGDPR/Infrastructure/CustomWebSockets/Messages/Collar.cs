@@ -15,6 +15,8 @@ namespace webGDPR.Infrastructure.CustomWebSockets.Messages
 		public byte BaseNumber { get; set; }
 
 		public bool IsConnected { get; set; }
+		public string ConnectedTo { get; set; }
+
 		public bool IsGPSConnected { get; set; }
 
 		[JsonIgnore]

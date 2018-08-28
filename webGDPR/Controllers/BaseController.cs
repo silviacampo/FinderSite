@@ -38,10 +38,14 @@ namespace webGDPR.Controllers
 			List<BaseViewModel> model = new List<BaseViewModel>();
 			string UserId = _context.User.FirstOrDefault(u => u.OwnerID == _userManager.GetUserId(User)).UserID;
 
-			List<Base> bases = await _context.Base.AsNoTracking().Where(b => b.UserId == UserId).Include(b => b.LastStatus).ToListAsync();
+			List<Base> bases = await _context.Base.AsNoTracking().Where(b => b.UserId == UserId).Include(b => b.LastStatus).ThenInclude(c=>c.DeviceConnectedTo).ToListAsync();
 			foreach (var b in bases)
 			{
 				BaseViewModel mb = _mapper.Map<BaseViewModel>(new Tuple<Base, BaseStatus>(b, b.LastStatus));
+				if (b.LastStatus != null)
+				{
+					mb.DeviceConnectedTo = b.LastStatus.DeviceConnectedTo;
+				}
 				model.Add(mb);
 			}
 

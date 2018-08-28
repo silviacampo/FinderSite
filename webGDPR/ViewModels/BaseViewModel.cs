@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using webGDPR.Models;
 
 namespace webGDPR.ViewModels
 {
-    public class BaseViewModel
+	public class BaseViewModel
     {
 		public string BaseId { get; set; }
 
@@ -17,6 +15,9 @@ namespace webGDPR.ViewModels
 		public bool IsConnected { get; set; }
 
 		public string ConnectedTo { get; set; }
+
+		[ForeignKey("ConnectedTo")]
+		public Device DeviceConnectedTo { get; set; }
 
 		public bool IsPlugged { get; set; }
 

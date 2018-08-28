@@ -39,6 +39,7 @@ namespace webGDPR.Infrastructure
 			CreateMap<CustomWebSockets.Messages.Base, Models.BaseStatus>()
 				.ForMember(dest => dest.BaseId, opts => opts.MapFrom(src => src.BaseId))
 				.ForMember(dest => dest.IsConnected, opts => opts.MapFrom(src => src.IsConnected))
+				.ForMember(dest => dest.ConnectedTo, opts => opts.MapFrom(src => src.ConnectedTo))
 				.ForMember(dest => dest.IsPlugged, opts => opts.MapFrom(src => src.IsPlugged))
 				.ForMember(dest => dest.IsCharging, opts => opts.MapFrom(src => src.IsCharging))
 				.ForMember(dest => dest.Battery, opts => opts.MapFrom(src => src.Battery))
@@ -57,6 +58,7 @@ namespace webGDPR.Infrastructure
 				.ForMember(dest => dest.Description, opts => opts.MapFrom(src => src.Item1.Description))
 				.ForMember(dest => dest.UserId, opts => opts.MapFrom(src => src.Item1.UserId))
 				.ForMember(dest => dest.IsConnected, opts => opts.MapFrom(src => src.Item2.IsConnected))
+				.ForMember(dest => dest.ConnectedTo, opts => opts.MapFrom(src => src.Item2.ConnectedTo))
 				.ForMember(dest => dest.IsGPSConnected, opts => opts.MapFrom(src => src.Item2.IsGPSConnected))
 				.ForMember(dest => dest.Battery, opts => opts.MapFrom(src => src.Item2.Battery))
 				.ForMember(dest => dest.Radio, opts => opts.MapFrom(src => src.Item2.Radio));
@@ -74,6 +76,7 @@ namespace webGDPR.Infrastructure
 			CreateMap<CustomWebSockets.Messages.Collar, Models.CollarStatus>()
 				.ForMember(dest => dest.CollarId, opts => opts.MapFrom(src => src.CollarId))
 				.ForMember(dest => dest.IsConnected, opts => opts.MapFrom(src => src.IsConnected))
+				.ForMember(dest => dest.ConnectedTo, opts => opts.MapFrom(src => src.ConnectedTo))
 				.ForMember(dest => dest.IsGPSConnected, opts => opts.MapFrom(src => src.IsGPSConnected))
 				.ForMember(dest => dest.Battery, opts => opts.MapFrom(src => src.Battery))
 				.ForMember(dest => dest.Radio, opts => opts.MapFrom(src => src.Radio));
@@ -129,6 +132,7 @@ namespace webGDPR.Infrastructure
 				.ForMember(dest => dest.Description, opts => opts.MapFrom(src => src.Item1.Description))
 				.ForMember(dest => dest.UserId, opts => opts.MapFrom(src => src.Item1.UserId))
 				.ForMember(dest => dest.IsConnected, opts => opts.MapFrom(src => src.Item2.IsConnected))
+				.ForMember(dest => dest.ConnectedTo, opts => opts.MapFrom(src => src.Item2.ConnectedTo))
 				.ForMember(dest => dest.IsGPSConnected, opts => opts.MapFrom(src => src.Item2.IsGPSConnected))
 				.ForMember(dest => dest.Battery, opts => opts.MapFrom(src => src.Item2.Battery))
 				.ForMember(dest => dest.Radio, opts => opts.MapFrom(src => src.Item2.Radio));
@@ -146,6 +150,7 @@ namespace webGDPR.Infrastructure
 			CreateMap<CollarViewModel, Models.CollarStatus>()
 				.ForMember(dest => dest.CollarId, opts => opts.MapFrom(src => src.CollarId))
 				.ForMember(dest => dest.IsConnected, opts => opts.MapFrom(src => src.IsConnected))
+				.ForMember(dest => dest.ConnectedTo, opts => opts.MapFrom(src => src.ConnectedTo))
 				.ForMember(dest => dest.IsGPSConnected, opts => opts.MapFrom(src => src.IsGPSConnected))
 				.ForMember(dest => dest.Battery, opts => opts.MapFrom(src => src.Battery))
 				.ForMember(dest => dest.Radio, opts => opts.MapFrom(src => src.Radio));

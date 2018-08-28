@@ -16,6 +16,8 @@ namespace AgendaSignalR.Infrastructure
 {
 	public class CustomWebSocketMessageHandler : ICustomWebSocketMessageHandler
 	{
+		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
 		public async Task SendInitialMessages(CustomWebSocket userWebSocket, ApplicationDbContext dbContext, IMapper mapper)
 		{
 			try
@@ -81,7 +83,7 @@ namespace AgendaSignalR.Infrastructure
 			{
 				//{"Text":"{\"BaseId\":\"0ca407e1-5575-462c-9019-80643a9099e0\",\"BaseNumber\":\"1\",\"Name\":\"Home\",\"IsConnected\":true,\"ConnectedTo\":\"68b73ced-1659-483c-929e-274a97706405\",\"IsPlugged\":false,\"IsCharging\":true,\"Battery\":50,\"HasBattery\":true,\"Radio\":95,\"Description\":\"Home Description\",\"UserId\":\"bee7b8af-c902-4771-89f8-969a3318cbdb\"}","MessagDateTime":"2018-08-23T13:10:58.6645939-04:00","IsIncoming":true,"UserId":"scampo@test.com","Type":1}
 
-				//{ "Text":"{\"CollarId\":\"68b73ced-1659-483c-929e-274a97706405\",\"BaseNumber\":\"1\", \"CollarNumber\":\"1\",\"Name\":\"Pepa\",\"IsConnected\":true,\"IsGPSConnected\":true,\"Battery\":60,\"Radio\":40,\"Description\":null,\"UserId\":\"bee7b8af-c902-4771-89f8-969a3318cbdb\"}","MessagDateTime":"2018-08-23T13:33:00.5057737-04:00","IsIncoming":true,"UserId":"scampo@test.com","Type":2}
+				//{ "Text":"{\"CollarId\":\"68b73ced-1659-483c-929e-274a97706405\",\"BaseNumber\":\"1\", \"CollarNumber\":\"1\",\"Name\":\"Pepa\",\"IsConnected\":true,\"ConnectedTo\":\"0ca407e1-5575-462c-9019-80643a9099e0\",\"IsGPSConnected\":true,\"Battery\":60,\"Radio\":40,\"Description\":null,\"UserId\":\"bee7b8af-c902-4771-89f8-969a3318cbdb\"}","MessagDateTime":"2018-08-23T13:33:00.5057737-04:00","IsIncoming":true,"UserId":"scampo@test.com","Type":2}
 
 				//{ "Text":"{\"DeviceId\":\"68b73ced-1659-483c-929e-274a97706405\",\"Name\":\"Silvia's Phone\",\"Model\":\"Nexus 5\",\"Manufacturer\":\"LG\",\"Type\":\"Phone\",\"Platform\":\"Android\",\"UserId\":\"bee7b8af-c902-4771-89f8-969a3318cbdb\"}","MessagDateTime":"2018-08-23T13:33:00.5057737-04:00","UserId":"scampo@test.com","Type":5}
 
@@ -89,9 +91,10 @@ namespace AgendaSignalR.Infrastructure
 				if (message.Type == WSMessageType.Base)
 				{
 					webGDPR.Infrastructure.CustomWebSockets.Messages.Base b = JsonConvert.DeserializeObject<webGDPR.Infrastructure.CustomWebSockets.Messages.Base>(message.Text);
-					//if (b.ConnectedTo != userWebSocket.DeviceId) {
-					//	throw new Exception("Wrong Device Id");
-					//}
+					if (!string.IsNullOrEmpty(userWebSocket.DeviceId) && b.ConnectedTo != userWebSocket.DeviceId) {
+						log.Error("Wrong Device Id sending:" + message.Text);
+						throw new Exception("Wrong Device Id");
+					}
 					BaseStatus lastStatus = dbContext.BaseStatus.FirstOrDefault(f => f.BaseId == b.BaseId && f.IsActive == true);
 					if (lastStatus != null)
 					{

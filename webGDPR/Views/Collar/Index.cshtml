@@ -31,17 +31,20 @@
 				@Html.DisplayNameFor(model => model.Description)
 			</th>
 			<th>
-			@Html.DisplayNameFor(model => model.IsConnected)
-		</th>
-		<th>
-			@Html.DisplayNameFor(model => model.IsGPSConnected)
-		</th>
-		<th>
-			@Html.DisplayNameFor(model => model.Battery)
-		</th>
-		<th>
-			@Html.DisplayNameFor(model => model.Radio)
-		</th>
+				@Html.DisplayNameFor(model => model.IsConnected)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.ConnectedTo)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.IsGPSConnected)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Battery)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Radio)
+			</th>
 
 			@*<th>
 			@Html.DisplayNameFor(model => model.UserId)
@@ -69,17 +72,20 @@
 				@Html.DisplayFor(modelItem => item.Description)
 			</td>
 			<td>
-			@Html.DisplayFor(modelItem => item.IsConnected)
-		</td>
-		<td>
-			@Html.DisplayFor(modelItem => item.IsGPSConnected)
-		</td>
-		<td>
-			@Html.DisplayFor(modelItem => item.Battery)
-		</td>
-		<td>
-			@Html.DisplayFor(modelItem => item.Radio)
-		</td>
+				@Html.DisplayFor(modelItem => item.IsConnected)
+			</td>
+			<td>
+				@Html.DisplayFor(modelItem => item.ConnectedTo)
+			</td>
+			<td>
+				@Html.DisplayFor(modelItem => item.IsGPSConnected)
+			</td>
+			<td>
+				@Html.DisplayFor(modelItem => item.Battery)
+			</td>
+			<td>
+				@Html.DisplayFor(modelItem => item.Radio)
+			</td>
 			@*<td>
 			@Html.DisplayFor(modelItem => item.UserId)
 		</td>

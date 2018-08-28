@@ -14,6 +14,8 @@ namespace webGDPR.Models
 		public bool IsActive { get; set; }
 
 		public bool IsConnected { get; set; }
+		public string ConnectedTo { get; set; }
+
 		public bool IsGPSConnected { get; set; }
 
 		public bool IsNotGPSConnected { get { return !IsGPSConnected; } }

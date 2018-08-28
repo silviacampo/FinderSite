@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 using AgendaSignalR.Infrastructure;
@@ -16,6 +17,9 @@ namespace webGDPR.Models
 
 		public bool IsConnected { get; set; }
 		public string ConnectedTo { get; set; }
+
+		[ForeignKey("ConnectedTo")]
+		public Device DeviceConnectedTo { get; set; }
 
 		public bool IsPlugged { get; set; }
 

@@ -84,7 +84,9 @@
 				@Html.DisplayFor(modelItem => item.IsConnected)
 			</td>
 			<td>
-				@Html.DisplayFor(modelItem => item.ConnectedTo)
+				@if (item.DeviceConnectedTo != null) {
+					@Html.DisplayFor(modelItem => item.DeviceConnectedTo.AliasName)
+				}
 			</td>
 			<td>
 				@Html.DisplayFor(modelItem => item.IsPlugged)
