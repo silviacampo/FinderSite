@@ -10,7 +10,7 @@ catch (err) {
 
 $('#rootwizard').bootstrapWizard({
   onNext: function (tab, navigation, index) {
-    if (index == 2) {
+    if (index == 1) {
       // Make sure we entered the name
       if (!$('#name').val()) {
         alert('You must enter your name');

@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using AgendaSignalR.Infrastructure;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -86,6 +87,39 @@ namespace webGDPR.Areas.Identity.Pages.Account
 			ReturnUrl = returnUrl;
         }
 
+		private async Task InitializeClient(ApplicationUser user) {
+			User u = new Models.User
+			{
+				Email = user.Email,
+				Name = user.Name,
+				OwnerID = user.Id
+			};
+			_context.Add(u);
+
+			Base b = new Base
+			{
+				HWId = Input.BaseHWId,
+				UserId = u.UserID,
+				Name = Base.InitialName,
+				Description = Base.InitialDescription,
+				BaseNumber = Base.InitialNumber
+			};
+			_context.Add(b);
+
+			Collar c = new Collar
+			{
+				HWId = Input.CollarHWId,
+				UserId = u.UserID,
+				Name = Collar.InitialName,
+				Description = Collar.InitialDescription,
+				BaseNumber = Base.InitialNumber,
+				CollarNumber = Collar.InitialNumber
+			};
+			_context.Add(c);
+
+			await _context.SaveChangesAsync();
+		}
+
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl = returnUrl ?? Url.Content("~/");
@@ -100,15 +134,7 @@ namespace webGDPR.Areas.Identity.Pages.Account
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
-					User u = new Models.User
-					{
-						Email = user.Email,
-						Name = user.Name,
-						OwnerID = user.Id
-					};
-
-					_context.User.Add(u);
-					await _context.SaveChangesAsync();
+					await InitializeClient(user);
 
 					_logger.LogInformation("User created a new account with password.");
 

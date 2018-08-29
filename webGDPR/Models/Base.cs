@@ -6,6 +6,10 @@ namespace AgendaSignalR.Infrastructure
 {
 	public class Base
 	{
+		public const string InitialName = "Base 1";
+		public const int InitialNumber = 1;
+		public const string InitialDescription = "";
+
 		public string BaseId { get; set; }
 		public byte BaseNumber { get; set; } //id by client
 

@@ -5,6 +5,10 @@ namespace AgendaSignalR.Infrastructure
 {
 	public class Collar
 	{
+		public const string InitialName = "Collar 1";
+		public const int InitialNumber = 1;
+		public const string InitialDescription = "";
+
 		public string CollarId { get; set; }
 		public string HWId { get; set; }
 		public string Name { get; set; }
