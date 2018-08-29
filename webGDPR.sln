@@ -3,7 +3,12 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "webGDPR", "webGDPR\webGDPR.csproj", "{EDA69850-415B-45F3-B225-69CFCFBC82EE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "webGDPR", "webGDPR\webGDPR.csproj", "{EDA69850-415B-45F3-B225-69CFCFBC82EE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0D06BBD4-33F4-4431-96EB-16EEBA50EE14}"
+	ProjectSection(SolutionItems) = preProject
+		aspnet-webGDPR-7F1CE4F2-FB4F-4BF6-AED4-088E89D28C3C.bak = aspnet-webGDPR-7F1CE4F2-FB4F-4BF6-AED4-088E89D28C3C.bak
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

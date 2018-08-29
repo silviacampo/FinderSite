@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using webGDPR.Data;
+using webGDPR.Models;
 
 namespace webGDPR.Areas.Identity.Pages.Account
 {
@@ -18,18 +19,21 @@ namespace webGDPR.Areas.Identity.Pages.Account
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly ILogger<RegisterModel> _logger;
+		private readonly ApplicationDbContext _context;
+		private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
 
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
-            ILogger<RegisterModel> logger,
+			ApplicationDbContext context,
+			ILogger<RegisterModel> logger,
             IEmailSender emailSender)
         {
             _userManager = userManager;
             _signInManager = signInManager;
-            _logger = logger;
+			_context = context;
+			_logger = logger;
             _emailSender = emailSender;
         }
 
@@ -96,7 +100,17 @@ namespace webGDPR.Areas.Identity.Pages.Account
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
-                    _logger.LogInformation("User created a new account with password.");
+					User u = new Models.User
+					{
+						Email = user.Email,
+						Name = user.Name,
+						OwnerID = user.Id
+					};
+
+					_context.User.Add(u);
+					await _context.SaveChangesAsync();
+
+					_logger.LogInformation("User created a new account with password.");
 
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     var callbackUrl = Url.Page(

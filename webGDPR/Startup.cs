@@ -60,6 +60,7 @@ namespace webGDPR
 			}).SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
 			services.AddScoped<HostFilter>();
+			services.AddSingleton<IEmailConfiguration>(Configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>());
 			services.AddTransient<IEmailSender, EmailSender>();
 
 			// Authorization handlers.

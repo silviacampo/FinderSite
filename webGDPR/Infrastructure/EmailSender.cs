@@ -1,17 +1,55 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.UI.Services;
-using Microsoft.Extensions.Options;
+using MimeKit;
+using MimeKit.Text;
+using MailKit.Net.Smtp;
 
 namespace webGDPR.Infrastructure
 {
 	public class EmailSender : IEmailSender
 	{
-		public Task SendEmailAsync(string email, string subject, string htmlMessage)
+		private readonly IEmailConfiguration _emailConfiguration;
+
+		public EmailSender(IEmailConfiguration emailConfiguration)
 		{
-			throw new NotImplementedException();
+			_emailConfiguration = emailConfiguration;
+		}
+
+		public async Task SendEmailAsync(string email, string subject, string htmlMessage)
+		{
+			var message = new MimeMessage();
+			message.From.Add(new MailboxAddress(_emailConfiguration.SmtpUsername, _emailConfiguration.SmtpUsername));
+			message.To.Add(new MailboxAddress(email, email));
+			message.Subject = subject;
+			message.Body = new TextPart(TextFormat.Html)
+			{
+				Text = htmlMessage
+			};
+
+			using (var emailClient = new SmtpClient())
+			{
+				try
+				{
+					emailClient.Connect(_emailConfiguration.SmtpServer, _emailConfiguration.SmtpPort, MailKit.Security.SecureSocketOptions.StartTlsWhenAvailable);
+
+					emailClient.AuthenticationMechanisms.Remove("XOAUTH2");
+
+					emailClient.Authenticate(_emailConfiguration.SmtpUsername, _emailConfiguration.SmtpPassword);
+
+					await emailClient.SendAsync(message);
+
+				}
+				catch (Exception e)
+				{
+					throw new Exception();
+				}
+				finally
+				{
+					emailClient.Disconnect(true);
+				}
+			}			
 		}
 	}
 }
