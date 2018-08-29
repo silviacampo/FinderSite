@@ -59,15 +59,20 @@ namespace webGDPR.Controllers
                 return NotFound();
             }
 
-            var collar = await _context.Collar
-                .FirstOrDefaultAsync(m => m.CollarId == id);
+            var collar = await _context.Collar.Include(b => b.LastStatus).ThenInclude(c => c.BaseConnectedTo).FirstOrDefaultAsync(m => m.CollarId == id);
             if (collar == null)
             {
                 return NotFound();
             }
 
-            return View(collar);
-        }
+			CollarViewModel model = _mapper.Map<CollarViewModel>(new Tuple<Collar, CollarStatus>(collar, collar.LastStatus));
+			if (collar.LastStatus != null)
+			{
+				model.BaseConnectedTo = collar.LastStatus.BaseConnectedTo;
+			}
+
+			return View(model);
+		}
 
         // GET: Collar/Create
         public IActionResult Create()
@@ -166,20 +171,25 @@ namespace webGDPR.Controllers
         // GET: Collar/Delete/5
         public async Task<IActionResult> Delete(string id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+			if (id == null)
+			{
+				return NotFound();
+			}
 
-            var collar = await _context.Collar
-                .FirstOrDefaultAsync(m => m.CollarId == id);
-            if (collar == null)
-            {
-                return NotFound();
-            }
+			var collar = await _context.Collar.Include(b => b.LastStatus).ThenInclude(c => c.BaseConnectedTo).FirstOrDefaultAsync(m => m.CollarId == id);
+			if (collar == null)
+			{
+				return NotFound();
+			}
 
-            return View(collar);
-        }
+			CollarViewModel model = _mapper.Map<CollarViewModel>(new Tuple<Collar, CollarStatus>(collar, collar.LastStatus));
+			if (collar.LastStatus != null)
+			{
+				model.BaseConnectedTo = collar.LastStatus.BaseConnectedTo;
+			}
+
+			return View(model);
+		}
 
         // POST: Collar/Delete/5
         [HttpPost, ActionName("Delete")]
