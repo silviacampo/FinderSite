@@ -23,6 +23,11 @@ namespace webGDPR.Controllers
 			return View("AddFileIndex");
         }
 
+		public IActionResult CreateAccountWizard()
+		{
+			return View();
+		}
+
 		[HttpPost]
 		public FileStreamResult AddFileIndex(IList<IFormFile> files)
 		{
