@@ -1,26 +1,51 @@
 //dotnet aspnet-codegenerator controller -name PetController -async -m webGDPR.Models.Pet -dc webGDPR.Data.ApplicationDbContext -namespace webGDPR.Controllers -outDir Controllers
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using webGDPR.Data;
 using webGDPR.Models;
+using webGDPR.ViewModels;
 
 namespace webGDPR.Controllers
 {
+	[Authorize]
 	public class PetController : Controller
     {
         private readonly ApplicationDbContext _context;
+		UserManager<ApplicationUser> _userManager;
+		IMapper _mapper;
 
-        public PetController(ApplicationDbContext context)
+		public PetController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IMapper mapper)
         {
             _context = context;
-        }
+			_userManager = userManager;
+			_mapper = mapper;
+		}
 
         // GET: Pet
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Pet.ToListAsync());
+			List<PetViewModel> model = new List<PetViewModel>();
+			string UserId = _context.User.FirstOrDefault(u => u.OwnerID == _userManager.GetUserId(User)).UserID;
+
+			List<Pet> pets = await _context.Pet.AsNoTracking().Where(b => b.UserId == UserId).Include(c=>c.LastTrackingInfo).Include(b => b.LastCollar).ThenInclude(c => c.Collar).ToListAsync();
+			foreach (var c in pets)
+			{
+				PetViewModel cvm = _mapper.Map<PetViewModel>(new Tuple<Pet, PetTrackingInfo>(c, c.LastTrackingInfo));
+				if (c.LastCollar != null)
+				{
+					cvm.CollarName = c.LastCollar.Collar.Name;
+				}
+				model.Add(cvm);
+			}
+
+			return View(model);
         }
 
         // GET: Pet/Details/5
@@ -52,11 +77,13 @@ namespace webGDPR.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("PetId,Name,Type,Breeding,Color,Age,HealthComments,ImageFileName,PageFileName,UserId")] Pet pet)
+        public async Task<IActionResult> Create([Bind("PetId,Name,Type,Breeding,Color,Age,HealthComments,ImageFileName,PageFileName")] Pet pet)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(pet);
+				pet.UserId = _context.User.FirstOrDefault(u => u.OwnerID == _userManager.GetUserId(User)).UserID;
+
+				_context.Add(pet);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
@@ -95,7 +122,10 @@ namespace webGDPR.Controllers
             {
                 try
                 {
-                    _context.Update(pet);
+					var found = await _context.Pet.AsNoTracking().FirstAsync(c => c.PetId == id);
+					pet.UserId = found.UserId;
+
+					_context.Update(pet);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)

@@ -17,60 +17,83 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Type" class="control-label"></label>
-                <input asp-for="Type" class="form-control" />
-                <span asp-validation-for="Type" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Breeding" class="control-label"></label>
-                <input asp-for="Breeding" class="form-control" />
-                <span asp-validation-for="Breeding" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Color" class="control-label"></label>
-                <input asp-for="Color" class="form-control" />
-                <span asp-validation-for="Color" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Age" class="control-label"></label>
-                <input asp-for="Age" class="form-control" />
-                <span asp-validation-for="Age" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="HealthComments" class="control-label"></label>
-                <input asp-for="HealthComments" class="form-control" />
-                <span asp-validation-for="HealthComments" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ImageFileName" class="control-label"></label>
-                <input asp-for="ImageFileName" class="form-control" />
-                <span asp-validation-for="ImageFileName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="PageFileName" class="control-label"></label>
-                <input asp-for="PageFileName" class="form-control" />
-                <span asp-validation-for="PageFileName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="UserId" class="control-label"></label>
-                <input asp-for="UserId" class="form-control" />
-                <span asp-validation-for="UserId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-default" />
-            </div>
-        </form>
+		<form asp-action="Create">
+			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+			<div class="form-group">
+				<label asp-for="Name" class="control-label"></label>
+				<input asp-for="Name" class="form-control" />
+				<span asp-validation-for="Name" class="text-danger"></span>
+			</div>		
+			<div class="form-group">
+				<label asp-for="Type" class="control-label"></label>
+				<input asp-for="Type" class="form-control" />
+				<span asp-validation-for="Type" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="Breeding" class="control-label"></label>
+				<input asp-for="Breeding" class="form-control" />
+				<span asp-validation-for="Breeding" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="Color" class="control-label"></label>
+				<input asp-for="Color" class="form-control" />
+				<span asp-validation-for="Color" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="Age" class="control-label"></label>
+				<input asp-for="Age" class="form-control" />
+				<span asp-validation-for="Age" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="HealthComments" class="control-label"></label>
+				<input asp-for="HealthComments" class="form-control" />
+				<span asp-validation-for="HealthComments" class="text-danger"></span>
+			</div>
+			@*<div class="form-group">
+			<label asp-for="UserId" class="control-label"></label>
+			<input asp-for="UserId" class="form-control" />
+			<span asp-validation-for="UserId" class="text-danger"></span>
+		</div>*@
+			<div class="form-group">
+				<input type="submit" value="Create" class="btn btn-default" />
+			</div>
+		</form>
     </div>
-</div>
 
+	<div class="col-md-4">
+		@*<div class="form-group">
+			<label asp-for="ImageFileName" class="control-label"></label>
+			<input asp-for="ImageFileName" class="form-control" />
+			<span asp-validation-for="ImageFileName" class="text-danger"></span>
+		</div>*@
+
+		@*<div class="form-group">
+			<label asp-for="PageFileName" class="control-label"></label>
+			<input asp-for="PageFileName" class="form-control" />
+			<span asp-validation-for="PageFileName" class="text-danger"></span>
+		</div>*@
+		<form action="/Home/AddFileIndex" method="post" enctype="multipart/form-data">
+			<div class="form-group">
+				<label asp-for="ImageFileName" class="control-label"></label>
+				<input type="file" multiple="multiple" name="files" asp-for="ImageFileName" class="form-control" />
+				<span asp-validation-for="ImageFileName" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<input type="submit" value="Add" class="btn btn-default" />
+			</div>
+		</form>
+		<form action="/Home/AddPageIndex" method="post">			
+			<div class="form-group">
+				<label asp-for="PageFileName" class="control-label"></label>
+				@Html.TextAreaFor(c => Model.PageFileName, new { @id = "FullDescription", @class = "form-control", @rows = "200" })
+				<span asp-validation-for="PageFileName" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<input type="submit" value="Save" class="btn btn-default" />
+			</div>
+		</form>
+	</div>
+</div>
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
