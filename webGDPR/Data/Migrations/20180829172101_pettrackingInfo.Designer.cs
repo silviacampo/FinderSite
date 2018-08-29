@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using webGDPR.Data;
 
 namespace webGDPR.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180829172101_pettrackingInfo")]
+    partial class pettrackingInfo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -345,10 +347,6 @@ namespace webGDPR.Data.Migrations
 
                     b.Property<string>("ImageFileName");
 
-                    b.Property<string>("LastCollarId");
-
-                    b.Property<string>("LastTrackingInfoId");
-
                     b.Property<string>("Name");
 
                     b.Property<string>("PageFileName");
@@ -358,10 +356,6 @@ namespace webGDPR.Data.Migrations
                     b.Property<string>("UserId");
 
                     b.HasKey("PetId");
-
-                    b.HasIndex("LastCollarId");
-
-                    b.HasIndex("LastTrackingInfoId");
 
                     b.ToTable("Pet");
                 });
@@ -386,10 +380,6 @@ namespace webGDPR.Data.Migrations
                     b.Property<string>("UserId");
 
                     b.HasKey("PetCollarId");
-
-                    b.HasIndex("CollarId");
-
-                    b.HasIndex("PetId");
 
                     b.ToTable("PetCollar");
                 });
@@ -526,28 +516,6 @@ namespace webGDPR.Data.Migrations
                     b.HasOne("AgendaSignalR.Infrastructure.Base", "BaseConnectedTo")
                         .WithMany()
                         .HasForeignKey("ConnectedTo");
-                });
-
-            modelBuilder.Entity("webGDPR.Models.Pet", b =>
-                {
-                    b.HasOne("webGDPR.Models.PetCollar", "LastCollar")
-                        .WithMany()
-                        .HasForeignKey("LastCollarId");
-
-                    b.HasOne("webGDPR.Models.PetTrackingInfo", "LastTrackingInfo")
-                        .WithMany()
-                        .HasForeignKey("LastTrackingInfoId");
-                });
-
-            modelBuilder.Entity("webGDPR.Models.PetCollar", b =>
-                {
-                    b.HasOne("AgendaSignalR.Infrastructure.Collar", "Collar")
-                        .WithMany()
-                        .HasForeignKey("CollarId");
-
-                    b.HasOne("webGDPR.Models.Pet", "Pet")
-                        .WithMany()
-                        .HasForeignKey("PetId");
                 });
 #pragma warning restore 612, 618
         }

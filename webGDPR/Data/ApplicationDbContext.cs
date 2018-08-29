@@ -18,5 +18,8 @@ namespace webGDPR.Data
 		public DbSet<Collar> Collar { get; set; }
 		public DbSet<CollarStatus> CollarStatus { get; set; }
 		public DbSet<Device> Device { get; set; }
+		public DbSet<Pet> Pet { get; set; }
+		public DbSet<PetCollar> PetCollar { get; set; }
+		public DbSet<PetTrackingInfo> PetTrackingInfo { get; set; }
 	}
 }

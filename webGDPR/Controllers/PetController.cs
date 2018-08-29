@@ -1,42 +1,29 @@
-//dotnet aspnet-codegenerator controller -name DeviceController -async -m webGDPR.Models.Device -dc webGDPR.Data.ApplicationDbContext -namespace webGDPR.Controllers -outDir Controllers
-
-using System;
-using System.Collections.Generic;
+//dotnet aspnet-codegenerator controller -name PetController -async -m webGDPR.Models.Pet -dc webGDPR.Data.ApplicationDbContext -namespace webGDPR.Controllers -outDir Controllers
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using webGDPR.Data;
 using webGDPR.Models;
 
 namespace webGDPR.Controllers
 {
-	[Authorize]
-	public class DeviceController : Controller
+	public class PetController : Controller
     {
         private readonly ApplicationDbContext _context;
-		UserManager<ApplicationUser> _userManager;
-		IMapper _mapper;
 
-		public DeviceController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IMapper mapper)
+        public PetController(ApplicationDbContext context)
         {
             _context = context;
-			_userManager = userManager;
-			_mapper = mapper;
-		}
-
-        // GET: Device
-        public async Task<IActionResult> Index()
-        {
-
-            return View(await _context.Device.ToListAsync());
         }
 
-        // GET: Device/Details/5
+        // GET: Pet
+        public async Task<IActionResult> Index()
+        {
+            return View(await _context.Pet.ToListAsync());
+        }
+
+        // GET: Pet/Details/5
         public async Task<IActionResult> Details(string id)
         {
             if (id == null)
@@ -44,39 +31,39 @@ namespace webGDPR.Controllers
                 return NotFound();
             }
 
-            var device = await _context.Device
-                .FirstOrDefaultAsync(m => m.DeviceId == id);
-            if (device == null)
+            var pet = await _context.Pet
+                .FirstOrDefaultAsync(m => m.PetId == id);
+            if (pet == null)
             {
                 return NotFound();
             }
 
-            return View(device);
+            return View(pet);
         }
 
-        // GET: Device/Create
+        // GET: Pet/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Device/Create
+        // POST: Pet/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("DeviceId,Type,Platform,Name,Model,Manufacturer,OSVersion,AliasName,UserId")] Device device)
+        public async Task<IActionResult> Create([Bind("PetId,Name,Type,Breeding,Color,Age,HealthComments,ImageFileName,PageFileName,UserId")] Pet pet)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(device);
+                _context.Add(pet);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(device);
+            return View(pet);
         }
 
-        // GET: Device/Edit/5
+        // GET: Pet/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
@@ -84,22 +71,22 @@ namespace webGDPR.Controllers
                 return NotFound();
             }
 
-            var device = await _context.Device.FindAsync(id);
-            if (device == null)
+            var pet = await _context.Pet.FindAsync(id);
+            if (pet == null)
             {
                 return NotFound();
             }
-            return View(device);
+            return View(pet);
         }
 
-        // POST: Device/Edit/5
+        // POST: Pet/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("DeviceId,Type,Platform,Name,Model,Manufacturer,OSVersion,AliasName,UserId")] Device device)
+        public async Task<IActionResult> Edit(string id, [Bind("PetId,Name,Type,Breeding,Color,Age,HealthComments,ImageFileName,PageFileName,UserId")] Pet pet)
         {
-            if (id != device.DeviceId)
+            if (id != pet.PetId)
             {
                 return NotFound();
             }
@@ -108,12 +95,12 @@ namespace webGDPR.Controllers
             {
                 try
                 {
-                    _context.Update(device);
+                    _context.Update(pet);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!DeviceExists(device.DeviceId))
+                    if (!PetExists(pet.PetId))
                     {
                         return NotFound();
                     }
@@ -124,10 +111,10 @@ namespace webGDPR.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(device);
+            return View(pet);
         }
 
-        // GET: Device/Delete/5
+        // GET: Pet/Delete/5
         public async Task<IActionResult> Delete(string id)
         {
             if (id == null)
@@ -135,30 +122,30 @@ namespace webGDPR.Controllers
                 return NotFound();
             }
 
-            var device = await _context.Device
-                .FirstOrDefaultAsync(m => m.DeviceId == id);
-            if (device == null)
+            var pet = await _context.Pet
+                .FirstOrDefaultAsync(m => m.PetId == id);
+            if (pet == null)
             {
                 return NotFound();
             }
 
-            return View(device);
+            return View(pet);
         }
 
-        // POST: Device/Delete/5
+        // POST: Pet/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            var device = await _context.Device.FindAsync(id);
-            _context.Device.Remove(device);
+            var pet = await _context.Pet.FindAsync(id);
+            _context.Pet.Remove(pet);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool DeviceExists(string id)
+        private bool PetExists(string id)
         {
-            return _context.Device.Any(e => e.DeviceId == id);
+            return _context.Pet.Any(e => e.PetId == id);
         }
     }
 }
