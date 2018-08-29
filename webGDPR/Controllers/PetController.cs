@@ -1,14 +1,18 @@
 //dotnet aspnet-codegenerator controller -name PetController -async -m webGDPR.Models.Pet -dc webGDPR.Data.ApplicationDbContext -namespace webGDPR.Controllers -outDir Controllers
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using webGDPR.Data;
+using webGDPR.Infrastructure;
 using webGDPR.Models;
 using webGDPR.ViewModels;
 
@@ -20,6 +24,9 @@ namespace webGDPR.Controllers
         private readonly ApplicationDbContext _context;
 		UserManager<ApplicationUser> _userManager;
 		IMapper _mapper;
+
+		private const string petImageDir = @"wwwroot\\images\\{UserId}\\{PetId}";
+		private const string petPageDir = @"wwwroot\html\{UserId}\{PetId}";
 
 		public PetController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IMapper mapper)
         {
@@ -77,15 +84,43 @@ namespace webGDPR.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("PetId,Name,Type,Breeding,Color,Age,HealthComments,ImageFileName,PageFileName")] Pet pet)
+        public async Task<IActionResult> Create([Bind("PetId,Name,Type,Breeding,Color,Age,HealthComments,ImageFileName,PageFileName")] Pet pet, IList<IFormFile> imagesFiles, string pageContent)
         {
             if (ModelState.IsValid)
             {
 				pet.UserId = _context.User.FirstOrDefault(u => u.OwnerID == _userManager.GetUserId(User)).UserID;
-
 				_context.Add(pet);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+
+				foreach (IFormFile file in imagesFiles)
+				{
+					using (Image img = Image.FromStream(file.OpenReadStream()))
+					{
+						Stream ms = new MemoryStream(img.Resize().ToByteArray());
+						var imgpath = Path.Combine(Directory.GetCurrentDirectory(), $"wwwroot\\images\\{pet.UserId}\\{pet.PetId}", file.FileName);
+
+						if (!Directory.Exists(Path.GetDirectoryName(imgpath)))
+							Directory.CreateDirectory(Path.GetDirectoryName(imgpath));
+
+						if (System.IO.File.Exists((imgpath)))
+						{
+							System.IO.File.Delete(imgpath);
+						}
+
+						img.Resize().Save(imgpath);
+					}
+				}
+				var htmlpath = Path.Combine(Directory.GetCurrentDirectory(), $"wwwroot\\html\\{pet.UserId}\\{pet.PetId}.html");
+				if (!Directory.Exists(Path.GetDirectoryName(htmlpath)))
+					Directory.CreateDirectory(Path.GetDirectoryName(htmlpath));
+
+				if (System.IO.File.Exists((htmlpath)))
+				{
+					System.IO.File.Delete(htmlpath);
+				}
+				System.IO.File.WriteAllText(htmlpath, pageContent);
+
+				return RedirectToAction(nameof(Index));
             }
             return View(pet);
         }
@@ -173,7 +208,36 @@ namespace webGDPR.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool PetExists(string id)
+		[HttpPost]
+		public FileStreamResult UploadImages(string PetId, IList<IFormFile> files)
+		{
+			FileStreamResult result = null;
+			foreach (IFormFile file in files)
+			{
+				using (Image img = Image.FromStream(file.OpenReadStream()))
+				{
+					Stream ms = new MemoryStream(img.Resize().ToByteArray());
+					string UserId = _context.User.FirstOrDefault(u => u.OwnerID == _userManager.GetUserId(User)).UserID;
+					var path = Path.Combine(Directory.GetCurrentDirectory(), $"wwwroot\\images\\{UserId}\\{PetId}", file.FileName);
+
+					if (!Directory.Exists(Path.GetDirectoryName(path)))
+						Directory.CreateDirectory(Path.GetDirectoryName(path));
+
+					if (System.IO.File.Exists((path)))
+					{
+						System.IO.File.Delete(path);
+					}
+
+					img.Resize().Save(path);
+
+					result = new FileStreamResult(ms, "image/jpg");
+				}
+			}
+			return result;
+		}
+
+
+		private bool PetExists(string id)
         {
             return _context.Pet.Any(e => e.PetId == id);
         }
