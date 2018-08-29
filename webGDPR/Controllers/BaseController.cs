@@ -60,13 +60,19 @@ namespace webGDPR.Controllers
                 return NotFound();
             }
 
-            var @base = await _context.Base.FirstOrDefaultAsync(m => m.BaseId == id);
+            var @base = await _context.Base.Include(b => b.LastStatus).ThenInclude(c => c.DeviceConnectedTo).FirstOrDefaultAsync(m => m.BaseId == id);
             if (@base == null)
             {
                 return NotFound();
             }
 
-            return View(@base);
+			BaseViewModel model = _mapper.Map<BaseViewModel>(new Tuple<Base, BaseStatus>(@base, @base.LastStatus));
+			if (@base.LastStatus != null)
+			{
+				model.DeviceConnectedTo = @base.LastStatus.DeviceConnectedTo;
+			}
+
+			return View(model);
         }
 
         // GET: Base/Create
@@ -156,20 +162,26 @@ namespace webGDPR.Controllers
         // GET: Base/Delete/5
         public async Task<IActionResult> Delete(string id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+			if (id == null)
+			{
+				return NotFound();
+			}
 
-            var @base = await _context.Base
-                .FirstOrDefaultAsync(m => m.BaseId == id);
-            if (@base == null)
-            {
-                return NotFound();
-            }
+			var @base = await _context.Base.Include(b => b.LastStatus).ThenInclude(c => c.DeviceConnectedTo).FirstOrDefaultAsync(m => m.BaseId == id);
+			if (@base == null)
+			{
+				return NotFound();
+			}
 
-            return View(@base);
-        }
+			BaseViewModel model = _mapper.Map<BaseViewModel>(new Tuple<Base, BaseStatus>(@base, @base.LastStatus));
+			if (@base.LastStatus != null)
+			{
+				model.DeviceConnectedTo = @base.LastStatus.DeviceConnectedTo;
+			}
+
+			return View(model);
+
+		}
 
         // POST: Base/Delete/5
         [HttpPost, ActionName("Delete")]

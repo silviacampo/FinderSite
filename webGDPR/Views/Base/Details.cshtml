@@ -1,93 +1,102 @@
-@model AgendaSignalR.Infrastructure.Base
+@model webGDPR.ViewModels.BaseViewModel
 
 @{
-   // Layout = null;
+	// Layout = null;
 }
 
 <!DOCTYPE html>
 
 <html>
 <head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Details</title>
+	<meta name="viewport" content="width=device-width" />
+	<title>Details</title>
 </head>
 <body>
 
-<div>
-    <h4>Base</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.HWId)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.HWId)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        @*<dt>
-            @Html.DisplayNameFor(model => model.IsConnected)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.IsConnected)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.IsPlugged)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.IsPlugged)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.IsCharging)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.IsCharging)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Battery)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Battery)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.HasBattery)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.HasBattery)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Radio)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Radio)
-        </dd>*@
-        <dt>
-            @Html.DisplayNameFor(model => model.Text)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Text)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        @*<dt>
-            @Html.DisplayNameFor(model => model.UserId)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.UserId)
-        </dd>*@
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.BaseId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+	<div>
+		<h4>Base</h4>
+		<hr />
+		<dl class="dl-horizontal">
+			<dt>
+				@Html.DisplayNameFor(model => model.HWId)
+			</dt>
+			<dd>
+				@Html.DisplayFor(model => model.HWId)
+			</dd>
+			<dt>
+				@Html.DisplayNameFor(model => model.Name)
+			</dt>
+			<dd>
+				@Html.DisplayFor(model => model.Name)
+			</dd>
+			<dt>
+				@Html.DisplayNameFor(model => model.Text)
+			</dt>
+			<dd>
+				@Html.DisplayFor(model => model.Text)
+			</dd>
+			<dt>
+				@Html.DisplayNameFor(model => model.Description)
+			</dt>
+			<dd>
+				@Html.DisplayFor(model => model.Description)
+			</dd>
+			<dt>
+				@Html.DisplayNameFor(model => model.IsConnected)
+			</dt>
+			<dd>
+				@Html.DisplayFor(model => model.IsConnected)
+			</dd>
+			<dt>
+				@Html.DisplayNameFor(model => model.ConnectedTo)
+			</dt>
+			<dd>
+				@if (Model.DeviceConnectedTo != null)
+				{
+					@Html.DisplayFor(model => model.DeviceConnectedTo.AliasName)
+				}
+			</dd>
+			<dt>
+				@Html.DisplayNameFor(model => model.IsPlugged)
+			</dt>
+			<dd>
+				@Html.DisplayFor(model => model.IsPlugged)
+			</dd>
+			<dt>
+				@Html.DisplayNameFor(model => model.IsCharging)
+			</dt>
+			<dd>
+				@Html.DisplayFor(model => model.IsCharging)
+			</dd>
+			<dt>
+				@Html.DisplayNameFor(model => model.Battery)
+			</dt>
+			<dd>
+				@Html.DisplayFor(model => model.Battery)
+			</dd>
+			<dt>
+				@Html.DisplayNameFor(model => model.HasBattery)
+			</dt>
+			<dd>
+				@Html.DisplayFor(model => model.HasBattery)
+			</dd>
+			<dt>
+				@Html.DisplayNameFor(model => model.Radio)
+			</dt>
+			<dd>
+				@Html.DisplayFor(model => model.Radio)
+			</dd>
+			@*<dt>
+					@Html.DisplayNameFor(model => model.UserId)
+				</dt>
+				<dd>
+					@Html.DisplayFor(model => model.UserId)
+				</dd>*@
+		</dl>
+	</div>
+	<div>
+		<a asp-action="Edit" asp-route-id="@Model.BaseId">Edit</a> |
+		<a asp-action="Index">Back to List</a>
+	</div>
 </body>
 </html>
