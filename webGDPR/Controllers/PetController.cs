@@ -92,33 +92,7 @@ namespace webGDPR.Controllers
 				_context.Add(pet);
                 await _context.SaveChangesAsync();
 
-				foreach (IFormFile file in imagesFiles)
-				{
-					using (Image img = Image.FromStream(file.OpenReadStream()))
-					{
-						Stream ms = new MemoryStream(img.Resize().ToByteArray());
-						var imgpath = Path.Combine(Directory.GetCurrentDirectory(), $"wwwroot\\images\\{pet.UserId}\\{pet.PetId}", file.FileName);
-
-						if (!Directory.Exists(Path.GetDirectoryName(imgpath)))
-							Directory.CreateDirectory(Path.GetDirectoryName(imgpath));
-
-						if (System.IO.File.Exists((imgpath)))
-						{
-							System.IO.File.Delete(imgpath);
-						}
-
-						img.Resize().Save(imgpath);
-					}
-				}
-				var htmlpath = Path.Combine(Directory.GetCurrentDirectory(), $"wwwroot\\html\\{pet.UserId}\\{pet.PetId}.html");
-				if (!Directory.Exists(Path.GetDirectoryName(htmlpath)))
-					Directory.CreateDirectory(Path.GetDirectoryName(htmlpath));
-
-				if (System.IO.File.Exists((htmlpath)))
-				{
-					System.IO.File.Delete(htmlpath);
-				}
-				System.IO.File.WriteAllText(htmlpath, pageContent);
+				SaveFiles(pet, imagesFiles, pageContent);
 
 				return RedirectToAction(nameof(Index));
             }
@@ -146,7 +120,7 @@ namespace webGDPR.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("PetId,Name,Type,Breeding,Color,Age,HealthComments,ImageFileName,PageFileName,UserId")] Pet pet)
+        public async Task<IActionResult> Edit(string id, [Bind("PetId,Name,Type,Breeding,Color,Age,HealthComments,ImageFileName,PageFileName")] Pet pet, IList<IFormFile> imagesFiles, string pageContent)
         {
             if (id != pet.PetId)
             {
@@ -162,7 +136,9 @@ namespace webGDPR.Controllers
 
 					_context.Update(pet);
                     await _context.SaveChangesAsync();
-                }
+
+					SaveFiles(pet, imagesFiles, pageContent);
+				}
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!PetExists(pet.PetId))
@@ -241,5 +217,36 @@ namespace webGDPR.Controllers
         {
             return _context.Pet.Any(e => e.PetId == id);
         }
-    }
+
+		private void SaveFiles(Pet pet, IList<IFormFile> imagesFiles, string pageContent) {
+			foreach (IFormFile file in imagesFiles)
+			{
+				using (Image img = Image.FromStream(file.OpenReadStream()))
+				{
+					Stream ms = new MemoryStream(img.Resize().ToByteArray());
+					var imgpath = Path.Combine(Directory.GetCurrentDirectory(), $"wwwroot\\images\\{pet.UserId}\\{pet.PetId}", file.FileName);
+
+					if (!Directory.Exists(Path.GetDirectoryName(imgpath)))
+						Directory.CreateDirectory(Path.GetDirectoryName(imgpath));
+
+					if (System.IO.File.Exists((imgpath)))
+					{
+						System.IO.File.Delete(imgpath);
+					}
+
+					img.Resize().Save(imgpath);
+				}
+			}
+			var htmlpath = Path.Combine(Directory.GetCurrentDirectory(), $"wwwroot\\html\\{pet.UserId}\\{pet.PetId}.html");
+			if (!Directory.Exists(Path.GetDirectoryName(htmlpath)))
+				Directory.CreateDirectory(Path.GetDirectoryName(htmlpath));
+
+			if (System.IO.File.Exists((htmlpath)))
+			{
+				System.IO.File.Delete(htmlpath);
+			}
+			System.IO.File.WriteAllTextAsync(htmlpath, pageContent);
+		}
+
+	}
 }
