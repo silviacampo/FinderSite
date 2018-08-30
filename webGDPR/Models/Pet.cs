@@ -8,6 +8,8 @@ namespace webGDPR.Models
 {
     public class Pet
     {
+		public const string InitialName = "Pet 1";
+
 		public string PetId { get; set; }
 		public string Name { get; set; }
 		public string Type { get; set; }

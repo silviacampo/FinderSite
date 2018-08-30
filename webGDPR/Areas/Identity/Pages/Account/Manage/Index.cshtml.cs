@@ -43,10 +43,10 @@ namespace webGDPR.Areas.Identity.Pages.Account.Manage
 			[Display(Name = "Full name")]
 			public string Name { get; set; }
 
-			[Required]
-			[Range(0, 199, ErrorMessage = "Age must be between 0 and 199 years")]
-			[Display(Name = "Age")]
-			public int Age { get; set; }
+			//[Required]
+			//[Range(0, 199, ErrorMessage = "Age must be between 0 and 199 years")]
+			//[Display(Name = "Age")]
+			//public int Age { get; set; }
 
 			[Required]
             [EmailAddress]
@@ -74,7 +74,7 @@ namespace webGDPR.Areas.Identity.Pages.Account.Manage
             Input = new InputModel
             {
 				Name = user.Name,
-				Age = user.Age,
+				//Age = user.Age,
 				Email = email,
                 PhoneNumber = phoneNumber
             };
@@ -113,10 +113,10 @@ namespace webGDPR.Areas.Identity.Pages.Account.Manage
 				user.Name = Input.Name;
 			}
 
-			if (Input.Age != user.Age)
-			{
-				user.Age = Input.Age;
-			}
+			//if (Input.Age != user.Age)
+			//{
+			//	user.Age = Input.Age;
+			//}
 
 			var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
             if (Input.PhoneNumber != phoneNumber)

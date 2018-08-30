@@ -50,10 +50,10 @@ namespace webGDPR.Pages.Shared
 			[Display(Name = "Full name")]
 			public string Name { get; set; }
 
-			[Required]
-			[Range(0, 199, ErrorMessage = "Age must be between 0 and 199 years")]
-			[Display(Name = "Age")]
-			public string Age { get; set; }
+			//[Required]
+			//[Range(0, 199, ErrorMessage = "Age must be between 0 and 199 years")]
+			//[Display(Name = "Age")]
+			//public string Age { get; set; }
 
 			[Required]
             [EmailAddress]
@@ -128,7 +128,7 @@ namespace webGDPR.Pages.Shared
                 var user = new ApplicationUser
 				{
 					Name = Input.Name,
-					Age = Int32.Parse(Input.Age),
+					//Age = Int32.Parse(Input.Age),
 					UserName = Input.Email,
 					Email = Input.Email };
                 var result = await _userManager.CreateAsync(user, Input.Password);

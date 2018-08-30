@@ -17,11 +17,11 @@
 				<input asp-for="Input.Name" class="form-control" />
 				<span asp-validation-for="Input.Name" class="text-danger"></span>
 			</div>
-			<div class="form-group">
+			@*<div class="form-group">
 				<label asp-for="Input.Age"></label>
 				<input asp-for="Input.Age" class="form-control" />
 				<span asp-validation-for="Input.Age" class="text-danger"></span>
-			</div>
+			</div>*@
 			<div class="form-group">
 				<label asp-for="Input.Email"></label>
 				<input asp-for="Input.Email" class="form-control" />
@@ -47,10 +47,11 @@
 				<input asp-for="Input.CollarHWId" class="form-control" />
 				<span asp-validation-for="Input.CollarHWId" class="text-danger"></span>
 			</div>
-
-
-			@Html.TextAreaFor(c => Model.Input.Name, new { @id = "FullDescription", @class = "form-control", @rows = "200" })
-
+			<div class="form-group">
+				<label asp-for="Input.PetName"></label>
+				<input asp-for="Input.PetName" class="form-control" />
+				<span asp-validation-for="Input.PetName" class="text-danger"></span>
+			</div>
 			<button type="submit" class="btn btn-default">Register</button>
 		</form>
     </div>

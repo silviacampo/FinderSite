@@ -30,11 +30,15 @@
 				<a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">@ViewData["Host"]</a>
             </div>
             <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
-                </ul>
+				<ul class="nav navbar-nav">
+					<li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
+					<li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
+					<li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
+					<li><a asp-area="" asp-controller="Pet" asp-action="Index">Pets</a></li>
+					<li><a asp-area="" asp-controller="Collar" asp-action="Index">Collars</a></li>
+					<li><a asp-area="" asp-controller="Base" asp-action="Index">Bases</a></li>
+					<li><a asp-area="" asp-controller="Device" asp-action="Index">Devices</a></li>
+				</ul>
                 <partial name="_LoginPartial" />
             </div>
         </div>

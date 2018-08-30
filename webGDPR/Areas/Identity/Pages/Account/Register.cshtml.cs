@@ -50,14 +50,14 @@ namespace webGDPR.Areas.Identity.Pages.Account
 			[Display(Name = "Full name")]
 			public string Name { get; set; }
 
-			[Required]
-			[Range(0, 199, ErrorMessage = "Age must be between 0 and 199 years")]
-			[Display(Name = "Age")]
-			public string Age { get; set; }
+			//[Required]
+			//[Range(0, 199, ErrorMessage = "Age must be between 0 and 199 years")]
+			//[Display(Name = "Age")]
+			//public string Age { get; set; }
 
 			[Required]
             [EmailAddress]
-            [Display(Name = "Email")]
+            [Display(Name = "Email (To alert you about new phones connecting to your account)")]
             public string Email { get; set; }
 
             [Required]
@@ -73,13 +73,17 @@ namespace webGDPR.Areas.Identity.Pages.Account
 
 			[Required]
 			[DataType(DataType.Text)]
-			[Display(Name = "Base Code")]
+			[Display(Name = "Base Code (ie FB654321)")]
 			public string BaseHWId { get; set; }
 
 			[Required]
 			[DataType(DataType.Text)]
-			[Display(Name = "Collar Code")]
+			[Display(Name = "Collar Code (ie FC123456)")]
 			public string CollarHWId { get; set; }
+
+			[DataType(DataType.Text)]
+			[Display(Name = "Pet Name (Optional, default to Pet 1)")]
+			public string PetName { get; set; }
 		}
 
         public void OnGet(string returnUrl = null)
@@ -117,6 +121,28 @@ namespace webGDPR.Areas.Identity.Pages.Account
 			};
 			_context.Add(c);
 
+			Pet p = new Pet
+			{
+				Name = Input.PetName?? Pet.InitialName,
+				UserId = u.UserID
+			};
+			_context.Add(p);
+			await _context.SaveChangesAsync();
+
+			PetCollar pc = new PetCollar
+			{
+				PetId = p.PetId,
+				CollarId = c.CollarId,
+				StartDate = DateTime.Now,
+				CreationDate = DateTime.Now,
+				IsActive = true,
+				UserId = u.UserID
+			};
+			_context.Add(pc);
+
+			p.LastCollarId = pc.PetCollarId;
+			_context.Update(p);
+
 			await _context.SaveChangesAsync();
 		}
 
@@ -128,7 +154,7 @@ namespace webGDPR.Areas.Identity.Pages.Account
                 var user = new ApplicationUser
 				{
 					Name = Input.Name,
-					Age = Int32.Parse(Input.Age),
+					//Age = Int32.Parse(Input.Age),
 					UserName = Input.Email,
 					Email = Input.Email };
                 var result = await _userManager.CreateAsync(user, Input.Password);
