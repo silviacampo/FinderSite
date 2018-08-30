@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.WebSockets;
 using System.Text;
+using System.Text.Encodings.Web;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using webGDPR.Data;
@@ -76,7 +78,7 @@ namespace AgendaSignalR.Infrastructure
 			}
 		}
 
-		public async Task HandleMessage(WebSocketReceiveResult result, byte[] buffer, CustomWebSocket userWebSocket, ICustomWebSocketFactory wsFactory, ApplicationDbContext dbContext, IMapper mapper)
+		public async Task HandleMessage(WebSocketReceiveResult result, byte[] buffer, CustomWebSocket userWebSocket, ICustomWebSocketFactory wsFactory, ApplicationDbContext dbContext, IMapper mapper, IEmailSender emailSender)
 		{
 			string msg = Encoding.ASCII.GetString(buffer);
 			try
@@ -91,7 +93,8 @@ namespace AgendaSignalR.Infrastructure
 				if (message.Type == WSMessageType.Base)
 				{
 					webGDPR.Infrastructure.CustomWebSockets.Messages.Base b = JsonConvert.DeserializeObject<webGDPR.Infrastructure.CustomWebSockets.Messages.Base>(message.Text);
-					if (!string.IsNullOrEmpty(userWebSocket.DeviceId) && b.ConnectedTo != userWebSocket.DeviceId) {
+					if (!string.IsNullOrEmpty(userWebSocket.DeviceId) && b.ConnectedTo != userWebSocket.DeviceId)
+					{
 						log.Error("Wrong Device Id sending:" + message.Text);
 						throw new Exception("Wrong Device Id");
 					}
@@ -154,12 +157,20 @@ namespace AgendaSignalR.Infrastructure
 					else
 					{
 						dbContext.Add(d);
+						//notify someone
+						await emailSender.SendEmailAsync(message.UserId, "New Device is connecting to your account",
+							$"A new device {d.Model} - {d.Name} is connected to your accound. If this is not yours please, go <a href='https://'>here</a> to modify its access.");
 					}
 					await dbContext.SaveChangesAsync();
-					//notify someone
 					//return guid
 					userWebSocket.DeviceId = d.DeviceId;
 					await SendDeviceInformation(userWebSocket, d);
+				}
+				else if (message.Type == WSMessageType.LastGPS) {
+
+				}
+				else if (message.Type == WSMessageType.TrackingInfo) {
+
 				}
 			}
 			catch (Exception e)

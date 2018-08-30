@@ -6,6 +6,7 @@ using AgendaSignalR.Infrastructure;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using webGDPR.Data;
 
 namespace webGDPR.Infrastructure
@@ -19,7 +20,7 @@ namespace webGDPR.Infrastructure
 			_next = next;
 		}
 
-		public async Task Invoke(HttpContext context, ICustomWebSocketFactory wsFactory, ICustomWebSocketMessageHandler wsmHandler, SignInManager<ApplicationUser> signInManager, ApplicationDbContext dbContext, IMapper mapper)
+		public async Task Invoke(HttpContext context, ICustomWebSocketFactory wsFactory, ICustomWebSocketMessageHandler wsmHandler, SignInManager<ApplicationUser> signInManager, ApplicationDbContext dbContext, IMapper mapper, IEmailSender emailSender)
 		{
 			if (context.Request.Path == "/ws")
 			{
@@ -43,7 +44,7 @@ namespace webGDPR.Infrastructure
 							};
 							wsFactory.Add(userWebSocket);
 							await wsmHandler.SendInitialMessages(userWebSocket, dbContext, mapper);
-							await Listen(context, userWebSocket, wsFactory, wsmHandler,dbContext, mapper);
+							await Listen(context, userWebSocket, wsFactory, wsmHandler,dbContext, mapper, emailSender);
 						}
 						//log sthing
 					}
@@ -57,14 +58,14 @@ namespace webGDPR.Infrastructure
 			await _next(context);
 		}
 
-		private async Task Listen(HttpContext context, CustomWebSocket userWebSocket, ICustomWebSocketFactory wsFactory, ICustomWebSocketMessageHandler wsmHandler, ApplicationDbContext dbContext, IMapper mapper)
+		private async Task Listen(HttpContext context, CustomWebSocket userWebSocket, ICustomWebSocketFactory wsFactory, ICustomWebSocketMessageHandler wsmHandler, ApplicationDbContext dbContext, IMapper mapper, IEmailSender emailSender)
 		{
 			WebSocket webSocket = userWebSocket.WebSocket;
 			var buffer = new byte[1024 * 4];
 			WebSocketReceiveResult result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
 			while (!result.CloseStatus.HasValue)
 			{
-				await wsmHandler.HandleMessage(result, buffer, userWebSocket, wsFactory, dbContext, mapper);
+				await wsmHandler.HandleMessage(result, buffer, userWebSocket, wsFactory, dbContext, mapper, emailSender);
 
 				buffer = new byte[1024 * 4];
 				result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);

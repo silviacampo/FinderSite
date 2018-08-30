@@ -27,6 +27,8 @@ namespace AgendaSignalR.Infrastructure
 		Collar,
 		Bases,
 		Collars,
-		Device
+		Device,
+		LastGPS,
+		TrackingInfo
 	}
 }
