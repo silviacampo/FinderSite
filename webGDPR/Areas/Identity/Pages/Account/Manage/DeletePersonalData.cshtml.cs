@@ -1,5 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -14,16 +16,19 @@ namespace webGDPR.Areas.Identity.Pages.Account.Manage
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ILogger<DeletePersonalDataModel> _logger;
+		private readonly ApplicationDbContext _context;
 
-        public DeletePersonalDataModel(
+		public DeletePersonalDataModel(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
-            ILogger<DeletePersonalDataModel> logger)
+            ILogger<DeletePersonalDataModel> logger, 
+			ApplicationDbContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
-        }
+			_context = context;
+		}
 
         [BindProperty]
         public InputModel Input { get; set; }
@@ -49,7 +54,29 @@ namespace webGDPR.Areas.Identity.Pages.Account.Manage
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync()
+		private async Task EndClient(ApplicationUser user) {
+			string UserId = _context.User.FirstOrDefault(u => u.OwnerID == _userManager.GetUserId(User)).UserID;
+
+			var userpath = Path.Combine(Directory.GetCurrentDirectory(), $"wwwroot\\user\\{UserId}");
+			if (Directory.Exists(Path.GetDirectoryName(userpath))) {
+				Directory.Delete(userpath);
+			}
+
+				_context.Remove(_context.PetTrackingInfo.Find(UserId));
+			_context.Remove(_context.PetCollar.Find(UserId));
+			_context.Remove(_context.Pet.Find(UserId));
+			_context.Remove(_context.CollarStatus.Find(UserId));
+			_context.Remove(_context.BaseStatus.Find(UserId));
+			_context.Remove(_context.Collar.Find(UserId));
+			_context.Remove(_context.Base.Find(UserId));
+			_context.Remove(_context.Device.Find(UserId));
+			_context.Remove(_context.User.Find(UserId));
+
+			await _context.SaveChangesAsync();
+		}
+
+
+		public async Task<IActionResult> OnPostAsync()
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
@@ -66,8 +93,9 @@ namespace webGDPR.Areas.Identity.Pages.Account.Manage
                     return Page();
                 }
             }
-
-            var result = await _userManager.DeleteAsync(user);
+			//TODO: test delete all the other tables and files too
+			await EndClient(user);
+			var result = await _userManager.DeleteAsync(user);
             var userId = await _userManager.GetUserIdAsync(user);
             if (!result.Succeeded)
             {
