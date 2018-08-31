@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -23,16 +24,18 @@ namespace webGDPR.Controllers
     {
         private readonly ApplicationDbContext _context;
 		UserManager<ApplicationUser> _userManager;
+		private readonly IHostingEnvironment _hostingEnvironment;
 		IMapper _mapper;
 
 		private const string petImageDir = @"wwwroot\\images\\{UserId}\\{PetId}";
 		private const string petPageDir = @"wwwroot\html\{UserId}\{PetId}";
 
-		public PetController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IMapper mapper)
+		public PetController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IMapper mapper, IHostingEnvironment hostingEnvironment)
         {
             _context = context;
 			_userManager = userManager;
 			_mapper = mapper;
+			_hostingEnvironment = hostingEnvironment;
 		}
 
         // GET: Pet
@@ -112,7 +115,9 @@ namespace webGDPR.Controllers
             {
                 return NotFound();
             }
-            return View(pet);
+			Tuple<string, List<string>> files = await ReadFiles(pet);
+
+			return View(pet);
         }
 
         // POST: Pet/Edit/5
@@ -218,13 +223,36 @@ namespace webGDPR.Controllers
             return _context.Pet.Any(e => e.PetId == id);
         }
 
+		private async Task<Tuple<string, List<string>>> ReadFiles(Pet pet)
+		{
+			List<string> imagesFilenames = new List<string>();
+			string pageContent = string.Empty;
+
+			var imgpath = Path.Combine(Directory.GetCurrentDirectory(), $"wwwroot\\user\\{pet.UserId}\\{pet.PetId}\\images");
+			if (Directory.Exists(Path.GetDirectoryName(imgpath))) {
+				DirectoryInfo d = new DirectoryInfo(imgpath);
+				FileInfo[] Files = d.GetFiles();
+				foreach (FileInfo file in Files)
+				{
+				 imagesFilenames.Add(Path.Combine(_hostingEnvironment.WebRootPath, $"wwwroot\\user\\{pet.UserId}\\{pet.PetId}\\images", file.Name));
+				}
+			}
+			
+			var htmlpath = Path.Combine(Directory.GetCurrentDirectory(), $"wwwroot\\user\\{pet.UserId}\\{pet.PetId}\\pages\\profile.html");
+			if (System.IO.File.Exists((htmlpath)))
+			{
+			 pageContent = await	System.IO.File.ReadAllTextAsync(htmlpath); 
+			}
+			return new Tuple<string, List<string>>(pageContent, imagesFilenames);
+		}
+
 		private void SaveFiles(Pet pet, IList<IFormFile> imagesFiles, string pageContent) {
 			foreach (IFormFile file in imagesFiles)
 			{
 				using (Image img = Image.FromStream(file.OpenReadStream()))
 				{
 					Stream ms = new MemoryStream(img.Resize().ToByteArray());
-					var imgpath = Path.Combine(Directory.GetCurrentDirectory(), $"wwwroot\\images\\{pet.UserId}\\{pet.PetId}", file.FileName);
+					var imgpath = Path.Combine(Directory.GetCurrentDirectory(), $"wwwroot\\user\\{pet.UserId}\\{pet.PetId}\\images", file.FileName);
 
 					if (!Directory.Exists(Path.GetDirectoryName(imgpath)))
 						Directory.CreateDirectory(Path.GetDirectoryName(imgpath));
@@ -237,7 +265,7 @@ namespace webGDPR.Controllers
 					img.Resize().Save(imgpath);
 				}
 			}
-			var htmlpath = Path.Combine(Directory.GetCurrentDirectory(), $"wwwroot\\html\\{pet.UserId}\\{pet.PetId}.html");
+			var htmlpath = Path.Combine(Directory.GetCurrentDirectory(), $"wwwroot\\user\\{pet.UserId}\\{pet.PetId}\\pages\\profile.html");
 			if (!Directory.Exists(Path.GetDirectoryName(htmlpath)))
 				Directory.CreateDirectory(Path.GetDirectoryName(htmlpath));
 
