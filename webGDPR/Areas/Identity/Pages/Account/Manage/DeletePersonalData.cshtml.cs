@@ -62,7 +62,7 @@ namespace webGDPR.Areas.Identity.Pages.Account.Manage
 				Directory.Delete(userpath);
 			}
 
-				_context.Remove(_context.PetTrackingInfo.Find(UserId));
+			_context.Remove(_context.PetTrackingInfo.Find(UserId));
 			_context.Remove(_context.PetCollar.Find(UserId));
 			_context.Remove(_context.Pet.Find(UserId));
 			_context.Remove(_context.CollarStatus.Find(UserId));
