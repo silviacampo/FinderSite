@@ -116,7 +116,8 @@ namespace webGDPR.Controllers
                 return NotFound();
             }
 			Tuple<string, List<string>> files = await ReadFiles(pet);
-
+			ViewData["pageContent"] = files.Item1;
+			ViewData["imagesFilenames"] = files.Item2;
 			return View(pet);
         }
 
@@ -234,7 +235,7 @@ namespace webGDPR.Controllers
 				FileInfo[] Files = d.GetFiles();
 				foreach (FileInfo file in Files)
 				{
-				 imagesFilenames.Add(Path.Combine(_hostingEnvironment.WebRootPath, $"wwwroot\\user\\{pet.UserId}\\{pet.PetId}\\images", file.Name));
+				 imagesFilenames.Add(Request.Scheme + "://"+ Request.Host + $"/user/{pet.UserId}/{pet.PetId}/images/{file.Name}");
 				}
 			}
 			
