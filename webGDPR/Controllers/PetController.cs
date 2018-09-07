@@ -5,6 +5,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using AgendaSignalR.Infrastructure;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
@@ -26,16 +27,20 @@ namespace webGDPR.Controllers
 		UserManager<ApplicationUser> _userManager;
 		private readonly IHostingEnvironment _hostingEnvironment;
 		IMapper _mapper;
+		ICustomWebSocketMessageHandler _webSocketMessageHandler;
+		ICustomWebSocketFactory _wsFactory;
 
 		private const string petImageDir = @"wwwroot\\images\\{UserId}\\{PetId}";
 		private const string petPageDir = @"wwwroot\html\{UserId}\{PetId}";
 
-		public PetController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IMapper mapper, IHostingEnvironment hostingEnvironment)
-        {
+		public PetController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IMapper mapper, IHostingEnvironment hostingEnvironment, ICustomWebSocketMessageHandler webSocketMessageHandler, ICustomWebSocketFactory wsFactory)
+		{
             _context = context;
 			_userManager = userManager;
 			_mapper = mapper;
 			_hostingEnvironment = hostingEnvironment;
+			_webSocketMessageHandler = webSocketMessageHandler;
+			_wsFactory = wsFactory;
 		}
 
         // GET: Pet
