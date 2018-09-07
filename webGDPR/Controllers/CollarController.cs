@@ -23,12 +23,16 @@ namespace webGDPR.Controllers
         private readonly ApplicationDbContext _context;
 		UserManager<ApplicationUser> _userManager;
 		IMapper _mapper;
+		ICustomWebSocketMessageHandler _webSocketMessageHandler;
+		ICustomWebSocketFactory _wsFactory;
 
-		public CollarController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IMapper mapper)
+		public CollarController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IMapper mapper, ICustomWebSocketMessageHandler webSocketMessageHandler, ICustomWebSocketFactory wsFactory)
 		{
             _context = context;
 			_userManager = userManager;
 			_mapper = mapper;
+			_webSocketMessageHandler = webSocketMessageHandler;
+			_wsFactory = wsFactory;
 		}
 
         // GET: Collar
@@ -108,7 +112,9 @@ namespace webGDPR.Controllers
 				}
 				_context.Add(collar);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+				//send message to connected devices
+				await _webSocketMessageHandler.SendCollarAsync(collar, _userManager.GetUserName(User), _wsFactory);
+				return RedirectToAction(nameof(Index));
             }
             return View(collar);
         }
@@ -151,8 +157,10 @@ namespace webGDPR.Controllers
 					collar.BaseNumber = found.BaseNumber;
 					_context.Update(collar);
                     await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
+					//send message to connected devices
+					await _webSocketMessageHandler.SendCollarAsync(collar, _userManager.GetUserName(User), _wsFactory);
+				}
+				catch (DbUpdateConcurrencyException)
                 {
                     if (!CollarExists(collar.CollarId))
                     {
@@ -199,7 +207,9 @@ namespace webGDPR.Controllers
             var collar = await _context.Collar.FindAsync(id);
             _context.Collar.Remove(collar);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+			//send message to connected devices
+			await _webSocketMessageHandler.SendDeletedCollarAsync(collar.CollarNumber, _userManager.GetUserName(User), _wsFactory);
+			return RedirectToAction(nameof(Index));
         }
 
         private bool CollarExists(string id)

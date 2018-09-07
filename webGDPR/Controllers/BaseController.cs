@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using AgendaSignalR.Infrastructure;
 using webGDPR.Data;
@@ -23,14 +22,18 @@ namespace webGDPR.Controllers
         private readonly ApplicationDbContext _context;
 		UserManager<ApplicationUser> _userManager;
 		IMapper _mapper;
+		ICustomWebSocketMessageHandler _webSocketMessageHandler;
+		ICustomWebSocketFactory _wsFactory;
 
 
-		public BaseController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IMapper mapper)
+		public BaseController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IMapper mapper, ICustomWebSocketMessageHandler webSocketMessageHandler,ICustomWebSocketFactory wsFactory)
         {
             _context = context;
 			_userManager = userManager;
 			_mapper = mapper;
-        }
+			_webSocketMessageHandler = webSocketMessageHandler;
+			_wsFactory = wsFactory;
+		}
 
         // GET: Base
         public async Task<IActionResult> Index()
@@ -100,6 +103,8 @@ namespace webGDPR.Controllers
 				}
 				_context.Add(@base);
                 await _context.SaveChangesAsync();
+				//send message to connected devices
+				await _webSocketMessageHandler.SendBaseAsync(@base, _userManager.GetUserName(User), _wsFactory);
                 return RedirectToAction(nameof(Index));
             }
             return View(@base);
@@ -142,8 +147,10 @@ namespace webGDPR.Controllers
 					@base.BaseNumber = found.BaseNumber;
 					_context.Update(@base);
                     await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
+					//send message to connected devices
+					await _webSocketMessageHandler.SendBaseAsync(@base, _userManager.GetUserName(User), _wsFactory);
+				}
+				catch (DbUpdateConcurrencyException)
                 {
                     if (!BaseExists(@base.BaseId))
                     {
@@ -191,7 +198,9 @@ namespace webGDPR.Controllers
             var @base = await _context.Base.FindAsync(id);
             _context.Base.Remove(@base);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+			//send message to connected devices
+			await _webSocketMessageHandler.SendDeletedBaseAsync(@base.BaseNumber, _userManager.GetUserName(User), _wsFactory);
+			return RedirectToAction(nameof(Index));
         }
 
         private bool BaseExists(string id)
