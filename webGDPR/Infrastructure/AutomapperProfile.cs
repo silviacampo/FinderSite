@@ -47,6 +47,14 @@ namespace webGDPR.Infrastructure
 				.ForMember(dest => dest.Radio, opts => opts.MapFrom(src => src.Radio));
 
 			CreateMap<CustomWebSockets.Messages.Base, Models.BaseStatus>().ReverseMap();
+
+			CreateMap<AgendaSignalR.Infrastructure.Base, CustomWebSockets.Messages.BaseCore>()
+				.ForMember(dest => dest.BaseId, opts => opts.MapFrom(src => src.BaseId))
+				.ForMember(dest => dest.UserId, opts => opts.MapFrom(src => src.UserId))
+				.ForMember(dest => dest.HWId, opts => opts.MapFrom(src => src.HWId))
+				.ForMember(dest => dest.BaseNumber, opts => opts.MapFrom(src => src.BaseNumber))
+				.ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.Name))
+				.ForMember(dest => dest.Description, opts => opts.MapFrom(src => src.Description));
 			#endregion
 
 			#region Collar

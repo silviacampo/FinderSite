@@ -31,6 +31,8 @@ namespace AgendaSignalR.Infrastructure
 		LastGPS,
 		TrackingInfo,
 		DeletedBase,
-		DeletedCollar
+		DeletedCollar,
+		BaseCore,
+		CollarCore
 	}
 }

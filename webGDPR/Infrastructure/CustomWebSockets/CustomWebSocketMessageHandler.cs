@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using webGDPR.Data;
+//using webGDPR.Infrastructure.CustomWebSockets.Messages;
 using webGDPR.Models;
 
 namespace AgendaSignalR.Infrastructure
@@ -233,13 +234,13 @@ namespace AgendaSignalR.Infrastructure
 			}
 		}
 
-		public async Task SendBaseAsync(Base c, string username, ICustomWebSocketFactory wsFactory)
+		public async Task SendBaseAsync(webGDPR.Infrastructure.CustomWebSockets.Messages.BaseCore c, string username, ICustomWebSocketFactory wsFactory)
 		{
 			string serialisedText = JsonConvert.SerializeObject(c);
 			var msg = new CustomWebSocketMessage
 			{
 				MessagDateTime = DateTime.Now,
-				Type = WSMessageType.Base,
+				Type = WSMessageType.BaseCore,
 				Text = serialisedText,
 				UserId = CustomWebSocketMessage.SystemUserId
 			};
@@ -265,13 +266,13 @@ namespace AgendaSignalR.Infrastructure
 			await BroadcastGroup(bytes, username, wsFactory);
 		}
 
-		public async Task SendCollarAsync(Collar collar, string username, ICustomWebSocketFactory wsFactory)
+		public async Task SendCollarAsync(webGDPR.Infrastructure.CustomWebSockets.Messages.CollarCore collar, string username, ICustomWebSocketFactory wsFactory)
 		{
 			string serialisedText = JsonConvert.SerializeObject(collar);
 			var msg = new CustomWebSocketMessage
 			{
 				MessagDateTime = DateTime.Now,
-				Type = WSMessageType.Collar,
+				Type = WSMessageType.CollarCore,
 				Text = serialisedText,
 				UserId = CustomWebSocketMessage.SystemUserId
 			};

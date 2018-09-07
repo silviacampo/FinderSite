@@ -113,7 +113,8 @@ namespace webGDPR.Controllers
 				_context.Add(collar);
                 await _context.SaveChangesAsync();
 				//send message to connected devices
-				await _webSocketMessageHandler.SendCollarAsync(collar, _userManager.GetUserName(User), _wsFactory);
+				Infrastructure.CustomWebSockets.Messages.CollarCore cc = _mapper.Map<Infrastructure.CustomWebSockets.Messages.CollarCore>(collar);
+				await _webSocketMessageHandler.SendCollarAsync(cc, _userManager.GetUserName(User), _wsFactory);
 				return RedirectToAction(nameof(Index));
             }
             return View(collar);
@@ -158,7 +159,8 @@ namespace webGDPR.Controllers
 					_context.Update(collar);
                     await _context.SaveChangesAsync();
 					//send message to connected devices
-					await _webSocketMessageHandler.SendCollarAsync(collar, _userManager.GetUserName(User), _wsFactory);
+					Infrastructure.CustomWebSockets.Messages.CollarCore cc = _mapper.Map<Infrastructure.CustomWebSockets.Messages.CollarCore>(collar);
+					await _webSocketMessageHandler.SendCollarAsync(cc, _userManager.GetUserName(User), _wsFactory);
 				}
 				catch (DbUpdateConcurrencyException)
                 {
