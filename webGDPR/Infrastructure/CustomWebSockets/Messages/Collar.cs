@@ -4,13 +4,15 @@ namespace webGDPR.Infrastructure.CustomWebSockets.Messages
 {
 	public class Collar
 	{
-		//[JsonIgnore]
+		[JsonIgnore]
 		public string CollarId { get; set; }
 
-		[JsonIgnore]
+		//[JsonIgnore]
 		public string HWId { get; set; }
 
 		public string Name { get; set; }
+		//[JsonIgnore]
+		public string Description { get; set; }
 		public byte CollarNumber { get; set; }
 		public byte BaseNumber { get; set; }
 
@@ -28,10 +30,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets.Messages
 		[JsonIgnore]
 		public string RadioPercentage {	get	{ return Radio.ToString() + "%"; } }
 
-		//[JsonIgnore]
-		public string Description { get; set; }
-
-		//[JsonIgnore]
+		[JsonIgnore]
 		public string UserId { get; set; }
 	}
 }

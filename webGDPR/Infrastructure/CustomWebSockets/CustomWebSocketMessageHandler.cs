@@ -55,6 +55,11 @@ namespace AgendaSignalR.Infrastructure
 				foreach (var b in collars)
 				{
 					webGDPR.Infrastructure.CustomWebSockets.Messages.Collar mb = mapper.Map<webGDPR.Infrastructure.CustomWebSockets.Messages.Collar>(new Tuple<Collar, CollarStatus>(b, b.LastStatus));
+					//go and pick up the name of the pet if pet assoc. to collar 
+					PetCollar petCollar = await dbContext.PetCollar.FirstOrDefaultAsync(p => p.CollarId == b.CollarId && p.IsActive);
+					if (petCollar != null) {
+						mb.Name = dbContext.Pet.FirstOrDefault(pet => pet.PetId == petCollar.PetId).Name;
+							}
 					msgCollars.Add(mb);
 				}
 

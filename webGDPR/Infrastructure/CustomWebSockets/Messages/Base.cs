@@ -4,13 +4,15 @@ namespace webGDPR.Infrastructure.CustomWebSockets.Messages
 {
 	public class Base
 		{
-		//[JsonIgnore]
+		[JsonIgnore]
 		public string BaseId { get; set; }
 		[JsonIgnore]
 		public string HWId { get; set; }
 
 		public string Name { get; set; }
-			public byte BaseNumber { get; set; }
+		//[JsonIgnore]
+		public string Description { get; set; }
+		public byte BaseNumber { get; set; }
 
 			public bool IsConnected { get; set; }
 		public string ConnectedTo { get; set; }
@@ -31,9 +33,8 @@ namespace webGDPR.Infrastructure.CustomWebSockets.Messages
 		//public string RadioPercentage	{ get {	return Radio.ToString() + "%";	}	}
 		[JsonIgnore]
 		public string Text { get; set; }
-		//[JsonIgnore]
-		public string Description { get; set; }
-		//[JsonIgnore]
+
+		[JsonIgnore]
 		public string UserId { get; set; }
 		}
 	}
