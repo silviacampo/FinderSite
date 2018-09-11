@@ -12,7 +12,6 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using webGDPR.Data;
-//using webGDPR.Infrastructure.CustomWebSockets.Messages;
 using webGDPR.Models;
 
 namespace AgendaSignalR.Infrastructure
@@ -239,7 +238,7 @@ namespace AgendaSignalR.Infrastructure
 			}
 		}
 
-		public async Task SendBaseAsync(webGDPR.Infrastructure.CustomWebSockets.Messages.BaseCore c, string username, ICustomWebSocketFactory wsFactory)
+		public async Task SendBaseCoreAsync(webGDPR.Infrastructure.CustomWebSockets.Messages.BaseCore c, string username, ICustomWebSocketFactory wsFactory)
 		{
 			string serialisedText = JsonConvert.SerializeObject(c);
 			var msg = new CustomWebSocketMessage
@@ -271,7 +270,7 @@ namespace AgendaSignalR.Infrastructure
 			await BroadcastGroup(bytes, username, wsFactory);
 		}
 
-		public async Task SendCollarAsync(webGDPR.Infrastructure.CustomWebSockets.Messages.CollarCore collar, string username, ICustomWebSocketFactory wsFactory)
+		public async Task SendCollarCoreAsync(webGDPR.Infrastructure.CustomWebSockets.Messages.CollarCore collar, string username, ICustomWebSocketFactory wsFactory)
 		{
 			string serialisedText = JsonConvert.SerializeObject(collar);
 			var msg = new CustomWebSocketMessage
@@ -294,6 +293,38 @@ namespace AgendaSignalR.Infrastructure
 			{
 				MessagDateTime = DateTime.Now,
 				Type = WSMessageType.DeletedCollar,
+				Text = serialisedText,
+				UserId = CustomWebSocketMessage.SystemUserId
+			};
+
+			string serialisedMessage = JsonConvert.SerializeObject(msg);
+			byte[] bytes = Encoding.ASCII.GetBytes(serialisedMessage);
+			await BroadcastGroup(bytes, username, wsFactory);
+		}
+
+		public async Task SendBaseAsync(webGDPR.Infrastructure.CustomWebSockets.Messages.Base b, string username, ICustomWebSocketFactory wsFactory)
+		{
+			string serialisedText = JsonConvert.SerializeObject(b);
+			var msg = new CustomWebSocketMessage
+			{
+				MessagDateTime = DateTime.Now,
+				Type = WSMessageType.Base,
+				Text = serialisedText,
+				UserId = CustomWebSocketMessage.SystemUserId
+			};
+
+			string serialisedMessage = JsonConvert.SerializeObject(msg);
+			byte[] bytes = Encoding.ASCII.GetBytes(serialisedMessage);
+			await BroadcastGroup(bytes, username, wsFactory);
+		}
+
+		public async Task SendCollarAsync(webGDPR.Infrastructure.CustomWebSockets.Messages.Collar c, string username, ICustomWebSocketFactory wsFactory)
+		{
+			string serialisedText = JsonConvert.SerializeObject(c);
+			var msg = new CustomWebSocketMessage
+			{
+				MessagDateTime = DateTime.Now,
+				Type = WSMessageType.Collar,
 				Text = serialisedText,
 				UserId = CustomWebSocketMessage.SystemUserId
 			};

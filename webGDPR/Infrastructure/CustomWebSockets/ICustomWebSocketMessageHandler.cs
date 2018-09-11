@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using webGDPR.Data;
+using webGDPR.Infrastructure.CustomWebSockets.Messages;
 
 namespace AgendaSignalR.Infrastructure
 {
@@ -17,9 +18,11 @@ namespace AgendaSignalR.Infrastructure
 		Task BroadcastGroup(byte[] buffer, string username, ICustomWebSocketFactory wsFactory);
 		Task BroadcastAll(byte[] buffer, CustomWebSocket userWebSocket, ICustomWebSocketFactory wsFactory);
 		Task BroadcastBinaryAll(byte[] buffer, CustomWebSocket userWebSocket, ICustomWebSocketFactory wsFactory);
-		Task SendBaseAsync(webGDPR.Infrastructure.CustomWebSockets.Messages.BaseCore b, string username, ICustomWebSocketFactory wsFactory);
+		Task SendBaseCoreAsync(webGDPR.Infrastructure.CustomWebSockets.Messages.BaseCore b, string username, ICustomWebSocketFactory wsFactory);
 		Task SendDeletedBaseAsync(byte baseNumber, string username, ICustomWebSocketFactory wsFactory);
-		Task SendCollarAsync(webGDPR.Infrastructure.CustomWebSockets.Messages.CollarCore collar, string username, ICustomWebSocketFactory wsFactory);
+		Task SendCollarCoreAsync(webGDPR.Infrastructure.CustomWebSockets.Messages.CollarCore collar, string username, ICustomWebSocketFactory wsFactory);
 		Task SendDeletedCollarAsync(byte collarNumber, string username, ICustomWebSocketFactory wsFactory);
+		Task SendBaseAsync(webGDPR.Infrastructure.CustomWebSockets.Messages.Base b, string username, ICustomWebSocketFactory wsFactory);
+		Task SendCollarAsync(webGDPR.Infrastructure.CustomWebSockets.Messages.Collar c, string username, ICustomWebSocketFactory wsFactory);
 	}
 }

@@ -104,8 +104,8 @@ namespace webGDPR.Controllers
 				_context.Add(@base);
                 await _context.SaveChangesAsync();
 				//send message to connected devices
-				Infrastructure.CustomWebSockets.Messages.BaseCore bc = _mapper.Map<Infrastructure.CustomWebSockets.Messages.BaseCore>(@base);
-				await _webSocketMessageHandler.SendBaseAsync(bc, _userManager.GetUserName(User), _wsFactory);
+				Infrastructure.CustomWebSockets.Messages.Base ba = _mapper.Map<Infrastructure.CustomWebSockets.Messages.Base>(@base);
+				await _webSocketMessageHandler.SendBaseAsync(ba, _userManager.GetUserName(User), _wsFactory);
                 return RedirectToAction(nameof(Index));
             }
             return View(@base);
@@ -150,7 +150,7 @@ namespace webGDPR.Controllers
                     await _context.SaveChangesAsync();
 					//send message to connected devices
 					Infrastructure.CustomWebSockets.Messages.BaseCore bc = _mapper.Map<Infrastructure.CustomWebSockets.Messages.BaseCore>(@base);
-					await _webSocketMessageHandler.SendBaseAsync(bc, _userManager.GetUserName(User), _wsFactory);
+					await _webSocketMessageHandler.SendBaseCoreAsync(bc, _userManager.GetUserName(User), _wsFactory);
 				}
 				catch (DbUpdateConcurrencyException)
                 {

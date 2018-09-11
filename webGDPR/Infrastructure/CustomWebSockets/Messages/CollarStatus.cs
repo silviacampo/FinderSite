@@ -8,24 +8,22 @@ namespace webGDPR.Infrastructure.CustomWebSockets.Messages
 {
     public class CollarStatus
     {
-		//[JsonIgnore]
+		[JsonIgnore]
 		public string CollarId { get; set; }
 
+		public byte CollarNumber { get; set; }
+
 		public bool IsConnected { get; set; }
+
+		[JsonIgnore]
 		public string ConnectedTo { get; set; }
 
 		public bool IsGPSConnected { get; set; }
-
-		[JsonIgnore]
-		public bool IsNotGPSConnected { get { return !IsGPSConnected; } }
 
 		public int Battery { get; set; }
 		public int Radio { get; set; }
 
 		[JsonIgnore]
-		public string RadioPercentage { get { return Radio.ToString() + "%"; } }
-
-		//[JsonIgnore]
 		public string UserId { get; set; }
 	}
 }
