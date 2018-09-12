@@ -33,6 +33,8 @@ namespace AgendaSignalR.Infrastructure
 		DeletedBase,
 		DeletedCollar,
 		BaseCore,
-		CollarCore
+		CollarCore,
+		CollarStatus,
+		BaseStatus
 	}
 }

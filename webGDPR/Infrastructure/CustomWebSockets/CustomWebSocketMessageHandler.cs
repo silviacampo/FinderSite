@@ -88,21 +88,23 @@ namespace AgendaSignalR.Infrastructure
 			string msg = Encoding.ASCII.GetString(buffer);
 			try
 			{
-				//{"Text":"{\"BaseId\":\"0ca407e1-5575-462c-9019-80643a9099e0\",\"BaseNumber\":\"1\",\"Name\":\"Home\",\"IsConnected\":true,\"ConnectedTo\":\"68b73ced-1659-483c-929e-274a97706405\",\"IsPlugged\":false,\"IsCharging\":true,\"Battery\":50,\"HasBattery\":true,\"Radio\":95,\"Description\":\"Home Description\",\"UserId\":\"bee7b8af-c902-4771-89f8-969a3318cbdb\"}","MessagDateTime":"2018-08-23T13:10:58.6645939-04:00","IsIncoming":true,"UserId":"scampo@test.com","Type":1}
+				//{"Text":"{\"BaseNumber\":\"1\",\"IsConnected\":true,\"IsPlugged\":false,\"IsCharging\":true,\"Battery\":50,\"HasBattery\":true,\"Radio\":95}","MessagDateTime":"2018-08-23T13:10:58.6645939-04:00","IsIncoming":true,"UserId":"scampo@test.com","Type":13}
 
-				//{ "Text":"{\"CollarId\":\"68b73ced-1659-483c-929e-274a97706405\",\"BaseNumber\":\"1\", \"CollarNumber\":\"1\",\"Name\":\"Pepa\",\"IsConnected\":true,\"ConnectedTo\":\"0ca407e1-5575-462c-9019-80643a9099e0\",\"IsGPSConnected\":true,\"Battery\":60,\"Radio\":40,\"Description\":null,\"UserId\":\"bee7b8af-c902-4771-89f8-969a3318cbdb\"}","MessagDateTime":"2018-08-23T13:33:00.5057737-04:00","IsIncoming":true,"UserId":"scampo@test.com","Type":2}
+				//{ "Text":"{\"CollarNumber\":\"1\",\"IsConnected\":true,\"IsGPSConnected\":true,\"Battery\":60,\"Radio\":40}","MessagDateTime":"2018-08-23T13:33:00.5057737-04:00","IsIncoming":true,"UserId":"scampo@test.com","Type":12}
 
 				//{ "Text":"{\"DeviceId\":\"68b73ced-1659-483c-929e-274a97706405\",\"Name\":\"Silvia's Phone\",\"Model\":\"Nexus 5\",\"Manufacturer\":\"LG\",\"Type\":\"Phone\",\"Platform\":\"Android\",\"UserId\":\"bee7b8af-c902-4771-89f8-969a3318cbdb\"}","MessagDateTime":"2018-08-23T13:33:00.5057737-04:00","UserId":"scampo@test.com","Type":5}
 
 				var message = JsonConvert.DeserializeObject<CustomWebSocketMessage>(msg);
-				if (message.Type == WSMessageType.Base)
+				if (message.Type == WSMessageType.BaseStatus)
 				{
-					webGDPR.Infrastructure.CustomWebSockets.Messages.Base b = JsonConvert.DeserializeObject<webGDPR.Infrastructure.CustomWebSockets.Messages.Base>(message.Text);
-					if (!string.IsNullOrEmpty(userWebSocket.DeviceId) && b.ConnectedTo != userWebSocket.DeviceId)
-					{
-						log.Error("Wrong Device Id sending:" + message.Text);
-						throw new Exception("Wrong Device Id");
-					}
+					webGDPR.Infrastructure.CustomWebSockets.Messages.BaseStatus bs = JsonConvert.DeserializeObject<webGDPR.Infrastructure.CustomWebSockets.Messages.BaseStatus>(message.Text);
+					//if (!string.IsNullOrEmpty(userWebSocket.DeviceId) && bs.ConnectedTo != userWebSocket.DeviceId)
+					//{
+					//	log.Error("Wrong Device Id sending:" + message.Text);
+					//	throw new Exception("Wrong Device Id");
+					//}
+					bs.ConnectedTo = userWebSocket.DeviceId;
+					Base b = dbContext.Base.FirstOrDefault(f => f.BaseNumber == bs.BaseNumber);
 					BaseStatus lastStatus = dbContext.BaseStatus.FirstOrDefault(f => f.BaseId == b.BaseId && f.IsActive == true);
 					if (lastStatus != null)
 					{
@@ -110,36 +112,49 @@ namespace AgendaSignalR.Infrastructure
 						dbContext.Update(lastStatus);
 					}
 
-					Base @base = mapper.Map<Base>(b);
-					@base.LastStatus = mapper.Map<BaseStatus>(b);
+					b.LastStatus = new BaseStatus
+					{
+						BaseId = b.BaseId,
+						ConnectedTo = bs.ConnectedTo,
+						IsConnected = bs.IsConnected,
+						IsCharging = bs.IsCharging,
+						IsPlugged = bs.IsPlugged,
+						Battery = bs.Battery,
+						HasBattery = bs.HasBattery,
 
-					@base.LastStatus.CreationDate = message.MessagDateTime; //TODO: or now?
-					@base.LastStatus.IsActive = true;
-					dbContext.Add(@base.LastStatus);
+						CreationDate = message.MessagDateTime, //TODO: or now?
+						IsActive = true
+					};
+					dbContext.Add(b.LastStatus);
 
-					@base.LastStatusId = @base.LastStatus.BaseStatusId;
-					dbContext.Update(@base);
+					b.LastStatusId = b.LastStatus.BaseStatusId;
+					dbContext.Update(b);
 
 					await dbContext.SaveChangesAsync();
 
 					await BroadcastOthers(buffer, userWebSocket, wsFactory);
 				}
-				else if (message.Type == WSMessageType.Collar)
+				else if (message.Type == WSMessageType.CollarStatus)
 				{
-					webGDPR.Infrastructure.CustomWebSockets.Messages.Collar c = JsonConvert.DeserializeObject<webGDPR.Infrastructure.CustomWebSockets.Messages.Collar>(message.Text);
-
-					CollarStatus lastStatus = dbContext.CollarStatus.FirstOrDefault(f => f.CollarId == c.CollarId && f.IsActive == true);
+					webGDPR.Infrastructure.CustomWebSockets.Messages.CollarStatus cs = JsonConvert.DeserializeObject<webGDPR.Infrastructure.CustomWebSockets.Messages.CollarStatus>(message.Text);
+					Collar collar = dbContext.Collar.FirstOrDefault(f => f.CollarNumber == cs.CollarNumber);
+					CollarStatus lastStatus = dbContext.CollarStatus.FirstOrDefault(f => f.CollarId == collar.CollarId && f.IsActive == true);
 					if (lastStatus != null)
 					{
 						lastStatus.IsActive = false;
 						dbContext.Update(lastStatus);
 					}
 
-					Collar collar = mapper.Map<Collar>(c);
-					collar.LastStatus = mapper.Map<CollarStatus>(c);
-
-					collar.LastStatus.CreationDate = message.MessagDateTime; //TODO: or now?
-					collar.LastStatus.IsActive = true;
+					collar.LastStatus = new CollarStatus
+					{
+						CollarId = collar.CollarId,
+						IsConnected = cs.IsConnected,
+						IsGPSConnected = cs.IsGPSConnected,
+						Battery = cs.Battery,
+						Radio = cs.Radio,
+						CreationDate = message.MessagDateTime, //TODO: or now?
+						IsActive = true
+					};
 					dbContext.Add(collar.LastStatus);
 
 					collar.LastStatusId = collar.LastStatus.CollarStatusId;
@@ -169,7 +184,7 @@ namespace AgendaSignalR.Infrastructure
 					await dbContext.SaveChangesAsync();
 					//return guid
 					userWebSocket.DeviceId = d.DeviceId;
-					await SendDeviceInformation(userWebSocket, d);
+					await SendDeviceInformation(userWebSocket, d.DeviceId);
 				}
 				else if (message.Type == WSMessageType.LastGPS) {
 
@@ -184,7 +199,7 @@ namespace AgendaSignalR.Infrastructure
 			}
 		}
 
-		private async Task SendDeviceInformation(CustomWebSocket userWebSocket, Device c)
+		private async Task SendDeviceInformation(CustomWebSocket userWebSocket, string c)
 		{
 			string serialisedText = JsonConvert.SerializeObject(c);
 			var msg = new CustomWebSocketMessage
@@ -237,7 +252,7 @@ namespace AgendaSignalR.Infrastructure
 				await uws.WebSocket.SendAsync(new ArraySegment<byte>(buffer, 0, buffer.Length), WebSocketMessageType.Binary, true, CancellationToken.None);
 			}
 		}
-
+//edit base
 		public async Task SendBaseCoreAsync(webGDPR.Infrastructure.CustomWebSockets.Messages.BaseCore c, string username, ICustomWebSocketFactory wsFactory)
 		{
 			string serialisedText = JsonConvert.SerializeObject(c);
@@ -253,7 +268,7 @@ namespace AgendaSignalR.Infrastructure
 			byte[] bytes = Encoding.ASCII.GetBytes(serialisedMessage);
 			await BroadcastGroup(bytes, username, wsFactory);
 		}
-
+//delete base
 		public async Task SendDeletedBaseAsync(byte baseNumber, string username, ICustomWebSocketFactory wsFactory)
 		{
 			string serialisedText = JsonConvert.SerializeObject(baseNumber);
@@ -269,7 +284,7 @@ namespace AgendaSignalR.Infrastructure
 			byte[] bytes = Encoding.ASCII.GetBytes(serialisedMessage);
 			await BroadcastGroup(bytes, username, wsFactory);
 		}
-
+//edit collar
 		public async Task SendCollarCoreAsync(webGDPR.Infrastructure.CustomWebSockets.Messages.CollarCore collar, string username, ICustomWebSocketFactory wsFactory)
 		{
 			string serialisedText = JsonConvert.SerializeObject(collar);
@@ -285,7 +300,7 @@ namespace AgendaSignalR.Infrastructure
 			byte[] bytes = Encoding.ASCII.GetBytes(serialisedMessage);
 			await BroadcastGroup(bytes, username, wsFactory);
 		}
-
+//delete collar
 		public async Task SendDeletedCollarAsync(byte collarNumber, string username, ICustomWebSocketFactory wsFactory)
 		{
 			string serialisedText = JsonConvert.SerializeObject(collarNumber);
@@ -301,7 +316,7 @@ namespace AgendaSignalR.Infrastructure
 			byte[] bytes = Encoding.ASCII.GetBytes(serialisedMessage);
 			await BroadcastGroup(bytes, username, wsFactory);
 		}
-
+//add base
 		public async Task SendBaseAsync(webGDPR.Infrastructure.CustomWebSockets.Messages.Base b, string username, ICustomWebSocketFactory wsFactory)
 		{
 			string serialisedText = JsonConvert.SerializeObject(b);
@@ -317,7 +332,7 @@ namespace AgendaSignalR.Infrastructure
 			byte[] bytes = Encoding.ASCII.GetBytes(serialisedMessage);
 			await BroadcastGroup(bytes, username, wsFactory);
 		}
-
+//add collar
 		public async Task SendCollarAsync(webGDPR.Infrastructure.CustomWebSockets.Messages.Collar c, string username, ICustomWebSocketFactory wsFactory)
 		{
 			string serialisedText = JsonConvert.SerializeObject(c);
