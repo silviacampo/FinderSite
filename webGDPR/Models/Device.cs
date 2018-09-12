@@ -11,6 +11,7 @@
 		public string OSVersion { get; set; }
 
 		public string AliasName { get; set; }
+		public bool Aproved { get; set; }
 
 		public string UserId { get; set; }
 	}

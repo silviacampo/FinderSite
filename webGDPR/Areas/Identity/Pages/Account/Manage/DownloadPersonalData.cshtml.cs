@@ -44,7 +44,13 @@ namespace webGDPR.Areas.Identity.Pages.Account.Manage
 			var userpath = Path.Combine(Directory.GetCurrentDirectory(), $"wwwroot\\user\\{UserId}");
 			if (Directory.Exists(Path.GetDirectoryName(userpath)))
 			{
-				
+				DirectoryInfo d = new DirectoryInfo(userpath);
+				FileInfo[] Files = d.GetFiles("*.*", SearchOption.AllDirectories);
+				var filenamesAndUrls = new Dictionary<string, string>();
+				foreach (FileInfo file in Files)
+				{
+					filenamesAndUrls.Add(file.Name, file.FullName);
+				}
 			}
 
 			await _context.SaveChangesAsync();
