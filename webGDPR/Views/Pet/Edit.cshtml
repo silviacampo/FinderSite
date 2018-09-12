@@ -71,8 +71,12 @@
 					<input asp-for="PageFileName" class="form-control" />
 					<span asp-validation-for="PageFileName" class="text-danger"></span>
 				</div>*@
-			@foreach (var f in ViewData["imagesFilenames"] as List<string>) {
+			@if (ViewData["imagesFilenames"] != null)
+			{
+			@foreach (var f in ViewData["imagesFilenames"] as List<string>)
+			{
 				<img src="@f"/>
+			}
 			}
 			<div class="form-group">
 				<label asp-for="ImageFileName" class="control-label"></label>

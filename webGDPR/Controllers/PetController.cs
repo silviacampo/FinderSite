@@ -102,6 +102,14 @@ namespace webGDPR.Controllers
 
 				SaveFiles(pet, imagesFiles, pageContent);
 
+				//send message to connected devices
+				if (pet.LastCollarId != null) {
+					var foundCollar = await _context.Collar.AsNoTracking().FirstAsync(c => c.CollarId == pet.LastCollarId);
+					foundCollar.Name = pet.Name;
+					Infrastructure.CustomWebSockets.Messages.CollarCore cc = _mapper.Map<Infrastructure.CustomWebSockets.Messages.CollarCore>(foundCollar);
+					await _webSocketMessageHandler.SendCollarCoreAsync(cc, _userManager.GetUserName(User), _wsFactory);
+				}
+
 				return RedirectToAction(nameof(Index));
             }
             return View(pet);
@@ -120,9 +128,13 @@ namespace webGDPR.Controllers
             {
                 return NotFound();
             }
-			Tuple<string, List<string>> files = await ReadFiles(pet);
-			ViewData["pageContent"] = files.Item1;
-			ViewData["imagesFilenames"] = files.Item2;
+			try
+			{
+				Tuple<string, List<string>> files = await ReadFiles(pet);
+				ViewData["pageContent"] = files.Item1;
+				ViewData["imagesFilenames"] = files.Item2;
+			}
+			catch (Exception e) { }
 			return View(pet);
         }
 
@@ -149,6 +161,15 @@ namespace webGDPR.Controllers
                     await _context.SaveChangesAsync();
 
 					SaveFiles(pet, imagesFiles, pageContent);
+
+					//send message to connected devices
+					if (pet.LastCollarId != null)
+					{
+						var foundCollar = await _context.Collar.AsNoTracking().FirstAsync(c => c.CollarId == pet.LastCollarId);
+						foundCollar.Name = pet.Name;
+						Infrastructure.CustomWebSockets.Messages.CollarCore cc = _mapper.Map<Infrastructure.CustomWebSockets.Messages.CollarCore>(foundCollar);
+						await _webSocketMessageHandler.SendCollarCoreAsync(cc, _userManager.GetUserName(User), _wsFactory);
+					}
 				}
                 catch (DbUpdateConcurrencyException)
                 {
@@ -192,7 +213,16 @@ namespace webGDPR.Controllers
             var pet = await _context.Pet.FindAsync(id);
             _context.Pet.Remove(pet);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+			//send message to connected devices
+			if (pet.LastCollarId != null)
+			{
+				var foundCollar = await _context.Collar.AsNoTracking().FirstAsync(c => c.CollarId == pet.LastCollarId);
+				Infrastructure.CustomWebSockets.Messages.CollarCore cc = _mapper.Map<Infrastructure.CustomWebSockets.Messages.CollarCore>(foundCollar);
+				await _webSocketMessageHandler.SendCollarCoreAsync(cc, _userManager.GetUserName(User), _wsFactory);
+			}
+
+			return RedirectToAction(nameof(Index));
         }
 
 		[HttpPost]
