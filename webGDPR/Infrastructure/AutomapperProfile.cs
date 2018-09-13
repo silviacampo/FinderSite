@@ -207,6 +207,17 @@ namespace webGDPR.Infrastructure
 				.ForMember(dest => dest.CreationDate, opts => opts.MapFrom(src => src.LocationCreationDate));
 
 			CreateMap<PetViewModel, Models.PetTrackingInfo>().ReverseMap();
+
+			CreateMap<Models.EditPetViewModel, Models.Pet>()
+	.ForMember(dest => dest.PetId, opts => opts.MapFrom(src => src.PetId))
+	.ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.Name))
+	.ForMember(dest => dest.Age, opts => opts.MapFrom(src => src.Age))
+	.ForMember(dest => dest.Breeding, opts => opts.MapFrom(src => src.Breeding))
+	.ForMember(dest => dest.Type, opts => opts.MapFrom(src => src.Type))
+	.ForMember(dest => dest.Color, opts => opts.MapFrom(src => src.Color))
+	.ForMember(dest => dest.HealthComments, opts => opts.MapFrom(src => src.HealthComments));
+
+			CreateMap<Models.EditPetViewModel, Models.Pet>().ReverseMap();
 			#endregion
 		}
 	}

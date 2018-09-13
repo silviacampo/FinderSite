@@ -1,4 +1,4 @@
-@model webGDPR.Models.Pet
+@model EditPetViewModel
 
 @{
    // Layout = null;
@@ -47,7 +47,7 @@
 			</div>
 			<div class="form-group">
 				<label asp-for="HealthComments" class="control-label"></label>
-				<input asp-for="HealthComments" class="form-control" />
+				<textarea asp-for="HealthComments" class="form-control"></textarea>
 				<span asp-validation-for="HealthComments" class="text-danger"></span>
 			</div>
 			@*<div class="form-group">
@@ -61,23 +61,28 @@
 		</div>
 		<div class="col-md-4">
 			@*<div class="form-group">
-					<label asp-for="ImageFileName" class="control-label"></label>
-					<input asp-for="ImageFileName" class="form-control" />
-					<span asp-validation-for="ImageFileName" class="text-danger"></span>
-				</div>*@
+			<label asp-for="ImageFileName" class="control-label"></label>
+			<input asp-for="ImageFileName" class="form-control" />
+			<span asp-validation-for="ImageFileName" class="text-danger"></span>
+		</div>*@
 
 			@*<div class="form-group">
-					<label asp-for="PageFileName" class="control-label"></label>
-					<input asp-for="PageFileName" class="form-control" />
-					<span asp-validation-for="PageFileName" class="text-danger"></span>
-				</div>*@
+			<label asp-for="PageFileName" class="control-label"></label>
+			<input asp-for="PageFileName" class="form-control" />
+			<span asp-validation-for="PageFileName" class="text-danger"></span>
+		</div>*@
+			<div class="form-group">
+				<label asp-for="CollarId" class="control-label"></label>
+				<select asp-for="CollarId" asp-items="Model.Collars" class="form-control"></select>
+				<span asp-validation-for="CollarId" class="text-danger"></span>
+			</div>
 			@if (ViewData["imagesFilenames"] != null)
-			{
-			@foreach (var f in ViewData["imagesFilenames"] as List<string>)
-			{
-				<img src="@f"/>
-			}
-			}
+	{
+		@foreach (var f in ViewData["imagesFilenames"] as List<string>)
+{
+		<img src="@f" />
+}
+}
 			<div class="form-group">
 				<label asp-for="ImageFileName" class="control-label"></label>
 				<input type="file" multiple="multiple" name="imagesFiles" asp-for="ImageFileName" class="form-control" />

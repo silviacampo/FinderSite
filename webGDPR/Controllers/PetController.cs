@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using webGDPR.Data;
 using webGDPR.Infrastructure;
@@ -22,8 +23,8 @@ namespace webGDPR.Controllers
 {
 	[Authorize]
 	public class PetController : Controller
-    {
-        private readonly ApplicationDbContext _context;
+	{
+		private readonly ApplicationDbContext _context;
 		UserManager<ApplicationUser> _userManager;
 		private readonly IHostingEnvironment _hostingEnvironment;
 		IMapper _mapper;
@@ -32,7 +33,7 @@ namespace webGDPR.Controllers
 
 		public PetController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IMapper mapper, IHostingEnvironment hostingEnvironment, ICustomWebSocketMessageHandler webSocketMessageHandler, ICustomWebSocketFactory wsFactory)
 		{
-            _context = context;
+			_context = context;
 			_userManager = userManager;
 			_mapper = mapper;
 			_hostingEnvironment = hostingEnvironment;
@@ -40,13 +41,13 @@ namespace webGDPR.Controllers
 			_wsFactory = wsFactory;
 		}
 
-        // GET: Pet
-        public async Task<IActionResult> Index()
-        {
+		// GET: Pet
+		public async Task<IActionResult> Index()
+		{
 			List<PetViewModel> model = new List<PetViewModel>();
 			string UserId = _context.User.FirstOrDefault(u => u.OwnerID == _userManager.GetUserId(User)).UserID;
 
-			List<Pet> pets = await _context.Pet.AsNoTracking().Where(b => b.UserId == UserId).Include(c=>c.LastTrackingInfo).Include(b => b.LastCollar).ThenInclude(c => c.Collar).ToListAsync();
+			List<Pet> pets = await _context.Pet.AsNoTracking().Where(b => b.UserId == UserId).Include(c => c.LastTrackingInfo).Include(b => b.LastCollar).ThenInclude(c => c.Collar).ToListAsync();
 			foreach (var c in pets)
 			{
 				PetViewModel cvm = _mapper.Map<PetViewModel>(new Tuple<Pet, PetTrackingInfo>(c, c.LastTrackingInfo));
@@ -58,73 +59,126 @@ namespace webGDPR.Controllers
 			}
 
 			return View(model);
-        }
+		}
 
-        // GET: Pet/Details/5
-        public async Task<IActionResult> Details(string id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+		// GET: Pet/Details/5
+		public async Task<IActionResult> Details(string id)
+		{
+			if (id == null)
+			{
+				return NotFound();
+			}
 
-            var pet = await _context.Pet
-                .FirstOrDefaultAsync(m => m.PetId == id);
-            if (pet == null)
-            {
-                return NotFound();
-            }
+			var pet = await _context.Pet
+				.FirstOrDefaultAsync(m => m.PetId == id);
+			if (pet == null)
+			{
+				return NotFound();
+			}
 
-            return View(pet);
-        }
+			return View(pet);
+		}
 
-        // GET: Pet/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
+		// GET: Pet/Create
+		public async Task<IActionResult> Create()
+		{
+			string UserId = _context.User.FirstOrDefault(u => u.OwnerID == _userManager.GetUserId(User)).UserID;
+			List<string> petCollars = await _context.PetCollar.Where(p => p.IsActive).Select(c => c.CollarId).ToListAsync();
+			List<Collar> collars = await _context.Collar.AsNoTracking().Where(b => b.UserId == UserId && !petCollars.Contains(b.CollarId)).ToListAsync();
 
-        // POST: Pet/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("PetId,Name,Type,Breeding,Color,Age,HealthComments,ImageFileName,PageFileName")] Pet pet, IList<IFormFile> imagesFiles, string pageContent)
-        {
-            if (ModelState.IsValid)
-            {
-				pet.UserId = _context.User.FirstOrDefault(u => u.OwnerID == _userManager.GetUserId(User)).UserID;
-				_context.Add(pet);
-                await _context.SaveChangesAsync();
+			EditPetViewModel model = new EditPetViewModel();
+			List<SelectListItem> collarsItems = new List<SelectListItem>();
+			foreach (Collar c in collars)
+			{
+				collarsItems.Add(new SelectListItem
+				{
+					Value = c.CollarId,
+					Text = c.Name
+				});
+			}
 
-				SaveFiles(pet, imagesFiles, pageContent);
+			model.Collars = collarsItems;
+			return View(model);
+		}
+
+		// POST: Pet/Create
+		// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+		// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> Create([Bind("PetId,Name,Type,Breeding,Color,Age,HealthComments,CollarId")] EditPetViewModel pet, IList<IFormFile> imagesFiles, string pageContent)
+		{
+			if (ModelState.IsValid)
+			{
+				Pet p = _mapper.Map<Pet>(pet);
+				p.UserId = _context.User.FirstOrDefault(u => u.OwnerID == _userManager.GetUserId(User)).UserID;
+				_context.Add(p);
+				await _context.SaveChangesAsync();
+
+				PetCollar pc = new PetCollar
+				{
+					PetId = p.PetId,
+					CollarId = pet.CollarId,
+					StartDate = DateTime.Now,
+					CreationDate = DateTime.Now,
+					IsActive = true,
+					UserId = p.UserId
+				};
+				_context.Add(pc);
+
+				p.LastCollarId = pc.PetCollarId;
+				_context.Update(p);
+
+				await _context.SaveChangesAsync();
+
+				SaveFiles(p, imagesFiles, pageContent);
 
 				//send message to connected devices
-				if (pet.LastCollarId != null) {
-					var foundCollar = await _context.Collar.AsNoTracking().FirstAsync(c => c.CollarId == pet.LastCollarId);
+				if (pet.CollarId != null)
+				{
+					var foundCollar = await _context.Collar.AsNoTracking().FirstAsync(c => c.CollarId == pet.CollarId);
 					foundCollar.Name = pet.Name;
 					Infrastructure.CustomWebSockets.Messages.CollarCore cc = _mapper.Map<Infrastructure.CustomWebSockets.Messages.CollarCore>(foundCollar);
 					await _webSocketMessageHandler.SendCollarCoreAsync(cc, _userManager.GetUserName(User), _wsFactory);
 				}
 
 				return RedirectToAction(nameof(Index));
-            }
-            return View(pet);
-        }
+			}
+			return View(pet);
+		}
 
-        // GET: Pet/Edit/5
-        public async Task<IActionResult> Edit(string id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+		// GET: Pet/Edit/5
+		public async Task<IActionResult> Edit(string id)
+		{
+			if (id == null)
+			{
+				return NotFound();
+			}
 
-            var pet = await _context.Pet.FindAsync(id);
-            if (pet == null)
-            {
-                return NotFound();
-            }
+			var pet = await _context.Pet.FindAsync(id);
+			if (pet == null)
+			{
+				return NotFound();
+			}
+
+			string UserId = _context.User.FirstOrDefault(u => u.OwnerID == _userManager.GetUserId(User)).UserID;
+			List<string> petCollars = await _context.PetCollar.Where(p => p.IsActive).Select(c => c.CollarId).ToListAsync();
+			List<Collar> collars = await _context.Collar.AsNoTracking().Where(b => b.UserId == UserId && !petCollars.Contains(b.CollarId)).ToListAsync();
+
+			EditPetViewModel model = new EditPetViewModel();
+			model = _mapper.Map<EditPetViewModel>(pet);
+			List<SelectListItem> collarsItems = new List<SelectListItem>();
+			foreach (Collar c in collars)
+			{
+				collarsItems.Add(new SelectListItem
+				{
+					Value = c.CollarId,
+					Text = c.Name
+				});
+			}
+
+			model.Collars = collarsItems;
+
 			try
 			{
 				Tuple<string, List<string>> files = await ReadFiles(pet);
@@ -132,84 +186,102 @@ namespace webGDPR.Controllers
 				ViewData["imagesFilenames"] = files.Item2;
 			}
 			catch (Exception e) { }
-			return View(pet);
-        }
+			return View(model);
+		}
 
-        // POST: Pet/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("PetId,Name,Type,Breeding,Color,Age,HealthComments,ImageFileName,PageFileName")] Pet pet, IList<IFormFile> imagesFiles, string pageContent)
-        {
-            if (id != pet.PetId)
-            {
-                return NotFound();
-            }
+		// POST: Pet/Edit/5
+		// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+		// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> Edit(string id, [Bind("PetId,Name,Type,Breeding,Color,Age,HealthComments,CollarId")] EditPetViewModel pet, IList<IFormFile> imagesFiles, string pageContent)
+		{
+			if (id != pet.PetId)
+			{
+				return NotFound();
+			}
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-					var found = await _context.Pet.AsNoTracking().FirstAsync(c => c.PetId == id);
-					pet.UserId = found.UserId;
+			if (ModelState.IsValid)
+			{
+				try
+				{
+					Pet p = _mapper.Map<Pet>(pet);
+					p.UserId = _context.User.FirstOrDefault(u => u.OwnerID == _userManager.GetUserId(User)).UserID;
+					_context.Update(p);
+					await _context.SaveChangesAsync();
 
-					_context.Update(pet);
-                    await _context.SaveChangesAsync();
+					if (pet.CollarId != _context.PetCollar.FirstOrDefault(c => c.PetId == pet.PetId && c.IsActive).CollarId)
+					{
+						PetCollar pc = new PetCollar
+						{
+							PetId = p.PetId,
+							CollarId = pet.CollarId,
+							StartDate = DateTime.Now,
+							CreationDate = DateTime.Now,
+							IsActive = true,
+							UserId = p.UserId
+						};
+						_context.Add(pc);
 
-					SaveFiles(pet, imagesFiles, pageContent);
+						p.LastCollarId = pc.PetCollarId;
+						_context.Update(p);
+
+						await _context.SaveChangesAsync();
+					}
+
+					SaveFiles(p, imagesFiles, pageContent);
 
 					//send message to connected devices
-					if (pet.LastCollarId != null)
+					if (pet.CollarId != null)
 					{
-						var foundCollar = await _context.Collar.AsNoTracking().FirstAsync(c => c.CollarId == pet.LastCollarId);
+						var foundCollar = await _context.Collar.AsNoTracking().FirstAsync(c => c.CollarId == pet.CollarId);
 						foundCollar.Name = pet.Name;
 						Infrastructure.CustomWebSockets.Messages.CollarCore cc = _mapper.Map<Infrastructure.CustomWebSockets.Messages.CollarCore>(foundCollar);
 						await _webSocketMessageHandler.SendCollarCoreAsync(cc, _userManager.GetUserName(User), _wsFactory);
 					}
 				}
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!PetExists(pet.PetId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(pet);
-        }
+				catch (DbUpdateConcurrencyException)
+				{
+					if (!PetExists(pet.PetId))
+					{
+						return NotFound();
+					}
+					else
+					{
+						throw;
+					}
+				}
+				return RedirectToAction(nameof(Index));
+			}
+			return View(pet);
+		}
 
-        // GET: Pet/Delete/5
-        public async Task<IActionResult> Delete(string id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+		// GET: Pet/Delete/5
+		public async Task<IActionResult> Delete(string id)
+		{
+			if (id == null)
+			{
+				return NotFound();
+			}
 
-            var pet = await _context.Pet
-                .FirstOrDefaultAsync(m => m.PetId == id);
-            if (pet == null)
-            {
-                return NotFound();
-            }
+			var pet = await _context.Pet
+				.FirstOrDefaultAsync(m => m.PetId == id);
+			if (pet == null)
+			{
+				return NotFound();
+			}
 
-            return View(pet);
-        }
+			return View(pet);
+		}
 
-        // POST: Pet/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
-        {
-            var pet = await _context.Pet.FindAsync(id);
-            _context.Pet.Remove(pet);
-            await _context.SaveChangesAsync();
+		// POST: Pet/Delete/5
+		[HttpPost, ActionName("Delete")]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> DeleteConfirmed(string id)
+		{
+			var pet = await _context.Pet.FindAsync(id);
+			_context.Pet.Remove(pet);
+			await _context.SaveChangesAsync();
 
 			//send message to connected devices
 			if (pet.LastCollarId != null)
@@ -220,7 +292,7 @@ namespace webGDPR.Controllers
 			}
 
 			return RedirectToAction(nameof(Index));
-        }
+		}
 
 		[HttpPost]
 		public FileStreamResult UploadImages(string PetId, IList<IFormFile> files)
@@ -232,7 +304,7 @@ namespace webGDPR.Controllers
 				{
 					Stream ms = new MemoryStream(img.Resize().ToByteArray());
 					string UserId = _context.User.FirstOrDefault(u => u.OwnerID == _userManager.GetUserId(User)).UserID;
-					var path = Path.Combine(CustomPaths.GetImagesPetPath(UserId,PetId), file.FileName);
+					var path = Path.Combine(CustomPaths.GetImagesPetPath(UserId, PetId), file.FileName);
 
 					if (!Directory.Exists(Path.GetDirectoryName(path)))
 						Directory.CreateDirectory(Path.GetDirectoryName(path));
@@ -252,9 +324,9 @@ namespace webGDPR.Controllers
 
 
 		private bool PetExists(string id)
-        {
-            return _context.Pet.Any(e => e.PetId == id);
-        }
+		{
+			return _context.Pet.Any(e => e.PetId == id);
+		}
 
 		private async Task<Tuple<string, List<string>>> ReadFiles(Pet pet)
 		{
@@ -262,24 +334,26 @@ namespace webGDPR.Controllers
 			string pageContent = string.Empty;
 
 			var imgpath = CustomPaths.GetImagesPetPath(pet.UserId, pet.PetId);
-			if (Directory.Exists(Path.GetDirectoryName(imgpath))) {
+			if (Directory.Exists(Path.GetDirectoryName(imgpath)))
+			{
 				DirectoryInfo d = new DirectoryInfo(imgpath);
 				FileInfo[] Files = d.GetFiles();
 				foreach (FileInfo file in Files)
 				{
-				 imagesFilenames.Add(Request.Scheme + "://"+ Request.Host + $"/user/{pet.UserId}/{pet.PetId}/images/{file.Name}");
+					imagesFilenames.Add(Request.Scheme + "://" + Request.Host + $"/user/{pet.UserId}/{pet.PetId}/images/{file.Name}");
 				}
 			}
-			
-			var htmlpath = Path.Combine(CustomPaths.GetPagesPetPath(pet.UserId,pet.PetId),"profile.html");
+
+			var htmlpath = Path.Combine(CustomPaths.GetPagesPetPath(pet.UserId, pet.PetId), "profile.html");
 			if (System.IO.File.Exists((htmlpath)))
 			{
-			 pageContent = await	System.IO.File.ReadAllTextAsync(htmlpath); 
+				pageContent = await System.IO.File.ReadAllTextAsync(htmlpath);
 			}
 			return new Tuple<string, List<string>>(pageContent, imagesFilenames);
 		}
 
-		private void SaveFiles(Pet pet, IList<IFormFile> imagesFiles, string pageContent) {
+		private void SaveFiles(Pet pet, IList<IFormFile> imagesFiles, string pageContent)
+		{
 			var dirpath = CustomPaths.GetImagesPetPath(pet.UserId, pet.PetId);
 			foreach (IFormFile file in imagesFiles)
 			{
@@ -299,7 +373,7 @@ namespace webGDPR.Controllers
 					img.Resize().Save(imgpath);
 				}
 			}
-			var htmlpath = Path.Combine(CustomPaths.GetPagesPetPath(pet.UserId, pet.PetId),"profile.html");
+			var htmlpath = Path.Combine(CustomPaths.GetPagesPetPath(pet.UserId, pet.PetId), "profile.html");
 			if (!Directory.Exists(Path.GetDirectoryName(htmlpath)))
 				Directory.CreateDirectory(Path.GetDirectoryName(htmlpath));
 
