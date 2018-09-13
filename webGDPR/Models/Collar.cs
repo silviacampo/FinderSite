@@ -23,6 +23,8 @@ namespace AgendaSignalR.Infrastructure
 
 		[ForeignKey("LastStatusId")]
 		public CollarStatus LastStatus { get; set; }
+
+		public bool Deleted { get; set; }
 	}
 }
 

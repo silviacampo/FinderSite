@@ -26,5 +26,7 @@ namespace AgendaSignalR.Infrastructure
 		[ForeignKey("LastStatusId")]
 		public BaseStatus LastStatus { get; set; }
 
+		public bool Deleted { get; set; }
+
 	}
 }

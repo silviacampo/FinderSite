@@ -47,7 +47,7 @@ namespace webGDPR.Controllers
 			List<PetViewModel> model = new List<PetViewModel>();
 			string UserId = _context.User.FirstOrDefault(u => u.OwnerID == _userManager.GetUserId(User)).UserID;
 
-			List<Pet> pets = await _context.Pet.AsNoTracking().Where(b => b.UserId == UserId).Include(c => c.LastTrackingInfo).Include(b => b.LastCollar).ThenInclude(c => c.Collar).ToListAsync();
+			List<Pet> pets = await _context.Pet.AsNoTracking().Where(b => b.UserId == UserId && b.Deleted == false).Include(c => c.LastTrackingInfo).Include(b => b.LastCollar).ThenInclude(c => c.Collar).ToListAsync();
 			foreach (var c in pets)
 			{
 				PetViewModel cvm = _mapper.Map<PetViewModel>(new Tuple<Pet, PetTrackingInfo>(c, c.LastTrackingInfo));
@@ -136,7 +136,8 @@ namespace webGDPR.Controllers
 				//send message to connected devices
 				if (pet.CollarId != null)
 				{
-					var foundCollar = await _context.Collar.AsNoTracking().FirstAsync(c => c.CollarId == pet.CollarId);
+					var foundPetCollar = await _context.PetCollar.AsNoTracking().FirstAsync(c => c.CollarId == p.LastCollarId);
+					var foundCollar = await _context.Collar.AsNoTracking().FirstAsync(c => c.CollarId == foundPetCollar.CollarId);
 					foundCollar.Name = pet.Name;
 					Infrastructure.CustomWebSockets.Messages.CollarCore cc = _mapper.Map<Infrastructure.CustomWebSockets.Messages.CollarCore>(foundCollar);
 					await _webSocketMessageHandler.SendCollarCoreAsync(cc, _userManager.GetUserName(User), _wsFactory);
@@ -209,9 +210,11 @@ namespace webGDPR.Controllers
 					p.UserId = _context.User.FirstOrDefault(u => u.OwnerID == _userManager.GetUserId(User)).UserID;
 					_context.Update(p);
 					await _context.SaveChangesAsync();
-
-					if (pet.CollarId != _context.PetCollar.FirstOrDefault(c => c.PetId == pet.PetId && c.IsActive).CollarId)
+					PetCollar currentCollar = _context.PetCollar.FirstOrDefault(c => c.PetId == pet.PetId && c.IsActive);
+					if (pet.CollarId != currentCollar.CollarId)
 					{
+						currentCollar.IsActive = false;
+
 						PetCollar pc = new PetCollar
 						{
 							PetId = p.PetId,
@@ -234,7 +237,8 @@ namespace webGDPR.Controllers
 					//send message to connected devices
 					if (pet.CollarId != null)
 					{
-						var foundCollar = await _context.Collar.AsNoTracking().FirstAsync(c => c.CollarId == pet.CollarId);
+						var foundPetCollar = await _context.PetCollar.AsNoTracking().FirstAsync(c => c.CollarId == p.LastCollarId);
+						var foundCollar = await _context.Collar.AsNoTracking().FirstAsync(c => c.CollarId == foundPetCollar.CollarId);
 						foundCollar.Name = pet.Name;
 						Infrastructure.CustomWebSockets.Messages.CollarCore cc = _mapper.Map<Infrastructure.CustomWebSockets.Messages.CollarCore>(foundCollar);
 						await _webSocketMessageHandler.SendCollarCoreAsync(cc, _userManager.GetUserName(User), _wsFactory);
@@ -280,13 +284,18 @@ namespace webGDPR.Controllers
 		public async Task<IActionResult> DeleteConfirmed(string id)
 		{
 			var pet = await _context.Pet.FindAsync(id);
-			_context.Pet.Remove(pet);
+			//_context.Pet.Remove(pet);
+			pet.Deleted = true;
+			var petCollar = _context.PetCollar.FirstOrDefault(c => c.PetCollarId == pet.LastCollarId);
+			petCollar.IsActive = false;
+			petCollar.EndDate = DateTime.Now;
 			await _context.SaveChangesAsync();
 
 			//send message to connected devices
 			if (pet.LastCollarId != null)
 			{
-				var foundCollar = await _context.Collar.AsNoTracking().FirstAsync(c => c.CollarId == pet.LastCollarId);
+				var foundPetCollar = await _context.PetCollar.AsNoTracking().FirstAsync(c => c.CollarId == pet.LastCollarId);
+				var foundCollar = await _context.Collar.AsNoTracking().FirstAsync(c => c.CollarId == foundPetCollar.CollarId);
 				Infrastructure.CustomWebSockets.Messages.CollarCore cc = _mapper.Map<Infrastructure.CustomWebSockets.Messages.CollarCore>(foundCollar);
 				await _webSocketMessageHandler.SendCollarCoreAsync(cc, _userManager.GetUserName(User), _wsFactory);
 			}
