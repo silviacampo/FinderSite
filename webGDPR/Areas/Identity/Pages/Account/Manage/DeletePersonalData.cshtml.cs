@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using webGDPR.Data;
+using webGDPR.Infrastructure;
 
 namespace webGDPR.Areas.Identity.Pages.Account.Manage
 {
@@ -57,7 +58,7 @@ namespace webGDPR.Areas.Identity.Pages.Account.Manage
 		private async Task EndClient(ApplicationUser user) {
 			string UserId = _context.User.FirstOrDefault(u => u.OwnerID == _userManager.GetUserId(User)).UserID;
 
-			var userpath = Path.Combine(Directory.GetCurrentDirectory(), $"wwwroot\\user\\{UserId}");
+			var userpath = CustomPaths.GetUserPath(UserId);
 			if (Directory.Exists(Path.GetDirectoryName(userpath))) {
 				Directory.Delete(userpath);
 			}

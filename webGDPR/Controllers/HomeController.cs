@@ -37,7 +37,7 @@ namespace webGDPR.Controllers
 				using (Image img = Image.FromStream(file.OpenReadStream()))
 				{
 					Stream ms = new MemoryStream(img.Resize().ToByteArray());
-					var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\images\\posts", file.FileName);
+					var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot","images","posts", file.FileName);
 
 					if (!Directory.Exists(Path.GetDirectoryName(path)))
 						Directory.CreateDirectory(Path.GetDirectoryName(path));

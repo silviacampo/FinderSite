@@ -11,10 +11,12 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using webGDPR.Data;
+using webGDPR.Infrastructure;
 using webGDPR.Models;
 
 
@@ -41,7 +43,7 @@ namespace webGDPR.Areas.Identity.Pages.Account.Manage
 		{
 			string UserId = _context.User.FirstOrDefault(u => u.OwnerID == _userManager.GetUserId(User)).UserID;
 
-			var userpath = Path.Combine(Directory.GetCurrentDirectory(), $"wwwroot\\user\\{UserId}");
+			var userpath = CustomPaths.GetUserPath(UserId);
 			if (Directory.Exists(Path.GetDirectoryName(userpath)))
 			{
 				DirectoryInfo d = new DirectoryInfo(userpath);
@@ -53,8 +55,7 @@ namespace webGDPR.Areas.Identity.Pages.Account.Manage
 				}
 			}
 
-			await _context.SaveChangesAsync();
-			User client = new User(); // await _context.User.AsNoTracking().Where(b => b.UserID == UserId).Include(b => b.Devices).Include(b => b.Bases).ThenInclude(c => c.BaseStatus).Include(b => b.Collars).ThenInclude(c => c.CollarStatus).Include(b => b.Pets).ThenInclude(c => c.PetCollars)..ThenInclude(c => c.PetTracking).ToListAsync();
+			User client = new Models.User();//await _context.User.AsNoTracking().Where(b => b.UserID == UserId).Include(b => b.Devices).Include(b => b.Bases).ThenInclude(c => c.BaseStatus).Include(b => b.Collars).ThenInclude(c => c.CollarStatus).Include(b => b.Pets).ThenInclude(c => c.PetCollars)..ThenInclude(c => c.PetTracking).ToListAsync();
 			return client;
 		}
 

@@ -30,9 +30,6 @@ namespace webGDPR.Controllers
 		ICustomWebSocketMessageHandler _webSocketMessageHandler;
 		ICustomWebSocketFactory _wsFactory;
 
-		private const string petImageDir = @"wwwroot\\images\\{UserId}\\{PetId}";
-		private const string petPageDir = @"wwwroot\html\{UserId}\{PetId}";
-
 		public PetController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IMapper mapper, IHostingEnvironment hostingEnvironment, ICustomWebSocketMessageHandler webSocketMessageHandler, ICustomWebSocketFactory wsFactory)
 		{
             _context = context;
@@ -235,7 +232,7 @@ namespace webGDPR.Controllers
 				{
 					Stream ms = new MemoryStream(img.Resize().ToByteArray());
 					string UserId = _context.User.FirstOrDefault(u => u.OwnerID == _userManager.GetUserId(User)).UserID;
-					var path = Path.Combine(Directory.GetCurrentDirectory(), $"wwwroot\\images\\{UserId}\\{PetId}", file.FileName);
+					var path = Path.Combine(CustomPaths.GetImagesPetPath(UserId,PetId), file.FileName);
 
 					if (!Directory.Exists(Path.GetDirectoryName(path)))
 						Directory.CreateDirectory(Path.GetDirectoryName(path));
@@ -264,7 +261,7 @@ namespace webGDPR.Controllers
 			List<string> imagesFilenames = new List<string>();
 			string pageContent = string.Empty;
 
-			var imgpath = Path.Combine(Directory.GetCurrentDirectory(), $"wwwroot\\user\\{pet.UserId}\\{pet.PetId}\\images");
+			var imgpath = CustomPaths.GetImagesPetPath(pet.UserId, pet.PetId);
 			if (Directory.Exists(Path.GetDirectoryName(imgpath))) {
 				DirectoryInfo d = new DirectoryInfo(imgpath);
 				FileInfo[] Files = d.GetFiles();
@@ -274,7 +271,7 @@ namespace webGDPR.Controllers
 				}
 			}
 			
-			var htmlpath = Path.Combine(Directory.GetCurrentDirectory(), $"wwwroot\\user\\{pet.UserId}\\{pet.PetId}\\pages\\profile.html");
+			var htmlpath = Path.Combine(CustomPaths.GetPagesPetPath(pet.UserId,pet.PetId),"profile.html");
 			if (System.IO.File.Exists((htmlpath)))
 			{
 			 pageContent = await	System.IO.File.ReadAllTextAsync(htmlpath); 
@@ -283,12 +280,13 @@ namespace webGDPR.Controllers
 		}
 
 		private void SaveFiles(Pet pet, IList<IFormFile> imagesFiles, string pageContent) {
+			var dirpath = CustomPaths.GetImagesPetPath(pet.UserId, pet.PetId);
 			foreach (IFormFile file in imagesFiles)
 			{
 				using (Image img = Image.FromStream(file.OpenReadStream()))
 				{
 					Stream ms = new MemoryStream(img.Resize().ToByteArray());
-					var imgpath = Path.Combine(Directory.GetCurrentDirectory(), $"wwwroot\\user\\{pet.UserId}\\{pet.PetId}\\images", file.FileName);
+					var imgpath = Path.Combine(dirpath, file.FileName);
 
 					if (!Directory.Exists(Path.GetDirectoryName(imgpath)))
 						Directory.CreateDirectory(Path.GetDirectoryName(imgpath));
@@ -301,7 +299,7 @@ namespace webGDPR.Controllers
 					img.Resize().Save(imgpath);
 				}
 			}
-			var htmlpath = Path.Combine(Directory.GetCurrentDirectory(), $"wwwroot\\user\\{pet.UserId}\\{pet.PetId}\\pages\\profile.html");
+			var htmlpath = Path.Combine(CustomPaths.GetPagesPetPath(pet.UserId, pet.PetId),"profile.html");
 			if (!Directory.Exists(Path.GetDirectoryName(htmlpath)))
 				Directory.CreateDirectory(Path.GetDirectoryName(htmlpath));
 
