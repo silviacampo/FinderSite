@@ -40,10 +40,22 @@ namespace webGDPR.Areas.Identity.Pages.Account.Manage
 			_context = context;
 		}
 
-		private async Task<User> ReadClient(string UserId)
+		private async Task<Dictionary<string, string>> ReadClient(ApplicationUser user, string UserId)
 		{
-			User client = await _context.User.AsNoTracking().FirstOrDefaultAsync(b => b.UserID == UserId);//await _context.User.AsNoTracking().Where(b => b.UserID == UserId).Include(b => b.Devices).Include(b => b.Bases).ThenInclude(c => c.BaseStatus).Include(b => b.Collars).ThenInclude(c => c.CollarStatus).Include(b => b.Pets).ThenInclude(c => c.PetCollars)..ThenInclude(c => c.PetTracking).ToListAsync();
-			return client;
+			var personalData = new Dictionary<string, string>();
+			var personalDataProps = typeof(ApplicationUser).GetProperties().Where(
+							prop => Attribute.IsDefined(prop, typeof(PersonalDataAttribute)));
+			foreach (var p in personalDataProps)
+			{
+				personalData.Add(p.Name, p.GetValue(user)?.ToString() ?? "null");
+			}
+
+			User client = await _context.User.AsNoTracking().FirstOrDefaultAsync(b => b.UserID == UserId);
+			personalData.Add("Name", client.Name);
+			personalData.Add("UserEmail", client.Email);
+
+			//await _context.User.AsNoTracking().Where(b => b.UserID == UserId).Include(b => b.Devices).Include(b => b.Bases).ThenInclude(c => c.BaseStatus).Include(b => b.Collars).ThenInclude(c => c.CollarStatus).Include(b => b.Pets).ThenInclude(c => c.PetCollars)..ThenInclude(c => c.PetTracking).ToListAsync();
+			return personalData;
 		}
 
 		private Dictionary<string, string> ListClientFiles(string UserId)
@@ -83,47 +95,27 @@ namespace webGDPR.Areas.Identity.Pages.Account.Manage
 
             _logger.LogInformation("User with ID '{UserId}' asked for their personal data.", _userManager.GetUserId(User));
 
-            // Only include personal data for download
-            var personalData = new Dictionary<string, string>();
-            var personalDataProps = typeof(ApplicationUser).GetProperties().Where(
-                            prop => Attribute.IsDefined(prop, typeof(PersonalDataAttribute)));
-            foreach (var p in personalDataProps)
-            {
-                personalData.Add(p.Name, p.GetValue(user)?.ToString() ?? "null");
-            }
 			//TODO: zip it. include all other personal data and files
 			//https://github.com/StephenClearyExamples/AsyncDynamicZip/tree/core-ziparchive
 
 			string UserId = _context.User.FirstOrDefault(u => u.OwnerID == _userManager.GetUserId(User)).UserID;
-			JsonSerializerSettings settings = new JsonSerializerSettings
-			{
-				PreserveReferencesHandling = PreserveReferencesHandling.Objects
-			};
-			string clientInfo = "test"; //JsonConvert.SerializeObject(ReadClient(UserId), new JsonSerializerSettings{		PreserveReferencesHandling = PreserveReferencesHandling.Objects});
-
-			var filenamesAndUrls = new Dictionary<string, string>
-			{
-				{ "README.md", "https://raw.githubusercontent.com/StephenClearyExamples/AsyncDynamicZip/master/README.md" },
-				{ ".gitignore", "https://raw.githubusercontent.com/StephenClearyExamples/AsyncDynamicZip/master/.gitignore" },
-			};
-
-			//var filenamesAndUrls = ListClientFiles(UserId);
-			HttpClient Client = new HttpClient();
+			Dictionary<string, string> personalData = await ReadClient(user, UserId);
+			var filenamesAndUrls = ListClientFiles(UserId);
 			
 		return new FileCallbackResult(new MediaTypeHeaderValue("application/octet-stream"), async (outputStream, _) =>
 			{
 				using (var zipArchive = new ZipArchive(new WriteOnlyStreamWrapper(outputStream), ZipArchiveMode.Create))
 				{
-					var userZipEntry = zipArchive.CreateEntry("user.json");
+					var userZipEntry = zipArchive.CreateEntry("personaldata.json");
 					using (var userZipStream = userZipEntry.Open())
-					using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(clientInfo ?? "")) )
+					using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(personalData))) )
 						await stream.CopyToAsync(userZipStream);
 
 					foreach (var kvp in filenamesAndUrls)
 					{
 						var zipEntry = zipArchive.CreateEntry(kvp.Key);
 						using (var zipStream = zipEntry.Open())
-						using (var stream = await Client.GetStreamAsync(kvp.Value))
+						using (var stream = System.IO.File.OpenRead(kvp.Value))
 							await stream.CopyToAsync(zipStream);
 					}
 				}
