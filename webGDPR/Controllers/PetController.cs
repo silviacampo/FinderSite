@@ -299,6 +299,8 @@ namespace webGDPR.Controllers
 			petCollar.EndDate = DateTime.Now;
 			await _context.SaveChangesAsync();
 
+			DeleteFiles(pet);
+
 			//send message to connected devices
 			if (pet.LastCollarId != null)
 			{
@@ -401,5 +403,13 @@ namespace webGDPR.Controllers
 			System.IO.File.WriteAllTextAsync(htmlpath, pageContent);
 		}
 
+		private void DeleteFiles(Pet pet)
+		{
+			var petpath = CustomPaths.GetPetPath(pet.UserId, pet.PetId);
+			if (Directory.Exists(Path.GetDirectoryName(petpath)))
+			{
+				Directory.Delete(petpath, true);
+			}
+		}
 	}
 }
