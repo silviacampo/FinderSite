@@ -57,7 +57,18 @@ namespace webGDPR.Areas.Identity.Pages.Account.Manage
 				
 				foreach (FileInfo file in Files)
 				{
-					filenamesAndUrls.Add(file.Name, file.FullName);
+					string filename = Path.GetFileNameWithoutExtension(file.Name);
+					string fileextension = file.Extension;
+
+					if (filenamesAndUrls.ContainsKey(filename + fileextension)) {
+						int copy = 0;
+						do {
+							copy++;
+						} while (filenamesAndUrls.ContainsKey(filename + "(" + copy + ")" + fileextension));
+						filename = filename +"("+copy+")";
+					}
+					filename = filename + fileextension;
+					filenamesAndUrls.Add(filename, file.FullName);
 				}
 			}
 			return filenamesAndUrls;
@@ -90,13 +101,13 @@ namespace webGDPR.Areas.Identity.Pages.Account.Manage
 			};
 			string clientInfo = "test"; //JsonConvert.SerializeObject(ReadClient(UserId), new JsonSerializerSettings{		PreserveReferencesHandling = PreserveReferencesHandling.Objects});
 
-			//var filenamesAndUrls = new Dictionary<string, string>
-			//{
-			//	{ "README.md", "https://raw.githubusercontent.com/StephenClearyExamples/AsyncDynamicZip/master/README.md" },
-			//	{ ".gitignore", "https://raw.githubusercontent.com/StephenClearyExamples/AsyncDynamicZip/master/.gitignore" },
-			//};
-			
-			var filenamesAndUrls = ListClientFiles(UserId);
+			var filenamesAndUrls = new Dictionary<string, string>
+			{
+				{ "README.md", "https://raw.githubusercontent.com/StephenClearyExamples/AsyncDynamicZip/master/README.md" },
+				{ ".gitignore", "https://raw.githubusercontent.com/StephenClearyExamples/AsyncDynamicZip/master/.gitignore" },
+			};
+
+			//var filenamesAndUrls = ListClientFiles(UserId);
 			HttpClient Client = new HttpClient();
 			
 		return new FileCallbackResult(new MediaTypeHeaderValue("application/octet-stream"), async (outputStream, _) =>
