@@ -8,6 +8,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using AgendaSignalR.Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -54,7 +55,50 @@ namespace webGDPR.Areas.Identity.Pages.Account.Manage
 			personalData.Add("Name", client.Name);
 			personalData.Add("UserEmail", client.Email);
 
-			//await _context.User.AsNoTracking().Where(b => b.UserID == UserId).Include(b => b.Devices).Include(b => b.Bases).ThenInclude(c => c.BaseStatus).Include(b => b.Collars).ThenInclude(c => c.CollarStatus).Include(b => b.Pets).ThenInclude(c => c.PetCollars)..ThenInclude(c => c.PetTracking).ToListAsync();
+			List<Device> devices = await _context.Device.Where(b => b.UserId == UserId).ToListAsync();
+			for(int i=1; i < devices.Count; i++) {
+				personalData.Add("DeviceAlias"+ i, devices[i].AliasName);
+				personalData.Add("DeviceName"+i, devices[i].Name);
+			}
+
+			List<Base> bases = await _context.Base.Where(b => b.UserId == UserId).ToListAsync();
+			for (int i = 1; i < bases.Count; i++)
+			{
+				personalData.Add("BaseName" + i, bases[i].Name);
+
+				List<BaseStatus> basesStatus = await _context.BaseStatus.Where(b => b.UserId == UserId).ToListAsync();
+				for (int j = 1; j < basesStatus.Count; j++)
+				{
+					personalData.Add("Base" + i + "_IsConnected" + j, basesStatus[j].IsConnected.ToString());
+				}
+			}
+
+			List<Collar> collars = await _context.Collar.Where(b => b.UserId == UserId).ToListAsync();
+			for (int i = 1; i < collars.Count; i++)
+			{
+				personalData.Add("CollarName" + i, collars[i].Name);
+
+				List<CollarStatus> collarsStatus = await _context.CollarStatus.Where(b => b.UserId == UserId).ToListAsync();
+				for (int j = 1; j < collarsStatus.Count; j++)
+				{
+					personalData.Add("Collar" + i + "_IsConnected" + j, collarsStatus[j].IsConnected.ToString());
+				}
+			}
+
+			List<Pet> pets = await _context.Pet.Where(b => b.UserId == UserId).ToListAsync();
+			for (int i = 1; i < pets.Count; i++)
+			{
+				personalData.Add("PetName" + i, pets[i].Name);
+
+				List<PetTrackingInfo> petsTrackings = await _context.PetTrackingInfo.Where(b => b.UserId == UserId).ToListAsync();
+				for (int j = 1; j < petsTrackings.Count; j++)
+				{
+					personalData.Add("Pet" + i + "_Latitude" + j, petsTrackings[j].Latitude.ToString());
+					personalData.Add("Pet" + i + "_Latitude" + j, petsTrackings[j].Longitude.ToString());
+					personalData.Add("Pet" + i + "_Latitude" + j, petsTrackings[j].CreationDate.ToString());
+					personalData.Add("Pet" + i + "_Latitude" + j, petsTrackings[j].IsMoving.ToString());
+				}
+			}
 			return personalData;
 		}
 
