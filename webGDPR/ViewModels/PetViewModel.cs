@@ -15,10 +15,6 @@ namespace webGDPR.ViewModels
 		public string Age { get; set; }
 		public string HealthComments { get; set; }
 
-		public string ImageFileName { get; set; }
-		public string PageFileName { get; set; }
-		public string PageContent { get; set; }
-
 		public string CollarName { get; set; }
 
 		public long Latitude { get; set; }

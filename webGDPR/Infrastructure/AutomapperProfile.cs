@@ -178,8 +178,6 @@ namespace webGDPR.Infrastructure
 				.ForMember(dest => dest.Type, opts => opts.MapFrom(src => src.Item1.Type))
 				.ForMember(dest => dest.Color, opts => opts.MapFrom(src => src.Item1.Color))
 				.ForMember(dest => dest.HealthComments, opts => opts.MapFrom(src => src.Item1.HealthComments))
-				.ForMember(dest => dest.ImageFileName, opts => opts.MapFrom(src => src.Item1.ImageFileName))
-				.ForMember(dest => dest.PageFileName, opts => opts.MapFrom(src => src.Item1.PageFileName))
 				.ForMember(dest => dest.UserId, opts => opts.MapFrom(src => src.Item1.UserId))
 				.ForMember(dest => dest.Latitude, opts => opts.MapFrom(src => src.Item2.Latitude))
 				.ForMember(dest => dest.Longitude, opts => opts.MapFrom(src => src.Item2.Longitude))
@@ -194,8 +192,6 @@ namespace webGDPR.Infrastructure
 				.ForMember(dest => dest.Type, opts => opts.MapFrom(src => src.Type))
 				.ForMember(dest => dest.Color, opts => opts.MapFrom(src => src.Color))
 				.ForMember(dest => dest.HealthComments, opts => opts.MapFrom(src => src.HealthComments))
-				.ForMember(dest => dest.ImageFileName, opts => opts.MapFrom(src => src.ImageFileName))
-				.ForMember(dest => dest.PageFileName, opts => opts.MapFrom(src => src.PageFileName))
 				.ForMember(dest => dest.UserId, opts => opts.MapFrom(src => src.UserId));
 
 			CreateMap<PetViewModel, Models.Pet>().ReverseMap();

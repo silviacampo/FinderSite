@@ -18,9 +18,6 @@ namespace webGDPR.Models
 		public string Age { get; set; }
 		public string HealthComments { get; set; }
 
-		public string ImageFileName { get; set; }
-		public string PageFileName { get; set; }
-
 		public string LastCollarId { get; set; }
 
 		[ForeignKey("LastCollarId")]

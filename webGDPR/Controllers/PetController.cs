@@ -168,7 +168,10 @@ namespace webGDPR.Controllers
 
 			EditPetViewModel model = new EditPetViewModel();
 			model = _mapper.Map<EditPetViewModel>(pet);
-			model.CollarId = _context.PetCollar.FirstOrDefault(c => c.PetCollarId == pet.LastCollarId).CollarId;
+			if (pet.LastCollarId != null)
+			{
+				model.CollarId = _context.PetCollar.FirstOrDefault(c => c.PetCollarId == pet.LastCollarId).CollarId;
+			}
 			List<SelectListItem> collarsItems = new List<SelectListItem>();
 			foreach (Collar c in collars)
 			{
@@ -209,9 +212,13 @@ namespace webGDPR.Controllers
 				{
 					Pet p = _mapper.Map<Pet>(pet);
 					p.UserId = _context.User.FirstOrDefault(u => u.OwnerID == _userManager.GetUserId(User)).UserID;
+					PetCollar currentCollar = _context.PetCollar.FirstOrDefault(c => c.PetId == pet.PetId && c.IsActive);
+					if (pet.CollarId == currentCollar.CollarId) {
+						p.LastCollarId = currentCollar.PetCollarId;
+					}
 					_context.Update(p);
 					await _context.SaveChangesAsync();
-					PetCollar currentCollar = _context.PetCollar.FirstOrDefault(c => c.PetId == pet.PetId && c.IsActive);
+					
 					if (pet.CollarId != currentCollar.CollarId)
 					{
 						currentCollar.IsActive = false;
