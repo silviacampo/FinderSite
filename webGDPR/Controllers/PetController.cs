@@ -168,6 +168,7 @@ namespace webGDPR.Controllers
 
 			EditPetViewModel model = new EditPetViewModel();
 			model = _mapper.Map<EditPetViewModel>(pet);
+			model.CollarId = _context.PetCollar.FirstOrDefault(c => c.PetCollarId == pet.LastCollarId).CollarId;
 			List<SelectListItem> collarsItems = new List<SelectListItem>();
 			foreach (Collar c in collars)
 			{
