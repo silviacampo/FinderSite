@@ -5,6 +5,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
@@ -39,26 +40,28 @@ namespace webGDPR.Areas.Identity.Pages.Account.Manage
 			_context = context;
 		}
 
-		private async Task<User> ReadClient(ApplicationUser user)
+		private async Task<User> ReadClient(string UserId)
 		{
-			string UserId = _context.User.FirstOrDefault(u => u.OwnerID == _userManager.GetUserId(User)).UserID;
+			User client = await _context.User.AsNoTracking().FirstOrDefaultAsync(b => b.UserID == UserId);//await _context.User.AsNoTracking().Where(b => b.UserID == UserId).Include(b => b.Devices).Include(b => b.Bases).ThenInclude(c => c.BaseStatus).Include(b => b.Collars).ThenInclude(c => c.CollarStatus).Include(b => b.Pets).ThenInclude(c => c.PetCollars)..ThenInclude(c => c.PetTracking).ToListAsync();
+			return client;
+		}
 
+		private Dictionary<string, string> ListClientFiles(string UserId)
+		{
 			var userpath = CustomPaths.GetUserPath(UserId);
+			var filenamesAndUrls = new Dictionary<string, string>();
 			if (Directory.Exists(Path.GetDirectoryName(userpath)))
 			{
 				DirectoryInfo d = new DirectoryInfo(userpath);
 				FileInfo[] Files = d.GetFiles("*.*", SearchOption.AllDirectories);
-				var filenamesAndUrls = new Dictionary<string, string>();
+				
 				foreach (FileInfo file in Files)
 				{
 					filenamesAndUrls.Add(file.Name, file.FullName);
 				}
 			}
-
-			User client = new Models.User();//await _context.User.AsNoTracking().Where(b => b.UserID == UserId).Include(b => b.Devices).Include(b => b.Bases).ThenInclude(c => c.BaseStatus).Include(b => b.Collars).ThenInclude(c => c.CollarStatus).Include(b => b.Pets).ThenInclude(c => c.PetCollars)..ThenInclude(c => c.PetTracking).ToListAsync();
-			return client;
+			return filenamesAndUrls;
 		}
-
 		public async Task<IActionResult> OnPostAsync()
         {
             var user = await _userManager.GetUserAsync(User);
@@ -79,19 +82,32 @@ namespace webGDPR.Areas.Identity.Pages.Account.Manage
             }
 			//TODO: zip it. include all other personal data and files
 			//https://github.com/StephenClearyExamples/AsyncDynamicZip/tree/core-ziparchive
-			string clientInfo = JsonConvert.SerializeObject(ReadClient(user));
 
-			var filenamesAndUrls = new Dictionary<string, string>
+			string UserId = _context.User.FirstOrDefault(u => u.OwnerID == _userManager.GetUserId(User)).UserID;
+			JsonSerializerSettings settings = new JsonSerializerSettings
 			{
-				{ "README.md", "https://raw.githubusercontent.com/StephenClearyExamples/AsyncDynamicZip/master/README.md" },
-				{ ".gitignore", "https://raw.githubusercontent.com/StephenClearyExamples/AsyncDynamicZip/master/.gitignore" },
+				PreserveReferencesHandling = PreserveReferencesHandling.Objects
 			};
+			string clientInfo = "test"; //JsonConvert.SerializeObject(ReadClient(UserId), new JsonSerializerSettings{		PreserveReferencesHandling = PreserveReferencesHandling.Objects});
+
+			//var filenamesAndUrls = new Dictionary<string, string>
+			//{
+			//	{ "README.md", "https://raw.githubusercontent.com/StephenClearyExamples/AsyncDynamicZip/master/README.md" },
+			//	{ ".gitignore", "https://raw.githubusercontent.com/StephenClearyExamples/AsyncDynamicZip/master/.gitignore" },
+			//};
+			
+			var filenamesAndUrls = ListClientFiles(UserId);
 			HttpClient Client = new HttpClient();
 			
 		return new FileCallbackResult(new MediaTypeHeaderValue("application/octet-stream"), async (outputStream, _) =>
 			{
 				using (var zipArchive = new ZipArchive(new WriteOnlyStreamWrapper(outputStream), ZipArchiveMode.Create))
 				{
+					var userZipEntry = zipArchive.CreateEntry("user.json");
+					using (var userZipStream = userZipEntry.Open())
+					using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(clientInfo ?? "")) )
+						await stream.CopyToAsync(userZipStream);
+
 					foreach (var kvp in filenamesAndUrls)
 					{
 						var zipEntry = zipArchive.CreateEntry(kvp.Key);
