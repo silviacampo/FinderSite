@@ -15,7 +15,9 @@ namespace webGDPR.Models
 		public string Type { get; set; }
 		public string Breeding { get; set; }
 		public string Color { get; set; }
+		public DateTime Birthdate { get; set; }
 		public string Age { get; set; }
+		public string Weigth { get; set; }
 		public string HealthComments { get; set; }
 
 		public string LastCollarId { get; set; }
