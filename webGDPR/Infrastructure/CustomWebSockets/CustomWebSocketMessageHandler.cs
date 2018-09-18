@@ -25,7 +25,7 @@ namespace AgendaSignalR.Infrastructure
 			try
 			{
 				WebSocket webSocket = userWebSocket.WebSocket;
-				string UserId = dbContext.User.FirstOrDefault(u => u.Email == userWebSocket.Username).UserID;
+				string UserId = dbContext.User.FirstOrDefault(u => u.Name == userWebSocket.Username).UserID;
 
 				List<Base> bases = await dbContext.Base.AsNoTracking().Where(b => b.UserId == UserId).Include(b => b.LastStatus).ToListAsync();
 
@@ -95,16 +95,13 @@ namespace AgendaSignalR.Infrastructure
 				//{ "Text":"{\"DeviceId\":\"68b73ced-1659-483c-929e-274a97706405\",\"Name\":\"Silvia's Phone\",\"Model\":\"Nexus 5\",\"Manufacturer\":\"LG\",\"Type\":\"Phone\",\"Platform\":\"Android\",\"UserId\":\"bee7b8af-c902-4771-89f8-969a3318cbdb\"}","MessagDateTime":"2018-08-23T13:33:00.5057737-04:00","UserId":"scampo@test.com","Type":5}
 
 				var message = JsonConvert.DeserializeObject<CustomWebSocketMessage>(msg);
+				string UserId = dbContext.User.FirstOrDefault(u => u.Name == userWebSocket.Username).UserID;
+
 				if (message.Type == WSMessageType.BaseStatus)
 				{
 					webGDPR.Infrastructure.CustomWebSockets.Messages.BaseStatus bs = JsonConvert.DeserializeObject<webGDPR.Infrastructure.CustomWebSockets.Messages.BaseStatus>(message.Text);
-					//if (!string.IsNullOrEmpty(userWebSocket.DeviceId) && bs.ConnectedTo != userWebSocket.DeviceId)
-					//{
-					//	log.Error("Wrong Device Id sending:" + message.Text);
-					//	throw new Exception("Wrong Device Id");
-					//}
 					bs.ConnectedTo = userWebSocket.DeviceId;
-					Base b = dbContext.Base.FirstOrDefault(f => f.BaseNumber == bs.BaseNumber);
+					Base b = dbContext.Base.FirstOrDefault(f => f.BaseNumber == bs.BaseNumber && f.UserId == UserId);
 					BaseStatus lastStatus = dbContext.BaseStatus.FirstOrDefault(f => f.BaseId == b.BaseId && f.IsActive == true);
 					if (lastStatus != null)
 					{
@@ -121,7 +118,7 @@ namespace AgendaSignalR.Infrastructure
 						IsPlugged = bs.IsPlugged,
 						Battery = bs.Battery,
 						HasBattery = bs.HasBattery,
-
+						UserId = b.UserId,
 						CreationDate = message.MessagDateTime, //TODO: or now?
 						IsActive = true
 					};
@@ -137,7 +134,7 @@ namespace AgendaSignalR.Infrastructure
 				else if (message.Type == WSMessageType.CollarStatus)
 				{
 					webGDPR.Infrastructure.CustomWebSockets.Messages.CollarStatus cs = JsonConvert.DeserializeObject<webGDPR.Infrastructure.CustomWebSockets.Messages.CollarStatus>(message.Text);
-					Collar collar = dbContext.Collar.FirstOrDefault(f => f.CollarNumber == cs.CollarNumber);
+					Collar collar = dbContext.Collar.FirstOrDefault(f => f.CollarNumber == cs.CollarNumber && f.UserId == UserId);
 					CollarStatus lastStatus = dbContext.CollarStatus.FirstOrDefault(f => f.CollarId == collar.CollarId && f.IsActive == true);
 					if (lastStatus != null)
 					{
@@ -152,6 +149,7 @@ namespace AgendaSignalR.Infrastructure
 						IsGPSConnected = cs.IsGPSConnected,
 						Battery = cs.Battery,
 						Radio = cs.Radio,
+						UserId = collar.UserId,
 						CreationDate = message.MessagDateTime, //TODO: or now?
 						IsActive = true
 					};
@@ -166,7 +164,7 @@ namespace AgendaSignalR.Infrastructure
 				else if (message.Type == WSMessageType.Device)
 				{
 					Device d = JsonConvert.DeserializeObject<Device>(message.Text);
-					d.UserId = dbContext.User.FirstOrDefault(u => u.Email == message.UserId).UserID;
+					d.UserId = UserId;
 					Device found = dbContext.Device.FirstOrDefault(c => c.UserId == d.UserId && c.Type == d.Type && c.Platform == d.Platform && c.Manufacturer == d.Manufacturer && c.Model == d.Model && c.OSVersion == d.OSVersion);
 					if (found != null)
 					{
