@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using AgendaSignalR.Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -69,10 +70,15 @@ namespace webGDPR.Areas.Identity.Pages.Account.Manage
 			foreach (Models.Pet p in pets) {
 				p.LastCollarId = null;
 			}
-			var baseStatus = _context.BaseStatus.Where(c => c.UserId == UserId).ToList();
-			foreach (Models.BaseStatus p in baseStatus)
+			var bases = _context.Base.Where(c => c.UserId == UserId).ToList();
+			foreach (Base p in bases)
 			{
-				p.ConnectedTo = null;
+				p.LastStatusId = null;
+			}
+			var collars = _context.Collar.Where(c => c.UserId == UserId).ToList();
+			foreach (Collar p in collars)
+			{
+				p.LastStatusId = null;
 			}
 			await _context.SaveChangesAsync();
 
