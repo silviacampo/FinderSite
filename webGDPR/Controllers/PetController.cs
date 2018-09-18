@@ -30,8 +30,9 @@ namespace webGDPR.Controllers
 		IMapper _mapper;
 		ICustomWebSocketMessageHandler _webSocketMessageHandler;
 		ICustomWebSocketFactory _wsFactory;
+		private readonly SignInManager<ApplicationUser> _signInManager;
 
-		public PetController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IMapper mapper, IHostingEnvironment hostingEnvironment, ICustomWebSocketMessageHandler webSocketMessageHandler, ICustomWebSocketFactory wsFactory)
+		public PetController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IMapper mapper, IHostingEnvironment hostingEnvironment, ICustomWebSocketMessageHandler webSocketMessageHandler, ICustomWebSocketFactory wsFactory, SignInManager<ApplicationUser> signInManager)
 		{
 			_context = context;
 			_userManager = userManager;
@@ -39,6 +40,7 @@ namespace webGDPR.Controllers
 			_hostingEnvironment = hostingEnvironment;
 			_webSocketMessageHandler = webSocketMessageHandler;
 			_wsFactory = wsFactory;
+			_signInManager = signInManager;
 		}
 
 		// GET: Pet
@@ -78,26 +80,29 @@ namespace webGDPR.Controllers
 
 			return View(pet);
 		}
-		//http://localhost:51420/Pet/Map?username=SilviaCampo&collarnumber=4
+		//http://localhost:51420/Pet/Map?username=SilviaCampo&password=As!123456&collarnumber=1
 		// GET: Pet/Details/5
-		public async Task<IActionResult> Map(string username, int collarnumber)
+		[AllowAnonymous]
+		public async Task<IActionResult> Map(string username, string password, int collarnumber)
 		{
-			if (string.IsNullOrEmpty(username) || collarnumber < 1)
+			if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(username) || collarnumber < 1)
 			{
 				return NotFound();
 			}
-
-			var user = await _context.User.FirstOrDefaultAsync(m => m.Name == username);
-			var collar = await _context.Collar.FirstOrDefaultAsync(m => m.UserId == user.UserID && m.CollarNumber == collarnumber);
-			var petCollar = await _context.PetCollar.FirstOrDefaultAsync(m => m.IsActive && m.CollarId == collar.CollarId);
-			var pet = await _context.Pet
-				.FirstOrDefaultAsync(m => m.PetId == petCollar.PetId);
-			if (pet == null)
-			{
-				return NotFound();
+			var result = await _signInManager.PasswordSignInAsync(username, password, false, lockoutOnFailure: true);
+			if (result.Succeeded) {
+				var user = await _context.User.FirstOrDefaultAsync(m => m.Name == username);
+				var collar = await _context.Collar.FirstOrDefaultAsync(m => m.UserId == user.UserID && m.CollarNumber == collarnumber);
+				var petCollar = await _context.PetCollar.FirstOrDefaultAsync(m => m.IsActive && m.CollarId == collar.CollarId);
+				var pet = await _context.Pet
+					.FirstOrDefaultAsync(m => m.PetId == petCollar.PetId);
+				if (pet == null)
+				{
+					return NotFound();
+				}
+				return View(pet);
 			}
-
-			return View(pet);
+			return NotFound();
 		}
 
 		// GET: Pet/Create
