@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -13,7 +12,7 @@ using webGDPR.Data;
 
 namespace webGDPR.Areas.Identity.Pages.Account
 {
-    [AllowAnonymous]
+	[AllowAnonymous]
     public class LoginModel : PageModel
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
@@ -37,11 +36,12 @@ namespace webGDPR.Areas.Identity.Pages.Account
 
         public class InputModel
         {
-            [Required]
-            [EmailAddress]
-            public string Email { get; set; }
+			[Required]
+			[DataType(DataType.Text)]
+			[Display(Name = "Username")]
+			public string Name { get; set; }
 
-            [Required]
+			[Required]
             [DataType(DataType.Password)]
             public string Password { get; set; }
 
@@ -74,7 +74,7 @@ namespace webGDPR.Areas.Identity.Pages.Account
             {
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: true);
+                var result = await _signInManager.PasswordSignInAsync(Input.Name, Input.Password, Input.RememberMe, lockoutOnFailure: true);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");

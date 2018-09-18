@@ -59,18 +59,31 @@ namespace webGDPR.Areas.Identity.Pages.Account.Manage
 			string UserId = _context.User.FirstOrDefault(u => u.OwnerID == _userManager.GetUserId(User)).UserID;
 
 			var userpath = CustomPaths.GetUserPath(UserId);
-			if (Directory.Exists(Path.GetDirectoryName(userpath))) {
-				Directory.Delete(userpath);
+			if (Directory.Exists(userpath)) {
+				Directory.Delete(userpath,true);
 			}
 
-			_context.Remove(_context.PetTrackingInfo.Find(UserId));
-			_context.Remove(_context.PetCollar.Find(UserId));
-			_context.Remove(_context.Pet.Find(UserId));
-			_context.Remove(_context.CollarStatus.Find(UserId));
-			_context.Remove(_context.BaseStatus.Find(UserId));
-			_context.Remove(_context.Collar.Find(UserId));
-			_context.Remove(_context.Base.Find(UserId));
-			_context.Remove(_context.Device.Find(UserId));
+			_context.RemoveRange(_context.PetTrackingInfo.Where(c=>c.UserId == UserId));
+			_context.RemoveRange(_context.PetCollar.Where(c => c.UserId == UserId));
+			var pets = _context.Pet.Where(c => c.UserId == UserId).ToList();
+			foreach (Models.Pet p in pets) {
+				p.LastCollarId = null;
+			}
+			var baseStatus = _context.BaseStatus.Where(c => c.UserId == UserId).ToList();
+			foreach (Models.BaseStatus p in baseStatus)
+			{
+				p.ConnectedTo = null;
+			}
+			await _context.SaveChangesAsync();
+
+			_context.RemoveRange(_context.Pet.Where(c => c.UserId == UserId));
+			_context.RemoveRange(_context.CollarStatus.Where(c => c.UserId == UserId));
+			_context.RemoveRange(_context.BaseStatus.Where(c => c.UserId == UserId));
+			await _context.SaveChangesAsync();
+
+			_context.RemoveRange(_context.Collar.Where(c => c.UserId == UserId));
+			_context.RemoveRange(_context.Base.Where(c => c.UserId == UserId));
+			_context.RemoveRange(_context.Device.Where(c => c.UserId == UserId));
 			_context.Remove(_context.User.Find(UserId));
 
 			await _context.SaveChangesAsync();

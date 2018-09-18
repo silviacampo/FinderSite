@@ -47,7 +47,7 @@ namespace webGDPR.Areas.Identity.Pages.Account
         {
 			[Required]
 			[DataType(DataType.Text)]
-			[Display(Name = "Full name")]
+			[Display(Name = "Username")]
 			public string Name { get; set; }
 
 			//[Required]
@@ -155,7 +155,7 @@ namespace webGDPR.Areas.Identity.Pages.Account
 				{
 					Name = Input.Name,
 					//Age = Int32.Parse(Input.Age),
-					UserName = Input.Email,
+					UserName = Input.Name,
 					Email = Input.Email };
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)

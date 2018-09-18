@@ -106,7 +106,7 @@ namespace webGDPR.Areas.Identity.Pages.Account.Manage
 		{
 			var userpath = CustomPaths.GetUserPath(UserId);
 			var filenamesAndUrls = new Dictionary<string, string>();
-			if (Directory.Exists(Path.GetDirectoryName(userpath)))
+			if (Directory.Exists(userpath))
 			{
 				DirectoryInfo d = new DirectoryInfo(userpath);
 				FileInfo[] Files = d.GetFiles("*.*", SearchOption.AllDirectories);
