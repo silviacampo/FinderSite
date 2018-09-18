@@ -35,3 +35,13 @@ body {
         display: none;
     }
 }
+
+.card-map {
+	height: 300px;
+}
+
+#pano {
+	float: left;
+	height: 300px;
+	width: 300px;
+}

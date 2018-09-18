@@ -78,6 +78,27 @@ namespace webGDPR.Controllers
 
 			return View(pet);
 		}
+		//http://localhost:51420/Pet/Map?username=SilviaCampo&collarnumber=4
+		// GET: Pet/Details/5
+		public async Task<IActionResult> Map(string username, int collarnumber)
+		{
+			if (string.IsNullOrEmpty(username) || collarnumber < 1)
+			{
+				return NotFound();
+			}
+
+			var user = await _context.User.FirstOrDefaultAsync(m => m.Name == username);
+			var collar = await _context.Collar.FirstOrDefaultAsync(m => m.UserId == user.UserID && m.CollarNumber == collarnumber);
+			var petCollar = await _context.PetCollar.FirstOrDefaultAsync(m => m.IsActive && m.CollarId == collar.CollarId);
+			var pet = await _context.Pet
+				.FirstOrDefaultAsync(m => m.PetId == petCollar.PetId);
+			if (pet == null)
+			{
+				return NotFound();
+			}
+
+			return View(pet);
+		}
 
 		// GET: Pet/Create
 		public async Task<IActionResult> Create()

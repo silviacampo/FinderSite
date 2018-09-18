@@ -1,4 +1,10 @@
-﻿<!DOCTYPE html>
+@model webGDPR.Models.Pet
+
+@{
+	Layout = null;
+}
+
+<!DOCTYPE html>
 <html>
 <head>
 	<meta charset="utf-8" />
@@ -18,42 +24,10 @@
 	<link rel="icon" href="~/favicon_@ViewData["Host"]_.ico" type="image/x-icon" sizes="16x16">
 </head>
 <body>
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-				<a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">@ViewData["Host"]</a>
-            </div>
-            <div class="navbar-collapse collapse">
-				<ul class="nav navbar-nav">
-					<li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-					<li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
-					<li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
-					<li><a asp-area="" asp-controller="Pet" asp-action="Index">Pets</a></li>
-					<li><a asp-area="" asp-controller="Collar" asp-action="Index">Collars</a></li>
-					<li><a asp-area="" asp-controller="Base" asp-action="Index">Bases</a></li>
-					<li><a asp-area="" asp-controller="Device" asp-action="Index">Devices</a></li>
-				</ul>
-                <partial name="_LoginPartial" />
-            </div>
-        </div>
-    </nav>
-
-    <partial name="_CookieConsentPartial" />
-
-    <div class="container body-content">
-        @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; 2018 - webGDPR</p>
-        </footer>
-    </div>
-
+	<div class="panel-body">
+		<div id="card-map" class="card-text card-map" data-geo-lat="45.5125436" , data-geo-lng="-73.7253372"></div>
+		<div id="pano"></div>
+	</div>
 	<environment include="Development">
 		<script src="~/lib/jquery/dist/jquery.js"></script>
 		<script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
@@ -84,7 +58,5 @@
 
 		<script src="~/js/site.min.js" asp-append-version="true"></script>
 	</environment>
-
-    @RenderSection("Scripts", required: false)
 </body>
 </html>
