@@ -90,7 +90,7 @@ namespace AgendaSignalR.Infrastructure
 			{
 				//{"Text":"{\"BaseNumber\":\"1\",\"IsConnected\":true,\"IsPlugged\":false,\"IsCharging\":true,\"Battery\":50,\"HasBattery\":true,\"Radio\":95}","MessagDateTime":"2018-08-23T13:10:58.6645939-04:00","IsIncoming":true,"UserId":"scampo@test.com","Type":13}
 
-				//{ "Text":"{\"CollarNumber\":\"1\",\"IsConnected\":true,\"IsGPSConnected\":true,\"Battery\":60,\"Radio\":40}","MessagDateTime":"2018-08-23T13:33:00.5057737-04:00","IsIncoming":true,"UserId":"scampo@test.com","Type":12}
+				//{ "Text":"{\"CollarNumber\":\"1\",\"BaseNumber\":\"1\",\"IsConnected\":true,\"IsGPSConnected\":true,\"Battery\":60,\"Radio\":40}","MessagDateTime":"2018-08-23T13:33:00.5057737-04:00","IsIncoming":true,"UserId":"scampo@test.com","Type":12}
 
 				//{ "Text":"{\"DeviceId\":\"68b73ced-1659-483c-929e-274a97706405\",\"Name\":\"Silvia's Phone\",\"Model\":\"Nexus 5\",\"Manufacturer\":\"LG\",\"Type\":\"Phone\",\"Platform\":\"Android\",\"UserId\":\"bee7b8af-c902-4771-89f8-969a3318cbdb\"}","MessagDateTime":"2018-08-23T13:33:00.5057737-04:00","UserId":"scampo@test.com","Type":5}
 
@@ -135,6 +135,7 @@ namespace AgendaSignalR.Infrastructure
 				{
 					webGDPR.Infrastructure.CustomWebSockets.Messages.CollarStatus cs = JsonConvert.DeserializeObject<webGDPR.Infrastructure.CustomWebSockets.Messages.CollarStatus>(message.Text);
 					Collar collar = dbContext.Collar.FirstOrDefault(f => f.CollarNumber == cs.CollarNumber && f.UserId == UserId);
+					Base b = dbContext.Base.FirstOrDefault(f => f.BaseNumber == cs.BaseNumber && f.UserId == UserId);
 					CollarStatus lastStatus = dbContext.CollarStatus.FirstOrDefault(f => f.CollarId == collar.CollarId && f.IsActive == true);
 					if (lastStatus != null)
 					{
@@ -149,6 +150,7 @@ namespace AgendaSignalR.Infrastructure
 						IsGPSConnected = cs.IsGPSConnected,
 						Battery = cs.Battery,
 						Radio = cs.Radio,
+						ConnectedTo = b.BaseId,
 						UserId = collar.UserId,
 						CreationDate = message.MessagDateTime, //TODO: or now?
 						IsActive = true

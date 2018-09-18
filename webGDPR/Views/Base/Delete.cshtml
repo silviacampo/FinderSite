@@ -54,7 +54,7 @@
 		<dd>
 			@if (Model.DeviceConnectedTo != null)
 		{
-			@Html.DisplayFor(model => model.DeviceConnectedTo.AliasName)
+			@Html.DisplayFor(model => model.DeviceConnectedTo.GetName)
 	}
 		</dd>
 		<dt>

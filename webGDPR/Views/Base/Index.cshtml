@@ -85,7 +85,7 @@
 			</td>
 			<td>
 				@if (item.DeviceConnectedTo != null) {
-					@Html.DisplayFor(modelItem => item.DeviceConnectedTo.AliasName)
+					@Html.DisplayFor(modelItem => item.DeviceConnectedTo.GetName)
 				}
 			</td>
 			<td>

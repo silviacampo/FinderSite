@@ -12,6 +12,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets.Messages
 		public string CollarId { get; set; }
 
 		public byte CollarNumber { get; set; }
+		public byte BaseNumber { get; set; }
 
 		public bool IsConnected { get; set; }
 

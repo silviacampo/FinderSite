@@ -14,5 +14,13 @@
 		public bool Aproved { get; set; }
 
 		public string UserId { get; set; }
+
+		public string GetName
+		{
+			get
+			{
+				return AliasName ?? Name;
+			}
+		}
 	}
 }

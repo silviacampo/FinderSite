@@ -62,11 +62,12 @@ namespace webGDPR.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("DeviceId,Type,Platform,Name,Model,Manufacturer,OSVersion,AliasName,UserId")] Device device)
+        public async Task<IActionResult> Create([Bind("DeviceId,Type,Platform,Name,Model,Manufacturer,OSVersion,AliasName")] Device device)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(device);
+				device.UserId = _context.User.FirstOrDefault(u => u.OwnerID == _userManager.GetUserId(User)).UserID;
+				_context.Add(device);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
@@ -94,7 +95,7 @@ namespace webGDPR.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("DeviceId,Type,Platform,Name,Model,Manufacturer,OSVersion,AliasName,UserId")] Device device)
+        public async Task<IActionResult> Edit(string id, [Bind("DeviceId,Type,Platform,Name,Model,Manufacturer,OSVersion,AliasName")] Device device)
         {
             if (id != device.DeviceId)
             {
@@ -105,7 +106,9 @@ namespace webGDPR.Controllers
             {
                 try
                 {
-                    _context.Update(device);
+					var found = await _context.Device.AsNoTracking().FirstAsync(c => c.DeviceId == id);
+					device.UserId = found.UserId;
+					_context.Update(device);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
