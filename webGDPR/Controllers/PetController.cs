@@ -96,6 +96,11 @@ namespace webGDPR.Controllers
 				var petCollar = await _context.PetCollar.FirstOrDefaultAsync(m => m.IsActive && m.CollarId == collar.CollarId);
 				var pet = await _context.Pet
 					.FirstOrDefaultAsync(m => m.PetId == petCollar.PetId);
+				pet.LastTrackingInfo = new PetTrackingInfo
+				{
+					Latitude = 45.5268926,
+					Longitude = -73.6832776
+				};
 				if (pet == null)
 				{
 					return NotFound();
