@@ -39,7 +39,7 @@ if ($('.card-map').length > 0) {
     };
 
     var map = new google.maps.Map(document.getElementById('card-map'), {
-      zoom: 13,
+      zoom: 17,
       center: deviceLocation,
       mapTypeId: 'terrain'
     });
@@ -47,7 +47,7 @@ if ($('.card-map').length > 0) {
     var infowindow = new google.maps.InfoWindow({
       content: contentString
     });
-    //var fenway = { lat: 42.345573, lng: -71.098326 };
+
     var panorama = new google.maps.StreetViewPanorama(
       document.getElementById('pano'), {
         position: deviceLocation,
@@ -57,15 +57,6 @@ if ($('.card-map').length > 0) {
         }
       });
     map.setStreetView(panorama);
-
-    var marker = new google.maps.Marker({
-      position: deviceLocation,
-      map: map
-    });
-
-    marker.addListener('click', function () {
-      infowindow.open(map, marker);
-    });
 
     var lineSymbol = {
       path: google.maps.SymbolPath.FORWARD_OPEN_ARROW
@@ -77,7 +68,7 @@ if ($('.card-map').length > 0) {
       strokeColor: '#FF0000'
     };
 
-    var flightPath = new google.maps.Polyline({
+    var path = new google.maps.Polyline({
       path: coordinates,
       geodesic: true,
       icons: [{
@@ -94,7 +85,7 @@ if ($('.card-map').length > 0) {
       strokeWeight: 2
     });
 
-    flightPath.setMap(map);
+    path.setMap(map);
 
     // animateCircle(flightPath);
 
@@ -114,33 +105,7 @@ if ($('.card-map').length > 0) {
     // Create an array of alphabetical characters used to label the markers.
     var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
-    var locations = [
-      { lat: 45.4125436, lng: -73.7253372 },
-      { lat: 45.3125436, lng: -73.7353372 },
-      { lat: 45.2125436, lng: -73.7453372 },
-      { lat: 45.1125436, lng: -73.7553372 },
-      { lat: 45.0125436, lng: -73.7653372 },
-      { lat: 45.9125436, lng: -73.7753372 },
-      { lat: 45.8125436, lng: -73.7853372 },
-      { lat: 45.7125436, lng: -73.7953372 },
-      { lat: 45.6125436, lng: -73.7153372 },
-      { lat: 45.5125436, lng: -73.7253372 },
-      { lat: 45.5225436, lng: -73.7263372 },
-      { lat: 45.5325436, lng: -73.7273372 },
-      { lat: 45.5425436, lng: -73.7283372 },
-      { lat: 45.5525436, lng: -73.7293372 },
-      { lat: 45.5625436, lng: -73.7213372 },
-      { lat: 45.5725436, lng: -73.7223372 },
-      { lat: 45.5825436, lng: -73.7233372 },
-      { lat: 45.5925436, lng: -73.7243372 },
-      { lat: 45.5125436, lng: -73.7253372 },
-      { lat: 45.5135436, lng: -73.7254372 },
-      { lat: 45.5145436, lng: -73.7255372 },
-      { lat: 45.5155436, lng: -73.7256372 },
-      { lat: 45.5165436, lng: -73.7257372 }
-    ]
-
-    var markers = coordinates.map(function (location, i) {
+     var markers = coordinates.map(function (location, i) {
       return new google.maps.Marker({
         position: location,
         label: labels[i % labels.length]
@@ -151,6 +116,13 @@ if ($('.card-map').length > 0) {
     var markerCluster = new MarkerClusterer(map, markers,
       { imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m' });
 
+    var marker = new google.maps.Marker({
+      position: deviceLocation,
+      map: map
+    });
 
+    marker.addListener('click', function () {
+      infowindow.open(map, marker);
+    });
   }
 }

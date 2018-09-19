@@ -98,8 +98,8 @@ namespace webGDPR.Controllers
 					.FirstOrDefaultAsync(m => m.PetId == petCollar.PetId);
 				pet.LastTrackingInfo = new PetTrackingInfo
 				{
-					Latitude = 45.5268926,
-					Longitude = -73.6832776
+					Latitude = 45.5261026,
+					Longitude = -73.6830076
 				};
 				if (pet == null)
 				{
