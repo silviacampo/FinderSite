@@ -102,11 +102,18 @@ if ($('.card-map').length > 0) {
     //mirar overlays
 
     //Markers and MarkersCluster
+    //http://www.lass.it/Web/viewer.aspx?id=4
+    var flag = {
+      url: 'http://localhost:51420/images/blue.png',
+      // This marker is 20 pixels wide by 32 pixels high.
+      size: new google.maps.Size(32, 25)
+    };
 
      var markers = coordinates.map(function (location, i) {
       return new google.maps.Marker({
         position: location,
-        label: i.toString()
+        label: i.toString(),
+        icon: flag
       });
     });
 
