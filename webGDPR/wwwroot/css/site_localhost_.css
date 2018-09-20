@@ -35,14 +35,18 @@ body {
         display: none;
     }
 }
-
+#mapContainer {
+	height: 100%
+}
 .card-map {
-	height: 600px;
+	height: 100%
 }
 
 #pano {
 	float: left;
-	height: 300px;
-	width: 300px;
-	top: -300px;
+	height: 40%;
+	width: 30%;
+	max-height: 300px;
+	max-width: 300px;
+	top: -40%;
 }

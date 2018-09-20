@@ -22,9 +22,19 @@
 		<link rel="stylesheet" href='~/css/site_@ViewData["Host"]_.min.css' asp-append-version="true" />
 	</environment>
 	<link rel="icon" href="~/favicon_@ViewData["Host"]_.ico" type="image/x-icon" sizes="16x16">
+
+	<style>
+		html,
+		body {
+			height: 100%;
+			width: 100%;
+			margin: 0px;
+			padding: 0px
+		}
+	</style>
 </head>
 <body style="padding:0px;">
-	<div>
+	<div id="mapContainer" style="height:100%">
 		<script>
 			var contentString = '<div id="content">' +
 				'<div id="siteNotice">' +
