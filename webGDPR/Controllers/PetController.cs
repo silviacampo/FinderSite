@@ -80,8 +80,54 @@ namespace webGDPR.Controllers
 
 			return View(pet);
 		}
+
+		// GET: Pet/Track/5
+		public async Task<IActionResult> Track(string id)
+		{
+			if (id == null)
+			{
+				return NotFound();
+			}
+			
+			var pet = await _context.Pet
+				.FirstOrDefaultAsync(m => m.PetId == id);
+			pet.LastTrackingInfo = new PetTrackingInfo
+			{
+				Latitude = 45.5261026,
+				Longitude = -73.6830076
+			};
+
+			pet.TrackingInfos = new List<PetTrackingInfo>
+				{
+					new PetTrackingInfo
+					{
+						Latitude = 45.5273677,
+						Longitude = -73.6839115
+					},
+					new PetTrackingInfo
+					{
+						Latitude = 45.5273298,
+						Longitude = -73.6836115
+					},
+					new PetTrackingInfo
+					{
+						Latitude = 45.5270227,
+						Longitude = -73.6833668
+					},
+					new PetTrackingInfo
+					{
+						Latitude = 45.5268926,
+						Longitude = -73.6832776
+					}
+				};
+			if (pet == null)
+			{
+				return NotFound();
+			}
+			return View(pet);
+		}
+
 		//http://localhost:51420/Pet/Map?username=SilviaCampo&password=As!123456&collarnumber=1
-		// GET: Pet/Details/5
 		[AllowAnonymous]
 		public async Task<IActionResult> Map(string username, string password, int collarnumber)
 		{

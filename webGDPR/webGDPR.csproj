@@ -35,6 +35,9 @@
     <Content Update="Views\Home\CreateAccountWizard.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
+    <Content Update="Views\Pet\Track.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
     <Content Update="Views\Pet\Map.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
