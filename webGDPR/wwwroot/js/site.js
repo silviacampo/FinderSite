@@ -106,8 +106,7 @@ if ($('.card-map').length > 0) {
      var markers = coordinates.map(function (location, i) {
       return new google.maps.Marker({
         position: location,
-        label: i.toString(),
-        icon
+        label: i.toString()
       });
     });
 
