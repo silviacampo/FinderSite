@@ -2,14 +2,13 @@
 using System.Net.WebSockets;
 using System.Threading;
 using System.Threading.Tasks;
-using AgendaSignalR.Infrastructure;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using webGDPR.Data;
 
-namespace webGDPR.Infrastructure
+namespace webGDPR.Infrastructure.CustomWebSockets
 {
 	public class CustomWebSocketManager
 	{

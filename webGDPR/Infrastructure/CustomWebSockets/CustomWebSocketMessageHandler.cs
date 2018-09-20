@@ -14,7 +14,7 @@ using Newtonsoft.Json;
 using webGDPR.Data;
 using webGDPR.Models;
 
-namespace AgendaSignalR.Infrastructure
+namespace webGDPR.Infrastructure.CustomWebSockets
 {
 	public class CustomWebSocketMessageHandler : ICustomWebSocketMessageHandler
 	{

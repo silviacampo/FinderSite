@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-using AgendaSignalR.Infrastructure;
+using webGDPR.Models;
 
 namespace webGDPR.ViewModels
 {

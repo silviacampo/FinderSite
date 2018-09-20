@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using webGDPR.Models;
 
-namespace AgendaSignalR.Infrastructure
+namespace webGDPR.Models
 {
 	public class Base
 	{

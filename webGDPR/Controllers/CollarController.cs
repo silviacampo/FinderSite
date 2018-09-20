@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using AgendaSignalR.Infrastructure;
 using webGDPR.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using AutoMapper;
 using webGDPR.ViewModels;
 using webGDPR.Models;
+using webGDPR.Infrastructure.CustomWebSockets;
 
 namespace webGDPR.Controllers
 {

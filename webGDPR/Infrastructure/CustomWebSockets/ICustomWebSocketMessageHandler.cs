@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using webGDPR.Data;
 using webGDPR.Infrastructure.CustomWebSockets.Messages;
 
-namespace AgendaSignalR.Infrastructure
+namespace webGDPR.Infrastructure.CustomWebSockets
 {
     public interface ICustomWebSocketMessageHandler
     {

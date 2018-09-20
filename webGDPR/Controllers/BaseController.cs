@@ -6,13 +6,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using AgendaSignalR.Infrastructure;
 using webGDPR.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using webGDPR.ViewModels;
 using AutoMapper;
 using webGDPR.Models;
+using webGDPR.Infrastructure.CustomWebSockets;
 
 namespace webGDPR.Controllers
 {

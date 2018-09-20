@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace AgendaSignalR.Infrastructure
+namespace webGDPR.Infrastructure.CustomWebSockets
 {
 	class CustomWebSocketMessage
 	{

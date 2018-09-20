@@ -5,7 +5,6 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using AgendaSignalR.Infrastructure;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
@@ -16,6 +15,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using webGDPR.Data;
 using webGDPR.Infrastructure;
+using webGDPR.Infrastructure.CustomWebSockets;
 using webGDPR.Models;
 using webGDPR.ViewModels;
 

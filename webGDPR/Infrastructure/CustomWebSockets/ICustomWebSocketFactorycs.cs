@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace AgendaSignalR.Infrastructure
+namespace webGDPR.Infrastructure.CustomWebSockets
 {
 	public interface ICustomWebSocketFactory
     {

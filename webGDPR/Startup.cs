@@ -10,12 +10,12 @@ using webGDPR.Infrastructure;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Authorization;
 using webGDPR.Authorization;
-using AgendaSignalR.Infrastructure;
 using System;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Logging;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using webGDPR.Infrastructure.CustomWebSockets;
 
 namespace webGDPR
 {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Net.WebSockets;
 using System.Threading.Tasks;
 
-namespace AgendaSignalR.Infrastructure
+namespace webGDPR.Infrastructure.CustomWebSockets
 {
 	public class CustomWebSocket
 	{

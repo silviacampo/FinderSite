@@ -1,7 +1,5 @@
 ﻿//https://dotnetcoretutorials.com/2017/09/23/using-automapper-asp-net-core/
 //https://cpratt.co/using-automapper-creating-mappings/
-//var test = mapper.Map<webGDPR.Infrastructure.CustomWebSockets.Messages.Base>(bases.First());
-//var test2 = mapper.Map<Base>(test);
 
 using AutoMapper;
 using webGDPR.ViewModels;
@@ -13,7 +11,7 @@ namespace webGDPR.Infrastructure
 		public AutomapperProfile()
 		{
 			#region Base
-			CreateMap<System.Tuple<AgendaSignalR.Infrastructure.Base, Models.BaseStatus>, CustomWebSockets.Messages.Base>()
+			CreateMap<System.Tuple<Models.Base, Models.BaseStatus>, CustomWebSockets.Messages.Base>()
 				.ForMember(dest => dest.BaseId, opts => opts.MapFrom(src => src.Item1.BaseId))
 				.ForMember(dest => dest.BaseNumber, opts => opts.MapFrom(src => src.Item1.BaseNumber))
 				.ForMember(dest => dest.HWId, opts => opts.MapFrom(src => src.Item1.HWId))
@@ -28,14 +26,14 @@ namespace webGDPR.Infrastructure
 				.ForMember(dest => dest.HasBattery, opts => opts.MapFrom(src => src.Item2.HasBattery))
 				.ForMember(dest => dest.Radio, opts => opts.MapFrom(src => src.Item2.Radio));
 
-			CreateMap<CustomWebSockets.Messages.Base, AgendaSignalR.Infrastructure.Base>()
+			CreateMap<CustomWebSockets.Messages.Base, webGDPR.Models.Base>()
 				.ForMember(dest => dest.BaseId, opts => opts.MapFrom(src => src.BaseId))
 				.ForMember(dest => dest.UserId, opts => opts.MapFrom(src => src.UserId))
 				.ForMember(dest => dest.BaseNumber, opts => opts.MapFrom(src => src.BaseNumber))
 				.ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.Name))
 				.ForMember(dest => dest.Description, opts => opts.MapFrom(src => src.Description));
 
-			CreateMap<CustomWebSockets.Messages.Base, AgendaSignalR.Infrastructure.Base>().ReverseMap();
+			CreateMap<CustomWebSockets.Messages.Base, webGDPR.Models.Base>().ReverseMap();
 
 			CreateMap<CustomWebSockets.Messages.Base, Models.BaseStatus>()
 				.ForMember(dest => dest.BaseId, opts => opts.MapFrom(src => src.BaseId))
@@ -49,7 +47,7 @@ namespace webGDPR.Infrastructure
 
 			CreateMap<CustomWebSockets.Messages.Base, Models.BaseStatus>().ReverseMap();
 
-			CreateMap<AgendaSignalR.Infrastructure.Base, CustomWebSockets.Messages.BaseCore>()
+			CreateMap<webGDPR.Models.Base, CustomWebSockets.Messages.BaseCore>()
 				.ForMember(dest => dest.BaseId, opts => opts.MapFrom(src => src.BaseId))
 				.ForMember(dest => dest.UserId, opts => opts.MapFrom(src => src.UserId))
 				.ForMember(dest => dest.HWId, opts => opts.MapFrom(src => src.HWId))
@@ -59,7 +57,7 @@ namespace webGDPR.Infrastructure
 			#endregion
 
 			#region Collar
-			CreateMap<System.Tuple<AgendaSignalR.Infrastructure.Collar, Models.CollarStatus>, CustomWebSockets.Messages.Collar>()
+			CreateMap<System.Tuple<webGDPR.Models.Collar, Models.CollarStatus>, CustomWebSockets.Messages.Collar>()
 				.ForMember(dest => dest.CollarId, opts => opts.MapFrom(src => src.Item1.CollarId))
 				.ForMember(dest => dest.BaseNumber, opts => opts.MapFrom(src => src.Item1.BaseNumber))
 				.ForMember(dest => dest.HWId, opts => opts.MapFrom(src => src.Item1.HWId))
@@ -73,7 +71,7 @@ namespace webGDPR.Infrastructure
 				.ForMember(dest => dest.Battery, opts => opts.MapFrom(src => src.Item2.Battery))
 				.ForMember(dest => dest.Radio, opts => opts.MapFrom(src => src.Item2.Radio));
 
-			CreateMap<CustomWebSockets.Messages.Collar, AgendaSignalR.Infrastructure.Collar>()
+			CreateMap<CustomWebSockets.Messages.Collar, webGDPR.Models.Collar>()
 				.ForMember(dest => dest.CollarId, opts => opts.MapFrom(src => src.CollarId))
 				.ForMember(dest => dest.UserId, opts => opts.MapFrom(src => src.UserId))
 				.ForMember(dest => dest.BaseNumber, opts => opts.MapFrom(src => src.BaseNumber))
@@ -81,7 +79,7 @@ namespace webGDPR.Infrastructure
 				.ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.Name))
 				.ForMember(dest => dest.Description, opts => opts.MapFrom(src => src.Description));
 
-			CreateMap<CustomWebSockets.Messages.Collar, AgendaSignalR.Infrastructure.Collar>().ReverseMap();
+			CreateMap<CustomWebSockets.Messages.Collar, webGDPR.Models.Collar>().ReverseMap();
 
 			CreateMap<CustomWebSockets.Messages.Collar, Models.CollarStatus>()
 				.ForMember(dest => dest.CollarId, opts => opts.MapFrom(src => src.CollarId))
@@ -95,7 +93,7 @@ namespace webGDPR.Infrastructure
 			#endregion
 
 			#region BaseViewModel
-			CreateMap<System.Tuple<AgendaSignalR.Infrastructure.Base, Models.BaseStatus>, BaseViewModel>()
+			CreateMap<System.Tuple<webGDPR.Models.Base, Models.BaseStatus>, BaseViewModel>()
 				.ForMember(dest => dest.BaseId, opts => opts.MapFrom(src => src.Item1.BaseId))
 				.ForMember(dest => dest.UserId, opts => opts.MapFrom(src => src.Item1.UserId))
 				.ForMember(dest => dest.HWId, opts => opts.MapFrom(src => src.Item1.HWId))
@@ -111,14 +109,14 @@ namespace webGDPR.Infrastructure
 				.ForMember(dest => dest.HasBattery, opts => opts.MapFrom(src => src.Item2.HasBattery))
 				.ForMember(dest => dest.Radio, opts => opts.MapFrom(src => src.Item2.Radio));
 
-			CreateMap<BaseViewModel, AgendaSignalR.Infrastructure.Base>()
+			CreateMap<BaseViewModel, webGDPR.Models.Base>()
 				.ForMember(dest => dest.BaseId, opts => opts.MapFrom(src => src.BaseId))
 				.ForMember(dest => dest.UserId, opts => opts.MapFrom(src => src.UserId))
 				.ForMember(dest => dest.BaseNumber, opts => opts.MapFrom(src => src.BaseNumber))
 				.ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.Name))
 				.ForMember(dest => dest.Description, opts => opts.MapFrom(src => src.Description));
 
-			CreateMap<BaseViewModel, AgendaSignalR.Infrastructure.Base>().ReverseMap();
+			CreateMap<BaseViewModel, webGDPR.Models.Base>().ReverseMap();
 
 			CreateMap<BaseViewModel, Models.BaseStatus>()
 				.ForMember(dest => dest.BaseId, opts => opts.MapFrom(src => src.BaseId))
@@ -134,7 +132,7 @@ namespace webGDPR.Infrastructure
 			#endregion
 
 			#region CollarViewModel
-			CreateMap<System.Tuple<AgendaSignalR.Infrastructure.Collar, Models.CollarStatus>, CollarViewModel>()
+			CreateMap<System.Tuple<webGDPR.Models.Collar, Models.CollarStatus>, CollarViewModel>()
 				.ForMember(dest => dest.CollarId, opts => opts.MapFrom(src => src.Item1.CollarId))
 				.ForMember(dest => dest.BaseNumber, opts => opts.MapFrom(src => src.Item1.BaseNumber))
 				.ForMember(dest => dest.HWId, opts => opts.MapFrom(src => src.Item1.HWId))
@@ -148,7 +146,7 @@ namespace webGDPR.Infrastructure
 				.ForMember(dest => dest.Battery, opts => opts.MapFrom(src => src.Item2.Battery))
 				.ForMember(dest => dest.Radio, opts => opts.MapFrom(src => src.Item2.Radio));
 
-			CreateMap<CollarViewModel, AgendaSignalR.Infrastructure.Collar>()
+			CreateMap<CollarViewModel, Models.Collar>()
 				.ForMember(dest => dest.CollarId, opts => opts.MapFrom(src => src.CollarId))
 				.ForMember(dest => dest.UserId, opts => opts.MapFrom(src => src.UserId))
 				.ForMember(dest => dest.BaseNumber, opts => opts.MapFrom(src => src.BaseNumber))
@@ -156,7 +154,7 @@ namespace webGDPR.Infrastructure
 				.ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.Name))
 				.ForMember(dest => dest.Description, opts => opts.MapFrom(src => src.Description));
 
-			CreateMap<CollarViewModel, AgendaSignalR.Infrastructure.Collar>().ReverseMap();
+			CreateMap<CollarViewModel, Models.Collar>().ReverseMap();
 
 			CreateMap<CollarViewModel, Models.CollarStatus>()
 				.ForMember(dest => dest.CollarId, opts => opts.MapFrom(src => src.CollarId))

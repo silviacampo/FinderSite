@@ -1,5 +1,4 @@
-﻿using AgendaSignalR.Infrastructure;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using webGDPR.Models;
 

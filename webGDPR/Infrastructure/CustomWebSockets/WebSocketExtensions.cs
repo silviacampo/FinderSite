@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using webGDPR.Infrastructure;
 
-namespace AgendaSignalR.Infrastructure
+namespace webGDPR.Infrastructure.CustomWebSockets
 {
 	public static class WebSocketExtensions
     {
