@@ -29,19 +29,18 @@
 			var contentString = '<div id="content">' +
 				'<div id="siteNotice">' +
 				'</div>' +
-				'<h3 id="firstHeading" class="firstHeading">Pet.Name</h3>' +
-				'<div id="bodyContent">' +
-				'<p>Pet.Description</p>' +
-				'</div>' +
+				'<h3 id="firstHeading" class="firstHeading">@Model.Name</h3>' +
+				@*'<div id="bodyContent">' +
+				'<p>@Model.Description</p>' +
+				'</div>' +*@
 				'</div>';
 
-			var coordinates = [
-				{ lat: 45.5273677, lng: -73.6839115 },
-				{ lat: 45.5273298, lng: -73.6836115 },
-				{ lat: 45.5270227, lng: -73.6833668 },
-				{ lat: 45.5268926, lng: -73.6832776 }
-			];
-
+			var coordinates = [];
+			@foreach (PetTrackingInfo p in Model.TrackingInfos) {
+			 	<text>
+					coordinates.push({ lat: @p.Latitude, lng: @p.Longitude });
+				</text>
+			 }
 		</script>
 		<div id="card-map" class="card-text card-map" data-geo-lat="@Model.LastTrackingInfo.Latitude" , data-geo-lng="@Model.LastTrackingInfo.Longitude"></div>
 		<div id="pano"></div>

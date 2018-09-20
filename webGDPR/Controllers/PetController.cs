@@ -101,6 +101,30 @@ namespace webGDPR.Controllers
 					Latitude = 45.5261026,
 					Longitude = -73.6830076
 				};
+
+				pet.TrackingInfos = new List<PetTrackingInfo>
+				{
+					new PetTrackingInfo
+					{
+						Latitude = 45.5273677,
+						Longitude = -73.6839115
+					},
+					new PetTrackingInfo
+					{
+						Latitude = 45.5273298,
+						Longitude = -73.6836115
+					},
+					new PetTrackingInfo
+					{
+						Latitude = 45.5270227,
+						Longitude = -73.6833668
+					},
+					new PetTrackingInfo
+					{
+						Latitude = 45.5268926,
+						Longitude = -73.6832776
+					}
+				};
 				if (pet == null)
 				{
 					return NotFound();

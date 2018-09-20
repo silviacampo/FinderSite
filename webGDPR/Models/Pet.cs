@@ -33,5 +33,6 @@ namespace webGDPR.Models
 		public bool Deleted { get; set; }
 
 		public string UserId { get; set; }
+		public List<PetTrackingInfo> TrackingInfos { get; set; }
 	}
 }

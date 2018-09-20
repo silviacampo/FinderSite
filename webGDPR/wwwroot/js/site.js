@@ -69,7 +69,7 @@ if ($('.card-map').length > 0) {
     };
 
     var path = new google.maps.Polyline({
-      path: coordinates,
+      path: coordinates.concat([deviceLocation]),
       geodesic: true,
       icons: [{
         icon: lineSymbolCat,
@@ -102,13 +102,12 @@ if ($('.card-map').length > 0) {
     //mirar overlays
 
     //Markers and MarkersCluster
-    // Create an array of alphabetical characters used to label the markers.
-    var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
      var markers = coordinates.map(function (location, i) {
       return new google.maps.Marker({
         position: location,
-        label: labels[i % labels.length]
+        label: i.toString(),
+        icon
       });
     });
 
