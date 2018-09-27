@@ -1,0 +1,14 @@
+[
+  {
+    "outputFileName": "wwwroot/css/site_localhost_.min.css",
+    "inputFiles": [
+      "wwwroot/css/site_localhost_.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/site_test.whereisfinder.com_.min.css",
+    "inputFiles": [
+      "wwwroot/css/site_test.whereisfinder.com_.css"
+    ]
+  }
+]

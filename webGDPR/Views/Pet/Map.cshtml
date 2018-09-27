@@ -1,4 +1,7 @@
-﻿@model webGDPR.Models.Pet
+﻿@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+
+@model webGDPR.Models.Pet
 
 @{
 	Layout = null;
@@ -62,7 +65,7 @@
 		<script src="//cdn.ckeditor.com/4.10.0/standard/ckeditor.js"></script>
 		<script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js">
 		</script>
-		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC9DYpNUlGiE2rlGR5n9K6umO3vA11CFMg"></script>
+		<script src="https://maps.googleapis.com/maps/api/js?key=@Configuration.GetSection("GoogleMapKey")["Dev"]"></script>
 		<script src="~/js/site.js" asp-append-version="true"></script>
 	</environment>
 	<environment exclude="Development">
@@ -81,7 +84,7 @@
 		<script src="//cdn.ckeditor.com/4.10.0/standard/ckeditor.js"></script>
 		<script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js">
 		</script>
-		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC9DYpNUlGiE2rlGR5n9K6umO3vA11CFMg"></script>
+		<script src="https://maps.googleapis.com/maps/api/js?key=@Configuration.GetSection("GoogleMapKey")["Prod"]"></script>
 
 		<script src="~/js/site.min.js" asp-append-version="true"></script>
 	</environment>
