@@ -94,8 +94,11 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 
 				//{ "Text":"{\"DeviceId\":\"68b73ced-1659-483c-929e-274a97706405\",\"Name\":\"Silvia's Phone\",\"Model\":\"Nexus 5\",\"Manufacturer\":\"LG\",\"Type\":\"Phone\",\"Platform\":\"Android\",\"UserId\":\"bee7b8af-c902-4771-89f8-969a3318cbdb\"}","MessagDateTime":"2018-08-23T13:33:00.5057737-04:00","UserId":"scampo@test.com","Type":5}
 
+				//{"Text":"{\"DeviceId\":null,\"Type\":\"Phone\",\"Platform\":\"Android\",\"Name\":\"Nexus 5\",\"Model\":\"Nexus 5\",\"Manufacturer\":\"LGE\",\"OSVersion\":\"6.0.1\"}","MessagDateTime":"2018-09-27T09:24:43.584572-04:00","IsIncoming":false,"UserId":"gghg","Type":5}
+
 				var message = JsonConvert.DeserializeObject<CustomWebSocketMessage>(msg);
-				string UserId = dbContext.User.FirstOrDefault(u => u.Name == userWebSocket.Username).UserID;
+				User user = dbContext.User.FirstOrDefault(u => u.Name == userWebSocket.Username);
+				string UserId = user.UserID;
 
 				if (message.Type == WSMessageType.BaseStatus)
 				{
@@ -173,15 +176,17 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 						found.Name = d.Name; // maybe the user update the phone's name
 						dbContext.Update(found);
 						d = found;
+						await dbContext.SaveChangesAsync();
 					}
 					else
 					{
 						dbContext.Add(d);
+						await dbContext.SaveChangesAsync();
 						//notify someone
-						await emailSender.SendEmailAsync(message.UserId, "New Device is connecting to your account",
+						await emailSender.SendEmailAsync(user.Email, "New Device is connecting to your account",
 							$"A new device {d.Model} - {d.Name} is connected to your accound. If this is not yours please, go <a href='https://'>here</a> to modify its access.");
 					}
-					await dbContext.SaveChangesAsync();
+					
 					//return guid
 					userWebSocket.DeviceId = d.DeviceId;
 					await SendDeviceInformation(userWebSocket, d.DeviceId);
