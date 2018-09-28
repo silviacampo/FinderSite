@@ -203,7 +203,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 			}
 			catch (Exception e)
 			{
-				log.Info(("Error:" + msg.Replace("\0", string.Empty));
+				log.Info("Error:" + msg.Replace("\0", string.Empty));
 				await userWebSocket.WebSocket.SendAsync(new ArraySegment<byte>(buffer, 0, result.Count), result.MessageType, result.EndOfMessage, CancellationToken.None);				
 			}
 		}

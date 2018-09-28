@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using AutoMapper;
+using log4net.Repository.Hierarchy;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -42,7 +43,6 @@ namespace webGDPR.Controllers
 		public IActionResult Index()
 		{
 			List<CustomWebSocket> webSockets = _wsFactory.All();
-			log.Info("test");
 			return View(webSockets);
         }
 
