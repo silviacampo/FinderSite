@@ -1,0 +1,17 @@
+﻿@model List<webGDPR.Infrastructure.CustomWebSockets.CustomWebSocket>
+@{
+    ViewData["Title"] = "Monitoring Page";
+}
+@Context.Request.Host.Host
+<div class="row">
+	<div class="col-md-12">
+		<h2>Web Sockets</h2>
+		<ul>
+			@foreach (webGDPR.Infrastructure.CustomWebSockets.CustomWebSocket ws in Model)
+	{
+		<li>@ws.Username - @ws.Guid - @ws.DeviceId  - @ws.WebSocket.State </li>
+
+}
+		</ul>
+	</div>
+</div>

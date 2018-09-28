@@ -45,6 +45,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 				};
 
 				string serialisedMessage = JsonConvert.SerializeObject(msg);
+				log.Info(serialisedMessage);
 				byte[] bytes = Encoding.ASCII.GetBytes(serialisedMessage);
 				await webSocket.SendAsync(new ArraySegment<byte>(bytes, 0, bytes.Length), WebSocketMessageType.Text, true, CancellationToken.None);
 
@@ -63,6 +64,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 				}
 
 				string serialisedText2 = JsonConvert.SerializeObject(msgCollars);
+				log.Info(serialisedText2);
 				var msg2 = new CustomWebSocketMessage
 				{
 					MessagDateTime = DateTime.Now,
@@ -97,6 +99,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 				//{"Text":"{\"DeviceId\":null,\"Type\":\"Phone\",\"Platform\":\"Android\",\"Name\":\"Nexus 5\",\"Model\":\"Nexus 5\",\"Manufacturer\":\"LGE\",\"OSVersion\":\"6.0.1\"}","MessagDateTime":"2018-09-27T09:24:43.584572-04:00","IsIncoming":false,"UserId":"gghg","Type":5}
 
 				var message = JsonConvert.DeserializeObject<CustomWebSocketMessage>(msg);
+				log.Info(msg.Replace("\0", string.Empty));
 				User user = dbContext.User.FirstOrDefault(u => u.Name == userWebSocket.Username);
 				string UserId = user.UserID;
 
@@ -200,7 +203,8 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 			}
 			catch (Exception e)
 			{
-				await userWebSocket.WebSocket.SendAsync(new ArraySegment<byte>(buffer, 0, result.Count), result.MessageType, result.EndOfMessage, CancellationToken.None);
+				log.Info(("Error:" + msg.Replace("\0", string.Empty));
+				await userWebSocket.WebSocket.SendAsync(new ArraySegment<byte>(buffer, 0, result.Count), result.MessageType, result.EndOfMessage, CancellationToken.None);				
 			}
 		}
 
@@ -216,6 +220,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 			};
 
 			string serialisedMessage = JsonConvert.SerializeObject(msg);
+			log.Info(serialisedMessage);
 			byte[] bytes = Encoding.ASCII.GetBytes(serialisedMessage);
 			await userWebSocket.WebSocket.SendAsync(new ArraySegment<byte>(bytes, 0, bytes.Length), WebSocketMessageType.Text, true, CancellationToken.None);
 		}
@@ -270,6 +275,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 			};
 
 			string serialisedMessage = JsonConvert.SerializeObject(msg);
+			log.Info(serialisedMessage);
 			byte[] bytes = Encoding.ASCII.GetBytes(serialisedMessage);
 			await BroadcastGroup(bytes, username, wsFactory);
 		}
@@ -286,6 +292,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 			};
 
 			string serialisedMessage = JsonConvert.SerializeObject(msg);
+			log.Info(serialisedMessage);
 			byte[] bytes = Encoding.ASCII.GetBytes(serialisedMessage);
 			await BroadcastGroup(bytes, username, wsFactory);
 		}
@@ -302,6 +309,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 			};
 
 			string serialisedMessage = JsonConvert.SerializeObject(msg);
+			log.Info(serialisedMessage);
 			byte[] bytes = Encoding.ASCII.GetBytes(serialisedMessage);
 			await BroadcastGroup(bytes, username, wsFactory);
 		}
@@ -318,6 +326,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 			};
 
 			string serialisedMessage = JsonConvert.SerializeObject(msg);
+			log.Info(serialisedMessage);
 			byte[] bytes = Encoding.ASCII.GetBytes(serialisedMessage);
 			await BroadcastGroup(bytes, username, wsFactory);
 		}
@@ -334,6 +343,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 			};
 
 			string serialisedMessage = JsonConvert.SerializeObject(msg);
+			log.Info(serialisedMessage);
 			byte[] bytes = Encoding.ASCII.GetBytes(serialisedMessage);
 			await BroadcastGroup(bytes, username, wsFactory);
 		}
@@ -350,6 +360,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 			};
 
 			string serialisedMessage = JsonConvert.SerializeObject(msg);
+			log.Info(serialisedMessage);
 			byte[] bytes = Encoding.ASCII.GetBytes(serialisedMessage);
 			await BroadcastGroup(bytes, username, wsFactory);
 		}
