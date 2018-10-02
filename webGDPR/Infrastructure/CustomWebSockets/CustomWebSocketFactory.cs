@@ -25,22 +25,22 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 
 		public List<CustomWebSocket> All()
 		{
-			return List;
+			return List.Where(c=>c.WebSocket.State == System.Net.WebSockets.WebSocketState.Open || c.WebSocket.State == System.Net.WebSockets.WebSocketState.Connecting).ToList();
 		}
 
 		public List<CustomWebSocket> Group(string username)
 		{
-			return List.Where(c=>c.Username == username).ToList();
+			return List.Where(c=>c.Username == username && (c.WebSocket.State == System.Net.WebSockets.WebSocketState.Open || c.WebSocket.State == System.Net.WebSockets.WebSocketState.Connecting)).ToList();
 		}
 
 		public List<CustomWebSocket> Others(CustomWebSocket client)
 		{
-			return List.Where(c => c.Username == client.Username && c.Guid != client.Guid).ToList();
+			return List.Where(c => c.Username == client.Username && c.Guid != client.Guid && (c.WebSocket.State == System.Net.WebSockets.WebSocketState.Open || c.WebSocket.State == System.Net.WebSockets.WebSocketState.Connecting)).ToList();
 		}
 
 		public CustomWebSocket Client(Guid guid)
 		{
-			return List.First(c => c.Guid == guid);
+			return List.First(c => c.Guid == guid && (c.WebSocket.State == System.Net.WebSockets.WebSocketState.Open || c.WebSocket.State == System.Net.WebSockets.WebSocketState.Connecting));
 		}
 
 
