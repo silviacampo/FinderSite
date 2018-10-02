@@ -22,19 +22,20 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 
 	public enum WSMessageType
 	{
-		None,
-		Base,
-		Collar,
-		Bases,
-		Collars,
-		Device,
-		LastGPS,
-		TrackingInfo,
-		DeletedBase,
-		DeletedCollar,
-		BaseCore,
-		CollarCore,
-		CollarStatus,
-		BaseStatus
+		None = 0,
+		Base = 1,
+		Collar = 2,
+		Bases = 3,
+		Collars = 4,
+		Device = 5,
+		LastGPS = 6,
+		TrackingInfo = 7,
+		DeletedBase = 8,
+		DeletedCollar = 9,
+		BaseCore = 10,
+		CollarCore = 11,
+		BaseStatus = 12,
+		CollarStatus = 13,
+		
 	}
 }
