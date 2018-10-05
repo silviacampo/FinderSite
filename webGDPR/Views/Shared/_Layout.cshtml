@@ -10,12 +10,14 @@
 
 	<environment include="Development">
 		<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+		<link href="~/lib/font-awesome/css/font-awesome.css" rel="stylesheet" />
 		<link rel="stylesheet" href="~/css/site_@ViewData["Host"]_.css" />
 	</environment>
 	<environment exclude="Development">
 		<link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css"
 			  asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
 			  asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
+		<link href="~/lib/font-awesome/css/font-awesome.css" rel="stylesheet" />
 		<link rel="stylesheet" href='~/css/site_@ViewData["Host"]_.min.css' />
 	</environment>
 
@@ -35,14 +37,14 @@
 			</div>
 			<div class="navbar-collapse collapse">
 				<ul class="nav navbar-nav">
-					<li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
+					<li><a asp-area="" asp-controller="Home" asp-action="Index"><i class="fa fa-home fa-fw" aria-hidden="true"></i>&nbsp; Home</a></li>
 					<li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
 					<li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
-					<li><a asp-area="" asp-controller="Pet" asp-action="Index">Pets</a></li>
-					<li><a asp-area="" asp-controller="Collar" asp-action="Index">Collars</a></li>
-					<li><a asp-area="" asp-controller="Base" asp-action="Index">Bases</a></li>
-					<li><a asp-area="" asp-controller="Device" asp-action="Index">Devices</a></li>
-					<li><a asp-area="" asp-controller="Monitoring" asp-action="Index">Monitoring</a></li>
+					<li><a asp-area="" asp-controller="Pet" asp-action="Index"><i class="fa fa-paw fa-fw" aria-hidden="true"></i>&nbsp; Pets</a></li>
+					<li><a asp-area="" asp-controller="Collar" asp-action="Index"><i class="fa fa-medal fa-fw" aria-hidden="true"></i>&nbsp; Collars</a></li>
+					<li><a asp-area="" asp-controller="Base" asp-action="Index"><i class="fa fa-home fa-fw" aria-hidden="true"></i>&nbsp; Bases</a></li>
+					<li><a asp-area="" asp-controller="Device" asp-action="Index"><i class="fa fa-tablet fa-fw" aria-hidden="true"></i>&nbsp; Devices</a></li>
+					<li><a asp-area="" asp-controller="Monitoring" asp-action="Index"><i class="fa fa-gears fa-fw" aria-hidden="true"></i>&nbsp; Monitoring</a></li>
 				</ul>
 				<partial name="_LoginPartial" />
 			</div>
