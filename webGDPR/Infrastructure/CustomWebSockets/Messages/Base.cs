@@ -6,7 +6,8 @@ namespace webGDPR.Infrastructure.CustomWebSockets.Messages
 		{
 		[JsonIgnore]
 		public string BaseId { get; set; }
-		[JsonIgnore]
+		
+		//[JsonIgnore]
 		public string HWId { get; set; }
 
 		public string Name { get; set; }
