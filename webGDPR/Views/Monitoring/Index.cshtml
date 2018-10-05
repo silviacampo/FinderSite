@@ -9,7 +9,7 @@
 		<ul>
 			@foreach (webGDPR.Infrastructure.CustomWebSockets.CustomWebSocket ws in Model)
 	{
-		<li>@ws.Username - @ws.Guid - @ws.DeviceId  - @ws.WebSocket.State </li>
+		<li>@ws.Username - @ws.Guid - @ws.DeviceId  - @ws.WebSocket.State - @ws.CreationDate.ToString()</li>
 
 }
 		</ul>

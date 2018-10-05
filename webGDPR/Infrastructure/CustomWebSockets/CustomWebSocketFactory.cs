@@ -15,7 +15,12 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 		//when connect
 		public void Add(CustomWebSocket uws)
 		{
+			List<CustomWebSocket> socketswithsamedevice = List.Where(d => d.DeviceId == uws.DeviceId).ToList();
 			List.Add(uws);
+			foreach(CustomWebSocket c in socketswithsamedevice)
+			{
+				List.Remove(c);
+			}
 		}
 		
 		//when disconnect

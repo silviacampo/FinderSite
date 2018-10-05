@@ -39,7 +39,8 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 								WebSocket = webSocket,
 								Username = username,
 								DeviceId = deviceId,
-								Guid = Guid.NewGuid()
+								Guid = Guid.NewGuid(),
+								CreationDate = DateTime.Now							
 							};
 							wsFactory.Add(userWebSocket);
 							await wsmHandler.SendInitialMessages(userWebSocket, dbContext, mapper);
