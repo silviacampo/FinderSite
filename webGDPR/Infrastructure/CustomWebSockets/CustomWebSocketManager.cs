@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Net.WebSockets;
 using System.Threading;
 using System.Threading.Tasks;
@@ -43,8 +44,17 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 								CreationDate = DateTime.Now							
 							};
 							wsFactory.Add(userWebSocket);
-							await wsmHandler.SendInitialMessages(userWebSocket, dbContext, mapper);
-							await Listen(context, userWebSocket, wsFactory, wsmHandler,dbContext, mapper, emailSender);
+							if (dbContext.Device.FirstOrDefault(d => d.DeviceId == deviceId && d.Banned) != null)
+							{
+								await wsmHandler.SendDeviceBannedMessage(userWebSocket);
+								wsFactory.Remove(userWebSocket.Guid);
+								await webSocket.CloseAsync(WebSocketCloseStatus.Empty, string.Empty, CancellationToken.None);
+							}
+							else
+							{
+								await wsmHandler.SendInitialMessages(userWebSocket, dbContext, mapper);
+								await Listen(context, userWebSocket, wsFactory, wsmHandler, dbContext, mapper, emailSender);
+							}
 						}
 						//log sthing
 					}

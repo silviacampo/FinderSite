@@ -364,5 +364,23 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 			byte[] bytes = Encoding.ASCII.GetBytes(serialisedMessage);
 			await BroadcastGroup(bytes, username, wsFactory);
 		}
+
+		public async Task SendDeviceBannedMessage(CustomWebSocket userWebSocket)
+		{
+			//{"Text":"DeviceBanned","MessagDateTime":"2018-10-05T12:43:47.647797-04:00","IsIncoming":true,"UserId":"system","Type":14}
+			string serialisedText = "DeviceBanned";
+			var msg = new CustomWebSocketMessage
+			{
+				MessagDateTime = DateTime.Now,
+				Type = WSMessageType.DeviceBanned,
+				Text = serialisedText,
+				UserId = CustomWebSocketMessage.SystemUserId
+			};
+
+			string serialisedMessage = JsonConvert.SerializeObject(msg);
+			log.Info(serialisedMessage);
+			byte[] bytes = Encoding.ASCII.GetBytes(serialisedMessage);
+			await userWebSocket.WebSocket.SendAsync(new ArraySegment<byte>(bytes, 0, bytes.Length), WebSocketMessageType.Text, true, CancellationToken.None);
+		}
 	}
 }

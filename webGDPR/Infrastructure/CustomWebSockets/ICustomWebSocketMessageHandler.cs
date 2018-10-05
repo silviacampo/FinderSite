@@ -24,5 +24,6 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 		Task SendDeletedCollarAsync(byte collarNumber, string username, ICustomWebSocketFactory wsFactory);
 		Task SendBaseAsync(webGDPR.Infrastructure.CustomWebSockets.Messages.Base b, string username, ICustomWebSocketFactory wsFactory);
 		Task SendCollarAsync(webGDPR.Infrastructure.CustomWebSockets.Messages.Collar c, string username, ICustomWebSocketFactory wsFactory);
+		Task SendDeviceBannedMessage(CustomWebSocket userWebSocket);
 	}
 }

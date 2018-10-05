@@ -36,6 +36,6 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 		CollarCore = 11,
 		BaseStatus = 12,
 		CollarStatus = 13,
-		
+		DeviceBanned = 14,
 	}
 }
