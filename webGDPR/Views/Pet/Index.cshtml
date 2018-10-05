@@ -1,124 +1,130 @@
 @model IEnumerable<webGDPR.ViewModels.PetViewModel>
 
 @{
-   // Layout = null;
+	// Layout = null;
 }
 
 <!DOCTYPE html>
 
 <html>
 <head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Index</title>
+	<meta name="viewport" content="width=device-width" />
+	<title>Index</title>
 </head>
 <body>
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-		<tr>
-			<th>
-				@Html.DisplayNameFor(model => model.Name)
-			</th>
-			<th>
-				@Html.DisplayNameFor(model => model.Type)
-			</th>
-			<th>
-				@Html.DisplayNameFor(model => model.Breeding)
-			</th>
-			<th>
-				@Html.DisplayNameFor(model => model.Color)
-			</th>
-			<th>
-				@Html.DisplayNameFor(model => model.Age)
-			</th>
-			<th>
-				@Html.DisplayNameFor(model => model.HealthComments)
-			</th>
-			<th>
-				@Html.DisplayNameFor(model => model.CollarName)
-			</th>
-			<th>
-				@Html.DisplayNameFor(model => model.Latitude)
-			</th>
-			<th>
-				@Html.DisplayNameFor(model => model.Longitude)
-			</th>
-			<th>
-				@Html.DisplayNameFor(model => model.LocationCreationDate)
-			</th>
-			@*<th>
-			@Html.DisplayNameFor(model => model.ImageFileName)
-		</th>
-		<th>
-			@Html.DisplayNameFor(model => model.PageFileName)
-		</th>*@
-			@*<th>
-			@Html.DisplayNameFor(model => model.UserId)
-		</th>*@
-			<th></th>
-		</tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-		<tr>
-			<td>
-				@Html.DisplayFor(modelItem => item.Name)
-			</td>
-			<td>
-				@Html.DisplayFor(modelItem => item.Type)
-			</td>
-			<td>
-				@Html.DisplayFor(modelItem => item.Breeding)
-			</td>
-			<td>
-				@Html.DisplayFor(modelItem => item.Color)
-			</td>
-			<td>
-				@Html.DisplayFor(modelItem => item.Age)
-			</td>
-			<td>
-				@Html.DisplayFor(modelItem => item.HealthComments)
-			</td>
-			<th>
-				@if (!string.IsNullOrEmpty(item.CollarName))
-				{
-				@Html.DisplayFor(modelItem => item.CollarName)
-				}
-			</th>
-			<th>
-				@if (item.Latitude != default(long))
-				{
-				@Html.DisplayFor(modelItem => item.Latitude)
-				}
-			</th>
-			<th>
-				@if (item.Longitude != default(long)) {
-			@Html.DisplayFor(modelItem => item.Longitude)}
-			</th>
-			<th>
-				@if (item.LocationCreationDate != DateTime.MinValue) {
-			@Html.DisplayFor(modelItem => item.LocationCreationDate)}
-			</th>
-			@*<td>
-			@Html.DisplayFor(modelItem => item.ImageFileName)
-		</td>
-		<td>
-			@Html.DisplayFor(modelItem => item.PageFileName)
-		</td>*@
-			@*<td>
-			@Html.DisplayFor(modelItem => item.UserId)
-		</td>*@
-			<td>
-				<a asp-action="Edit" asp-route-id="@item.PetId">Edit</a> |
-				<a asp-action="Details" asp-route-id="@item.PetId">Details</a> |
-				<a asp-action="Track" asp-route-id="@item.PetId">Track</a> |
-				<a asp-action="Delete" asp-route-id="@item.PetId">Delete</a>
-			</td>
-		</tr>
-}
-    </tbody>
-</table>
+	<h2>
+		<i class="fa fa-paw fa-fw" aria-hidden="true"></i>&nbsp; Pets
+	</h2>
+	<p>
+		<a asp-action="Create">Create New</a>
+	</p>
+	<table class="table">
+		<thead>
+			<tr>
+				<th>
+					@Html.DisplayNameFor(model => model.Name)
+				</th>
+				<th>
+					@Html.DisplayNameFor(model => model.Type)
+				</th>
+				<th>
+					@Html.DisplayNameFor(model => model.Breeding)
+				</th>
+				<th>
+					@Html.DisplayNameFor(model => model.Color)
+				</th>
+				<th>
+					@Html.DisplayNameFor(model => model.Age)
+				</th>
+				<th>
+					@Html.DisplayNameFor(model => model.HealthComments)
+				</th>
+				<th>
+					@Html.DisplayNameFor(model => model.CollarName)
+				</th>
+				<th>
+					@Html.DisplayNameFor(model => model.Latitude)
+				</th>
+				<th>
+					@Html.DisplayNameFor(model => model.Longitude)
+				</th>
+				<th>
+					@Html.DisplayNameFor(model => model.LocationCreationDate)
+				</th>
+				@*<th>
+						@Html.DisplayNameFor(model => model.ImageFileName)
+					</th>
+					<th>
+						@Html.DisplayNameFor(model => model.PageFileName)
+					</th>*@
+				@*<th>
+						@Html.DisplayNameFor(model => model.UserId)
+					</th>*@
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var item in Model)
+			{
+				<tr>
+					<td>
+						@Html.DisplayFor(modelItem => item.Name)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.Type)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.Breeding)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.Color)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.Age)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.HealthComments)
+					</td>
+					<th>
+						@if (!string.IsNullOrEmpty(item.CollarName))
+						{
+							@Html.DisplayFor(modelItem => item.CollarName)
+						}
+					</th>
+					<th>
+						@if (item.Latitude != default(long))
+						{
+							@Html.DisplayFor(modelItem => item.Latitude)
+						}
+					</th>
+					<th>
+						@if (item.Longitude != default(long))
+						{
+							@Html.DisplayFor(modelItem => item.Longitude)}
+					</th>
+					<th>
+						@if (item.LocationCreationDate != DateTime.MinValue)
+						{
+							@Html.DisplayFor(modelItem => item.LocationCreationDate)}
+					</th>
+					@*<td>
+							@Html.DisplayFor(modelItem => item.ImageFileName)
+						</td>
+						<td>
+							@Html.DisplayFor(modelItem => item.PageFileName)
+						</td>*@
+					@*<td>
+							@Html.DisplayFor(modelItem => item.UserId)
+						</td>*@
+					<td>
+						<a asp-action="Edit" asp-route-id="@item.PetId">Edit</a> |
+						<a asp-action="Details" asp-route-id="@item.PetId">Details</a> |
+						<a asp-action="Track" asp-route-id="@item.PetId">Track</a> |
+						<a asp-action="Delete" asp-route-id="@item.PetId">Delete</a>
+					</td>
+				</tr>
+			}
+		</tbody>
+	</table>
 </body>
 </html>
