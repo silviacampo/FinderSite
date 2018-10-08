@@ -104,7 +104,7 @@ if ($('.card-map').length > 0) {
     //Markers and MarkersCluster
     //http://www.lass.it/Web/viewer.aspx?id=4
     var flag = {
-      url: 'http://localhost:51420/images/blue.png',
+      url: 'https://test.whereisfinder.com/images/blue.png',
       // This marker is 20 pixels wide by 32 pixels high.
       size: new google.maps.Size(32, 25)
     };

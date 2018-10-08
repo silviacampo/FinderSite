@@ -87,7 +87,14 @@ namespace webGDPR
                 app.UseHsts();
             }
 
-			app.UseForwardedHeaders(new ForwardedHeadersOptions
+            //fuerza bruta para que login no sea http
+            app.Use((context, next) =>
+            {
+                context.Request.Scheme = "https";
+                return next();
+            });
+
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
 			{
 				ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
 			});
