@@ -1,4 +1,4 @@
-﻿@model List<webGDPR.Infrastructure.CustomWebSockets.CustomWebSocket>
+﻿@model webGDPR.ViewModels.MonitoringViewModel
 @{
 	ViewData["Title"] = "Monitoring Page";
 }
@@ -9,9 +9,19 @@
 	<div class="col-md-12">
 		<h2>Web Sockets</h2>
 		<ul>
-			@foreach (webGDPR.Infrastructure.CustomWebSockets.CustomWebSocket ws in Model)
+			@foreach (webGDPR.Infrastructure.CustomWebSockets.CustomWebSocket ws in Model.WebSockets)
 			{
 				<li>@ws.Username - @ws.Guid - @ws.DeviceId  - @ws.WebSocket.State - @ws.CreationDate.ToString()</li>
+
+			}
+		</ul>
+	</div>
+	<div class="col-md-12">
+		<h2>Device Logs</h2>
+		<ul>
+			@foreach (webGDPR.Models.DeviceLog dl in Model.DeviceLogs.OrderBy(d=>d.DeviceId).ThenBy(d=>d.CreationDate))
+			{
+				<li>@dl.DeviceId - @dl.CreationDate - @dl.Reason - @dl.Message</li>
 
 			}
 		</ul>

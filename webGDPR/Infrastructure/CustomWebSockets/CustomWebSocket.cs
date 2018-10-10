@@ -13,5 +13,6 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 		public string DeviceId { get; set; }
 		public Guid Guid { get; set; }
 		public DateTime CreationDate { get; set; }
+		public string IP { get; set; }
 	}
 }

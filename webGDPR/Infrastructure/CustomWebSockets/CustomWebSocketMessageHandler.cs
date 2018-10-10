@@ -49,6 +49,8 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 				byte[] bytes = Encoding.ASCII.GetBytes(serialisedMessage);
 				await webSocket.SendAsync(new ArraySegment<byte>(bytes, 0, bytes.Length), WebSocketMessageType.Text, true, CancellationToken.None);
 
+				dbContext.DeviceLog.Add(new Models.DeviceLog() { DeviceId = userWebSocket.DeviceId, CreationDate = DateTime.Now, Reason = "Initial Bases", Message = serialisedMessage });
+				dbContext.SaveChanges();
 				List<Collar> collars = await dbContext.Collar.AsNoTracking().Where(b => b.UserId == UserId).Include(b => b.LastStatus).ToListAsync();
 
 				List<webGDPR.Infrastructure.CustomWebSockets.Messages.Collar> msgCollars = new List<webGDPR.Infrastructure.CustomWebSockets.Messages.Collar>();
@@ -78,6 +80,8 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 				byte[] bytes2 = Encoding.ASCII.GetBytes(serialisedMessage2);
 				await webSocket.SendAsync(new ArraySegment<byte>(bytes2, 0, bytes2.Length), WebSocketMessageType.Text, true, CancellationToken.None);
 
+				dbContext.DeviceLog.Add(new Models.DeviceLog() { DeviceId = userWebSocket.DeviceId, CreationDate = DateTime.Now, Reason = "Initial Collars", Message = serialisedMessage2 });
+				dbContext.SaveChanges();
 			}
 			catch (Exception e)
 			{
@@ -99,6 +103,10 @@ namespace webGDPR.Infrastructure.CustomWebSockets
                 //{"Text":"{\"DeviceId\":null,\"Type\":\"Phone\",\"Platform\":\"Android\",\"Name\":\"Nexus 5\",\"Model\":\"Nexus 5\",\"Manufacturer\":\"LGE\",\"OSVersion\":\"6.0.1\"}","MessagDateTime":"2018-09-27T09:24:43.584572-04:00","IsIncoming":false,"UserId":"gghg","Type":5}
 
                 var message = JsonConvert.DeserializeObject<CustomWebSocketMessage>(msg);
+
+				dbContext.DeviceLog.Add(new DeviceLog() { DeviceId = userWebSocket.DeviceId, CreationDate = DateTime.Now, Reason = "Message from device", Message = msg });
+				dbContext.SaveChanges();
+
 				log.Info(msg.Replace("\0", string.Empty));
 				User user = dbContext.User.FirstOrDefault(u => u.Name == userWebSocket.Username);
 				string UserId = user.UserID;
@@ -133,7 +141,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 					b.LastStatusId = b.LastStatus.BaseStatusId;
 					dbContext.Update(b);
 
-					await dbContext.SaveChangesAsync();
+					await dbContext.SaveChangesAsync();					
 
 					await BroadcastOthers(buffer, userWebSocket, wsFactory);
 				}
@@ -193,6 +201,9 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 					//return guid
 					userWebSocket.DeviceId = d.DeviceId;
 					await SendDeviceInformation(userWebSocket, d.DeviceId);
+
+					dbContext.DeviceLog.Add(new DeviceLog() { DeviceId = userWebSocket.DeviceId, CreationDate = DateTime.Now, Reason = "Device Id", Message = d.DeviceId });
+					dbContext.SaveChanges();
 				}
 				else if (message.Type == WSMessageType.LastGPS) {
 
@@ -223,6 +234,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 			log.Info(serialisedMessage);
 			byte[] bytes = Encoding.ASCII.GetBytes(serialisedMessage);
 			await userWebSocket.WebSocket.SendAsync(new ArraySegment<byte>(bytes, 0, bytes.Length), WebSocketMessageType.Text, true, CancellationToken.None);
+
 		}
 
 		//any change coming from one device

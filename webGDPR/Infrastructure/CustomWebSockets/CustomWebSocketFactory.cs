@@ -22,10 +22,16 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 				List.Remove(c);
 			}
 		}
-		
+
 		//when disconnect
 		public void Remove(Guid guid) {
-			List.Remove(Client(guid));
+			try
+			{
+				List.Remove(Client(guid));
+			}
+			catch (Exception e) {
+				var test = e.Message;
+			}
 		}
 
 		public List<CustomWebSocket> All()
@@ -45,7 +51,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 
 		public CustomWebSocket Client(Guid guid)
 		{
-			return List.First(c => c.Guid == guid && (c.WebSocket.State == System.Net.WebSockets.WebSocketState.Open || c.WebSocket.State == System.Net.WebSockets.WebSocketState.Connecting));
+			return List.First(c => c.Guid == guid);
 		}
 
 

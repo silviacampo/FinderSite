@@ -7,6 +7,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Newtonsoft.Json;
 using webGDPR.Data;
 
 namespace webGDPR.Infrastructure.CustomWebSockets
@@ -41,13 +42,18 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 								Username = username,
 								DeviceId = deviceId,
 								Guid = Guid.NewGuid(),
-								CreationDate = DateTime.Now							
+								CreationDate = DateTime.Now,
+								IP = context.Connection.RemoteIpAddress.ToString()
 							};
 							wsFactory.Add(userWebSocket);
+							dbContext.DeviceLog.Add(new Models.DeviceLog() { DeviceId = deviceId, CreationDate = DateTime.Now, Reason = "WebSocket Add", Message = JsonConvert.SerializeObject(userWebSocket) });
+							dbContext.SaveChanges();
 							if (dbContext.Device.FirstOrDefault(d => d.DeviceId == deviceId && d.Banned) != null)
 							{
 								await wsmHandler.SendDeviceBannedMessage(userWebSocket);
 								wsFactory.Remove(userWebSocket.Guid);
+								dbContext.DeviceLog.Add(new Models.DeviceLog() { DeviceId = deviceId, CreationDate = DateTime.Now, Reason = "WebSocket Remove", Message = JsonConvert.SerializeObject(userWebSocket) });
+								dbContext.SaveChanges();
 								await webSocket.CloseAsync(WebSocketCloseStatus.Empty, string.Empty, CancellationToken.None);
 							}
 							else
@@ -101,8 +107,13 @@ System.Net.WebSockets.WebSocketException (0x80004005): The remote party closed t
                 }
                 
 			}
-			wsFactory.Remove(userWebSocket.Guid);
+			
 			await webSocket.CloseAsync(result.CloseStatus.Value, result.CloseStatusDescription, CancellationToken.None);
+
+			dbContext.DeviceLog.Add(new Models.DeviceLog() { DeviceId = userWebSocket.DeviceId, CreationDate = DateTime.Now, Reason = "WebSocket Remove", Message = JsonConvert.SerializeObject(userWebSocket) });
+			dbContext.SaveChanges();
+
+			wsFactory.Remove(userWebSocket.Guid);
 		}
 	}
 }

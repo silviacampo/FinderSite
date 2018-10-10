@@ -9,10 +9,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.EntityFrameworkCore;
 using webGDPR.Data;
 using webGDPR.Infrastructure;
 using webGDPR.Infrastructure.CustomWebSockets;
 using webGDPR.Models;
+using webGDPR.ViewModels;
 
 namespace webGDPR.Controllers
 {
@@ -40,10 +42,13 @@ namespace webGDPR.Controllers
 			_signInManager = signInManager;
 		}
 
-		public IActionResult Index()
+		public async System.Threading.Tasks.Task<IActionResult> Index()
 		{
-			List<CustomWebSocket> webSockets = _wsFactory.All();
-			return View(webSockets);
+			MonitoringViewModel vm = new MonitoringViewModel();
+			vm.WebSockets = _wsFactory.All();
+			vm.DeviceLogs = await _context.DeviceLog.ToListAsync();
+
+			return View(vm);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
