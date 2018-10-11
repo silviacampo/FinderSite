@@ -115,5 +115,14 @@ System.Net.WebSockets.WebSocketException (0x80004005): The remote party closed t
 
 			wsFactory.Remove(userWebSocket.Guid);
 		}
+
+		private void LogDeviceActivity(ApplicationDbContext dbContext, string DeviceId, string Reason, string Message)
+		{
+			if (dbContext.Device.Find(DeviceId).IsLogging)
+			{
+				dbContext.DeviceLog.Add(new Models.DeviceLog() { DeviceId = DeviceId, CreationDate = DateTime.Now, Reason = Reason, Message = Message });
+				dbContext.SaveChanges();
+			}
+		}
 	}
 }

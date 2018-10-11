@@ -45,49 +45,55 @@
 				<th>
 					@Html.DisplayNameFor(model => model.Banned)
 				</th>
+				<th>
+					@Html.DisplayNameFor(model => model.IsLogging)
+				</th>
 				@*<th>
-						@Html.DisplayNameFor(model => model.UserId)
-					</th>*@
+			@Html.DisplayNameFor(model => model.UserId)
+		</th>*@
 				<th></th>
 			</tr>
 		</thead>
 		<tbody>
 			@foreach (var item in Model)
 			{
-				<tr>
-					<td>
-						@Html.DisplayFor(modelItem => item.Type)
-					</td>
-					<td>
-						@Html.DisplayFor(modelItem => item.Platform)
-					</td>
-					<td>
-						@Html.DisplayFor(modelItem => item.Name)
-					</td>
-					<td>
-						@Html.DisplayFor(modelItem => item.Model)
-					</td>
-					<td>
-						@Html.DisplayFor(modelItem => item.Manufacturer)
-					</td>
-					<td>
-						@Html.DisplayFor(modelItem => item.OSVersion)
-					</td>
-					<th>
-						@Html.DisplayFor(modelItem => item.AliasName)
-					</th>
-					<th>
-						@Html.DisplayFor(modelItem => item.Banned)
-					</th>
-					@*<td>
-							@Html.DisplayFor(modelItem => item.UserId)
-						</td>*@
-					<td>
-						<a asp-action="Edit" asp-route-id="@item.DeviceId">Edit</a> |
-						<a asp-action="Details" asp-route-id="@item.DeviceId">Details</a> |
-						<a asp-action="Delete" asp-route-id="@item.DeviceId">Delete</a>
-					</td>
-				</tr>
+			<tr>
+				<td>
+					@Html.DisplayFor(modelItem => item.Type)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Platform)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Name)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Model)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Manufacturer)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.OSVersion)
+				</td>
+				<th>
+					@Html.DisplayFor(modelItem => item.AliasName)
+				</th>
+				<th>
+					@Html.DisplayFor(modelItem => item.Banned)
+				</th>
+				<th>
+					@Html.DisplayFor(modelItem => item.IsLogging)
+				</th>
+				@*<td>
+			@Html.DisplayFor(modelItem => item.UserId)
+		</td>*@
+				<td>
+					<a asp-action="Edit" asp-route-id="@item.DeviceId">Edit</a> |
+					<a asp-action="Details" asp-route-id="@item.DeviceId">Details</a> |
+					<a asp-action="Delete" asp-route-id="@item.DeviceId">Delete</a>
+				</td>
+			</tr>
 			}
 		</tbody>
 	</table>

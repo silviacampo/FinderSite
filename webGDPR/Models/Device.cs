@@ -12,6 +12,7 @@
 
 		public string AliasName { get; set; }
 		public bool Banned { get; set; }
+		public bool IsLogging { get; set; }
 
 		public string UserId { get; set; }
 
@@ -22,5 +23,7 @@
 				return AliasName ?? Name;
 			}
 		}
+
+
 	}
 }
