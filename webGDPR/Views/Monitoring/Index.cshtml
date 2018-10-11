@@ -8,22 +8,54 @@
 <div class="row">
 	<div class="col-md-12">
 		<h2>Web Sockets</h2>
-		<ul>
-			@foreach (webGDPR.Infrastructure.CustomWebSockets.CustomWebSocket ws in Model.WebSockets)
-			{
-				<li>@ws.Username - @ws.Guid - @ws.DeviceId  - @ws.WebSocket.State - @ws.CreationDate.ToString()</li>
-
-			}
-		</ul>
+		<table class="table">
+			<thead>
+				<tr>
+					<th scope="col">Username</th>
+					<th scope="col">Guid</th>
+					<th scope="col">DeviceId</th>
+					<th scope="col">IP</th>
+					<th scope="col">State</th>
+					<th scope="col">CreationDate</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (webGDPR.Infrastructure.CustomWebSockets.CustomWebSocket ws in Model.WebSockets)
+	{
+			<tr>
+				<td>@ws.Username</td>
+				<td>@ws.Guid</td>
+				<td>@ws.DeviceId</td>
+				<td>@ws.IP</td>
+				<td>@ws.WebSocket.State</td>
+				<td>@ws.CreationDate.ToString()</td>
+			</tr>
+}
+			</tbody>
+		</table>
 	</div>
 	<div class="col-md-12">
 		<h2>Device Logs</h2>
-		<ul>
-			@foreach (webGDPR.Models.DeviceLog dl in Model.DeviceLogs.OrderBy(d=>d.DeviceId).ThenBy(d=>d.CreationDate))
-			{
-				<li>@dl.DeviceId - @dl.CreationDate - @dl.Reason - @dl.Message</li>
-
-			}
-		</ul>
+		<table class="table">
+			<thead>
+				<tr>
+					<th scope="col">DeviceId</th>
+					<th scope="col">CreationDate</th>
+					<th scope="col">Reason</th>
+					<th scope="col">Message</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (webGDPR.Models.DeviceLog dl in Model.DeviceLogs.OrderBy(d => d.DeviceId).ThenBy(d => d.CreationDate))
+	{
+			<tr>
+				<td>@dl.DeviceId</td>
+				<td>@dl.CreationDate</td>
+				<td>@dl.Reason</td>
+				<td>@dl.Message</td>
+			</tr>
+}
+			</tbody>
+		</table>
 	</div>
 </div>
