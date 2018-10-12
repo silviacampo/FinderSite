@@ -88,11 +88,11 @@ namespace webGDPR
             }
 
             //fuerza bruta para que login no sea http
-            app.Use((context, next) =>
-            {
-                context.Request.Scheme = "https";
-                return next();
-            });
+            //app.Use((context, next) =>
+           // {
+           //     context.Request.Scheme = "https";
+           //     return next();
+           // });
 
             app.UseForwardedHeaders(new ForwardedHeadersOptions
 			{

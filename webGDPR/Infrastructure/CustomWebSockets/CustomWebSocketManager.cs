@@ -46,14 +46,14 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 								IP = context.Connection.RemoteIpAddress.ToString()
 							};
 							wsFactory.Add(userWebSocket);
-							dbContext.DeviceLog.Add(new Models.DeviceLog() { DeviceId = deviceId, CreationDate = DateTime.Now, Reason = "WebSocket Add", Message = JsonConvert.SerializeObject(userWebSocket) });
-							dbContext.SaveChanges();
+
+							wsmHandler.LogDeviceActivity(dbContext, deviceId, "WebSocket Add", JsonConvert.SerializeObject(userWebSocket));
 							if (dbContext.Device.FirstOrDefault(d => d.DeviceId == deviceId && d.Banned) != null)
 							{
 								await wsmHandler.SendDeviceBannedMessage(userWebSocket);
 								wsFactory.Remove(userWebSocket.Guid);
-								dbContext.DeviceLog.Add(new Models.DeviceLog() { DeviceId = deviceId, CreationDate = DateTime.Now, Reason = "WebSocket Remove", Message = JsonConvert.SerializeObject(userWebSocket) });
-								dbContext.SaveChanges();
+
+								wsmHandler.LogDeviceActivity(dbContext, deviceId, "WebSocket Remove", JsonConvert.SerializeObject(userWebSocket));
 								await webSocket.CloseAsync(WebSocketCloseStatus.Empty, string.Empty, CancellationToken.None);
 							}
 							else
@@ -110,19 +110,11 @@ System.Net.WebSockets.WebSocketException (0x80004005): The remote party closed t
 			
 			await webSocket.CloseAsync(result.CloseStatus.Value, result.CloseStatusDescription, CancellationToken.None);
 
-			dbContext.DeviceLog.Add(new Models.DeviceLog() { DeviceId = userWebSocket.DeviceId, CreationDate = DateTime.Now, Reason = "WebSocket Remove", Message = JsonConvert.SerializeObject(userWebSocket) });
-			dbContext.SaveChanges();
+			wsmHandler.LogDeviceActivity(dbContext, userWebSocket.DeviceId, "WebSocket Remove", JsonConvert.SerializeObject(userWebSocket));
 
 			wsFactory.Remove(userWebSocket.Guid);
 		}
 
-		private void LogDeviceActivity(ApplicationDbContext dbContext, string DeviceId, string Reason, string Message)
-		{
-			if (dbContext.Device.Find(DeviceId).IsLogging)
-			{
-				dbContext.DeviceLog.Add(new Models.DeviceLog() { DeviceId = DeviceId, CreationDate = DateTime.Now, Reason = Reason, Message = Message });
-				dbContext.SaveChanges();
-			}
-		}
+
 	}
 }

@@ -95,7 +95,7 @@ namespace webGDPR.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("DeviceId,Type,Platform,Name,Model,Manufacturer,OSVersion,AliasName,Banned")] Device device)
+        public async Task<IActionResult> Edit(string id, [Bind("DeviceId,Type,Platform,Name,Model,Manufacturer,OSVersion,AliasName,Banned,IsLogging")] Device device)
         {
             if (id != device.DeviceId)
             {

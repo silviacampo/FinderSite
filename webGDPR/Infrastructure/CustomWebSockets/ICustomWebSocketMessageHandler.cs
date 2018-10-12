@@ -25,5 +25,6 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 		Task SendBaseAsync(webGDPR.Infrastructure.CustomWebSockets.Messages.Base b, string username, ICustomWebSocketFactory wsFactory);
 		Task SendCollarAsync(webGDPR.Infrastructure.CustomWebSockets.Messages.Collar c, string username, ICustomWebSocketFactory wsFactory);
 		Task SendDeviceBannedMessage(CustomWebSocket userWebSocket);
+		void LogDeviceActivity(ApplicationDbContext dbContext, string DeviceId, string Reason, string Message);
 	}
 }

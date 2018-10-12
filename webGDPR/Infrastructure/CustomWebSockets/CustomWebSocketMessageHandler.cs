@@ -49,8 +49,8 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 				byte[] bytes = Encoding.ASCII.GetBytes(serialisedMessage);
 				await webSocket.SendAsync(new ArraySegment<byte>(bytes, 0, bytes.Length), WebSocketMessageType.Text, true, CancellationToken.None);
 
-				dbContext.DeviceLog.Add(new Models.DeviceLog() { DeviceId = userWebSocket.DeviceId, CreationDate = DateTime.Now, Reason = "Initial Bases", Message = serialisedMessage });
-				dbContext.SaveChanges();
+				LogDeviceActivity(dbContext, userWebSocket.DeviceId, "Initial Bases", serialisedMessage);
+
 				List<Collar> collars = await dbContext.Collar.AsNoTracking().Where(b => b.UserId == UserId).Include(b => b.LastStatus).ToListAsync();
 
 				List<webGDPR.Infrastructure.CustomWebSockets.Messages.Collar> msgCollars = new List<webGDPR.Infrastructure.CustomWebSockets.Messages.Collar>();
@@ -80,12 +80,20 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 				byte[] bytes2 = Encoding.ASCII.GetBytes(serialisedMessage2);
 				await webSocket.SendAsync(new ArraySegment<byte>(bytes2, 0, bytes2.Length), WebSocketMessageType.Text, true, CancellationToken.None);
 
-				dbContext.DeviceLog.Add(new Models.DeviceLog() { DeviceId = userWebSocket.DeviceId, CreationDate = DateTime.Now, Reason = "Initial Collars", Message = serialisedMessage2 });
-				dbContext.SaveChanges();
+				LogDeviceActivity(dbContext, userWebSocket.DeviceId, "Initial Collars", serialisedMessage2);
 			}
 			catch (Exception e)
 			{
 				string test = e.Message;
+			}
+		}
+
+		public void LogDeviceActivity(ApplicationDbContext dbContext, string DeviceId, string Reason, string Message)
+		{
+			if (dbContext.Device.FirstOrDefault(d=>d.DeviceId == DeviceId) != null && dbContext.Device.FirstOrDefault(d => d.DeviceId == DeviceId).IsLogging)
+			{
+				dbContext.DeviceLog.Add(new Models.DeviceLog() { DeviceId = DeviceId, CreationDate = DateTime.Now, Reason = Reason, Message = Message });
+				dbContext.SaveChanges();
 			}
 		}
 
@@ -104,8 +112,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 
                 var message = JsonConvert.DeserializeObject<CustomWebSocketMessage>(msg);
 
-				dbContext.DeviceLog.Add(new DeviceLog() { DeviceId = userWebSocket.DeviceId, CreationDate = DateTime.Now, Reason = "Message from device", Message = msg });
-				dbContext.SaveChanges();
+				LogDeviceActivity(dbContext, userWebSocket.DeviceId, "Message from device", msg);
 
 				log.Info(msg.Replace("\0", string.Empty));
 				User user = dbContext.User.FirstOrDefault(u => u.Name == userWebSocket.Username);
@@ -202,8 +209,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 					userWebSocket.DeviceId = d.DeviceId;
 					await SendDeviceInformation(userWebSocket, d.DeviceId);
 
-					dbContext.DeviceLog.Add(new DeviceLog() { DeviceId = userWebSocket.DeviceId, CreationDate = DateTime.Now, Reason = "Device Id", Message = d.DeviceId });
-					dbContext.SaveChanges();
+					LogDeviceActivity(dbContext, userWebSocket.DeviceId, "Device Id", d.DeviceId);
 				}
 				else if (message.Type == WSMessageType.LastGPS) {
 
