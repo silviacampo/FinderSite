@@ -90,7 +90,9 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 
 		public void LogDeviceActivity(ApplicationDbContext dbContext, string DeviceId, string Reason, string Message)
 		{
-			if (dbContext.Device.FirstOrDefault(d=>d.DeviceId == DeviceId) != null && dbContext.Device.FirstOrDefault(d => d.DeviceId == DeviceId).IsLogging)
+            DeviceId = DeviceId.Replace("\"", "");
+
+            if (dbContext.Device.FirstOrDefault(d=>d.DeviceId == DeviceId) != null && dbContext.Device.FirstOrDefault(d => d.DeviceId == DeviceId).IsLogging)
 			{
 				dbContext.DeviceLog.Add(new Models.DeviceLog() { DeviceId = DeviceId, CreationDate = DateTime.Now, Reason = Reason, Message = Message });
 				dbContext.SaveChanges();
