@@ -101,7 +101,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 
 		public async Task HandleMessage(WebSocketReceiveResult result, byte[] buffer, CustomWebSocket userWebSocket, ICustomWebSocketFactory wsFactory, ApplicationDbContext dbContext, IMapper mapper, IEmailSender emailSender)
 		{
-			string msg = Encoding.ASCII.GetString(buffer);
+			string msg = Encoding.ASCII.GetString(buffer).Trim('\0');
 			try
 			{
                 //{"Text":"{\"BaseNumber\":\"1\",\"IsConnected\":true,\"IsPlugged\":false,\"IsCharging\":true,\"Battery\":50,\"HasBattery\":true,\"Radio\":95}","MessagDateTime":"2018-08-23T13:10:58.6645939-04:00","IsIncoming":true,"UserId":"SilviaCampo","Type":12}
