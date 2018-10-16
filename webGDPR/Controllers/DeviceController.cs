@@ -1,5 +1,6 @@
 //dotnet aspnet-codegenerator controller -name DeviceController -async -m webGDPR.Models.Device -dc webGDPR.Data.ApplicationDbContext -namespace webGDPR.Controllers -outDir Controllers
 
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -29,8 +30,10 @@ namespace webGDPR.Controllers
         // GET: Device
         public async Task<IActionResult> Index()
         {
+			string UserId = _context.User.FirstOrDefault(u => u.OwnerID == _userManager.GetUserId(User)).UserID;
 
-            return View(await _context.Device.ToListAsync());
+			List<Device> devices = await _context.Device.AsNoTracking().Where(b => b.UserId == UserId).ToListAsync();
+			return View(devices);
         }
 
         // GET: Device/Details/5

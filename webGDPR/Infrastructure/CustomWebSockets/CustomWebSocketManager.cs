@@ -7,8 +7,10 @@ using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using webGDPR.Data;
+using webGDPR.Models;
 
 namespace webGDPR.Infrastructure.CustomWebSockets
 {
@@ -36,11 +38,16 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 						if (result.Succeeded)
 						{
 							WebSocket webSocket = await context.WebSockets.AcceptWebSocketAsync();
+
+							string UserId = dbContext.User.FirstOrDefault(u => u.Name == username).UserID;
+
+							Device found = dbContext.Device.AsNoTracking().FirstOrDefault(b => b.UserId == UserId && b.DeviceId == deviceId);
+
 							CustomWebSocket userWebSocket = new CustomWebSocket()
 							{
 								WebSocket = webSocket,
 								Username = username,
-								DeviceId = deviceId,
+								DeviceId = (found == null)? string.Empty :deviceId,
 								Guid = Guid.NewGuid(),
 								CreationDate = DateTime.Now,
 								IP = context.Connection.RemoteIpAddress.ToString()
