@@ -49,7 +49,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 							{
 								WebSocket = webSocket,
 								Username = username,
-								DeviceId = (found == null)? string.Empty :deviceId,
+								DeviceId = (found == null) ? string.Empty : deviceId,
 								Guid = Guid.NewGuid(),
 								CreationDate = DateTime.Now,
 								IP = context.Connection.RemoteIpAddress.ToString()
@@ -71,9 +71,13 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 								await Listen(context, userWebSocket, wsFactory, wsmHandler, dbContext, mapper, emailSender);
 							}
 						}
-						//log sthing
+						else {
+							wsmHandler.LogDeviceActivity(dbContext, deviceId, "Attempt Sign in", JsonConvert.SerializeObject(result));
+						}
 					}
-					//log sthing
+					else {
+						wsmHandler.LogDeviceActivity(dbContext, deviceId, "Attempt without username/password", JsonConvert.SerializeObject(context.Request.QueryString));
+					}
 				}
 				else
 				{
