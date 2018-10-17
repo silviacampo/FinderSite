@@ -45,7 +45,7 @@ namespace webGDPR.Controllers
 			foreach (var b in bases)
 			{
 				BaseViewModel mb = _mapper.Map<BaseViewModel>(new Tuple<Base, BaseStatus>(b, b.LastStatus));
-				if (b.LastStatus != null)
+				if (b.LastStatus != null && b.LastStatus.IsConnected)
 				{
 					mb.DeviceConnectedTo = b.LastStatus.DeviceConnectedTo;
 				}
@@ -70,7 +70,7 @@ namespace webGDPR.Controllers
             }
 
 			BaseViewModel model = _mapper.Map<BaseViewModel>(new Tuple<Base, BaseStatus>(@base, @base.LastStatus));
-			if (@base.LastStatus != null)
+			if (@base.LastStatus != null && b.LastStatus.IsConnected)
 			{
 				model.DeviceConnectedTo = @base.LastStatus.DeviceConnectedTo;
 			}
@@ -183,7 +183,7 @@ namespace webGDPR.Controllers
 			}
 
 			BaseViewModel model = _mapper.Map<BaseViewModel>(new Tuple<Base, BaseStatus>(@base, @base.LastStatus));
-			if (@base.LastStatus != null)
+			if (@base.LastStatus != null && @base.LastStatus.IsConnected)
 			{
 				model.DeviceConnectedTo = @base.LastStatus.DeviceConnectedTo;
 			}
