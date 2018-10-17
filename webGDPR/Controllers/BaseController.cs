@@ -70,7 +70,7 @@ namespace webGDPR.Controllers
             }
 
 			BaseViewModel model = _mapper.Map<BaseViewModel>(new Tuple<Base, BaseStatus>(@base, @base.LastStatus));
-			if (@base.LastStatus != null && b.LastStatus.IsConnected)
+			if (@base.LastStatus != null && @base.LastStatus.IsConnected)
 			{
 				model.DeviceConnectedTo = @base.LastStatus.DeviceConnectedTo;
 			}
