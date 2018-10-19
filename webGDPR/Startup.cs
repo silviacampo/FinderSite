@@ -94,10 +94,15 @@ namespace webGDPR
            //     return next();
            // });
 
-            app.UseForwardedHeaders(new ForwardedHeadersOptions
-			{
-				ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
-			});
+           // app.UseForwardedHeaders(new ForwardedHeadersOptions
+			//{
+			//	ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+			//});
+
+			var forwardOpts = new ForwardedHeadersOptions { ForwardedHeaders = ForwardedHeaders.All };
+			forwardOpts.KnownNetworks.Clear();
+			forwardOpts.KnownProxies.Clear();
+			app.UseForwardedHeaders(forwardOpts);
 
 			/* https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/linux-apache?view=aspnetcore-2.1&tabs=aspnetcore2x
 			 * at the top, in any or all files
