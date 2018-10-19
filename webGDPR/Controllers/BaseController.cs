@@ -13,6 +13,7 @@ using webGDPR.ViewModels;
 using AutoMapper;
 using webGDPR.Models;
 using webGDPR.Infrastructure.CustomWebSockets;
+using webGDPR.Infrastructure;
 
 namespace webGDPR.Controllers
 {
@@ -56,7 +57,7 @@ namespace webGDPR.Controllers
         }
 
         // GET: Base/Details/5
-        public async Task<IActionResult> Details(string id)
+        public async Task<IActionResult> Details(string id, string searchString, int? pageIndex)
         {
             if (id == null)
             {
@@ -74,6 +75,19 @@ namespace webGDPR.Controllers
 			{
 				model.DeviceConnectedTo = @base.LastStatus.DeviceConnectedTo;
 			}
+
+			if (searchString != null)
+			{
+				pageIndex = 1;
+			}
+			else
+			{
+				searchString = string.Empty;
+			}
+			model.CurrentFilter = searchString;
+			int pageSize = 10;
+			model.BaseStatus = await PaginatedList<BaseStatus>.CreateAsync(
+				_context.BaseStatus.Where(s => s.ConnectedTo.Contains(searchString)).OrderByDescending(d => d.CreationDate).AsNoTracking(), pageIndex ?? 1, pageSize);
 
 			return View(model);
         }

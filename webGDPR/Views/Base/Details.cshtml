@@ -94,6 +94,65 @@
 				</dd>*@
 		</dl>
 	</div>
+	<div class="col-md-12">
+		<h2>Status</h2>
+		<form asp-action="Details" method="get">
+			<div class="form-actions no-color">
+				<p>
+					Find:
+					<input type="text" name="SearchString" value="@Model.CurrentFilter" />
+					<input type="submit" value="Search" class="btn btn-default" /> |
+					<a asp-action="Details">Back to full List</a>
+				</p>
+			</div>
+		</form>
+		<table class="table">
+			<thead>
+				<tr>
+					<th scope="col">CreationDate</th>
+					<th scope="col">IsConnected</th>
+					<th scope="col">ConnectedTo</th>
+					<th scope="col">IsPlugged</th>
+					<th scope="col">IsCharging</th>
+					<th scope="col">HasBattery</th>
+					<th scope="col">Battery</th>
+					<th scope="col">Radio</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (webGDPR.Models.BaseStatus dl in Model.BaseStatus)
+				{
+				<tr>
+					<td>@dl.CreationDate</td>
+					<td>@dl.IsConnected</td>
+					<td>@dl.ConnectedTo</td>
+					<td>@dl.IsPlugged</td>
+					<td>@dl.IsCharging</td>
+					<td>@dl.HasBattery</td>
+					<td>@dl.Battery</td>
+					<td>@dl.Radio</td>
+				</tr>
+				}
+			</tbody>
+		</table>
+		@{
+			var prevDisabled = !Model.BaseStatus.HasPreviousPage ? "disabled" : "";
+			var nextDisabled = !Model.BaseStatus.HasNextPage ? "disabled" : "";
+		}
+
+		<a asp-action="Details"
+		   asp-route-pageIndex="@(Model.BaseStatus.PageIndex - 1)"
+		   asp-route-currentFilter="@Model.CurrentFilter"
+		   class="btn btn-default @prevDisabled">
+			Previous
+		</a>
+		<a asp-action="Details"
+		   asp-route-pageIndex="@(Model.BaseStatus.PageIndex + 1)"
+		   asp-route-currentFilter="@Model.CurrentFilter"
+		   class="btn btn-default @nextDisabled">
+			Next
+		</a>
+	</div>
 	<div>
 		<a asp-action="Edit" asp-route-id="@Model.BaseId">Edit</a> |
 		<a asp-action="Index">Back to List</a>

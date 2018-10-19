@@ -56,7 +56,7 @@ namespace webGDPR.Controllers
 				searchString = string.Empty;
 			}
 			vm.CurrentFilter = searchString;
-			int pageSize = 10;
+			int pageSize = 50;
 			vm.DeviceLogs = await PaginatedList<DeviceLog>.CreateAsync(
 				_context.DeviceLog.Where(s => s.DeviceId.Contains(searchString) || s.Reason.Contains(searchString) || s.Message.Contains(searchString)).OrderByDescending(d => d.CreationDate).AsNoTracking(), pageIndex ?? 1, pageSize);
 			return View(vm);
