@@ -206,7 +206,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 						await dbContext.SaveChangesAsync();
 						//notify someone
 						await emailSender.SendEmailAsync(user.Email, "New Device is connecting to your account",
-							$"A new device {d.Model} - {d.Name} is connected to your accound. If this is not yours please, go <a href='https://'>here</a> to modify its access.");
+							$"A new device {d.Model} - {d.Name} is connected to your account. If this is not yours please, go <a href='https://test.whereisfinder.com/Device/Edit/{d.DeviceId}'>here</a> to modify its access.");
 					}
 					
 					//return guid
