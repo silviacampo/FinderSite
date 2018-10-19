@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using AutoMapper;
 using log4net.Repository.Hierarchy;
 using Microsoft.AspNetCore.Hosting;
@@ -42,12 +44,21 @@ namespace webGDPR.Controllers
 			_signInManager = signInManager;
 		}
 
-		public async System.Threading.Tasks.Task<IActionResult> Index()
+		public async System.Threading.Tasks.Task<IActionResult> Index(string searchString, int? pageIndex)
 		{
 			MonitoringViewModel vm = new MonitoringViewModel();
 			vm.WebSockets = _wsFactory.All();
-			vm.DeviceLogs = await _context.DeviceLog.ToListAsync();
-
+			if (searchString != null)
+			{
+				pageIndex = 1;
+			}
+			else {
+				searchString = string.Empty;
+			}
+			vm.CurrentFilter = searchString;
+			int pageSize = 10;
+			vm.DeviceLogs = await PaginatedList<DeviceLog>.CreateAsync(
+				_context.DeviceLog.Where(s => s.DeviceId.Contains(searchString) || s.Reason.Contains(searchString) || s.Message.Contains(searchString)).OrderByDescending(d => d.CreationDate).AsNoTracking(), pageIndex ?? 1, pageSize);
 			return View(vm);
         }
 
