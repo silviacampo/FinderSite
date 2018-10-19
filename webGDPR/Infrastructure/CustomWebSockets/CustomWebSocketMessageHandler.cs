@@ -29,10 +29,10 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 
 				List<Base> bases = await dbContext.Base.AsNoTracking().Where(b => b.UserId == UserId).Include(b => b.LastStatus).ToListAsync();
 
-				List<webGDPR.Infrastructure.CustomWebSockets.Messages.Base> msgBases = new List<webGDPR.Infrastructure.CustomWebSockets.Messages.Base>();
+				List<Messages.Base> msgBases = new List<Messages.Base>();
 				foreach (var b in bases)
 				{
-					webGDPR.Infrastructure.CustomWebSockets.Messages.Base mb = mapper.Map<webGDPR.Infrastructure.CustomWebSockets.Messages.Base>(new Tuple<Base, BaseStatus>(b, b.LastStatus));
+					Messages.Base mb = mapper.Map<Messages.Base>(new Tuple<Base, BaseStatus>(b, b.LastStatus));
 					msgBases.Add(mb);
 				}
 				string serialisedText = JsonConvert.SerializeObject(msgBases);
@@ -53,10 +53,10 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 
 				List<Collar> collars = await dbContext.Collar.AsNoTracking().Where(b => b.UserId == UserId).Include(b => b.LastStatus).ToListAsync();
 
-				List<webGDPR.Infrastructure.CustomWebSockets.Messages.Collar> msgCollars = new List<webGDPR.Infrastructure.CustomWebSockets.Messages.Collar>();
+				List<Messages.Collar> msgCollars = new List<Messages.Collar>();
 				foreach (var b in collars)
 				{
-					webGDPR.Infrastructure.CustomWebSockets.Messages.Collar mb = mapper.Map<webGDPR.Infrastructure.CustomWebSockets.Messages.Collar>(new Tuple<Collar, CollarStatus>(b, b.LastStatus));
+					Messages.Collar mb = mapper.Map<Messages.Collar>(new Tuple<Collar, CollarStatus>(b, b.LastStatus));
 					//go and pick up the name of the pet if pet assoc. to collar 
 					PetCollar petCollar = await dbContext.PetCollar.FirstOrDefaultAsync(p => p.CollarId == b.CollarId && p.IsActive);
 					if (petCollar != null) {
@@ -104,15 +104,17 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 			string msg = Encoding.ASCII.GetString(buffer).Trim('\0');
 			try
 			{
-                //{"Text":"{\"BaseNumber\":\"1\",\"IsConnected\":true,\"IsPlugged\":false,\"IsCharging\":true,\"Battery\":50,\"HasBattery\":true,\"Radio\":95}","MessagDateTime":"2018-08-23T13:10:58.6645939-04:00","IsIncoming":true,"UserId":"SilviaCampo","Type":12}
+				//{"Text":"{\"BaseNumber\":\"1\",\"IsConnected\":true,\"IsPlugged\":false,\"IsCharging\":true,\"Battery\":50,\"HasBattery\":true,\"Radio\":95}","MessagDateTime":"2018-08-23T13:10:58.6645939-04:00","IsIncoming":true,"UserId":"SilviaCampo","Type":12}
 
-                //{ "Text":"{\"CollarNumber\":\"1\",\"BaseNumber\":\"1\",\"IsConnected\":true,\"IsGPSConnected\":true,\"Battery\":60,\"Radio\":40}","MessagDateTime":"2018-08-23T13:33:00.5057737-04:00","IsIncoming":true,"UserId":"SilviaCampo","Type":13}
+				//{ "Text":"{\"CollarNumber\":\"1\",\"BaseNumber\":\"1\",\"IsConnected\":true,\"IsGPSConnected\":true,\"Battery\":60,\"Radio\":40}","MessagDateTime":"2018-08-23T13:33:00.5057737-04:00","IsIncoming":true,"UserId":"SilviaCampo","Type":13}
 
-                //{ "Text":"{\"DeviceId\":\"68b73ced-1659-483c-929e-274a97706405\",\"Name\":\"Silvia's Phone\",\"Model\":\"Nexus 5\",\"Manufacturer\":\"LG\",\"Type\":\"Phone\",\"Platform\":\"Android\",\"UserId\":\"bee7b8af-c902-4771-89f8-969a3318cbdb\"}","MessagDateTime":"2018-08-23T13:33:00.5057737-04:00","UserId":"scampo@test.com","Type":5}
+				//{ "Text":"{\"DeviceId\":\"68b73ced-1659-483c-929e-274a97706405\",\"Name\":\"Silvia's Phone\",\"Model\":\"Nexus 5\",\"Manufacturer\":\"LG\",\"Type\":\"Phone\",\"Platform\":\"Android\",\"UserId\":\"bee7b8af-c902-4771-89f8-969a3318cbdb\"}","MessagDateTime":"2018-08-23T13:33:00.5057737-04:00","UserId":"scampo@test.com","Type":5}
 
-                //{"Text":"{\"DeviceId\":null,\"Type\":\"Phone\",\"Platform\":\"Android\",\"Name\":\"Nexus 5\",\"Model\":\"Nexus 5\",\"Manufacturer\":\"LGE\",\"OSVersion\":\"6.0.1\"}","MessagDateTime":"2018-09-27T09:24:43.584572-04:00","IsIncoming":false,"UserId":"gghg","Type":5}
+				//{"Text":"{\"DeviceId\":null,\"Type\":\"Phone\",\"Platform\":\"Android\",\"Name\":\"Nexus 5\",\"Model\":\"Nexus 5\",\"Manufacturer\":\"LGE\",\"OSVersion\":\"6.0.1\"}","MessagDateTime":"2018-09-27T09:24:43.584572-04:00","IsIncoming":false,"UserId":"gghg","Type":5}
 
-                var message = JsonConvert.DeserializeObject<CustomWebSocketMessage>(msg);
+				//{"Text":"[\"tkr\"]","MessagDateTime":"2018-10-17T13:39:57.294987-04:00","IsIncoming":false,"UserId":"SilviaCampo","Type":14}
+
+				var message = JsonConvert.DeserializeObject<CustomWebSocketMessage>(msg);
 
 				LogDeviceActivity(dbContext, userWebSocket.DeviceId, "Message from device", msg);
 
@@ -122,7 +124,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 
 				if (message.Type == WSMessageType.BaseStatus)
 				{
-					webGDPR.Infrastructure.CustomWebSockets.Messages.BaseStatus bs = JsonConvert.DeserializeObject<webGDPR.Infrastructure.CustomWebSockets.Messages.BaseStatus>(message.Text);
+					Messages.BaseStatus bs = JsonConvert.DeserializeObject<Messages.BaseStatus>(message.Text);
 					bs.ConnectedTo = userWebSocket.DeviceId;
 					Base b = dbContext.Base.FirstOrDefault(f => f.BaseNumber == bs.BaseNumber && f.UserId == UserId);
 					BaseStatus lastStatus = dbContext.BaseStatus.FirstOrDefault(f => f.BaseId == b.BaseId && f.IsActive == true);
@@ -156,7 +158,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 				}
 				else if (message.Type == WSMessageType.CollarStatus)
 				{
-					webGDPR.Infrastructure.CustomWebSockets.Messages.CollarStatus cs = JsonConvert.DeserializeObject<webGDPR.Infrastructure.CustomWebSockets.Messages.CollarStatus>(message.Text);
+					Messages.CollarStatus cs = JsonConvert.DeserializeObject<Messages.CollarStatus>(message.Text);
 					Collar collar = dbContext.Collar.FirstOrDefault(f => f.CollarNumber == cs.CollarNumber && f.UserId == UserId);
 					Base b = dbContext.Base.FirstOrDefault(f => f.BaseNumber == cs.BaseNumber && f.UserId == UserId);
 					CollarStatus lastStatus = dbContext.CollarStatus.FirstOrDefault(f => f.CollarId == collar.CollarId && f.IsActive == true);
@@ -213,6 +215,45 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 
 					LogDeviceActivity(dbContext, userWebSocket.DeviceId, "Device Id", d.DeviceId);
 				}
+				else if (message.Type == WSMessageType.DiscoverDevices)
+				{
+					List<string> d = JsonConvert.DeserializeObject<List<string>>(message.Text);
+					List<Base> bases = await dbContext.Base.AsNoTracking().Where(b => b.UserId == UserId && b.LastStatus.ConnectedTo == userWebSocket.DeviceId).Include(b => b.LastStatus).ToListAsync();
+					foreach (Base b in bases) {
+						if (!d.Contains(b.HWId)) {
+							BaseStatus lastStatus = dbContext.BaseStatus.FirstOrDefault(f => f.BaseId == b.BaseId && f.IsActive == true);
+							if (lastStatus != null)
+							{
+								lastStatus.IsActive = false;
+								dbContext.Update(lastStatus);
+							}
+
+							b.LastStatus = new BaseStatus
+							{
+								BaseId = b.BaseId,
+								ConnectedTo = string.Empty,
+								IsConnected = false,
+								IsCharging = false,
+								IsPlugged = false,
+								Battery = 0,
+								HasBattery = false,
+								UserId = b.UserId,
+								CreationDate = DateTime.Now,
+								IsActive = true
+							};
+							dbContext.Add(b.LastStatus);
+
+							b.LastStatusId = b.LastStatus.BaseStatusId;
+							dbContext.Update(b);
+
+							await dbContext.SaveChangesAsync();
+
+							await BroadcastOthers(buffer, userWebSocket, wsFactory);
+						}
+					}
+					
+				}
+
 				else if (message.Type == WSMessageType.LastGPS) {
 
 				}
