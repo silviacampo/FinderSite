@@ -14,6 +14,7 @@ using AutoMapper;
 using webGDPR.ViewModels;
 using webGDPR.Models;
 using webGDPR.Infrastructure.CustomWebSockets;
+using webGDPR.Infrastructure;
 
 namespace webGDPR.Controllers
 {
@@ -56,7 +57,7 @@ namespace webGDPR.Controllers
         }
 
         // GET: Collar/Details/5
-        public async Task<IActionResult> Details(string id)
+        public async Task<IActionResult> Details(string id, string searchString, int? pageIndex)
         {
             if (id == null)
             {
@@ -74,6 +75,19 @@ namespace webGDPR.Controllers
 			{
 				model.BaseConnectedTo = collar.LastStatus.BaseConnectedTo;
 			}
+
+			if (searchString != null)
+			{
+				pageIndex = 1;
+			}
+			else
+			{
+				searchString = string.Empty;
+			}
+			model.CurrentFilter = searchString;
+			int pageSize = 10;
+			model.CollarStatus = await PaginatedList<CollarStatus>.CreateAsync(
+				_context.CollarStatus.Where(s => s.ConnectedTo.Contains(searchString)).OrderByDescending(d => d.CreationDate).AsNoTracking(), pageIndex ?? 1, pageSize);
 
 			return View(model);
 		}

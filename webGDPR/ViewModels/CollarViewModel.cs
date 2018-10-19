@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using webGDPR.Infrastructure;
 using webGDPR.Models;
 
 namespace webGDPR.ViewModels
@@ -31,5 +32,9 @@ namespace webGDPR.ViewModels
 		public string Description { get; set; }
 
 		public string UserId { get; set; }
+
+		public PaginatedList<CollarStatus> CollarStatus { get; internal set; }
+
+		public string CurrentFilter { get; set; }
 	}
 }
