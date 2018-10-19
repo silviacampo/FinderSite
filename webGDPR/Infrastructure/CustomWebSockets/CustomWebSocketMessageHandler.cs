@@ -231,7 +231,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 							b.LastStatus = new BaseStatus
 							{
 								BaseId = b.BaseId,
-								ConnectedTo = string.Empty,
+								ConnectedTo = null,
 								IsConnected = false,
 								IsCharging = false,
 								IsPlugged = false,
@@ -253,7 +253,6 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 					}
 					
 				}
-
 				else if (message.Type == WSMessageType.LastGPS) {
 
 				}
