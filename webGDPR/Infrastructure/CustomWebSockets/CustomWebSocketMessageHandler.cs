@@ -92,7 +92,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 		{
             DeviceId = DeviceId.Replace("\"", "");
 
-            if (dbContext.Device.FirstOrDefault(d=>d.DeviceId == DeviceId) != null && dbContext.Device.FirstOrDefault(d => d.DeviceId == DeviceId).IsLogging)
+            if (DeviceId == string.Empty || (dbContext.Device.FirstOrDefault(d=>d.DeviceId == DeviceId) != null && dbContext.Device.FirstOrDefault(d => d.DeviceId == DeviceId).IsLogging))
 			{
 				dbContext.DeviceLog.Add(new Models.DeviceLog() { DeviceId = DeviceId, CreationDate = DateTime.Now, Reason = Reason, Message = Message });
 				dbContext.SaveChanges();
@@ -118,7 +118,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 
 				LogDeviceActivity(dbContext, userWebSocket.DeviceId, "Message from device", msg);
 
-				log.Info(msg.Replace("\0", string.Empty));
+				log.Info(userWebSocket.DeviceId + " - " + msg.Replace("\0", string.Empty));
 				User user = dbContext.User.FirstOrDefault(u => u.Name == userWebSocket.Username);
 				string UserId = user.UserID;
 
