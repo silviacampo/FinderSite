@@ -107,7 +107,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
             }
             catch (WebSocketException e)
             {
-                await webSocket.CloseAsync(WebSocketCloseStatus.Empty, null, CancellationToken.None);
+                //await webSocket.CloseAsync(WebSocketCloseStatus.Empty, null, CancellationToken.None);
                 wsmHandler.LogDeviceActivity(dbContext, userWebSocket.DeviceId, "WebSocket Remove", JsonConvert.SerializeObject(userWebSocket));
                 wsFactory.Remove(userWebSocket.Guid);
             }			
