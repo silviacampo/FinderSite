@@ -14,8 +14,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets.Messages
 		public byte BaseNumber { get; set; }
 		public bool IsConnected { get; set; }
 
-		[JsonIgnore]
-		public string ConnectedTo { get; set; }
+		public string ConnectedToName { get; set; }
 
 		public bool IsPlugged { get; set; }
 

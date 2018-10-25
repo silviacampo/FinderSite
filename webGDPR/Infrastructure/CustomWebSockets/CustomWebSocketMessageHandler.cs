@@ -125,7 +125,6 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 				if (message.Type == WSMessageType.BaseStatus)
 				{
 					Messages.BaseStatus bs = JsonConvert.DeserializeObject<Messages.BaseStatus>(message.Text);
-					bs.ConnectedTo = userWebSocket.DeviceId;
 					Base b = dbContext.Base.FirstOrDefault(f => f.BaseNumber == bs.BaseNumber && f.UserId == UserId);
 					BaseStatus lastStatus = dbContext.BaseStatus.FirstOrDefault(f => f.BaseId == b.BaseId && f.IsActive == true);
 					if (lastStatus != null)
@@ -137,7 +136,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 					b.LastStatus = new BaseStatus
 					{
 						BaseId = b.BaseId,
-						ConnectedTo = bs.ConnectedTo,
+						ConnectedTo = userWebSocket.DeviceId,
 						IsConnected = bs.IsConnected,
 						IsCharging = bs.IsCharging,
 						IsPlugged = bs.IsPlugged,

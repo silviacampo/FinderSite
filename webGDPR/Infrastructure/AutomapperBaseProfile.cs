@@ -15,7 +15,7 @@ namespace webGDPR.Infrastructure
 				.ForMember(dest => dest.Description, opts => opts.MapFrom(src => src.Item1.Description))
 				.ForMember(dest => dest.UserId, opts => opts.MapFrom(src => src.Item1.UserId))
 				.ForMember(dest => dest.IsConnected, opts => opts.MapFrom(src => src.Item2.IsConnected))
-				.ForMember(dest => dest.ConnectedTo, opts => opts.MapFrom(src => src.Item2.ConnectedTo))
+				.ForMember(dest => dest.ConnectedToName, opts => opts.MapFrom(src => src.Item2.DeviceConnectedTo.GetName))
 				.ForMember(dest => dest.IsPlugged, opts => opts.MapFrom(src => src.Item2.IsPlugged))
 				.ForMember(dest => dest.IsCharging, opts => opts.MapFrom(src => src.Item2.IsCharging))
 				.ForMember(dest => dest.Battery, opts => opts.MapFrom(src => src.Item2.Battery))
