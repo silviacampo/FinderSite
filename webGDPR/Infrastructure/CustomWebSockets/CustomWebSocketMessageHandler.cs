@@ -27,7 +27,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 				WebSocket webSocket = userWebSocket.WebSocket;
 				string UserId = dbContext.User.FirstOrDefault(u => u.Name == userWebSocket.Username).UserID;
 
-				List<Base> bases = await dbContext.Base.AsNoTracking().Where(b => b.UserId == UserId).Include(b => b.LastStatus).ToListAsync();
+				List<Base> bases = await dbContext.Base.AsNoTracking().Where(b => b.UserId == UserId).Include(b => b.LastStatus).ThenInclude(c => c.DeviceConnectedTo).ToListAsync();
 
 				List<Messages.Base> msgBases = new List<Messages.Base>();
 				foreach (var b in bases)
@@ -51,7 +51,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 
 				LogDeviceActivity(dbContext, userWebSocket.DeviceId, "Initial Bases", serialisedMessage);
 
-				List<Collar> collars = await dbContext.Collar.AsNoTracking().Where(b => b.UserId == UserId).Include(b => b.LastStatus).ToListAsync();
+				List<Collar> collars = await dbContext.Collar.AsNoTracking().Where(b => b.UserId == UserId).Include(b => b.LastStatus).ThenInclude(c => c.BaseConnectedTo).ToListAsync();
 
 				List<Messages.Collar> msgCollars = new List<Messages.Collar>();
 				foreach (var b in collars)
