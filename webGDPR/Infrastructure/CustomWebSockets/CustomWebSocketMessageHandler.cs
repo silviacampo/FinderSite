@@ -151,8 +151,9 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 					b.LastStatusId = b.LastStatus.BaseStatusId;
 					dbContext.Update(b);
 
-					await dbContext.SaveChangesAsync();					
-
+					await dbContext.SaveChangesAsync();
+					bs.ConnectedToName = dbContext.Device.AsNoTracking().FirstOrDefault(d => d.DeviceId == userWebSocket.DeviceId).GetName;
+					message.Text = JsonConvert.SerializeObject(bs);
 					await BroadcastOthers1(message, userWebSocket, wsFactory);
 				}
 				else if (message.Type == WSMessageType.CollarStatus)
