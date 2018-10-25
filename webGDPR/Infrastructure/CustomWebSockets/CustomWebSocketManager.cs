@@ -89,31 +89,29 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 
 		private async Task Listen(HttpContext context, CustomWebSocket userWebSocket, ICustomWebSocketFactory wsFactory, ICustomWebSocketMessageHandler wsmHandler, ApplicationDbContext dbContext, IMapper mapper, IEmailSender emailSender)
 		{
-			WebSocket webSocket = userWebSocket.WebSocket;
-			var buffer = new byte[1024 * 4];
-			WebSocketReceiveResult result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
-			while (!result.CloseStatus.HasValue)
-			{
-				await wsmHandler.HandleMessage(result, buffer, userWebSocket, wsFactory, dbContext, mapper, emailSender);
-				buffer = new byte[1024 * 4];
+            WebSocket webSocket = userWebSocket.WebSocket;
+            var buffer = new byte[1024 * 4];
+            WebSocketReceiveResult result;
+            try {
+                result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+                while (!result.CloseStatus.HasValue)
+                {
+                    await wsmHandler.HandleMessage(result, buffer, userWebSocket, wsFactory, dbContext, mapper, emailSender);
 
-                /*
-                 2018-09-30 19:48:10,393 [42] ERROR Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware - An unhandled exception has occurred while executing the request.
-System.Net.WebSockets.WebSocketException (0x80004005): The remote party closed the WebSocket connection without completing the close handshake. ---> System.Net.WebSockets.WebSocketException (0x80004005): The remote party closed the WebSocket connection without completing the close handshake.
-   at System.Net.WebSockets.ManagedWebSocket.ThrowIfEOFUnexpected(Boolean throwOnPrematureClosure)
-                 */
-                try {
+                    buffer = new byte[1024 * 4];
                     result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
                 }
-                catch (WebSocketException e) {                    
-                    await webSocket.CloseAsync(result.CloseStatus.Value, result.CloseStatusDescription, CancellationToken.None);
-					wsmHandler.LogDeviceActivity(dbContext, userWebSocket.DeviceId, "WebSocket Remove", JsonConvert.SerializeObject(userWebSocket));
-					wsFactory.Remove(userWebSocket.Guid);
-				}                
-			}			
-			await webSocket.CloseAsync(result.CloseStatus.Value, result.CloseStatusDescription, CancellationToken.None);
-			wsmHandler.LogDeviceActivity(dbContext, userWebSocket.DeviceId, "WebSocket Remove", JsonConvert.SerializeObject(userWebSocket));
-			wsFactory.Remove(userWebSocket.Guid);
+                await webSocket.CloseAsync(result.CloseStatus.Value, result.CloseStatusDescription, CancellationToken.None);
+                wsmHandler.LogDeviceActivity(dbContext, userWebSocket.DeviceId, "WebSocket Remove", JsonConvert.SerializeObject(userWebSocket));
+                wsFactory.Remove(userWebSocket.Guid);
+            }
+            catch (WebSocketException e)
+            {
+                //await webSocket.CloseAsync(WebSocketCloseStatus.Empty, null, CancellationToken.None);
+                wsmHandler.LogDeviceActivity(dbContext, userWebSocket.DeviceId, "WebSocket Remove", JsonConvert.SerializeObject(userWebSocket));
+                wsFactory.Remove(userWebSocket.Guid);
+            }			
+
 		}
 	}
 }
