@@ -153,7 +153,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 
 					await dbContext.SaveChangesAsync();					
 
-					await BroadcastOthers(buffer, userWebSocket, wsFactory);
+					await BroadcastOthers1(message, userWebSocket, wsFactory);
 				}
 				else if (message.Type == WSMessageType.CollarStatus)
 				{
@@ -287,6 +287,16 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 		//any change coming from one device
 		public async Task BroadcastOthers(byte[] buffer, CustomWebSocket userWebSocket, ICustomWebSocketFactory wsFactory)
 		{
+			var others = wsFactory.Others(userWebSocket);
+			foreach (var uws in others)
+			{
+				await uws.WebSocket.SendAsync(new ArraySegment<byte>(buffer, 0, buffer.Length), WebSocketMessageType.Text, true, CancellationToken.None);
+			}
+		}
+		public async Task BroadcastOthers1(CustomWebSocketMessage message, CustomWebSocket userWebSocket, ICustomWebSocketFactory wsFactory)
+		{
+			var strMsg = JsonConvert.SerializeObject(message);
+			byte[] buffer = Encoding.ASCII.GetBytes(strMsg);
 			var others = wsFactory.Others(userWebSocket);
 			foreach (var uws in others)
 			{

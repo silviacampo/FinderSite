@@ -4,7 +4,7 @@ using System.Text;
 
 namespace webGDPR.Infrastructure.CustomWebSockets
 {
-	class CustomWebSocketMessage
+	public class CustomWebSocketMessage
 	{
 		public const string SystemUserId = "system";
 
