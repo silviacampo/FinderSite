@@ -33,6 +33,10 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 				foreach (var b in bases)
 				{
 					Messages.Base mb = mapper.Map<Messages.Base>(new Tuple<Base, BaseStatus>(b, b.LastStatus));
+					if (!mb.IsConnected)
+					{
+						mb.ConnectedToName = null;
+					}
 					msgBases.Add(mb);
 				}
 				string serialisedText = JsonConvert.SerializeObject(msgBases);
@@ -152,7 +156,10 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 					dbContext.Update(b);
 
 					await dbContext.SaveChangesAsync();
-					bs.ConnectedToName = dbContext.Device.AsNoTracking().FirstOrDefault(d => d.DeviceId == userWebSocket.DeviceId).GetName;
+					if (bs.IsConnected)
+					{
+						bs.ConnectedToName = dbContext.Device.AsNoTracking().FirstOrDefault(d => d.DeviceId == userWebSocket.DeviceId).GetName;
+					}
 					message.Text = JsonConvert.SerializeObject(bs);
 					await BroadcastOthers1(message, userWebSocket, wsFactory);
 				}
