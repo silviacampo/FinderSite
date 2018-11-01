@@ -93,39 +93,75 @@ namespace webGDPR.Controllers
 		}
 
         // GET: Collar/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View();
-        }
+			string UserId = _context.User.FirstOrDefault(u => u.OwnerID == _userManager.GetUserId(User)).UserID;
+			List<string> petCollars = await _context.PetCollar.Where(p => p.IsActive).Select(c => c.PetId).ToListAsync();
+			List<Pet> pets = await _context.Pet.AsNoTracking().Where(b => b.UserId == UserId && !petCollars.Contains(b.PetId)).ToListAsync();
+
+			EditCollarViewModel model = new EditCollarViewModel();
+			List<SelectListItem> petsItems = new List<SelectListItem>();
+			foreach (Pet c in pets)
+			{
+				petsItems.Add(new SelectListItem
+				{
+					Value = c.PetId,
+					Text = c.Name
+				});
+			}
+
+			model.Pets = petsItems;
+			return View(model);
+		}
 
         // POST: Collar/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CollarId,HWId,Name,Description")] Collar collar)
+        public async Task<IActionResult> Create([Bind("CollarId,HWId,Name,Description,PetId")] EditCollarViewModel collar)
         {
             if (ModelState.IsValid)
             {
-				collar.UserId = _context.User.FirstOrDefault(u => u.OwnerID == _userManager.GetUserId(User)).UserID;
+				Collar c = _mapper.Map<Collar>(collar);
+				c.UserId = _context.User.FirstOrDefault(u => u.OwnerID == _userManager.GetUserId(User)).UserID;
 				try
 				{
-					collar.BaseNumber = Convert.ToByte(_context.Base.Where(b => b.UserId == collar.UserId).Count());
+					c.BaseNumber = Convert.ToByte(_context.Base.Where(b => b.UserId == collar.UserId).Count());
 				}
 				catch (Exception e)
 				{
-					collar.BaseNumber = 0;
+					c.BaseNumber = 0;
 				}
 				try
 				{
-					collar.CollarNumber = Convert.ToByte(_context.Collar.Where(b => b.UserId == collar.UserId).Count() +1);
+					c.CollarNumber = Convert.ToByte(_context.Collar.Where(b => b.UserId == collar.UserId).Count() +1);
 				}
 				catch (Exception e)
 				{
-					collar.CollarNumber = 0;
+					c.CollarNumber = 0;
 				}
-				_context.Add(collar);
+				_context.Add(c);
                 await _context.SaveChangesAsync();
+
+				PetCollar pc = new PetCollar
+				{
+					PetId = collar.PetId,
+					CollarId = c.CollarId,
+					StartDate = DateTime.Now,
+					CreationDate = DateTime.Now,
+					IsActive = true,
+					UserId = c.UserId
+				};
+				_context.Add(pc);
+
+				var pet = await _context.Pet
+				.FirstOrDefaultAsync(m => m.PetId == collar.PetId);
+				pet.LastCollarId = pc.PetCollarId;
+				_context.Update(pet);
+
+				await _context.SaveChangesAsync();
+
 				//send message to connected devices
 				Infrastructure.CustomWebSockets.Messages.Collar c = _mapper.Map<Infrastructure.CustomWebSockets.Messages.Collar>(collar);
 				await _webSocketMessageHandler.SendCollarAsync(c, _userManager.GetUserName(User), _wsFactory);
@@ -147,7 +183,29 @@ namespace webGDPR.Controllers
             {
                 return NotFound();
             }
-            return View(collar);
+
+			string UserId = _context.User.FirstOrDefault(u => u.OwnerID == _userManager.GetUserId(User)).UserID;
+			List<string> petCollars = await _context.PetCollar.Where(p => p.IsActive).Select(c => c.PetId).ToListAsync();
+			List<Pet> pets = await _context.Pet.AsNoTracking().Where(b => b.UserId == UserId && !petCollars.Contains(b.PetId)).ToListAsync();
+
+			EditCollarViewModel model = new EditCollarViewModel();
+			model = _mapper.Map<EditCollarViewModel>(collar);
+			//if (pet.LastCollarId != null)
+			//{
+			//	model.CollarId = _context.PetCollar.FirstOrDefault(c => //c.PetCollarId == pet.LastCollarId).CollarId;
+			//}
+			List<SelectListItem> petsItems = new List<SelectListItem>();
+			foreach (Pet c in pets)
+			{
+				petsItems.Add(new SelectListItem
+				{
+					Value = c.PetId,
+					Text = c.Name
+				});
+			}
+
+			model.Pets = petsItems;
+			return View(model);
         }
 
         // POST: Collar/Edit/5
