@@ -11,17 +11,24 @@ namespace webGDPR.Infrastructure.CustomWebSockets.Messages
 		[JsonIgnore]
 		public string CollarId { get; set; }
 
+		[JsonProperty(PropertyName = "cn")]
 		public byte CollarNumber { get; set; }
+		[JsonProperty(PropertyName = "bn")]
 		public byte BaseNumber { get; set; }
 
+		[JsonProperty(PropertyName = "co")]
 		public bool IsConnected { get; set; }
 
-        [JsonProperty("ConnectedTo")]
-        public string ConnectedToName { get; set; }
+		[JsonProperty("cot")]
+		public string ConnectedToName { get; set; }
 
+		[JsonProperty(PropertyName = "gps")]
 		public bool IsGPSConnected { get; set; }
 
+		[JsonProperty(PropertyName = "bt")]
 		public int Battery { get; set; }
+
+		[JsonProperty(PropertyName = "r")]
 		public int Radio { get; set; }
 
 		[JsonIgnore]

@@ -7,11 +7,16 @@ namespace webGDPR.Infrastructure.CustomWebSockets.Messages
 		[JsonIgnore]
 		public string CollarId { get; set; }
 
-		[JsonIgnore]
+		[JsonProperty(PropertyName = "hw")]
+		//[JsonIgnore]
 		public string HWId { get; set; }
 
+		[JsonProperty(PropertyName = "n")]
 		public string Name { get; set; }
+
+		[JsonProperty(PropertyName = "cn")]
 		public byte CollarNumber { get; set; }
+		[JsonProperty(PropertyName = "bn")]
 		public byte BaseNumber { get; set; }
 
 		[JsonIgnore]

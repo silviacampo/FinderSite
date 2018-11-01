@@ -11,18 +11,27 @@ namespace webGDPR.Infrastructure.CustomWebSockets.Messages
 		[JsonIgnore]
 		public string BaseId { get; set; }
 
+		[JsonProperty(PropertyName = "bn")]
 		public byte BaseNumber { get; set; }
-		public bool IsConnected { get; set; }
-        [JsonProperty("ConnectedTo")]
-        public string ConnectedToName { get; set; }
 
+		[JsonProperty(PropertyName = "co")]
+		public bool IsConnected { get; set; }
+		[JsonProperty("cot")]
+		public string ConnectedToName { get; set; }
+
+		[JsonProperty(PropertyName = "pl")]
 		public bool IsPlugged { get; set; }
 
+		[JsonProperty(PropertyName = "ch")]
 		public bool IsCharging { get; set; }
+
+		[JsonProperty(PropertyName = "bt")]
 		public int Battery { get; set; }
 
+		[JsonProperty(PropertyName = "hbt")]
 		public bool HasBattery { get; set; }
 
+		[JsonProperty(PropertyName = "r")]
 		public int Radio { get; set; }
 
 		[JsonIgnore]
