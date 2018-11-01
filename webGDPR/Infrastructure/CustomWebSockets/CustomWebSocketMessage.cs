@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Newtonsoft.Json;
 
 namespace webGDPR.Infrastructure.CustomWebSockets
 {
@@ -8,13 +9,17 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 	{
 		public const string SystemUserId = "system";
 
+		[JsonProperty(PropertyName = "m")]
 		public string Text { get; set; }
+
+		[JsonProperty(PropertyName = "d")]
+		[JsonConverter(typeof(Newtonsoft.Json.Converters.UnixDateTimeConverter))]
 		public DateTime MessagDateTime { get; set; }
 
-		public bool IsIncoming => UserId == SystemUserId;
-
+		[JsonProperty(PropertyName = "u")]
 		public string UserId { get; set; }
 
+		[JsonProperty(PropertyName = "t")]
 		public WSMessageType Type { get; set; }
 	}
 
@@ -27,7 +32,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 		Collar = 2,
 		Bases = 3,
 		Collars = 4,
-		Device = 5,
+		DeviceInfo = 5,
 		LastGPS = 6,
 		TrackingInfo = 7,
 		DeletedBase = 8,
@@ -36,7 +41,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 		CollarCore = 11,
 		BaseStatus = 12,
 		CollarStatus = 13,
-		DiscoverDevices = 14,
-		DeviceBanned = 15,
+		DiscoverBases = 14,
+		DeviceBanned = 15
 	}
 }

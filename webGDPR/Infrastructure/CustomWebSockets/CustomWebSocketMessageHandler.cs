@@ -195,7 +195,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 					await dbContext.SaveChangesAsync();
 					await BroadcastOthers(buffer, userWebSocket, wsFactory);
 				}
-				else if (message.Type == WSMessageType.Device)
+				else if (message.Type == WSMessageType.DeviceInfo)
 				{
 					Device d = JsonConvert.DeserializeObject<Device>(message.Text);
 					d.UserId = UserId;
@@ -222,7 +222,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 
 					LogDeviceActivity(dbContext, userWebSocket.DeviceId, "Device Id", d.DeviceId);
 				}
-				else if (message.Type == WSMessageType.DiscoverDevices)
+				else if (message.Type == WSMessageType.DiscoverBases)
 				{
 					List<string> d = JsonConvert.DeserializeObject<List<string>>(message.Text);
 					List<Base> bases = await dbContext.Base.AsNoTracking().Where(b => b.UserId == UserId && b.LastStatus.ConnectedTo == userWebSocket.DeviceId).Include(b => b.LastStatus).ToListAsync();
@@ -280,7 +280,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 			var msg = new CustomWebSocketMessage
 			{
 				MessagDateTime = DateTime.Now,
-				Type = WSMessageType.Device,
+				Type = WSMessageType.DeviceInfo,
 				Text = serialisedText,
 				UserId = CustomWebSocketMessage.SystemUserId
 			};
