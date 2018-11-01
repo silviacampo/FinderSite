@@ -64,6 +64,7 @@
 				<label asp-for="CollarId" class="control-label"></label>
 				<select asp-for="CollarId" asp-items="Model.Collars" class="form-control"></select>
 				<span asp-validation-for="CollarId" class="text-danger"></span>
+				or <a asp-controller="Collar" asp-action="Create" target="_blank">Create New</a>
 			</div>
 			@if (ViewData["imagesFilenames"] != null)
 	{
