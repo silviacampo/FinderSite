@@ -1,4 +1,4 @@
-@model webGDPR.Models.Collar
+@model webGDPR.ViewModels.EditCollarViewModel
 
 @{
    // Layout = null;
@@ -58,11 +58,17 @@
 				<input asp-for="Description" class="form-control" />
 				<span asp-validation-for="Description" class="text-danger"></span>
 			</div>
+			<div class="form-group">
+				<label asp-for="PetId" class="control-label"></label>
+				<select asp-for="PetId" asp-items="Model.Pets" class="form-control"></select>
+				<span asp-validation-for="PetId" class="text-danger"></span>
+				or <a asp-controller="Pet" asp-action="Create" target="_blank">Create New</a>
+			</div>
 			@*<div class="form-group">
-				<label asp-for="UserId" class="control-label"></label>
-				<input asp-for="UserId" class="form-control" />
-				<span asp-validation-for="UserId" class="text-danger"></span>
-			</div>*@
+			<label asp-for="UserId" class="control-label"></label>
+			<input asp-for="UserId" class="form-control" />
+			<span asp-validation-for="UserId" class="text-danger"></span>
+		</div>*@
 			<div class="form-group">
 				<input type="submit" value="Create" class="btn btn-default" />
 			</div>

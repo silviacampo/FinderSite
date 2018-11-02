@@ -96,7 +96,7 @@ namespace webGDPR.Controllers
         public async Task<IActionResult> Create()
         {
 			string UserId = _context.User.FirstOrDefault(u => u.OwnerID == _userManager.GetUserId(User)).UserID;
-			List<string> petCollars = await _context.PetCollar.Where(p => p.IsActive).Select(c => c.PetId).ToListAsync();
+			List<string> petCollars = await _context.PetCollar.Where(p => p.IsActive && p.CollarId != null).Select(c => c.PetId).ToListAsync();
 			List<Pet> pets = await _context.Pet.AsNoTracking().Where(b => b.UserId == UserId && !petCollars.Contains(b.PetId)).ToListAsync();
 
 			EditCollarViewModel model = new EditCollarViewModel();
@@ -143,28 +143,29 @@ namespace webGDPR.Controllers
 				}
 				_context.Add(c);
                 await _context.SaveChangesAsync();
-
-				PetCollar pc = new PetCollar
+				if (collar.PetId != null)
 				{
-					PetId = collar.PetId,
-					CollarId = c.CollarId,
-					StartDate = DateTime.Now,
-					CreationDate = DateTime.Now,
-					IsActive = true,
-					UserId = c.UserId
-				};
-				_context.Add(pc);
+					PetCollar pc = new PetCollar
+					{
+						PetId = collar.PetId,
+						CollarId = c.CollarId,
+						StartDate = DateTime.Now,
+						CreationDate = DateTime.Now,
+						IsActive = true,
+						UserId = c.UserId
+					};
+					_context.Add(pc);
 
-				var pet = await _context.Pet
-				.FirstOrDefaultAsync(m => m.PetId == collar.PetId);
-				pet.LastCollarId = pc.PetCollarId;
-				_context.Update(pet);
+					var pet = await _context.Pet
+					.FirstOrDefaultAsync(m => m.PetId == collar.PetId);
+					pet.LastCollarId = pc.PetCollarId;
+					_context.Update(pet);
 
-				await _context.SaveChangesAsync();
-
+					await _context.SaveChangesAsync();
+				}
 				//send message to connected devices
-				Infrastructure.CustomWebSockets.Messages.Collar c = _mapper.Map<Infrastructure.CustomWebSockets.Messages.Collar>(collar);
-				await _webSocketMessageHandler.SendCollarAsync(c, _userManager.GetUserName(User), _wsFactory);
+				Infrastructure.CustomWebSockets.Messages.Collar co = _mapper.Map<Infrastructure.CustomWebSockets.Messages.Collar>(c);
+				await _webSocketMessageHandler.SendCollarAsync(co, _userManager.GetUserName(User), _wsFactory);
 				return RedirectToAction(nameof(Index));
             }
             return View(collar);

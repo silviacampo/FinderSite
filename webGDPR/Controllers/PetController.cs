@@ -53,7 +53,7 @@ namespace webGDPR.Controllers
 			foreach (var c in pets)
 			{
 				PetViewModel cvm = _mapper.Map<PetViewModel>(new Tuple<Pet, PetTrackingInfo>(c, c.LastTrackingInfo));
-				if (c.LastCollar != null)
+				if (c.LastCollar != null && c.LastCollar.Collar != null)
 				{
 					cvm.CollarName = c.LastCollar.Collar.Name;
 				}
@@ -216,21 +216,24 @@ namespace webGDPR.Controllers
 				_context.Add(p);
 				await _context.SaveChangesAsync();
 
-				PetCollar pc = new PetCollar
+				if (pet.CollarId != null)
 				{
-					PetId = p.PetId,
-					CollarId = pet.CollarId,
-					StartDate = DateTime.Now,
-					CreationDate = DateTime.Now,
-					IsActive = true,
-					UserId = p.UserId
-				};
-				_context.Add(pc);
+					PetCollar pc = new PetCollar
+					{
+						PetId = p.PetId,
+						CollarId = pet.CollarId,
+						StartDate = DateTime.Now,
+						CreationDate = DateTime.Now,
+						IsActive = true,
+						UserId = p.UserId
+					};
+					_context.Add(pc);
 
-				p.LastCollarId = pc.PetCollarId;
-				_context.Update(p);
+					p.LastCollarId = pc.PetCollarId;
+					_context.Update(p);
 
-				await _context.SaveChangesAsync();
+					await _context.SaveChangesAsync();
+				}
 
 				SaveFiles(p, imagesFiles, pageContent);
 
