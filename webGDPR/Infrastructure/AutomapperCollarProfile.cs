@@ -81,6 +81,8 @@ namespace webGDPR.Infrastructure
 				.ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.Name))
 				.ForMember(dest => dest.Description, opts => opts.MapFrom(src => src.Description));
 
+			CreateMap<EditCollarViewModel, Models.Collar>().ReverseMap();
+
 		}
 	}
 }

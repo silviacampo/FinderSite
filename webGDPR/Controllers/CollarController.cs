@@ -186,15 +186,12 @@ namespace webGDPR.Controllers
             }
 
 			string UserId = _context.User.FirstOrDefault(u => u.OwnerID == _userManager.GetUserId(User)).UserID;
-			List<string> petCollars = await _context.PetCollar.Where(p => p.IsActive).Select(c => c.PetId).ToListAsync();
+			List<string> petCollars = await _context.PetCollar.Where(p => p.IsActive && p.CollarId != collar.CollarId).Select(c => c.PetId).ToListAsync();
 			List<Pet> pets = await _context.Pet.AsNoTracking().Where(b => b.UserId == UserId && !petCollars.Contains(b.PetId)).ToListAsync();
 
 			EditCollarViewModel model = new EditCollarViewModel();
 			model = _mapper.Map<EditCollarViewModel>(collar);
-			//if (pet.LastCollarId != null)
-			//{
-			//	model.CollarId = _context.PetCollar.FirstOrDefault(c => //c.PetCollarId == pet.LastCollarId).CollarId;
-			//}
+			model.PetId = _context.PetCollar.FirstOrDefault(f => f.IsActive && f.CollarId == collar.CollarId).PetId;
 			List<SelectListItem> petsItems = new List<SelectListItem>();
 			foreach (Pet c in pets)
 			{
@@ -214,7 +211,7 @@ namespace webGDPR.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("CollarId,HWId,Name,Description")] Collar collar)
+        public async Task<IActionResult> Edit(string id, [Bind("CollarId,HWId,Name,Description,PetId")] EditCollarViewModel collar)
         {
             if (id != collar.CollarId)
             {
@@ -225,11 +222,12 @@ namespace webGDPR.Controllers
             {
                 try
                 {
-					var found = await _context.Collar.AsNoTracking().FirstAsync(c => c.CollarId == id);
-					collar.UserId = found.UserId;
-					collar.CollarNumber = found.CollarNumber;
-					collar.BaseNumber = found.BaseNumber;
-					_context.Update(collar);
+					Collar c = _mapper.Map<Collar>(collar);
+					var found = await _context.Collar.AsNoTracking().FirstAsync(f => f.CollarId == id);
+					c.UserId = found.UserId;
+					c.CollarNumber = found.CollarNumber;
+					c.BaseNumber = found.BaseNumber;
+					_context.Update(c);
                     await _context.SaveChangesAsync();
 					//send message to connected devices
 					Infrastructure.CustomWebSockets.Messages.CollarCore cc = _mapper.Map<Infrastructure.CustomWebSockets.Messages.CollarCore>(collar);
