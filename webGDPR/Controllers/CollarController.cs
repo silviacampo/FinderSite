@@ -228,9 +228,37 @@ namespace webGDPR.Controllers
 					c.CollarNumber = found.CollarNumber;
 					c.BaseNumber = found.BaseNumber;
 					_context.Update(c);
-                    await _context.SaveChangesAsync();
+					await _context.SaveChangesAsync();
+
+					PetCollar currentpet = _context.PetCollar.FirstOrDefault(f => f.CollarId == c.CollarId && f.IsActive);
+
+					if (collar.PetId != currentpet.PetId)
+					{
+						currentpet.IsActive = false;
+
+						PetCollar pc = new PetCollar
+						{
+							PetId = collar.PetId,
+							CollarId = c.CollarId,
+							StartDate = DateTime.Now,
+							CreationDate = DateTime.Now,
+							IsActive = true,
+							UserId = c.UserId
+						};
+						_context.Add(pc);
+
+						Pet cpet = _context.Pet.FirstOrDefault(g => g.PetId == currentpet.PetId);
+						cpet.LastCollarId = null;
+						_context.Update(cpet);
+
+						Pet pet = _context.Pet.FirstOrDefault(g => g.PetId == collar.PetId);
+						pet.LastCollarId = pc.PetCollarId;
+						_context.Update(pet);
+
+						await _context.SaveChangesAsync();
+					}
 					//send message to connected devices
-					Infrastructure.CustomWebSockets.Messages.CollarCore cc = _mapper.Map<Infrastructure.CustomWebSockets.Messages.CollarCore>(collar);
+					Infrastructure.CustomWebSockets.Messages.CollarCore cc = _mapper.Map<Infrastructure.CustomWebSockets.Messages.CollarCore>(c);
 					await _webSocketMessageHandler.SendCollarCoreAsync(cc, _userManager.GetUserName(User), _wsFactory);
 				}
 				catch (DbUpdateConcurrencyException)
