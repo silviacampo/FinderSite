@@ -108,15 +108,17 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 			string msg = Encoding.ASCII.GetString(buffer).Trim('\0');
 			try
 			{
-				//{"Text":"{\"BaseNumber\":\"1\",\"IsConnected\":true,\"IsPlugged\":false,\"IsCharging\":true,\"Battery\":50,\"HasBattery\":true,\"Radio\":95}","MessagDateTime":"2018-08-23T13:10:58.6645939-04:00","IsIncoming":true,"UserId":"SilviaCampo","Type":12}
+				//{"m":"{\"bn\":5,\"co\":false,\"cot\":\"\",\"pl\":false,\"ch\":false,\"bt\":0,\"hbt\":false,\"r\":0}","d":1541440447,"u":"SilviaCampo","t":12}
 
-				//{ "Text":"{\"CollarNumber\":\"1\",\"BaseNumber\":\"1\",\"IsConnected\":true,\"IsGPSConnected\":true,\"Battery\":60,\"Radio\":40}","MessagDateTime":"2018-08-23T13:33:00.5057737-04:00","IsIncoming":true,"UserId":"SilviaCampo","Type":13}
+				//{ "m":"{\"CollarNumber\":\"1\",\"BaseNumber\":\"1\",\"IsConnected\":true,\"IsGPSConnected\":true,\"Battery\":60,\"Radio\":40}","MessagDateTime":"2018-08-23T13:33:00.5057737-04:00","IsIncoming":true,"UserId":"SilviaCampo","Type":13}
 
-				//{ "Text":"{\"DeviceId\":\"68b73ced-1659-483c-929e-274a97706405\",\"Name\":\"Silvia's Phone\",\"Model\":\"Nexus 5\",\"Manufacturer\":\"LG\",\"Type\":\"Phone\",\"Platform\":\"Android\",\"UserId\":\"bee7b8af-c902-4771-89f8-969a3318cbdb\"}","MessagDateTime":"2018-08-23T13:33:00.5057737-04:00","UserId":"scampo@test.com","Type":5}
+				//{ "m":"{\"DeviceId\":\"68b73ced-1659-483c-929e-274a97706405\",\"Name\":\"Silvia's Phone\",\"Model\":\"Nexus 5\",\"Manufacturer\":\"LG\",\"Type\":\"Phone\",\"Platform\":\"Android\",\"UserId\":\"bee7b8af-c902-4771-89f8-969a3318cbdb\"}","MessagDateTime":"2018-08-23T13:33:00.5057737-04:00","UserId":"scampo@test.com","Type":5}
 
-				//{"Text":"{\"DeviceId\":null,\"Type\":\"Phone\",\"Platform\":\"Android\",\"Name\":\"Nexus 5\",\"Model\":\"Nexus 5\",\"Manufacturer\":\"LGE\",\"OSVersion\":\"6.0.1\"}","MessagDateTime":"2018-09-27T09:24:43.584572-04:00","IsIncoming":false,"UserId":"gghg","Type":5}
+				//{"m":"{\"t\":\"Phone\",\"p\":\"Android\",\"n\":\"Nexus 5\",\"mo\":\"Nexus 5\",\"ma\":\"LGE\",\"os\":\"6.0.1\"}","d":1541440447,"u":"SilviaCampo","t":5}
 
-				//{"Text":"[\"tkr\"]","MessagDateTime":"2018-10-17T13:39:57.294987-04:00","IsIncoming":false,"UserId":"SilviaCampo","Type":14}
+				//{"m":"[\"Bluegiga CR Demo\"]","d":1541440447,"u":"SilviaCampo","t":14}
+
+				//{"m":"{\"cn\":1,\"la\":45.513025,\"lo\":-73.720863,\"d\":3343659132}","d":1541440470,"u":"SilviaCampo","t":7}
 
 				var message = JsonConvert.DeserializeObject<CustomWebSocketMessage>(msg);
 
@@ -197,19 +199,26 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 				}
 				else if (message.Type == WSMessageType.DeviceInfo)
 				{
-					Device d = JsonConvert.DeserializeObject<Device>(message.Text);
+					Messages.Device d = JsonConvert.DeserializeObject<Messages.Device>(message.Text);
 					d.UserId = UserId;
-					Device found = dbContext.Device.FirstOrDefault(c => c.UserId == d.UserId && c.Type == d.Type && c.Platform == d.Platform && c.Manufacturer == d.Manufacturer && c.Model == d.Model && c.OSVersion == d.OSVersion);
-					if (found != null)
+					Device device = dbContext.Device.FirstOrDefault(c => c.UserId == d.UserId && c.Type == d.Type && c.Platform == d.Platform && c.Manufacturer == d.Manufacturer && c.Model == d.Model && c.OSVersion == d.OSVersion);
+					if (device != null)
 					{
-						found.Name = d.Name; // maybe the user update the phone's name
-						dbContext.Update(found);
-						d = found;
+						device.Name = d.Name; // maybe the user update the phone's name
+						dbContext.Update(device);
 						await dbContext.SaveChangesAsync();
 					}
 					else
 					{
-						dbContext.Add(d);
+						device = new Device();
+						device.Manufacturer = d.Manufacturer;
+						device.Model = d.Model;
+						device.Name = d.Name;
+						device.OSVersion = d.OSVersion;
+						device.Platform = d.Platform;
+						device.Type = d.Type;
+						device.UserId = d.UserId;
+						dbContext.Add(device);
 						await dbContext.SaveChangesAsync();
 						//notify someone
 						await emailSender.SendEmailAsync(user.Email, "New Device is connecting to your account",
@@ -217,10 +226,10 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 					}
 					
 					//return guid
-					userWebSocket.DeviceId = d.DeviceId;
-					await SendDeviceInformation(userWebSocket, d.DeviceId);
+					userWebSocket.DeviceId = device.DeviceId;
+					await SendDeviceInformation(userWebSocket, device.DeviceId);
 
-					LogDeviceActivity(dbContext, userWebSocket.DeviceId, "Device Id", d.DeviceId);
+					LogDeviceActivity(dbContext, userWebSocket.DeviceId, "Device Id", device.DeviceId);
 				}
 				else if (message.Type == WSMessageType.DiscoverBases)
 				{
@@ -264,7 +273,22 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 
 				}
 				else if (message.Type == WSMessageType.TrackingInfo) {
+					Messages.GPSPoint p = JsonConvert.DeserializeObject<Messages.GPSPoint>(message.Text);
+					Collar collar = dbContext.Collar.FirstOrDefault(f => f.CollarNumber == p.CollarNumber && f.UserId == UserId);
+					string petId = dbContext.PetCollar.FirstOrDefault(c => c.CollarId == collar.CollarId && c.IsActive).PetId;
 
+					PetTrackingInfo pt = new PetTrackingInfo
+					{
+						PetId = petId,
+						CollarId = collar.CollarId,
+						Latitude = p.Latitude,
+						Longitude = p.Longitude,
+						UserId = collar.UserId,
+						CreationDate = p.CreatedDate,
+						IsActive = true
+					};
+					dbContext.Add(pt);
+					await dbContext.SaveChangesAsync();
 				}
 			}
 			catch (Exception e)
