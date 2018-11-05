@@ -17,12 +17,14 @@ namespace webGDPR.Infrastructure.CustomWebSockets.Messages
 		public byte BaseNumber { get; set; }
 
 		[JsonProperty(PropertyName = "co")]
+		[JsonConverter(typeof(BoolConverter))]
 		public bool IsConnected { get; set; }
 
 		[JsonProperty("cot")]
 		public string ConnectedToName { get; set; }
 
 		[JsonProperty(PropertyName = "gps")]
+		[JsonConverter(typeof(BoolConverter))]
 		public bool IsGPSConnected { get; set; }
 
 		[JsonProperty(PropertyName = "bt")]

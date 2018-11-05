@@ -21,6 +21,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets.Messages
 		public byte BaseNumber { get; set; }
 
 		[JsonProperty(PropertyName = "co")]
+		[JsonConverter(typeof(BoolConverter))]
 		public bool IsConnected { get; set; }
 		[JsonIgnore]
 		public string ConnectedTo { get; set; }
@@ -28,15 +29,18 @@ namespace webGDPR.Infrastructure.CustomWebSockets.Messages
 		public string ConnectedToName { get; set; }
 
 		[JsonProperty(PropertyName = "pl")]
+		[JsonConverter(typeof(BoolConverter))]
 		public bool IsPlugged { get; set; }
 
 		//public bool IsNotPlugged { get { return !IsPlugged; } }
 
 		[JsonProperty(PropertyName = "ch")]
+		[JsonConverter(typeof(BoolConverter))]
 		public bool IsCharging { get; set; }
 		[JsonProperty(PropertyName = "bt")]
 		public int Battery { get; set; }
 		[JsonProperty(PropertyName = "hbt")]
+		[JsonConverter(typeof(BoolConverter))]
 		public bool HasBattery { get; set; }
 
 		//public bool IsMissingBattery { get { return !HasBattery; } }
