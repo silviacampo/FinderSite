@@ -94,35 +94,8 @@ namespace webGDPR.Controllers
 			{
 				return NotFound();
 			}			
-			/*	pet.LastTrackingInfo = new PetTrackingInfo
-				{
-					Latitude = 45.5261026,
-					Longitude = -73.6830076
-				};*/
 
-			pet.TrackingInfos = await _context.PetTrackingInfo.Where(t => t.PetId == id).Take(10).ToListAsync(); /* new List<PetTrackingInfo>
-				{
-					new PetTrackingInfo
-					{
-						Latitude = 45.5273677,
-						Longitude = -73.6839115
-					},
-					new PetTrackingInfo
-					{
-						Latitude = 45.5273298,
-						Longitude = -73.6836115
-					},
-					new PetTrackingInfo
-					{
-						Latitude = 45.5270227,
-						Longitude = -73.6833668
-					},
-					new PetTrackingInfo
-					{
-						Latitude = 45.5268926,
-						Longitude = -73.6832776
-					}
-				};*/
+			pet.TrackingInfos = await _context.PetTrackingInfo.Where(t => t.PetId == id).Take(10).ToListAsync();
 
 			return View(pet);
 		}
@@ -140,41 +113,18 @@ namespace webGDPR.Controllers
 				var user = await _context.User.FirstOrDefaultAsync(m => m.Name == username);
 				var collar = await _context.Collar.FirstOrDefaultAsync(m => m.UserId == user.UserID && m.CollarNumber == collarnumber);
 				var petCollar = await _context.PetCollar.FirstOrDefaultAsync(m => m.IsActive && m.CollarId == collar.CollarId);
-				var pet = await _context.Pet
-					.FirstOrDefaultAsync(m => m.PetId == petCollar.PetId);
-				pet.LastTrackingInfo = new PetTrackingInfo
-				{
-					Latitude = 45.5261026,
-					Longitude = -73.6830076
-				};
 
-				pet.TrackingInfos = new List<PetTrackingInfo>
-				{
-					new PetTrackingInfo
-					{
-						Latitude = 45.5273677,
-						Longitude = -73.6839115
-					},
-					new PetTrackingInfo
-					{
-						Latitude = 45.5273298,
-						Longitude = -73.6836115
-					},
-					new PetTrackingInfo
-					{
-						Latitude = 45.5270227,
-						Longitude = -73.6833668
-					},
-					new PetTrackingInfo
-					{
-						Latitude = 45.5268926,
-						Longitude = -73.6832776
-					}
-				};
+				var pet = await _context.Pet.Include(b => b.LastTrackingInfo)
+				.FirstOrDefaultAsync(m => m.PetId == petCollar.PetId);
 				if (pet == null)
 				{
 					return NotFound();
 				}
+				if (pet.LastTrackingInfo == null) {
+					return NotFound(); //create a custom page to show that this pet is not tracking any information
+				}
+				pet.TrackingInfos = await _context.PetTrackingInfo.Where(t => t.PetId == petCollar.PetId).Take(10).ToListAsync();
+				
 				return View(pet);
 			}
 			return NotFound();
