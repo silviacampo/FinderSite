@@ -88,16 +88,19 @@ namespace webGDPR.Controllers
 			{
 				return NotFound();
 			}
-			
-			var pet = await _context.Pet
+			var pet = await _context.Pet.Include(b => b.LastTrackingInfo)
 				.FirstOrDefaultAsync(m => m.PetId == id);
-			pet.LastTrackingInfo = new PetTrackingInfo
+			if (pet == null)
 			{
-				Latitude = 45.5261026,
-				Longitude = -73.6830076
-			};
+				return NotFound();
+			}			
+			/*	pet.LastTrackingInfo = new PetTrackingInfo
+				{
+					Latitude = 45.5261026,
+					Longitude = -73.6830076
+				};*/
 
-			pet.TrackingInfos = new List<PetTrackingInfo>
+			pet.TrackingInfos = await _context.PetTrackingInfo.Where(t => t.PetId == id).Take(10).ToListAsync(); /* new List<PetTrackingInfo>
 				{
 					new PetTrackingInfo
 					{
@@ -119,11 +122,8 @@ namespace webGDPR.Controllers
 						Latitude = 45.5268926,
 						Longitude = -73.6832776
 					}
-				};
-			if (pet == null)
-			{
-				return NotFound();
-			}
+				};*/
+
 			return View(pet);
 		}
 

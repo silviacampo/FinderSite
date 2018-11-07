@@ -288,6 +288,11 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 						IsActive = true
 					};
 					dbContext.Add(pt);
+
+					Pet pet = dbContext.Pet.FirstOrDefault(c => c.PetId == petId);
+					pet.LastTrackingInfoId = pt.PetTrackingInfoId;
+					dbContext.Update(pet);
+
 					await dbContext.SaveChangesAsync();
 				}
 			}
