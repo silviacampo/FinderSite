@@ -201,23 +201,26 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 				{
 					Messages.Device d = JsonConvert.DeserializeObject<Messages.Device>(message.Text);
 					d.UserId = UserId;
-					Device device = dbContext.Device.FirstOrDefault(c => c.UserId == d.UserId && c.Type == d.Type && c.Platform == d.Platform && c.Manufacturer == d.Manufacturer && c.Model == d.Model && c.OSVersion == d.OSVersion);
+					Device device = dbContext.Device.FirstOrDefault(c => c.UserId == d.UserId && c.Type == d.Type && c.Platform == d.Platform && c.Manufacturer == d.Manufacturer && c.Model == d.Model);
 					if (device != null)
 					{
 						device.Name = d.Name; // maybe the user update the phone's name
+						device.OSVersion = d.OSVersion;
 						dbContext.Update(device);
 						await dbContext.SaveChangesAsync();
 					}
 					else
 					{
-						device = new Device();
-						device.Manufacturer = d.Manufacturer;
-						device.Model = d.Model;
-						device.Name = d.Name;
-						device.OSVersion = d.OSVersion;
-						device.Platform = d.Platform;
-						device.Type = d.Type;
-						device.UserId = d.UserId;
+						device = new Device
+						{
+							Manufacturer = d.Manufacturer,
+							Model = d.Model,
+							Name = d.Name,
+							OSVersion = d.OSVersion,
+							Platform = d.Platform,
+							Type = d.Type,
+							UserId = d.UserId
+						};
 						dbContext.Add(device);
 						await dbContext.SaveChangesAsync();
 						//notify someone
