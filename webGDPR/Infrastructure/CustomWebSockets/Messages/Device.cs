@@ -1,26 +1,18 @@
-﻿using Newtonsoft.Json;
-
-namespace webGDPR.Infrastructure.CustomWebSockets.Messages
+﻿namespace webGDPR.Infrastructure.CustomWebSockets.Messages
 {
-	public class Device
+    public class Device
     {
-		[JsonIgnore]
-		public string DeviceId { get; set; }
+        public string DeviceId { get; set; }
+        public string Type { get; set; }
+        public string Platform { get; set; }
+        public string Name { get; set; }
+        public string Model { get; set; }
+        public string Manufacturer { get; set; }
+        public string OSVersion { get; set; }
 
-		[JsonProperty(PropertyName = "t")]
-		public string Type { get; set; }
-		[JsonProperty(PropertyName = "p")]
-		public string Platform { get; set; }
-		[JsonProperty(PropertyName = "n")]
-		public string Name { get; set; }
-		[JsonProperty(PropertyName = "mo")]
-		public string Model { get; set; }
-		[JsonProperty(PropertyName = "ma")]
-		public string Manufacturer { get; set; }
-		[JsonProperty(PropertyName = "os")]
-		public string OSVersion { get; set; }
+        public string AliasName { get; set; }
 
-		[JsonIgnore]
-		public string UserId { get; set; }
-	}
+        public string UserId { get; set; }
+    }
 }
+
