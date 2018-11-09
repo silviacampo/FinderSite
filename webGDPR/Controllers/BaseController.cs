@@ -57,7 +57,7 @@ namespace webGDPR.Controllers
         }
 
         // GET: Base/Details/5
-        public async Task<IActionResult> Details(string id, string searchString, int? pageIndex)
+        public async Task<IActionResult> Details(string id, string searchString, string currentFilter, int? pageIndex)
         {
             if (id == null)
             {
@@ -82,7 +82,14 @@ namespace webGDPR.Controllers
 			}
 			else
 			{
-				searchString = string.Empty;
+				if (currentFilter == null)
+				{
+					searchString = string.Empty;
+				}
+				else
+				{
+					searchString = currentFilter;
+				}
 			}
 			model.CurrentFilter = searchString;
 			int pageSize = 10;
