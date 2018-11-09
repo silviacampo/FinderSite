@@ -44,7 +44,7 @@ namespace webGDPR.Controllers
 			_signInManager = signInManager;
 		}
 
-		public async System.Threading.Tasks.Task<IActionResult> Index(string searchString, int? pageIndex)
+		public async System.Threading.Tasks.Task<IActionResult> Index(string searchString, string currentFilter, int? pageIndex)
 		{
 			MonitoringViewModel vm = new MonitoringViewModel();
 			vm.WebSockets = _wsFactory.All();
@@ -53,7 +53,14 @@ namespace webGDPR.Controllers
 				pageIndex = 1;
 			}
 			else {
-				searchString = string.Empty;
+				if (currentFilter == null)
+				{
+					searchString = string.Empty;
+				}
+				else
+				{
+					searchString = currentFilter;
+				}
 			}
 			vm.CurrentFilter = searchString;
 			int pageSize = 50;
