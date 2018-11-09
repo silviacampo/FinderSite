@@ -94,7 +94,7 @@ namespace webGDPR.Controllers
 			model.CurrentFilter = searchString;
 			int pageSize = 10;
 			model.CollarStatus = await PaginatedList<CollarStatus>.CreateAsync(
-				_context.CollarStatus.Where(s => s.CollarId == id && s.ConnectedTo.Contains(searchString)).OrderByDescending(d => d.CreationDate).AsNoTracking(), pageIndex ?? 1, pageSize);
+				_context.CollarStatus.Where(s => s.CollarId == id && s.ConnectedTo.Contains(searchString)).OrderByDescending(d => d.CollarStatusId).AsNoTracking(), pageIndex ?? 1, pageSize);
 
 			return View(model);
 		}
@@ -104,7 +104,7 @@ namespace webGDPR.Controllers
         {
 			string UserId = _context.User.FirstOrDefault(u => u.OwnerID == _userManager.GetUserId(User)).UserID;
 			List<string> petCollars = await _context.PetCollar.Where(p => p.IsActive && p.CollarId != null).Select(c => c.PetId).ToListAsync();
-			List<Pet> pets = await _context.Pet.AsNoTracking().Where(b => b.UserId == UserId && !petCollars.Contains(b.PetId)).ToListAsync();
+			List<Pet> pets = await _context.Pet.AsNoTracking().Where(b => b.UserId == UserId && !b.Deleted && !petCollars.Contains(b.PetId)).ToListAsync();
 
 			EditCollarViewModel model = new EditCollarViewModel();
 			List<SelectListItem> petsItems = new List<SelectListItem>();
@@ -164,7 +164,7 @@ namespace webGDPR.Controllers
 					_context.Add(pc);
 
 					var pet = await _context.Pet
-					.FirstOrDefaultAsync(m => m.PetId == collar.PetId);
+					.FirstOrDefaultAsync(m => m.PetId == collar.PetId && !m.Deleted);
 					pet.LastCollarId = pc.PetCollarId;
 					_context.Update(pet);
 
@@ -194,7 +194,7 @@ namespace webGDPR.Controllers
 
 			string UserId = _context.User.FirstOrDefault(u => u.OwnerID == _userManager.GetUserId(User)).UserID;
 			List<string> petCollars = await _context.PetCollar.Where(p => p.IsActive && p.CollarId != collar.CollarId).Select(c => c.PetId).ToListAsync();
-			List<Pet> pets = await _context.Pet.AsNoTracking().Where(b => b.UserId == UserId && !petCollars.Contains(b.PetId)).ToListAsync();
+			List<Pet> pets = await _context.Pet.AsNoTracking().Where(b => b.UserId == UserId && !b.Deleted && !petCollars.Contains(b.PetId)).ToListAsync();
 
 			EditCollarViewModel model = new EditCollarViewModel();
 			model = _mapper.Map<EditCollarViewModel>(collar);

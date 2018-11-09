@@ -49,7 +49,7 @@ namespace webGDPR.Controllers
 			List<PetViewModel> model = new List<PetViewModel>();
 			string UserId = _context.User.FirstOrDefault(u => u.OwnerID == _userManager.GetUserId(User)).UserID;
 
-			List<Pet> pets = await _context.Pet.AsNoTracking().Where(b => b.UserId == UserId && b.Deleted == false).Include(c => c.LastTrackingInfo).Include(b => b.LastCollar).ThenInclude(c => c.Collar).ToListAsync();
+			List<Pet> pets = await _context.Pet.AsNoTracking().Where(b => b.UserId == UserId && !b.Deleted).Include(c => c.LastTrackingInfo).Include(b => b.LastCollar).ThenInclude(c => c.Collar).ToListAsync();
 			foreach (var c in pets)
 			{
 				PetViewModel cvm = _mapper.Map<PetViewModel>(new Tuple<Pet, PetTrackingInfo>(c, c.LastTrackingInfo));
@@ -72,7 +72,7 @@ namespace webGDPR.Controllers
 			}
 
 			var pet = await _context.Pet
-				.FirstOrDefaultAsync(m => m.PetId == id);
+				.FirstOrDefaultAsync(m => m.PetId == id && !m.Deleted);
 			if (pet == null)
 			{
 				return NotFound();
@@ -89,7 +89,7 @@ namespace webGDPR.Controllers
 				return NotFound();
 			}
 			var pet = await _context.Pet.Include(b => b.LastTrackingInfo)
-				.FirstOrDefaultAsync(m => m.PetId == id);
+				.FirstOrDefaultAsync(m => m.PetId == id && !m.Deleted);
 			if (pet == null)
 			{
 				return NotFound();
@@ -210,7 +210,7 @@ namespace webGDPR.Controllers
 				return NotFound();
 			}
 
-			var pet = await _context.Pet.FindAsync(id);
+			var pet = await _context.Pet.FirstOrDefaultAsync(e=>e.PetId == id && !e.Deleted);
 			if (pet == null)
 			{
 				return NotFound();
@@ -267,15 +267,22 @@ namespace webGDPR.Controllers
 					Pet p = _mapper.Map<Pet>(pet);
 					p.UserId = _context.User.FirstOrDefault(u => u.OwnerID == _userManager.GetUserId(User)).UserID;
 					PetCollar currentCollar = _context.PetCollar.FirstOrDefault(c => c.PetId == pet.PetId && c.IsActive);
-					if (pet.CollarId == currentCollar.CollarId) {
-						p.LastCollarId = currentCollar.PetCollarId;
+					if (currentCollar != null)
+					{
+						if (pet.CollarId == currentCollar.CollarId)
+						{
+							p.LastCollarId = currentCollar.PetCollarId;
+						}
 					}
 					_context.Update(p);
 					await _context.SaveChangesAsync();
 					
-					if (pet.CollarId != currentCollar.CollarId)
+					if (currentCollar == null || pet.CollarId != currentCollar.CollarId)
 					{
-						currentCollar.IsActive = false;
+						if (currentCollar != null)
+						{
+							currentCollar.IsActive = false;
+						}
 
 						PetCollar pc = new PetCollar
 						{
@@ -331,7 +338,7 @@ namespace webGDPR.Controllers
 			}
 
 			var pet = await _context.Pet
-				.FirstOrDefaultAsync(m => m.PetId == id);
+				.FirstOrDefaultAsync(m => m.PetId == id && !m.Deleted);
 			if (pet == null)
 			{
 				return NotFound();
@@ -347,10 +354,15 @@ namespace webGDPR.Controllers
 		{
 			var pet = await _context.Pet.FindAsync(id);
 			//_context.Pet.Remove(pet);
+			//soft delete
 			pet.Deleted = true;
+			_context.Update(pet);
+
 			var petCollar = _context.PetCollar.FirstOrDefault(c => c.PetCollarId == pet.LastCollarId);
-			petCollar.IsActive = false;
+			petCollar.IsActive = false;			
 			petCollar.EndDate = DateTime.Now;
+			_context.Update(petCollar);
+
 			await _context.SaveChangesAsync();
 
 			DeleteFiles(pet);
@@ -398,7 +410,7 @@ namespace webGDPR.Controllers
 
 		private bool PetExists(string id)
 		{
-			return _context.Pet.Any(e => e.PetId == id);
+			return _context.Pet.Any(e => e.PetId == id && !e.Deleted);
 		}
 
 		private async Task<Tuple<string, List<string>>> ReadFiles(Pet pet)
