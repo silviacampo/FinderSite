@@ -55,7 +55,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 
 				LogDeviceActivity(dbContext, userWebSocket.DeviceId, "Initial Bases", serialisedMessage);
 
-				List<Collar> collars = await dbContext.Collar.AsNoTracking().Where(b => b.UserId == UserId).Include(b => b.LastStatus).ThenInclude(c => c.BaseConnectedTo).ToListAsync();
+				List<Collar> collars = await dbContext.Collar.AsNoTracking().Where(b => b.UserId == UserId && !b.Deleted).Include(b => b.LastStatus).ThenInclude(c => c.BaseConnectedTo).ToListAsync();
 
 				List<Messages.Collar> msgCollars = new List<Messages.Collar>();
 				foreach (var b in collars)
@@ -131,7 +131,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 				if (message.Type == WSMessageType.BaseStatus)
 				{
 					Messages.BaseStatus bs = JsonConvert.DeserializeObject<Messages.BaseStatus>(message.Text);
-					Base b = dbContext.Base.FirstOrDefault(f => f.BaseNumber == bs.BaseNumber && f.UserId == UserId && !f.Deleted);
+					Base b = dbContext.Base.FirstOrDefault(f => f.BaseNumber == bs.BaseNumber && f.UserId == UserId);
 					BaseStatus lastStatus = dbContext.BaseStatus.FirstOrDefault(f => f.BaseId == b.BaseId && f.IsActive == true);
 					if (lastStatus != null)
 					{

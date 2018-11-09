@@ -42,7 +42,7 @@ namespace webGDPR.Controllers
 			List<CollarViewModel> model = new List<CollarViewModel>();
 			string UserId = _context.User.FirstOrDefault(u => u.OwnerID == _userManager.GetUserId(User)).UserID;
 
-			List<Collar> collars = await _context.Collar.AsNoTracking().Where(b => b.UserId == UserId).Include(b => b.LastStatus).ThenInclude(c => c.BaseConnectedTo).ToListAsync();
+			List<Collar> collars = await _context.Collar.AsNoTracking().Where(b => b.UserId == UserId && !b.Deleted).Include(b => b.LastStatus).ThenInclude(c => c.BaseConnectedTo).ToListAsync();
 			foreach (var c in collars)
 			{
 				CollarViewModel cvm = _mapper.Map<CollarViewModel>(new Tuple<Collar, CollarStatus>(c, c.LastStatus));
@@ -64,7 +64,7 @@ namespace webGDPR.Controllers
                 return NotFound();
             }
 
-            var collar = await _context.Collar.Include(b => b.LastStatus).ThenInclude(c => c.BaseConnectedTo).FirstOrDefaultAsync(m => m.CollarId == id);
+            var collar = await _context.Collar.Include(b => b.LastStatus).ThenInclude(c => c.BaseConnectedTo).FirstOrDefaultAsync(m => m.CollarId == id && !m.Deleted);
             if (collar == null)
             {
                 return NotFound();
@@ -186,7 +186,7 @@ namespace webGDPR.Controllers
                 return NotFound();
             }
 
-            var collar = await _context.Collar.FindAsync(id);
+            var collar = await _context.Collar.FirstOrDefaultAsync(c=>c.CollarId == id && !c.Deleted);
             if (collar == null)
             {
                 return NotFound();
@@ -230,7 +230,7 @@ namespace webGDPR.Controllers
                 try
                 {
 					Collar c = _mapper.Map<Collar>(collar);
-					var found = await _context.Collar.AsNoTracking().FirstAsync(f => f.CollarId == id);
+					var found = await _context.Collar.AsNoTracking().FirstOrDefaultAsync(f => f.CollarId == id && !f.Deleted);
 					c.UserId = found.UserId;
 					c.CollarNumber = found.CollarNumber;
 					c.BaseNumber = found.BaseNumber;
@@ -292,7 +292,7 @@ namespace webGDPR.Controllers
 				return NotFound();
 			}
 
-			var collar = await _context.Collar.Include(b => b.LastStatus).ThenInclude(c => c.BaseConnectedTo).FirstOrDefaultAsync(m => m.CollarId == id);
+			var collar = await _context.Collar.Include(b => b.LastStatus).ThenInclude(c => c.BaseConnectedTo).FirstOrDefaultAsync(m => m.CollarId == id && !m.Deleted);
 			if (collar == null)
 			{
 				return NotFound();
@@ -313,8 +313,18 @@ namespace webGDPR.Controllers
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
             var collar = await _context.Collar.FindAsync(id);
-            _context.Collar.Remove(collar);
-            await _context.SaveChangesAsync();
+			//_context.Collar.Remove(collar);
+			//soft delete
+			collar.Deleted = true;
+			_context.Update(collar);
+			var petCollar = _context.PetCollar.FirstOrDefault(c => c.CollarId == id && c.IsActive);
+			petCollar.IsActive = false;
+			petCollar.EndDate = DateTime.Now;
+			_context.Update(petCollar);
+			var pet = _context.Pet.FirstOrDefault(c => c.PetId == petCollar.PetId);
+			pet.LastCollarId = null;
+			_context.Update(pet);
+			await _context.SaveChangesAsync();
 			//send message to connected devices
 			await _webSocketMessageHandler.SendDeletedCollarAsync(collar.CollarNumber, _userManager.GetUserName(User), _wsFactory);
 			return RedirectToAction(nameof(Index));
@@ -322,7 +332,7 @@ namespace webGDPR.Controllers
 
         private bool CollarExists(string id)
         {
-            return _context.Collar.Any(e => e.CollarId == id);
+            return _context.Collar.Any(e => e.CollarId == id && !e.Deleted);
         }
     }
 }
