@@ -27,7 +27,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 				WebSocket webSocket = userWebSocket.WebSocket;
 				string UserId = dbContext.User.FirstOrDefault(u => u.Name == userWebSocket.Username).UserID;
 
-				List<Base> bases = await dbContext.Base.AsNoTracking().Where(b => b.UserId == UserId).Include(b => b.LastStatus).ThenInclude(c => c.DeviceConnectedTo).ToListAsync();
+				List<Base> bases = await dbContext.Base.AsNoTracking().Where(b => b.UserId == UserId && !b.Deleted).Include(b => b.LastStatus).ThenInclude(c => c.DeviceConnectedTo).ToListAsync();
 
 				List<Messages.Base> msgBases = new List<Messages.Base>();
 				foreach (var b in bases)
@@ -131,7 +131,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 				if (message.Type == WSMessageType.BaseStatus)
 				{
 					Messages.BaseStatus bs = JsonConvert.DeserializeObject<Messages.BaseStatus>(message.Text);
-					Base b = dbContext.Base.FirstOrDefault(f => f.BaseNumber == bs.BaseNumber && f.UserId == UserId);
+					Base b = dbContext.Base.FirstOrDefault(f => f.BaseNumber == bs.BaseNumber && f.UserId == UserId && !f.Deleted);
 					BaseStatus lastStatus = dbContext.BaseStatus.FirstOrDefault(f => f.BaseId == b.BaseId && f.IsActive == true);
 					if (lastStatus != null)
 					{
@@ -169,7 +169,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 				{
 					Messages.CollarStatus cs = JsonConvert.DeserializeObject<Messages.CollarStatus>(message.Text);
 					Collar collar = dbContext.Collar.FirstOrDefault(f => f.CollarNumber == cs.CollarNumber && f.UserId == UserId);
-					Base b = dbContext.Base.FirstOrDefault(f => f.BaseNumber == cs.BaseNumber && f.UserId == UserId);
+					Base b = dbContext.Base.FirstOrDefault(f => f.BaseNumber == cs.BaseNumber && f.UserId == UserId && !f.Deleted);
 					CollarStatus lastStatus = dbContext.CollarStatus.FirstOrDefault(f => f.CollarId == collar.CollarId && f.IsActive == true);
 					if (lastStatus != null)
 					{
@@ -237,7 +237,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 				else if (message.Type == WSMessageType.DiscoverBases)
 				{
 					List<string> d = JsonConvert.DeserializeObject<List<string>>(message.Text);
-					List<Base> bases = await dbContext.Base.AsNoTracking().Where(b => b.UserId == UserId && b.LastStatus.ConnectedTo == userWebSocket.DeviceId).Include(b => b.LastStatus).ToListAsync();
+					List<Base> bases = await dbContext.Base.AsNoTracking().Where(b => b.UserId == UserId && !b.Deleted && b.LastStatus.ConnectedTo == userWebSocket.DeviceId).Include(b => b.LastStatus).ToListAsync();
 					foreach (Base b in bases) {
 						if (!d.Contains(b.HWId)) {
 							BaseStatus lastStatus = dbContext.BaseStatus.FirstOrDefault(f => f.BaseId == b.BaseId && f.IsActive == true);

@@ -42,7 +42,7 @@ namespace webGDPR.Controllers
 			List<BaseViewModel> model = new List<BaseViewModel>();
 			string UserId = _context.User.FirstOrDefault(u => u.OwnerID == _userManager.GetUserId(User)).UserID;
 
-			List<Base> bases = await _context.Base.AsNoTracking().Where(b => b.UserId == UserId).Include(b => b.LastStatus).ThenInclude(c=>c.DeviceConnectedTo).ToListAsync();
+			List<Base> bases = await _context.Base.AsNoTracking().Where(b => b.UserId == UserId && !b.Deleted).Include(b => b.LastStatus).ThenInclude(c=>c.DeviceConnectedTo).ToListAsync();
 			foreach (var b in bases)
 			{
 				BaseViewModel mb = _mapper.Map<BaseViewModel>(new Tuple<Base, BaseStatus>(b, b.LastStatus));
@@ -64,7 +64,7 @@ namespace webGDPR.Controllers
                 return NotFound();
             }
 
-            var @base = await _context.Base.Include(b => b.LastStatus).ThenInclude(c => c.DeviceConnectedTo).FirstOrDefaultAsync(m => m.BaseId == id);
+            var @base = await _context.Base.Include(b => b.LastStatus).ThenInclude(c => c.DeviceConnectedTo).FirstOrDefaultAsync(m => m.BaseId == id && !m.Deleted);
             if (@base == null)
             {
                 return NotFound();
@@ -140,7 +140,7 @@ namespace webGDPR.Controllers
                 return NotFound();
             }
 
-            var @base = await _context.Base.FindAsync(id);
+            var @base = await _context.Base.FirstOrDefaultAsync(c=>c.BaseId == id && !c.Deleted);
             if (@base == null)
             {
                 return NotFound();
@@ -164,7 +164,7 @@ namespace webGDPR.Controllers
             {
                 try
                 {
-					var found = await _context.Base.AsNoTracking().FirstAsync(c=>c.BaseId == id);
+					var found = await _context.Base.AsNoTracking().FirstOrDefaultAsync(c=>c.BaseId == id && !c.Deleted);
 					@base.UserId = found.UserId;
 					@base.BaseNumber = found.BaseNumber;
 					_context.Update(@base);
@@ -197,7 +197,7 @@ namespace webGDPR.Controllers
 				return NotFound();
 			}
 
-			var @base = await _context.Base.Include(b => b.LastStatus).ThenInclude(c => c.DeviceConnectedTo).FirstOrDefaultAsync(m => m.BaseId == id);
+			var @base = await _context.Base.Include(b => b.LastStatus).ThenInclude(c => c.DeviceConnectedTo).FirstOrDefaultAsync(m => m.BaseId == id && !m.Deleted);
 			if (@base == null)
 			{
 				return NotFound();
@@ -219,8 +219,11 @@ namespace webGDPR.Controllers
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
             var @base = await _context.Base.FindAsync(id);
-            _context.Base.Remove(@base);
-            await _context.SaveChangesAsync();
+            //_context.Base.Remove(@base);
+			//Soft delete
+			@base.Deleted = true;
+			_context.Base.Update(@base);
+			await _context.SaveChangesAsync();
 			//send message to connected devices
 			await _webSocketMessageHandler.SendDeletedBaseAsync(@base.BaseNumber, _userManager.GetUserName(User), _wsFactory);
 			return RedirectToAction(nameof(Index));
@@ -228,7 +231,7 @@ namespace webGDPR.Controllers
 
         private bool BaseExists(string id)
         {
-            return _context.Base.Any(e => e.BaseId == id);
+            return _context.Base.Any(e => e.BaseId == id && !e.Deleted);
         }
     }
 }
