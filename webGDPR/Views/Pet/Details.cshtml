@@ -1,69 +1,122 @@
-@model webGDPR.Models.Pet
+@model webGDPR.ViewModels.PetViewModel
 
 @{
-   // Layout = null;
+	// Layout = null;
 }
 
 <!DOCTYPE html>
 
 <html>
 <head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Details</title>
+	<meta name="viewport" content="width=device-width" />
+	<title>Details</title>
 </head>
 <body>
 
-<div>
-    <h4>Pet</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Type)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Type)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Breeding)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Breeding)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Color)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Color)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Age)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Age)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.HealthComments)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.HealthComments)
-        </dd>
-        @*<dt>
-            @Html.DisplayNameFor(model => model.UserId)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.UserId)
-        </dd>*@
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.PetId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+	<div>
+		<h4>Pet</h4>
+		<hr />
+		<dl class="dl-horizontal">
+			<dt>
+				@Html.DisplayNameFor(model => model.Name)
+			</dt>
+			<dd>
+				@Html.DisplayFor(model => model.Name)
+			</dd>
+			<dt>
+				@Html.DisplayNameFor(model => model.Type)
+			</dt>
+			<dd>
+				@Html.DisplayFor(model => model.Type)
+			</dd>
+			<dt>
+				@Html.DisplayNameFor(model => model.Breeding)
+			</dt>
+			<dd>
+				@Html.DisplayFor(model => model.Breeding)
+			</dd>
+			<dt>
+				@Html.DisplayNameFor(model => model.Color)
+			</dt>
+			<dd>
+				@Html.DisplayFor(model => model.Color)
+			</dd>
+			<dt>
+				@Html.DisplayNameFor(model => model.Age)
+			</dt>
+			<dd>
+				@Html.DisplayFor(model => model.Age)
+			</dd>
+			<dt>
+				@Html.DisplayNameFor(model => model.HealthComments)
+			</dt>
+			<dd>
+				@Html.DisplayFor(model => model.HealthComments)
+			</dd>
+			@*<dt>
+					@Html.DisplayNameFor(model => model.UserId)
+				</dt>
+				<dd>
+					@Html.DisplayFor(model => model.UserId)
+				</dd>*@
+		</dl>
+	</div>
+
+	<div class="col-md-12">
+		<h2>Locations</h2>
+		<form asp-action="Details" method="get">
+			<div class="form-actions no-color">
+				<p>
+					Find:
+					<input type="text" name="SearchString" value="@Model.CurrentFilter" />
+					<input type="submit" value="Search" class="btn btn-default" /> |
+					<a asp-action="Details">Back to full List</a>
+				</p>
+			</div>
+		</form>
+		<table class="table">
+			<thead>
+				<tr>
+					<th scope="col">CreationDate</th>
+					<th scope="col">Latitude</th>
+					<th scope="col">Longitude</th>
+					<th scope="col">CollarId</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (webGDPR.Models.PetTrackingInfo dl in Model.PetTrackingInfos)
+				{
+					<tr>
+						<td>@dl.CreationDate</td>
+						<td>@dl.Latitude</td>
+						<td>@dl.Longitude</td>
+						<td>@dl.CollarId</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+		@{
+			var prevDisabled = !Model.PetTrackingInfos.HasPreviousPage ? "disabled" : "";
+			var nextDisabled = !Model.PetTrackingInfos.HasNextPage ? "disabled" : "";
+		}
+
+		<a asp-action="Details"
+		   asp-route-pageIndex="@(Model.PetTrackingInfos.PageIndex - 1)"
+		   asp-route-currentFilter="@Model.CurrentFilter"
+		   class="btn btn-default @prevDisabled">
+			Previous
+		</a>
+		<a asp-action="Details"
+		   asp-route-pageIndex="@(Model.PetTrackingInfos.PageIndex + 1)"
+		   asp-route-currentFilter="@Model.CurrentFilter"
+		   class="btn btn-default @nextDisabled">
+			Next
+		</a>
+	</div>
+
+	<div>
+		<a asp-action="Edit" asp-route-id="@Model.PetId">Edit</a> |
+		<a asp-action="Index">Back to List</a>
+	</div>
 </body>
 </html>

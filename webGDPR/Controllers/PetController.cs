@@ -59,26 +59,50 @@ namespace webGDPR.Controllers
 				}
 				model.Add(cvm);
 			}
-
 			return View(model);
 		}
 
 		// GET: Pet/Details/5
-		public async Task<IActionResult> Details(string id)
+		public async Task<IActionResult> Details(string id, string searchString, string currentFilter, int? pageIndex)
 		{
 			if (id == null)
 			{
 				return NotFound();
 			}
 
-			var pet = await _context.Pet
+			var pet = await _context.Pet.AsNoTracking().Include(c => c.LastTrackingInfo).Include(b => b.LastCollar).ThenInclude(c => c.Collar)
 				.FirstOrDefaultAsync(m => m.PetId == id && !m.Deleted);
 			if (pet == null)
 			{
 				return NotFound();
 			}
 
-			return View(pet);
+			PetViewModel model = _mapper.Map<PetViewModel>(new Tuple<Pet, PetTrackingInfo>(pet, pet.LastTrackingInfo));
+			if (pet.LastCollar != null && pet.LastCollar.Collar != null)
+			{
+				model.CollarName = pet.LastCollar.Collar.Name;
+			}
+
+			if (searchString != null)
+			{
+				pageIndex = 1;
+			}
+			else
+			{
+				if (currentFilter == null)
+				{
+					searchString = string.Empty;
+				}
+				else
+				{
+					searchString = currentFilter;
+				}
+			}
+			model.CurrentFilter = searchString;
+			int pageSize = 10;
+			model.PetTrackingInfos = await PaginatedList<PetTrackingInfo>.CreateAsync(
+				_context.PetTrackingInfo.Where(s => s.PetId == id && (s.Latitude.ToString().Contains(searchString) || s.Longitude.ToString().Contains(searchString))).OrderByDescending(d => d.PetTrackingInfoId).AsNoTracking(), pageIndex ?? 1, pageSize);
+			return View(model);
 		}
 
 		// GET: Pet/Track/5

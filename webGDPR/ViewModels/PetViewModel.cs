@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using webGDPR.Infrastructure;
+using webGDPR.Models;
 
 namespace webGDPR.ViewModels
 {
@@ -26,5 +28,9 @@ namespace webGDPR.ViewModels
 		public DateTime LocationCreationDate { get; set; }
 
 		public string UserId { get; set; }
+
+		public PaginatedList<PetTrackingInfo> PetTrackingInfos { get; internal set; }
+
+		public string CurrentFilter { get; set; }
 	}
 }

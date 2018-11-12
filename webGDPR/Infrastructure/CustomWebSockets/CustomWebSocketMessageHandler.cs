@@ -120,6 +120,8 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 
 				//{"m":"{\"cn\":1,\"la\":45.513025,\"lo\":-73.720863,\"d\":3343659132}","d":1541440470,"u":"SilviaCampo","t":7}
 
+				//{"m":"{\"cn\":1,\"co\":1,\"cot\":\"Me\",\"gps\":0,\"bt\":0,\"r\":0}","d":1542026359,"u":"SilviaCampo","t":13}
+
 				var message = JsonConvert.DeserializeObject<CustomWebSocketMessage>(msg);
 
 				LogDeviceActivity(dbContext, userWebSocket.DeviceId, "Message from device", msg);
@@ -239,7 +241,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 					List<string> d = JsonConvert.DeserializeObject<List<string>>(message.Text);
 					List<Base> bases = await dbContext.Base.AsNoTracking().Where(b => b.UserId == UserId && !b.Deleted && b.LastStatus.ConnectedTo == userWebSocket.DeviceId).Include(b => b.LastStatus).ToListAsync();
 					foreach (Base b in bases) {
-						if (!d.Contains(b.HWId)) {
+						if (d.Count == 0 || !d.Contains(b.HWId)) {
 							BaseStatus lastStatus = dbContext.BaseStatus.FirstOrDefault(f => f.BaseId == b.BaseId && f.IsActive == true);
 							if (lastStatus != null)
 							{
