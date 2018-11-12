@@ -141,7 +141,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 						dbContext.Update(lastStatus);
 					}
 
-					b.LastStatus = new BaseStatus
+					var newStatus = new BaseStatus
 					{
 						BaseId = b.BaseId,
 						ConnectedTo = userWebSocket.DeviceId,
@@ -154,12 +154,13 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 						CreationDate = message.MessagDateTime, //TODO: or now?
 						IsActive = true
 					};
-					dbContext.Add(b.LastStatus);
+					dbContext.Add(newStatus);
 
-					b.LastStatusId = b.LastStatus.BaseStatusId;
+					b.LastStatusId = newStatus.BaseStatusId;
 					dbContext.Update(b);
 
 					await dbContext.SaveChangesAsync();
+
 					if (bs.IsConnected)
 					{
 						bs.ConnectedToName = dbContext.Device.AsNoTracking().FirstOrDefault(d => d.DeviceId == userWebSocket.DeviceId).GetName;
