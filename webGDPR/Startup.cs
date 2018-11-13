@@ -166,6 +166,7 @@ WantedBy=multi-user.target
 		private void OnShutdown()
 		{
 			//https://thinkrethink.net/2017/03/09/application-shutdown-in-asp-net-core/
+			var tet = 1;
 		}
 	}
 }
