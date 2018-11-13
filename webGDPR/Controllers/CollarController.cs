@@ -94,7 +94,7 @@ namespace webGDPR.Controllers
 			model.CurrentFilter = searchString;
 			int pageSize = 10;
 			model.CollarStatus = await PaginatedList<CollarStatus>.CreateAsync(
-				_context.CollarStatus.Where(s => s.CollarId == id && s.ConnectedTo.Contains(searchString)).OrderByDescending(d => d.CollarStatusId).AsNoTracking(), pageIndex ?? 1, pageSize);
+				_context.CollarStatus.Where(s => s.CollarId == id && s.ConnectedTo.Contains(searchString)).OrderByDescending(d => d.CreationDate).AsNoTracking(), pageIndex ?? 1, pageSize);
 
 			return View(model);
 		}

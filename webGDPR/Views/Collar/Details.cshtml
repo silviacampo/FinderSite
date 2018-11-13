@@ -94,7 +94,6 @@
 					<th scope="col">CreationDate</th>
 					<th scope="col">IsConnected</th>
 					<th scope="col">ConnectedTo</th>
-					<th scope="col">BaseConnectedTo</th>
 					<th scope="col">IsGPSConnected</th>
 					<th scope="col">Battery</th>
 					<th scope="col">Radio</th>
@@ -106,8 +105,7 @@
 					<tr>
 						<td>@dl.CreationDate</td>
 						<td>@dl.IsConnected</td>
-						<td>@dl.ConnectedTo</td>
-						<td>@dl.BaseConnectedTo</td>
+						<td>@if (dl.BaseConnectedTo != null) { @dl.BaseConnectedTo.Name}</td>
 						<td>@dl.IsGPSConnected</td>
 						<td>@dl.Battery</td>
 						<td>@dl.Radio</td>
