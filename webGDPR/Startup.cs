@@ -74,7 +74,7 @@ namespace webGDPR
 		}
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IApplicationLifetime applicationLifetime)
         {
             if (env.IsDevelopment())
             {
@@ -87,14 +87,15 @@ namespace webGDPR
                 app.UseHsts();
             }
 
-            //fuerza bruta para que login no sea http
-            //app.Use((context, next) =>
-           // {
-           //     context.Request.Scheme = "https";
-           //     return next();
-           // });
+			applicationLifetime.ApplicationStopping.Register(OnShutdown);
+			//fuerza bruta para que login no sea http
+			//app.Use((context, next) =>
+			// {
+			//     context.Request.Scheme = "https";
+			//     return next();
+			// });
 
-           // app.UseForwardedHeaders(new ForwardedHeadersOptions
+			// app.UseForwardedHeaders(new ForwardedHeadersOptions
 			//{
 			//	ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
 			//});
@@ -161,5 +162,10 @@ WantedBy=multi-user.target
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
         }
-    }
+
+		private void OnShutdown()
+		{
+			//https://thinkrethink.net/2017/03/09/application-shutdown-in-asp-net-core/
+		}
+	}
 }
