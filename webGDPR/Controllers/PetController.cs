@@ -101,7 +101,7 @@ namespace webGDPR.Controllers
 			model.CurrentFilter = searchString;
 			int pageSize = 10;
 			model.PetTrackingInfos = await PaginatedList<PetTrackingInfo>.CreateAsync(
-				_context.PetTrackingInfo.Where(s => s.PetId == id && (s.Latitude.ToString().Contains(searchString) || s.Longitude.ToString().Contains(searchString))).OrderByDescending(d => d.PetTrackingInfoId).AsNoTracking(), pageIndex ?? 1, pageSize);
+				_context.PetTrackingInfo.Where(s => s.PetId == id && (s.Latitude.ToString().Contains(searchString) || s.Longitude.ToString().Contains(searchString))).Include(d=>d.Collar).OrderByDescending(d => d.CreationDate).AsNoTracking(), pageIndex ?? 1, pageSize);
 			return View(model);
 		}
 

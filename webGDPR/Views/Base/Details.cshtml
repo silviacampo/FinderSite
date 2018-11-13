@@ -125,7 +125,7 @@
 				<tr>
 					<td>@dl.CreationDate</td>
 					<td>@dl.IsConnected</td>
-					<td>@dl.ConnectedTo</td>
+					<td>@if (dl.DeviceConnectedTo != null) { @dl.DeviceConnectedTo.GetName }</td>
 					<td>@dl.IsPlugged</td>
 					<td>@dl.IsCharging</td>
 					<td>@dl.HasBattery</td>
