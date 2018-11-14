@@ -87,7 +87,6 @@ namespace webGDPR
                 app.UseHsts();
             }
 
-			applicationLifetime.ApplicationStopping.Register(OnShutdown);
 			//fuerza bruta para que login no sea http
 			//app.Use((context, next) =>
 			// {
@@ -161,12 +160,14 @@ WantedBy=multi-user.target
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
-        }
+			
+			applicationLifetime.ApplicationStopping.Register(OnShutdown);
+		}
 
 		private void OnShutdown()
 		{
 			//https://thinkrethink.net/2017/03/09/application-shutdown-in-asp-net-core/
-			var tet = 1;
+			CustomWebSocketManager.CloseAll();
 		}
 	}
 }

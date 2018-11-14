@@ -17,6 +17,9 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 	public class CustomWebSocketManager
 	{
 		private readonly RequestDelegate _next;
+		static ICustomWebSocketFactory _wsFactory;
+		static ICustomWebSocketMessageHandler _wsmHandler;
+		static ApplicationDbContext _dbContext;
 
 		public CustomWebSocketManager(RequestDelegate next)
 		{
@@ -25,6 +28,20 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 
 		public async Task Invoke(HttpContext context, ICustomWebSocketFactory wsFactory, ICustomWebSocketMessageHandler wsmHandler, SignInManager<ApplicationUser> signInManager, ApplicationDbContext dbContext, IMapper mapper, IEmailSender emailSender)
 		{
+			if (_wsFactory == null) {
+				_wsFactory = wsFactory;
+			}
+
+			if (_wsmHandler == null)
+			{
+				_wsmHandler = wsmHandler;
+			}
+
+			if (_dbContext == null)
+			{
+				_dbContext = dbContext;
+			}
+
 			if (context.Request.Path == "/ws")
 			{
 				if (context.WebSockets.IsWebSocketRequest)
@@ -113,5 +130,13 @@ namespace webGDPR.Infrastructure.CustomWebSockets
             }			
 
 		}
+
+		public static void CloseAll() {
+			foreach (var userWebSocket in _wsFactory.All()) {
+				_wsmHandler.LogDeviceActivity(_dbContext, userWebSocket.DeviceId, "WebSocket Remove - Server shutdown", JsonConvert.SerializeObject(userWebSocket));
+				Task.Run(()=> userWebSocket.WebSocket.CloseAsync(WebSocketCloseStatus.Empty, string.Empty, CancellationToken.None));
+			}
+		}
+
 	}
 }
