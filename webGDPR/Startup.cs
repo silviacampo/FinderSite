@@ -71,6 +71,9 @@ namespace webGDPR
 			services.AddSingleton<ICustomWebSocketFactory, CustomWebSocketFactory>();
 			services.AddSingleton<ICustomWebSocketMessageHandler, CustomWebSocketMessageHandler>();
 
+			//https://www.stevejgordon.co.uk/asp-net-core-2-ihostedservice
+			services.AddSingleton<IHostedService, GPSFileService>();
+
 		}
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -110,6 +110,8 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 			{
 				//{"m":"{\"bn\":1,\"co\":1,\"cot\":\"\",\"pl\":0,\"ch\":0,\"bt\":0,\"hbt\":0,\"r\":0}","d":1541440447,"u":"SilviaCampo","t":12}
 
+				//{"m":"{\"bn\":1,\"co\":0,\"cot\":\"\",\"pl\":0,\"ch\":0,\"bt\":0,\"hbt\":0,\"r\":0}","d":1542291224,"u":"SilviaCampo","t":12}
+
 				//{ "m":"{\"CollarNumber\":\"1\",\"BaseNumber\":\"1\",\"IsConnected\":true,\"IsGPSConnected\":true,\"Battery\":60,\"Radio\":40}","MessagDateTime":"2018-08-23T13:33:00.5057737-04:00","IsIncoming":true,"UserId":"SilviaCampo","Type":13}
 
 				//{ "m":"{\"DeviceId\":\"68b73ced-1659-483c-929e-274a97706405\",\"Name\":\"Silvia's Phone\",\"Model\":\"Nexus 5\",\"Manufacturer\":\"LG\",\"Type\":\"Phone\",\"Platform\":\"Android\",\"UserId\":\"bee7b8af-c902-4771-89f8-969a3318cbdb\"}","MessagDateTime":"2018-08-23T13:33:00.5057737-04:00","UserId":"scampo@test.com","Type":5}
