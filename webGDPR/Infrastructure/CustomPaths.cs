@@ -27,5 +27,10 @@ namespace webGDPR.Infrastructure
 		{
 			return Path.Combine(GetPetPath(UserId, PetId), "pages");
 		}
+
+		internal static string GetGPSFilesPath()
+		{
+			return Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "gps");
+		}
 	}
 }
