@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace webGDPR.Infrastructure
 {
-	public abstract class HostedService : IHostedService
+	public abstract class HostedService : Microsoft.Extensions.Hosting.IHostedService
 	{
 		private Task _executingTask;
 		private System.Threading.CancellationTokenSource _cts;

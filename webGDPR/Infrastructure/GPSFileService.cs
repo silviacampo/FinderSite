@@ -7,8 +7,6 @@ namespace webGDPR.Infrastructure
 {
     public class GPSFileService : HostedService
 	{
-
-
 		public GPSFileService()
 		{
 
@@ -18,9 +16,18 @@ namespace webGDPR.Infrastructure
 		{
 			while (!cancellationToken.IsCancellationRequested)
 			{
-				//do something
-				await Task.Delay(TimeSpan.FromDays(1), cancellationToken);
+				TimeSpan timeBetween = DateTime.Today.AddDays(1).AddHours(1) - DateTime.Now;
+
+				System.Timers.Timer t = new System.Timers.Timer();
+				t.Elapsed += T_Elapsed;
+				t.Interval = 1000 * timeBetween.TotalSeconds;
+				t.Start();
 			}
+		}
+
+		private void T_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+		{
+			//go and grab a new file
 		}
 	}
 }
