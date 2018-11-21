@@ -9,7 +9,7 @@ namespace webGDPR.Infrastructure
 {
     public class GPSFileService : HostedService
     {
-        public const string url = "https://offline-live1.services.ublox.com/GetOfflineData.ashx?token=Tdw1rYjjLES8m8cObGyfiA;gnss=gps,glo;alm=gps,glo;period=1;resolution=2";
+        public const string url = "http://offline-live1.services.u-blox.com/GetOfflineData.ashx?token=Tdw1rYjjLES8m8cObGyfiA;gnss=gps,glo;alm=gps,glo;period=1;resolution=2";
 
         public GPSFileService()
         {
@@ -26,7 +26,7 @@ namespace webGDPR.Infrastructure
                 t.Elapsed += T_Elapsed;
                 t.Interval = 1000 * timeBetween.TotalSeconds;
                 t.Start();
-            }
+			}
         }
 
         private void T_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
@@ -74,6 +74,7 @@ namespace webGDPR.Infrastructure
                 }
                 catch (Exception ex)
                 {
+					//todo
                     var test = ex.Message;
                 }
             }
