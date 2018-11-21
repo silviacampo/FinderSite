@@ -49,7 +49,7 @@ namespace webGDPR.Controllers
 			CancellationToken ct = new CancellationToken();
 			byte[] bytes = await System.IO.File.ReadAllBytesAsync(path, ct);
 			Response.Headers.Add("Content-Disposition", "attachment; filename=mgaoffline.ubx");
-			return new FileContentResult(bytes, "text/ubx");
+			return new FileContentResult(bytes, "application/ubx");
 		}
 
 		// GET: Device/Details/5
