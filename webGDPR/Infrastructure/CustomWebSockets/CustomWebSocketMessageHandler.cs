@@ -382,7 +382,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 			foreach (var uws in all)
 			{
 				await uws.WebSocket.SendAsync(new ArraySegment<byte>(buffer, 0, buffer.Length), WebSocketMessageType.Text, true, CancellationToken.None);
-				LogDeviceActivity(dbContext, uws.DeviceId, "Message from broadcastAll", message);
+				//LogDeviceActivity(dbContext, uws.DeviceId, "Message from broadcastAll", message);
 			}
 		}
 		//updates?
