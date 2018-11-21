@@ -16,7 +16,6 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 		Task HandleMessage(WebSocketReceiveResult result, byte[] buffer, CustomWebSocket userWebSocket, ICustomWebSocketFactory wsFactory, ApplicationDbContext dbContext, IMapper mapper, IEmailSender emailSender);
 		Task BroadcastOthers(byte[] buffer, CustomWebSocket userWebSocket, ICustomWebSocketFactory wsFactory);
 		Task BroadcastGroup(byte[] buffer, string username, ICustomWebSocketFactory wsFactory);
-		Task BroadcastAll(byte[] buffer, CustomWebSocket userWebSocket, ICustomWebSocketFactory wsFactory);
 		Task BroadcastBinaryAll(byte[] buffer, CustomWebSocket userWebSocket, ICustomWebSocketFactory wsFactory);
 		Task SendBaseCoreAsync(webGDPR.Infrastructure.CustomWebSockets.Messages.BaseCore b, string username, ICustomWebSocketFactory wsFactory);
 		Task SendDeletedBaseAsync(byte baseNumber, string username, ICustomWebSocketFactory wsFactory);
@@ -25,6 +24,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 		Task SendBaseAsync(webGDPR.Infrastructure.CustomWebSockets.Messages.Base b, string username, ICustomWebSocketFactory wsFactory);
 		Task SendCollarAsync(webGDPR.Infrastructure.CustomWebSockets.Messages.Collar c, string username, ICustomWebSocketFactory wsFactory);
 		Task SendDeviceBannedMessage(CustomWebSocket userWebSocket);
+		Task SendGPSFile(string url, ICustomWebSocketFactory wsFactory, ApplicationDbContext dbContext);
 		void LogDeviceActivity(ApplicationDbContext dbContext, string DeviceId, string Reason, string Message);
 	}
 }

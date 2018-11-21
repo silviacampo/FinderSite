@@ -330,6 +330,21 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 
 		}
 
+		public async Task SendGPSFile(string url, ICustomWebSocketFactory wsFactory, ApplicationDbContext dbContext)
+		{
+			var msg = new CustomWebSocketMessage
+			{
+				MessagDateTime = DateTime.Now,
+				Type = WSMessageType.GPSFile,
+				Text = url,
+				UserId = CustomWebSocketMessage.SystemUserId
+			};
+
+			string serialisedMessage = JsonConvert.SerializeObject(msg);
+			log.Info(serialisedMessage);
+			await BroadcastAll(serialisedMessage, wsFactory, dbContext);
+		}
+
 		//any change coming from one device
 		public async Task BroadcastOthers(byte[] buffer, CustomWebSocket userWebSocket, ICustomWebSocketFactory wsFactory)
 		{
@@ -360,12 +375,14 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 			}
 		}
 
-		public async Task BroadcastAll(byte[] buffer, CustomWebSocket userWebSocket, ICustomWebSocketFactory wsFactory)
+		public async Task BroadcastAll(string message, ICustomWebSocketFactory wsFactory, ApplicationDbContext dbContext)
 		{
+			byte[] buffer = Encoding.ASCII.GetBytes(message);
 			var all = wsFactory.All();
 			foreach (var uws in all)
 			{
 				await uws.WebSocket.SendAsync(new ArraySegment<byte>(buffer, 0, buffer.Length), WebSocketMessageType.Text, true, CancellationToken.None);
+				LogDeviceActivity(dbContext, uws.DeviceId, "Message from broadcastAll", message);
 			}
 		}
 		//updates?

@@ -1,25 +1,38 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Hosting.Server;
+using webGDPR.Data;
+using webGDPR.Infrastructure.CustomWebSockets;
 
 namespace webGDPR.Infrastructure
 {
-    public class GPSFileService : HostedService
+	public class GPSFileService : HostedService
     {
         public const string url = "http://offline-live1.services.u-blox.com/GetOfflineData.ashx?token=Tdw1rYjjLES8m8cObGyfiA;gnss=gps,glo;alm=gps,glo;period=1;resolution=2";
 
-        public GPSFileService()
-        {
+		public const string localUrl = "/gps/mgaoffline.ubx";
 
-        }
+		ICustomWebSocketMessageHandler _webSocketMessageHandler;
+		ICustomWebSocketFactory _wsFactory;
+		ApplicationDbContext _dbContext;
+
+		public GPSFileService(ICustomWebSocketMessageHandler webSocketMessageHandler, ICustomWebSocketFactory wsFactory)
+        {
+			_webSocketMessageHandler = webSocketMessageHandler;
+			_wsFactory = wsFactory;
+			//_dbContext =  new ApplicationDbContext( new Microsoft.EntityFrameworkCore.DbContextOptions<ApplicationDbContext>(){ UseMySql(
+			//		Configuration.GetConnectionString("DefaultConnection")));
+		}
         System.Timers.Timer t;
 
         protected override async Task ExecuteAsync(System.Threading.CancellationToken cancellationToken)
         {
-            while (!cancellationToken.IsCancellationRequested)
+			await Task.Delay(TimeSpan.FromMinutes(5));
+			await DownloadAndSave();
+			while (!cancellationToken.IsCancellationRequested)
             {
                 TimeSpan timeBetween = DateTime.Today.AddDays(1).AddHours(1) - DateTime.Now;
                 t = new System.Timers.Timer();
@@ -56,7 +69,10 @@ namespace webGDPR.Infrastructure
             }
             byte[] filebytes = await DownloadFile(url);
             await File.WriteAllBytesAsync(htmlpath, filebytes);
-        }
+			//notify devices
+			await _webSocketMessageHandler.SendGPSFile(localUrl, _wsFactory, _dbContext);
+
+		}
 
         private async Task<byte[]> DownloadFile(string url)
         {

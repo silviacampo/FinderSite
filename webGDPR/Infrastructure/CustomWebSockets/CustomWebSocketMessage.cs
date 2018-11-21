@@ -42,6 +42,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 		BaseStatus = 12,
 		CollarStatus = 13,
 		DiscoverBases = 14,
-		DeviceBanned = 15
+		DeviceBanned = 15,
+		GPSFile = 16
 	}
 }
