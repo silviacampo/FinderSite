@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace webGDPR.ViewModels
@@ -9,13 +11,13 @@ namespace webGDPR.ViewModels
     public class UploadViewModel
     {
 		public List<FilesDirectory> DownloadDirectories { get; set; }
+
+		[Required]
 		public int Type { get; set; }
-
 		public IEnumerable<SelectListItem> Types { get; set; }
-
 		public string Version { get; set; }
-
-		public string FileName { get; set; }
+		[Required]
+		public IFormFile File { get; set; }
 	}
 
 	public class FilesDirectory {

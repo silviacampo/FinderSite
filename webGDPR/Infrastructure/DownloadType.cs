@@ -12,9 +12,9 @@ namespace webGDPR.Infrastructure
 		CollarGpsUpdate = 2,
 		BaseLoraUpdate = 3,
 		BaseBleUpdate = 4,
-		CollarLoraUpdate = 3,
-		BaseConfig = 4,
-		CollarConfig = 5,
+		CollarLoraUpdate = 5,
+		BaseConfig = 6,
+		CollarConfig = 7,
 		LastFile,      //This should always be the last file. Do not use. Only for validation / for loops
 	}
 }

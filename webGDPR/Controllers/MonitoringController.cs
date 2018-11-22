@@ -113,30 +113,61 @@ namespace webGDPR.Controllers
 		// POST: Monitoring/Upload
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Upload(UploadViewModel model, IFormFile file)
+		public async Task<IActionResult> Upload(UploadViewModel model)
 		{
-			if (file.FileName == null || file.FileName.Length == 0)
-				return Content("file not selected");
-			string subpath;
-			switch (model.Type) {
-				case (int)DownloadType.BaseConfig:
-					subpath = CustomPaths.GetBaseConfigPath();
-					break;
-				default:
-					subpath = string.Empty;
-					break;
-			}
-			var path = Path.Combine(subpath, $"{file.FileName}-{model.Version}");
+			if (ModelState.IsValid) {
+				string subpath;
+				switch (model.Type)
+				{
+					case (int)DownloadType.BaseConfig:
+						subpath = CustomPaths.GetBaseConfigPath();
+						break;
+					case (int)DownloadType.CollarConfig:
+						subpath = CustomPaths.GetCollarConfigPath();
+						break;
+					case (int)DownloadType.BaseBleUpdate:
+						subpath = CustomPaths.GetBaseBleUpdatePath();
+						break;
+					case (int)DownloadType.BaseLoraUpdate:
+						subpath = CustomPaths.GetBaseLoraUpdatePath();
+						break;
+					case (int)DownloadType.CollarGpsUpdate:
+						subpath = CustomPaths.GetCollarGPSUpdatePath();
+						break;
+					case (int)DownloadType.CollarLoraUpdate:
+						subpath = CustomPaths.GetCollarLoraUpdatePath();
+						break;
+					default:
+						subpath = string.Empty;
+						break;
+				}
+				if (!Directory.Exists(subpath))
+					Directory.CreateDirectory(subpath);
 
-			using (var stream = new FileStream(path, FileMode.Create))
-			{
-				await file.CopyToAsync(stream);
+				var ext = Path.GetExtension(model.File.FileName);
+				var name = Path.GetFileNameWithoutExtension(model.File.FileName);
+				var filefullname = $"{name}{ext}";
+				if (model.Version.Length > 0)
+				{
+					filefullname = $"{name}-{model.Version}{ext}";
+				}
+				var path = Path.Combine(subpath, filefullname);
+				if (System.IO.File.Exists((path)))
+				{
+					System.IO.File.Delete(path);
+				}
+				using (var stream = new FileStream(path, FileMode.Create))
+				{
+					await model.File.CopyToAsync(stream);
+				}
+				model.Version = string.Empty;
+				model.Type = (int)DownloadType.None;
 			}
+
 			UploadViewModel vm = new UploadViewModel
 			{
 				DownloadDirectories = new List<FilesDirectory>()
 			};
-
 			string donwloadpath = CustomPaths.GetDownloadPath();
 			DirectoryInfo dir = new DirectoryInfo(donwloadpath);
 			foreach (DirectoryInfo di in dir.GetDirectories())
@@ -152,7 +183,16 @@ namespace webGDPR.Controllers
 				}
 				vm.DownloadDirectories.Add(dd);
 			}
-
+			List<SelectListItem> typesItems = new List<SelectListItem>();
+			foreach (DownloadType c in Enum.GetValues(typeof(DownloadType)).Cast<DownloadType>().ToList())
+			{
+				typesItems.Add(new SelectListItem
+				{
+					Value = ((byte)c).ToString(),
+					Text = c.ToString()
+				});
+			}
+			vm.Types = typesItems;
 			return View(vm);
 		}
 
