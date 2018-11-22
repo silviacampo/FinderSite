@@ -18,6 +18,7 @@ using webGDPR.Infrastructure.CustomWebSockets;
 using webGDPR.Models;
 using webGDPR.ViewModels;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace webGDPR.Controllers
 {
@@ -75,18 +76,49 @@ namespace webGDPR.Controllers
 		// GET: Monitoring/Upload
 		public IActionResult Upload()
 		{
-			return View();
+			UploadViewModel vm = new UploadViewModel
+			{
+				DownloadDirectories = new List<FilesDirectory>()
+			};
+
+			string donwloadpath = CustomPaths.GetDownloadPath();
+			DirectoryInfo dir = new DirectoryInfo(donwloadpath);
+			foreach (DirectoryInfo di in dir.GetDirectories())
+			{
+				FilesDirectory dd = new FilesDirectory
+				{
+					DirectoryName = di.Name
+				};
+
+				foreach (FileInfo fi in di.GetFiles())
+				{
+					dd.FileNames.Add(fi.Name);
+				}
+				vm.DownloadDirectories.Add(dd);
+			}
+			List<SelectListItem> typesItems = new List<SelectListItem>();
+			foreach (DownloadType c in Enum.GetValues(typeof(DownloadType)).Cast<DownloadType>().ToList() )
+			{
+				typesItems.Add(new SelectListItem
+				{
+					Value = ((byte)c).ToString(),
+					Text = c.ToString()
+				});
+			}
+			vm.Types = typesItems;
+
+			return View(vm);
 		}
 
 		// POST: Monitoring/Upload
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Upload(IFormFile file, int type, string version)
+		public async Task<IActionResult> Upload(UploadViewModel model, IFormFile file)
 		{
-			if (file == null || file.Length == 0)
+			if (file.FileName == null || file.FileName.Length == 0)
 				return Content("file not selected");
 			string subpath;
-			switch (type) {
+			switch (model.Type) {
 				case (int)DownloadType.BaseConfig:
 					subpath = CustomPaths.GetBaseConfigPath();
 					break;
@@ -94,14 +126,34 @@ namespace webGDPR.Controllers
 					subpath = string.Empty;
 					break;
 			}
-			var path = Path.Combine(subpath, $"{file.FileName}-{version}");
+			var path = Path.Combine(subpath, $"{file.FileName}-{model.Version}");
 
 			using (var stream = new FileStream(path, FileMode.Create))
 			{
 				await file.CopyToAsync(stream);
 			}
+			UploadViewModel vm = new UploadViewModel
+			{
+				DownloadDirectories = new List<FilesDirectory>()
+			};
 
-			return RedirectToAction("Files");
+			string donwloadpath = CustomPaths.GetDownloadPath();
+			DirectoryInfo dir = new DirectoryInfo(donwloadpath);
+			foreach (DirectoryInfo di in dir.GetDirectories())
+			{
+				FilesDirectory dd = new FilesDirectory
+				{
+					DirectoryName = di.Name
+				};
+
+				foreach (FileInfo fi in di.GetFiles())
+				{
+					dd.FileNames.Add(fi.Name);
+				}
+				vm.DownloadDirectories.Add(dd);
+			}
+
+			return View(vm);
 		}
 
 

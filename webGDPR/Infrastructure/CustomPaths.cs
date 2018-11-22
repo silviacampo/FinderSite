@@ -62,5 +62,10 @@ namespace webGDPR.Infrastructure
 		{
 			return Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "download", "collarconfig");
 		}
+
+		internal static string GetDownloadPath()
+		{
+			return Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "download");
+		}
 	}
 }

@@ -1,0 +1,55 @@
+﻿@model webGDPR.ViewModels.UploadViewModel
+@{
+	ViewData["Title"] = "Upload Page";
+}
+<h2>
+	<i class="fa fa-file fa-fw" aria-hidden="true"></i>&nbsp; Upload Files
+</h2>
+<div class="row">
+	<div class="col-md-12">
+		<h2>Available files</h2>
+		<ul>
+			@foreach (webGDPR.ViewModels.FilesDirectory fd in Model.DownloadDirectories)
+			{
+				<li>
+					@fd.DirectoryName
+					@if (fd.FileNames.Count() > 0)
+					{
+						<ul>
+							@foreach (string fn in fd.FileNames)
+							{
+								<li>@fn</li>
+							}
+						</ul>
+					}
+				</li>
+			}
+		</ul>
+	</div>
+	<div class="col-md-12">
+		<h2>Add a new file</h2>
+		<form asp-controller="Home" asp-action="UploadFile" method="post" enctype="multipart/form-data">
+			<div class="col-md-4">
+				<div class="form-group">
+					<label asp-for="Type" class="control-label"></label>
+					<select asp-for="Type" asp-items="Model.Types" class="form-control"></select>
+					<span asp-validation-for="Type" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+					<label asp-for="Version" class="control-label"></label>
+					<input type="text" asp-for="Version" class="form-control" />
+					<span asp-validation-for="Version" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+					<label asp-for="FileName" class="control-label"></label>
+					<input type="file" name="file" asp-for="FileName" class="form-control" />
+					<span asp-validation-for="FileName" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+					<button type="submit">Upload File</button>
+				</div>
+			</div>
+		</form>
+	</div>
+	</div>
+
