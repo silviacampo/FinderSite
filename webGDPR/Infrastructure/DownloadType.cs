@@ -9,7 +9,7 @@ namespace webGDPR.Infrastructure
 	{
 		None = 0,
 		GpsEphemeris = 1,
-		GpsUpdate = 2,
+		CollarGpsUpdate = 2,
 		BaseLoraUpdate = 3,
 		BaseBleUpdate = 4,
 		CollarLoraUpdate = 3,

@@ -13,7 +13,7 @@ namespace webGDPR.Infrastructure
     {
         public const string url = "http://offline-live1.services.u-blox.com/GetOfflineData.ashx?token=Tdw1rYjjLES8m8cObGyfiA;gnss=gps,glo;alm=gps,glo;period=1;resolution=2";
 
-		public const string localUrl = "/device/download?type=2";
+		public const string localUrl = "/device/download?type=1";
 
 		ICustomWebSocketMessageHandler _webSocketMessageHandler;
 		ICustomWebSocketFactory _wsFactory;
@@ -60,11 +60,13 @@ namespace webGDPR.Infrastructure
         {
 			var date = DateTime.Today.ToString("yy_MM_dd");
 			var filename = $"mgaoffline-{date}.ubx";
-			var path = Path.Combine(CustomPaths.GetGPSFilesPath(), filename);
+			var gpsephemerispath = CustomPaths.GetGPSEphemerisPath();
+			var path = Path.Combine(gpsephemerispath, filename);
 			if (!Directory.Exists(Path.GetDirectoryName(path)))
 				Directory.CreateDirectory(Path.GetDirectoryName(path));
 			else {
 				//todo: delete old files
+				ClearFolder(gpsephemerispath);
 			}
 
             if (File.Exists((path)))
@@ -78,7 +80,23 @@ namespace webGDPR.Infrastructure
 
 		}
 
-        private async Task<byte[]> DownloadFile(string url)
+		private void ClearFolder(string FolderName)
+		{
+			DirectoryInfo dir = new DirectoryInfo(FolderName);
+
+			foreach (FileInfo fi in dir.GetFiles())
+			{
+				fi.Delete();
+			}
+
+			foreach (DirectoryInfo di in dir.GetDirectories())
+			{
+				ClearFolder(di.FullName);
+				di.Delete();
+			}
+		}
+
+		private async Task<byte[]> DownloadFile(string url)
         {
             using (var client = new HttpClient())
             {

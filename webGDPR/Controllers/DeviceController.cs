@@ -47,10 +47,10 @@ namespace webGDPR.Controllers
 		public async Task<IActionResult> Download(int type)
 		{
 			switch (type) {
-				case (int)DownloadType.GpsUpdate:
+				case (int)DownloadType.GpsEphemeris:
 					var date = DateTime.Today.ToString("yy_MM_dd");
 					var filename = $"mgaoffline-{date}.ubx";
-					var path = Path.Combine(CustomPaths.GetGPSFilesPath(), filename);
+					var path = Path.Combine(CustomPaths.GetGPSEphemerisPath(), filename);
 					CancellationToken ct = new CancellationToken();
 					byte[] bytes = await System.IO.File.ReadAllBytesAsync(path, ct);
 					Response.Headers.Add("Content-Disposition", $"attachment; filename={filename}");

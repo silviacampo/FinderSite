@@ -17,6 +17,7 @@ using webGDPR.Infrastructure;
 using webGDPR.Infrastructure.CustomWebSockets;
 using webGDPR.Models;
 using webGDPR.ViewModels;
+using System.Threading.Tasks;
 
 namespace webGDPR.Controllers
 {
@@ -44,7 +45,7 @@ namespace webGDPR.Controllers
 			_signInManager = signInManager;
 		}
 
-		public async System.Threading.Tasks.Task<IActionResult> Index(string searchString, string currentFilter, int? pageIndex)
+		public async Task<IActionResult> Index(string searchString, string currentFilter, int? pageIndex)
 		{
 			MonitoringViewModel vm = new MonitoringViewModel
 			{
@@ -71,7 +72,40 @@ namespace webGDPR.Controllers
 			return View(vm);
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+		// GET: Monitoring/Upload
+		public IActionResult Upload()
+		{
+			return View();
+		}
+
+		// POST: Monitoring/Upload
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> Upload(IFormFile file, int type, string version)
+		{
+			if (file == null || file.Length == 0)
+				return Content("file not selected");
+			string subpath;
+			switch (type) {
+				case (int)DownloadType.BaseConfig:
+					subpath = CustomPaths.GetBaseConfigPath();
+					break;
+				default:
+					subpath = string.Empty;
+					break;
+			}
+			var path = Path.Combine(subpath, $"{file.FileName}-{version}");
+
+			using (var stream = new FileStream(path, FileMode.Create))
+			{
+				await file.CopyToAsync(stream);
+			}
+
+			return RedirectToAction("Files");
+		}
+
+
+		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
