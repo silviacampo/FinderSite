@@ -159,7 +159,10 @@ namespace webGDPR.Controllers
 				using (var stream = new FileStream(path, FileMode.Create))
 				{
 					await model.File.CopyToAsync(stream);
+					string localUrl = $"/device/download?type={model.Type}";
+					await _webSocketMessageHandler.SendDownloadFile(localUrl, _wsFactory, _context);
 				}
+
 				model.Version = string.Empty;
 				model.Type = (int)DownloadType.None;
 			}

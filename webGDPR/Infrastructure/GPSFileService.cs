@@ -76,7 +76,7 @@ namespace webGDPR.Infrastructure
             byte[] filebytes = await DownloadFile(url);
             await File.WriteAllBytesAsync(path, filebytes);
 			//notify devices {"m":"/gps/mgaoffline.ubx","d":1542824339,"u":"system","t":16}
-			await _webSocketMessageHandler.SendGPSFile(localUrl, _wsFactory, _dbContext);
+			await _webSocketMessageHandler.SendDownloadFile(localUrl, _wsFactory, _dbContext);
 
 		}
 
