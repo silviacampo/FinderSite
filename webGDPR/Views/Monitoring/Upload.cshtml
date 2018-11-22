@@ -2,6 +2,23 @@
 @{
 	ViewData["Title"] = "Upload Page";
 }
+<style>
+	ul {
+		list-style: none; /* Remove HTML bullets */
+		padding: 0;
+		margin: 0;
+	}
+
+	li {
+		padding-left: 16px;
+	}
+
+		li::before {
+			content: "•"; 
+			padding-right: 8px;
+			color: grey; /* Or a color you prefer */
+		}
+</style>
 <h2>
 	<i class="fa fa-file fa-fw" aria-hidden="true"></i>&nbsp; Upload Files
 </h2>
