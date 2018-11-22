@@ -46,8 +46,10 @@ namespace webGDPR.Controllers
 
 		public async System.Threading.Tasks.Task<IActionResult> Index(string searchString, string currentFilter, int? pageIndex)
 		{
-			MonitoringViewModel vm = new MonitoringViewModel();
-			vm.WebSockets = _wsFactory.All();
+			MonitoringViewModel vm = new MonitoringViewModel
+			{
+				WebSockets = _wsFactory.All()
+			};
 			if (searchString != null)
 			{
 				pageIndex = 1;

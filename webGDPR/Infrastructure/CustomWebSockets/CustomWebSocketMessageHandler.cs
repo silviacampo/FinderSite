@@ -335,7 +335,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 			var msg = new CustomWebSocketMessage
 			{
 				MessagDateTime = DateTime.Now,
-				Type = WSMessageType.GPSFile,
+				Type = WSMessageType.DownloadFile,
 				Text = url,
 				UserId = CustomWebSocketMessage.SystemUserId
 			};

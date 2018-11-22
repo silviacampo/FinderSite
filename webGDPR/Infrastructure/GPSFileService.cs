@@ -13,7 +13,7 @@ namespace webGDPR.Infrastructure
     {
         public const string url = "http://offline-live1.services.u-blox.com/GetOfflineData.ashx?token=Tdw1rYjjLES8m8cObGyfiA;gnss=gps,glo;alm=gps,glo;period=1;resolution=2";
 
-		public const string localUrl = "/gps/mgaoffline.ubx";
+		public const string localUrl = "/device/download?type=2";
 
 		ICustomWebSocketMessageHandler _webSocketMessageHandler;
 		ICustomWebSocketFactory _wsFactory;
@@ -30,7 +30,6 @@ namespace webGDPR.Infrastructure
 
         protected override async Task ExecuteAsync(System.Threading.CancellationToken cancellationToken)
         {
-			await Task.Delay(TimeSpan.FromMinutes(5));
 			await DownloadAndSave();
 			while (!cancellationToken.IsCancellationRequested)
             {
@@ -59,16 +58,21 @@ namespace webGDPR.Infrastructure
 
         private async Task DownloadAndSave()
         {
-            var htmlpath = Path.Combine(CustomPaths.GetGPSFilesPath(), "mgaoffline.ubx");
-            if (!Directory.Exists(Path.GetDirectoryName(htmlpath)))
-                Directory.CreateDirectory(Path.GetDirectoryName(htmlpath));
+			var date = DateTime.Today.ToString("yy_MM_dd");
+			var filename = $"mgaoffline-{date}.ubx";
+			var path = Path.Combine(CustomPaths.GetGPSFilesPath(), filename);
+			if (!Directory.Exists(Path.GetDirectoryName(path)))
+				Directory.CreateDirectory(Path.GetDirectoryName(path));
+			else {
+				//todo: delete old files
+			}
 
-            if (File.Exists((htmlpath)))
+            if (File.Exists((path)))
             {
-                File.Delete(htmlpath);
+                File.Delete(path);
             }
             byte[] filebytes = await DownloadFile(url);
-            await File.WriteAllBytesAsync(htmlpath, filebytes);
+            await File.WriteAllBytesAsync(path, filebytes);
 			//notify devices {"m":"/gps/mgaoffline.ubx","d":1542824339,"u":"system","t":16}
 			await _webSocketMessageHandler.SendGPSFile(localUrl, _wsFactory, _dbContext);
 

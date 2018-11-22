@@ -1,5 +1,6 @@
 //dotnet aspnet-codegenerator controller -name DeviceController -async -m webGDPR.Models.Device -dc webGDPR.Data.ApplicationDbContext -namespace webGDPR.Controllers -outDir Controllers
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -41,15 +42,23 @@ namespace webGDPR.Controllers
 			return View(devices);
         }
 
-		// /device/gpsfile
+		// /device/download
 		[AllowAnonymous]
-		public async Task<IActionResult> GpsFile()
+		public async Task<IActionResult> Download(int type)
 		{
-			var path = Path.Combine(CustomPaths.GetGPSFilesPath(), "mgaoffline.ubx");
-			CancellationToken ct = new CancellationToken();
-			byte[] bytes = await System.IO.File.ReadAllBytesAsync(path, ct);
-			Response.Headers.Add("Content-Disposition", "attachment; filename=mgaoffline.ubx");
-			return new FileContentResult(bytes, "application/ubx");
+			switch (type) {
+				case (int)DownloadType.GpsUpdate:
+					var date = DateTime.Today.ToString("yy_MM_dd");
+					var filename = $"mgaoffline-{date}.ubx";
+					var path = Path.Combine(CustomPaths.GetGPSFilesPath(), filename);
+					CancellationToken ct = new CancellationToken();
+					byte[] bytes = await System.IO.File.ReadAllBytesAsync(path, ct);
+					Response.Headers.Add("Content-Disposition", $"attachment; filename={filename}");
+					return new FileContentResult(bytes, "application/ubx");
+				default:
+					return NotFound();
+			}
+
 		}
 
 		// GET: Device/Details/5

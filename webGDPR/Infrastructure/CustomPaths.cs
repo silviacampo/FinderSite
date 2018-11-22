@@ -30,7 +30,7 @@ namespace webGDPR.Infrastructure
 
 		internal static string GetGPSFilesPath()
 		{
-			return Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "gps");
+			return Path.Combine(Directory.GetCurrentDirectory(), "wwwroot","download", "gps");
 		}
 	}
 }
