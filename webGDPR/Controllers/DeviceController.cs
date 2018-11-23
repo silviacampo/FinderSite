@@ -44,7 +44,7 @@ namespace webGDPR.Controllers
 
 		// /device/download
 		[AllowAnonymous]
-		public async Task<IActionResult> Download(int type)
+		public async Task<IActionResult> Download(int type, string version)
 		{
 			string filename;
 			string path;
@@ -72,26 +72,42 @@ namespace webGDPR.Controllers
 					Response.Headers.Add("Content-Disposition", $"attachment; filename={filename}");
 					return new FileContentResult(bytes, "text/xml");
 				case (int)DownloadType.BaseBleUpdate:
-					filename = "baseBLE.exe";
-					path = Path.Combine(CustomPaths.GetBaseBleUpdatePath(), filename);
+					path = CustomPaths.GetBaseBleUpdatePath();
+					if (version == null)
+						filename = (new DirectoryInfo(path)).GetFiles().OrderByDescending(f => f.LastWriteTime).FirstOrDefault().Name;
+					else
+						filename = (new DirectoryInfo(path)).GetFiles().Where(f => f.Name.Contains("-" + version + ".")).FirstOrDefault().Name;
+					path = Path.Combine(path, filename);
 					bytes = await System.IO.File.ReadAllBytesAsync(path, ct);
 					Response.Headers.Add("Content-Disposition", $"attachment; filename={filename}");
 					return new FileContentResult(bytes, "application/exe");
 				case (int)DownloadType.BaseLoraUpdate:
-					filename = "baseLora.exe";
-					path = Path.Combine(CustomPaths.GetBaseLoraUpdatePath(), filename);
+					path = CustomPaths.GetBaseLoraUpdatePath();
+					if (version == null)
+						filename = (new DirectoryInfo(path)).GetFiles().OrderByDescending(f => f.LastWriteTime).FirstOrDefault().Name;
+					else
+						filename = (new DirectoryInfo(path)).GetFiles().Where(f => f.Name.Contains("-" + version + ".")).FirstOrDefault().Name;
+					path = Path.Combine(path, filename);
 					bytes = await System.IO.File.ReadAllBytesAsync(path, ct);
 					Response.Headers.Add("Content-Disposition", $"attachment; filename={filename}");
 					return new FileContentResult(bytes, "application/exe");
 				case (int)DownloadType.CollarGpsUpdate:
-					filename = "collarGPS.exe";
-					path = Path.Combine(CustomPaths.GetCollarGPSUpdatePath(), filename);
+					path = CustomPaths.GetCollarGPSUpdatePath();
+					if (version == null)
+						filename = (new DirectoryInfo(path)).GetFiles().OrderByDescending(f => f.LastWriteTime).FirstOrDefault().Name;
+					else
+						filename = (new DirectoryInfo(path)).GetFiles().Where(f => f.Name.Contains("-" + version + ".")).FirstOrDefault().Name;
+					path = Path.Combine(path, filename);
 					bytes = await System.IO.File.ReadAllBytesAsync(path, ct);
 					Response.Headers.Add("Content-Disposition", $"attachment; filename={filename}");
 					return new FileContentResult(bytes, "application/exe");
 				case (int)DownloadType.CollarLoraUpdate:
-					filename = "collarLora.exe";
-					path = Path.Combine(CustomPaths.GetCollarLoraUpdatePath(), filename);
+					path = CustomPaths.GetCollarLoraUpdatePath();
+					if (version == null)
+					filename = (new DirectoryInfo(path)).GetFiles().OrderByDescending(f => f.LastWriteTime).FirstOrDefault().Name;
+					else
+						filename = (new DirectoryInfo(path)).GetFiles().Where(f=>f.Name.Contains("-" + version + ".")).FirstOrDefault().Name;
+					path = Path.Combine(path, filename);
 					bytes = await System.IO.File.ReadAllBytesAsync(path, ct);
 					Response.Headers.Add("Content-Disposition", $"attachment; filename={filename}");
 					return new FileContentResult(bytes, "application/exe");
