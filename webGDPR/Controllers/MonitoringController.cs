@@ -19,11 +19,13 @@ using webGDPR.Models;
 using webGDPR.ViewModels;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Authorization;
 
 namespace webGDPR.Controllers
 {
-	//[ServiceFilter(typeof(HostFilter))]
-	public class MonitoringController : Controller
+    //[ServiceFilter(typeof(HostFilter))]
+    [Authorize]
+    public class MonitoringController : Controller
     {
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -167,37 +169,8 @@ namespace webGDPR.Controllers
 				model.Type = (int)DownloadType.None;
 			}
 
-			UploadViewModel vm = new UploadViewModel
-			{
-				DownloadDirectories = new List<FilesDirectory>()
-			};
-			string donwloadpath = CustomPaths.GetDownloadPath();
-			DirectoryInfo dir = new DirectoryInfo(donwloadpath);
-			foreach (DirectoryInfo di in dir.GetDirectories())
-			{
-				FilesDirectory dd = new FilesDirectory
-				{
-					DirectoryName = di.Name
-				};
-
-				foreach (FileInfo fi in di.GetFiles())
-				{
-					dd.FileNames.Add(fi.Name);
-				}
-				vm.DownloadDirectories.Add(dd);
-			}
-			List<SelectListItem> typesItems = new List<SelectListItem>();
-			foreach (DownloadType c in Enum.GetValues(typeof(DownloadType)).Cast<DownloadType>().ToList())
-			{
-				typesItems.Add(new SelectListItem
-				{
-					Value = ((byte)c).ToString(),
-					Text = c.ToString()
-				});
-			}
-			vm.Types = typesItems;
-			return View(vm);
-		}
+            return RedirectToAction(nameof(Upload));
+        }
 
 
 		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

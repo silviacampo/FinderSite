@@ -3,17 +3,17 @@
 	ViewData["Title"] = "Upload Page";
 }
 <style>
-	ul {
+	.files ul  {
 		list-style: none; /* Remove HTML bullets */
 		padding: 0;
 		margin: 0;
 	}
 
-	li {
+	.files ul li {
 		padding-left: 16px;
 	}
 
-	li::before {
+	.files ul li::before {
 		content: "•"; 
 		padding-right: 8px;
 		color: grey; /* Or a color you prefer */
@@ -23,7 +23,7 @@
 	<i class="fa fa-file fa-fw" aria-hidden="true"></i>&nbsp; Upload Files
 </h2>
 <div class="row">
-	<div class="col-md-12">
+	<div class="col-md-12 files">
 		<h2>Available files</h2>
 		<ul>
 			@foreach (webGDPR.ViewModels.FilesDirectory fd in Model.DownloadDirectories)
