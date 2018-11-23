@@ -46,15 +46,55 @@ namespace webGDPR.Controllers
 		[AllowAnonymous]
 		public async Task<IActionResult> Download(int type)
 		{
+			string filename;
+			string path;
+			byte[] bytes;
+			CancellationToken ct = new CancellationToken();
+
 			switch (type) {
 				case (int)DownloadType.GpsEphemeris:
 					var date = DateTime.Today.ToString("yy_MM_dd");
-					var filename = $"mgaoffline-{date}.ubx";
-					var path = Path.Combine(CustomPaths.GetGPSEphemerisPath(), filename);
-					CancellationToken ct = new CancellationToken();
-					byte[] bytes = await System.IO.File.ReadAllBytesAsync(path, ct);
+					filename = $"mgaoffline-{date}.ubx";
+					path = Path.Combine(CustomPaths.GetGPSEphemerisPath(), filename);					
+					bytes = await System.IO.File.ReadAllBytesAsync(path, ct);
 					Response.Headers.Add("Content-Disposition", $"attachment; filename={filename}");
 					return new FileContentResult(bytes, "application/ubx");
+				case (int)DownloadType.BaseConfig:
+					filename = "baseConfig.xml";
+					path = Path.Combine(CustomPaths.GetBaseConfigPath(), filename);
+					bytes = await System.IO.File.ReadAllBytesAsync(path, ct);
+					Response.Headers.Add("Content-Disposition", $"attachment; filename={filename}");
+					return new FileContentResult(bytes, "text/xml");
+				case (int)DownloadType.CollarConfig:
+					filename = "collarConfig.xml";
+					path = Path.Combine(CustomPaths.GetCollarConfigPath(), filename);
+					bytes = await System.IO.File.ReadAllBytesAsync(path, ct);
+					Response.Headers.Add("Content-Disposition", $"attachment; filename={filename}");
+					return new FileContentResult(bytes, "text/xml");
+				case (int)DownloadType.BaseBleUpdate:
+					filename = "baseBLE.exe";
+					path = Path.Combine(CustomPaths.GetBaseBleUpdatePath(), filename);
+					bytes = await System.IO.File.ReadAllBytesAsync(path, ct);
+					Response.Headers.Add("Content-Disposition", $"attachment; filename={filename}");
+					return new FileContentResult(bytes, "application/exe");
+				case (int)DownloadType.BaseLoraUpdate:
+					filename = "baseLora.exe";
+					path = Path.Combine(CustomPaths.GetBaseLoraUpdatePath(), filename);
+					bytes = await System.IO.File.ReadAllBytesAsync(path, ct);
+					Response.Headers.Add("Content-Disposition", $"attachment; filename={filename}");
+					return new FileContentResult(bytes, "application/exe");
+				case (int)DownloadType.CollarGpsUpdate:
+					filename = "collarGPS.exe";
+					path = Path.Combine(CustomPaths.GetCollarGPSUpdatePath(), filename);
+					bytes = await System.IO.File.ReadAllBytesAsync(path, ct);
+					Response.Headers.Add("Content-Disposition", $"attachment; filename={filename}");
+					return new FileContentResult(bytes, "application/exe");
+				case (int)DownloadType.CollarLoraUpdate:
+					filename = "collarLora.exe";
+					path = Path.Combine(CustomPaths.GetCollarLoraUpdatePath(), filename);
+					bytes = await System.IO.File.ReadAllBytesAsync(path, ct);
+					Response.Headers.Add("Content-Disposition", $"attachment; filename={filename}");
+					return new FileContentResult(bytes, "application/exe");
 				default:
 					return NotFound();
 			}
