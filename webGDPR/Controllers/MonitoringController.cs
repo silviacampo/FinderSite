@@ -147,7 +147,7 @@ namespace webGDPR.Controllers
 				var ext = Path.GetExtension(model.File.FileName);
 				var name = Path.GetFileNameWithoutExtension(model.File.FileName);
 				var filefullname = $"{name}{ext}";
-				if (model.Version.Length > 0)
+				if (model.Version != null)
 				{
 					filefullname = $"{name}-{model.Version}{ext}";
 				}
