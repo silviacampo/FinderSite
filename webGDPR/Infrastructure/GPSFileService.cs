@@ -13,7 +13,7 @@ namespace webGDPR.Infrastructure
     {
         public const string url = "http://offline-live1.services.u-blox.com/GetOfflineData.ashx?token=Tdw1rYjjLES8m8cObGyfiA;gnss=gps,glo;alm=gps,glo;period=1;resolution=2";
 
-		public const string localUrl = "/device/download?type=1";
+		public const string localUrl = "/device/download?type=1&filename=";
 
 		ICustomWebSocketMessageHandler _webSocketMessageHandler;
 		ICustomWebSocketFactory _wsFactory;
@@ -76,7 +76,7 @@ namespace webGDPR.Infrastructure
             byte[] filebytes = await DownloadFile(url);
             await File.WriteAllBytesAsync(path, filebytes);
 			//notify devices {"m":"/gps/mgaoffline.ubx","d":1542824339,"u":"system","t":16}
-			await _webSocketMessageHandler.SendDownloadFile(localUrl, _wsFactory, _dbContext);
+			await _webSocketMessageHandler.SendDownloadFile(localUrl + filename, _wsFactory, _dbContext);
 
 		}
 

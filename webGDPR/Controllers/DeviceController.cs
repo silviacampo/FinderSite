@@ -44,70 +44,45 @@ namespace webGDPR.Controllers
 
 		// /device/download
 		[AllowAnonymous]
-		public async Task<IActionResult> Download(int type, string version)
+		public async Task<IActionResult> Download(int type, string filename)
 		{
-			string filename;
 			string path;
 			byte[] bytes;
 			CancellationToken ct = new CancellationToken();
 
 			switch (type) {
 				case (int)DownloadType.GpsEphemeris:
-					var date = DateTime.Today.ToString("yy_MM_dd");
-					filename = $"mgaoffline-{date}.ubx";
 					path = Path.Combine(CustomPaths.GetGPSEphemerisPath(), filename);					
 					bytes = await System.IO.File.ReadAllBytesAsync(path, ct);
 					Response.Headers.Add("Content-Disposition", $"attachment; filename={filename}");
 					return new FileContentResult(bytes, "application/ubx");
 				case (int)DownloadType.BaseConfig:
-					filename = "baseConfig.xml";
 					path = Path.Combine(CustomPaths.GetBaseConfigPath(), filename);
 					bytes = await System.IO.File.ReadAllBytesAsync(path, ct);
 					Response.Headers.Add("Content-Disposition", $"attachment; filename={filename}");
 					return new FileContentResult(bytes, "text/xml");
 				case (int)DownloadType.CollarConfig:
-					filename = "collarConfig.xml";
 					path = Path.Combine(CustomPaths.GetCollarConfigPath(), filename);
 					bytes = await System.IO.File.ReadAllBytesAsync(path, ct);
 					Response.Headers.Add("Content-Disposition", $"attachment; filename={filename}");
 					return new FileContentResult(bytes, "text/xml");
 				case (int)DownloadType.BaseBleUpdate:
-					path = CustomPaths.GetBaseBleUpdatePath();
-					if (version == null)
-						filename = (new DirectoryInfo(path)).GetFiles().OrderByDescending(f => f.LastWriteTime).FirstOrDefault().Name;
-					else
-						filename = (new DirectoryInfo(path)).GetFiles().Where(f => f.Name.Contains("-" + version + ".")).FirstOrDefault().Name;
-					path = Path.Combine(path, filename);
+					path = Path.Combine(CustomPaths.GetBaseBleUpdatePath(), filename);
 					bytes = await System.IO.File.ReadAllBytesAsync(path, ct);
 					Response.Headers.Add("Content-Disposition", $"attachment; filename={filename}");
 					return new FileContentResult(bytes, "application/exe");
 				case (int)DownloadType.BaseLoraUpdate:
-					path = CustomPaths.GetBaseLoraUpdatePath();
-					if (version == null)
-						filename = (new DirectoryInfo(path)).GetFiles().OrderByDescending(f => f.LastWriteTime).FirstOrDefault().Name;
-					else
-						filename = (new DirectoryInfo(path)).GetFiles().Where(f => f.Name.Contains("-" + version + ".")).FirstOrDefault().Name;
-					path = Path.Combine(path, filename);
+					path = Path.Combine(CustomPaths.GetBaseLoraUpdatePath(), filename);
 					bytes = await System.IO.File.ReadAllBytesAsync(path, ct);
 					Response.Headers.Add("Content-Disposition", $"attachment; filename={filename}");
 					return new FileContentResult(bytes, "application/exe");
 				case (int)DownloadType.CollarGpsUpdate:
-					path = CustomPaths.GetCollarGPSUpdatePath();
-					if (version == null)
-						filename = (new DirectoryInfo(path)).GetFiles().OrderByDescending(f => f.LastWriteTime).FirstOrDefault().Name;
-					else
-						filename = (new DirectoryInfo(path)).GetFiles().Where(f => f.Name.Contains("-" + version + ".")).FirstOrDefault().Name;
-					path = Path.Combine(path, filename);
+					path = Path.Combine(CustomPaths.GetCollarGPSUpdatePath(), filename);
 					bytes = await System.IO.File.ReadAllBytesAsync(path, ct);
 					Response.Headers.Add("Content-Disposition", $"attachment; filename={filename}");
 					return new FileContentResult(bytes, "application/exe");
 				case (int)DownloadType.CollarLoraUpdate:
-					path = CustomPaths.GetCollarLoraUpdatePath();
-					if (version == null)
-					filename = (new DirectoryInfo(path)).GetFiles().OrderByDescending(f => f.LastWriteTime).FirstOrDefault().Name;
-					else
-						filename = (new DirectoryInfo(path)).GetFiles().Where(f=>f.Name.Contains("-" + version + ".")).FirstOrDefault().Name;
-					path = Path.Combine(path, filename);
+					path = Path.Combine(CustomPaths.GetCollarLoraUpdatePath(), filename);
 					bytes = await System.IO.File.ReadAllBytesAsync(path, ct);
 					Response.Headers.Add("Content-Disposition", $"attachment; filename={filename}");
 					return new FileContentResult(bytes, "application/exe");
