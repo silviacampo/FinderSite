@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server;
@@ -27,32 +28,36 @@ namespace webGDPR.Infrastructure
 			//		Configuration.GetConnectionString("DefaultConnection")));
 		}
         System.Timers.Timer t;
-
-        protected override async Task ExecuteAsync(System.Threading.CancellationToken cancellationToken)
+        CancellationToken ct;
+        protected override async Task ExecuteAsync(CancellationToken cancellationToken)
         {
 			await DownloadAndSave();
-			while (!cancellationToken.IsCancellationRequested)
+            ct = cancellationToken;
+            if (!cancellationToken.IsCancellationRequested)
             {
-                TimeSpan timeBetween = DateTime.Today.AddDays(1).AddHours(1) - DateTime.Now;
+                TimeSpan timeBetween = DateTime.Today.AddDays(1).AddHours(-3) - DateTime.Now;
                 t = new System.Timers.Timer();
                 t.Elapsed += T_Elapsed;
                 t.Interval = 1000 * timeBetween.TotalSeconds;
                 t.Start();
-			}
+            }
+            else {
+                t.Stop();             
+            }
         }
 
         private void T_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             t.Stop();
+            if (!ct.IsCancellationRequested) {            
+            TimeSpan timeBetween = DateTime.Today.AddDays(1).AddHours(-3) - DateTime.Now;
+            t.Interval = 1000 * timeBetween.TotalSeconds;
+            t.Start();
             Task.Run(async () =>
             {
-                while (true)
-                {
-                    await DownloadAndSave();
-                    await Task.Delay(TimeSpan.FromDays(1));
-                }
+                await DownloadAndSave();
             });
-
+        }
 
         }
 
