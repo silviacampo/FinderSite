@@ -140,9 +140,9 @@ namespace webGDPR.Controllers
 						subpath = CustomPaths.GetCollarLoraUpdatePath();
 						break;
 					default:
-						subpath = string.Empty;
-						break;
+						return NotFound();						
 				}
+
 				if (!Directory.Exists(subpath))
 					Directory.CreateDirectory(subpath);
 
