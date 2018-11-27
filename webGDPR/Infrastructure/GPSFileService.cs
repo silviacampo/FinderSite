@@ -35,10 +35,10 @@ namespace webGDPR.Infrastructure
             ct = cancellationToken;
             if (!cancellationToken.IsCancellationRequested)
             {
-                TimeSpan timeBetween = DateTime.Today.AddDays(1).AddHours(-3) - DateTime.Now;
+                TimeSpan timeBetween = DateTime.Today.AddDays(1) - DateTime.Now;
                 t = new System.Timers.Timer();
                 t.Elapsed += T_Elapsed;
-                t.Interval = 1000 * timeBetween.TotalSeconds;
+				t.Interval = 1000 * timeBetween.TotalSeconds;
                 t.Start();
             }
             else {
@@ -50,9 +50,9 @@ namespace webGDPR.Infrastructure
         {
             t.Stop();
             if (!ct.IsCancellationRequested) {            
-            TimeSpan timeBetween = DateTime.Today.AddDays(1).AddHours(-3) - DateTime.Now;
+            TimeSpan timeBetween = DateTime.Today.AddDays(1) - DateTime.Now;
             t.Interval = 1000 * timeBetween.TotalSeconds;
-            t.Start();
+			t.Start();
             Task.Run(async () =>
             {
                 await DownloadAndSave();
