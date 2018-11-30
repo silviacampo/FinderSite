@@ -190,6 +190,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 					}
 					else {
 						//Todo: notify device basenumber doesn't exist
+						await SendDeletedBaseAsync(bs.BaseNumber, userWebSocket);
 					}
 					#endregion
 				}
@@ -231,6 +232,10 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 					else
 					{
 						//Todo: notify device basenumber or collarnumber doesn't exist
+						if (b == null)
+							await SendDeletedBaseAsync(cs.BaseNumber, userWebSocket);
+						if (collar == null)
+							await SendDeletedCollarAsync(cs.BaseNumber, userWebSocket);
 					}
 					#endregion
 				}
@@ -469,6 +474,21 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 			byte[] bytes = Encoding.ASCII.GetBytes(serialisedMessage);
 			await BroadcastGroup(bytes, username, wsFactory);
 		}
+		public async Task SendDeletedBaseAsync(byte baseNumber, CustomWebSocket userWebSocket)
+		{
+			var msg = new CustomWebSocketMessage
+			{
+				MessagDateTime = DateTime.Now,
+				Type = WSMessageType.DeletedBase,
+				Text = baseNumber.ToString(),
+				UserId = CustomWebSocketMessage.SystemUserId
+			};
+
+			string serialisedMessage = JsonConvert.SerializeObject(msg);
+			log.Info("CustomWebSocketMessageHandler - SendDeletedBaseAsync " + serialisedMessage);
+			byte[] buffer = Encoding.ASCII.GetBytes(serialisedMessage);			
+			await userWebSocket.WebSocket.SendAsync(new ArraySegment<byte>(buffer, 0, buffer.Length), WebSocketMessageType.Text, true, CancellationToken.None);
+		}
 		//edit collar
 		public async Task SendCollarCoreAsync(webGDPR.Infrastructure.CustomWebSockets.Messages.CollarCore collar, string username, ICustomWebSocketFactory wsFactory)
 		{
@@ -502,6 +522,22 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 			log.Info(serialisedMessage);
 			byte[] bytes = Encoding.ASCII.GetBytes(serialisedMessage);
 			await BroadcastGroup(bytes, username, wsFactory);
+		}
+		public async Task SendDeletedCollarAsync(byte collarNumber, CustomWebSocket userWebSocket)
+		{
+			string serialisedText = JsonConvert.SerializeObject(collarNumber);
+			var msg = new CustomWebSocketMessage
+			{
+				MessagDateTime = DateTime.Now,
+				Type = WSMessageType.DeletedCollar,
+				Text = serialisedText,
+				UserId = CustomWebSocketMessage.SystemUserId
+			};
+
+			string serialisedMessage = JsonConvert.SerializeObject(msg);
+			log.Info("CustomWebSocketMessageHandler - SendDeletedCollarAsync " + serialisedMessage);
+			byte[] buffer = Encoding.ASCII.GetBytes(serialisedMessage);
+			await userWebSocket.WebSocket.SendAsync(new ArraySegment<byte>(buffer, 0, buffer.Length), WebSocketMessageType.Text, true, CancellationToken.None);
 		}
 		//add base
 		public async Task SendBaseAsync(webGDPR.Infrastructure.CustomWebSockets.Messages.Base b, string username, ICustomWebSocketFactory wsFactory)
