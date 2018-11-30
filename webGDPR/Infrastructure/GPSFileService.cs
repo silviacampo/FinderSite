@@ -11,8 +11,10 @@ using webGDPR.Infrastructure.CustomWebSockets;
 namespace webGDPR.Infrastructure
 {
 	public class GPSFileService : HostedService
-    {
-        public const string url = "http://offline-live1.services.u-blox.com/GetOfflineData.ashx?token=Tdw1rYjjLES8m8cObGyfiA;gnss=gps,glo;alm=gps,glo;period=1;resolution=2";
+	{
+		public const string url = "http://offline-live1.services.u-blox.com/GetOfflineData.ashx?token=Tdw1rYjjLES8m8cObGyfiA;gnss=gps,glo;alm=gps,glo;period=1;resolution=2";
+
+		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 		public const string localUrl = "/device/download?type=1&filename=";
 
@@ -21,67 +23,63 @@ namespace webGDPR.Infrastructure
 		ApplicationDbContext _dbContext;
 
 		public GPSFileService(ICustomWebSocketMessageHandler webSocketMessageHandler, ICustomWebSocketFactory wsFactory)
-        {
+		{
 			_webSocketMessageHandler = webSocketMessageHandler;
 			_wsFactory = wsFactory;
 			//_dbContext =  new ApplicationDbContext( new Microsoft.EntityFrameworkCore.DbContextOptions<ApplicationDbContext>(){ UseMySql(
 			//		Configuration.GetConnectionString("DefaultConnection")));
 		}
-        System.Timers.Timer t;
-        CancellationToken ct;
-        protected override async Task ExecuteAsync(CancellationToken cancellationToken)
-        {
-			await DownloadAndSave();
-            ct = cancellationToken;
-            if (!cancellationToken.IsCancellationRequested)
-            {
-                TimeSpan timeBetween = DateTime.Today.AddDays(1) - DateTime.Now;
-                t = new System.Timers.Timer();
-                t.Elapsed += T_Elapsed;
+		System.Timers.Timer t;
+		protected override async Task ExecuteAsync(CancellationToken cancellationToken)
+		{
+			if (!cancellationToken.IsCancellationRequested)
+			{
+				t = new System.Timers.Timer();
+				t.Elapsed += T_Elapsed;
+				TimeSpan timeBetween = DateTime.Today.AddDays(1).AddHours(1) - DateTime.Now;
 				t.Interval = 1000 * timeBetween.TotalSeconds;
-                t.Start();
-            }
-            else {
-                t.Stop();             
-            }
-        }
+				t.Start();
+				log.Info($"GPSFileService - Wait for {t.Interval} seconds");
+			}
+		}
 
-        private void T_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
-        {
-            t.Stop();
-            if (!ct.IsCancellationRequested) {            
-            TimeSpan timeBetween = DateTime.Today.AddDays(1) - DateTime.Now;
-            t.Interval = 1000 * timeBetween.TotalSeconds;
-			t.Start();
-            Task.Run(async () =>
-            {
-                await DownloadAndSave();
-            });
-        }
+		private void T_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+		{
+			t.Stop();
+			Task.Run(async () =>
+			{
+				await DownloadAndSave();
+			});
+				TimeSpan timeBetween = DateTime.Today.AddDays(1).AddHours(1) - DateTime.Now;
+			t.Interval = 1000 * timeBetween.TotalSeconds;
+				t.Start();
+				log.Info($"GPSFileService - Wait for {t.Interval} seconds");
+		}
 
-        }
-
-        private async Task DownloadAndSave()
-        {
+		private async Task DownloadAndSave()
+		{
+			log.Info("GPSFileService - Download Start");
 			var date = DateTime.Today.ToString("yy_MM_dd");
 			var filename = $"mgaoffline-{date}.ubx";
 			var gpsephemerispath = CustomPaths.GetGPSEphemerisPath();
 			var path = Path.Combine(gpsephemerispath, filename);
 			if (!Directory.Exists(Path.GetDirectoryName(path)))
 				Directory.CreateDirectory(Path.GetDirectoryName(path));
-			else {
-				//todo: delete old files
+			else
+			{
 				ClearFolder(gpsephemerispath);
 			}
 
-            if (File.Exists((path)))
-            {
-                File.Delete(path);
-            }
-            byte[] filebytes = await DownloadFile(url);
-            await File.WriteAllBytesAsync(path, filebytes);
-			//notify devices {"m":"/gps/mgaoffline.ubx","d":1542824339,"u":"system","t":16}
+			if (File.Exists((path)))
+			{
+				File.Delete(path);
+			}
+			byte[] filebytes = await DownloadFile(url);
+			log.Info("GPSFileService - Writing File");
+			await File.WriteAllBytesAsync(path, filebytes);
+			log.Info("GPSFileService - Send Message to devices");
 			await _webSocketMessageHandler.SendDownloadFile(localUrl + filename, _wsFactory, _dbContext);
+			log.Info("GPSFileService - Download Finished");
 
 		}
 
@@ -102,26 +100,27 @@ namespace webGDPR.Infrastructure
 		}
 
 		private async Task<byte[]> DownloadFile(string url)
-        {
-            using (var client = new HttpClient())
-            {
-                try
-                {
-                    using (var result = await client.GetAsync(url))
-                    {
-                        if (result.IsSuccessStatusCode)
-                        {
-                            return await result.Content.ReadAsByteArrayAsync();
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-					//todo
-                    var test = ex.Message;
-                }
-            }
-            return null;
-        }
-    }
+		{
+			using (var client = new HttpClient())
+			{
+				try
+				{
+					log.Info("GPSFileService - Calling Remote Server");
+					using (var result = await client.GetAsync(url))
+					{
+						if (result.IsSuccessStatusCode)
+						{
+							log.Info("GPSFileService - Reading File");
+							return await result.Content.ReadAsByteArrayAsync();
+						}
+					}
+				}
+				catch (Exception ex)
+				{					
+					log.Error($"GPSFileService - Error: {ex.Message}");
+				}
+			}
+			return null;
+		}
+	}
 }
