@@ -26,7 +26,8 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 			{
 				WebSocket webSocket = userWebSocket.WebSocket;
 				string UserId = dbContext.User.FirstOrDefault(u => u.Name == userWebSocket.Username).UserID;
-
+				
+				#region Bases
 				List<Base> bases = await dbContext.Base.AsNoTracking().Where(b => b.UserId == UserId && !b.Deleted).Include(b => b.LastStatus).ThenInclude(c => c.DeviceConnectedTo).ToListAsync();
 
 				List<Messages.Base> msgBases = new List<Messages.Base>();
@@ -39,22 +40,24 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 					}
 					msgBases.Add(mb);
 				}
-				string serialisedText = JsonConvert.SerializeObject(msgBases);
+
 				var msg = new CustomWebSocketMessage
 				{
 					MessagDateTime = DateTime.Now,
 					Type = WSMessageType.Bases,
-					Text = serialisedText,
+					Text = JsonConvert.SerializeObject(msgBases),
 					UserId = CustomWebSocketMessage.SystemUserId
 				};
 
-				string serialisedMessage = JsonConvert.SerializeObject(msg);
-				log.Info(serialisedMessage);
-				byte[] bytes = Encoding.ASCII.GetBytes(serialisedMessage);
+				string serialisedBasesMessage = JsonConvert.SerializeObject(msg);
+				log.Info("Initial Bases: " + serialisedBasesMessage);
+				byte[] bytes = Encoding.ASCII.GetBytes(serialisedBasesMessage);
 				await webSocket.SendAsync(new ArraySegment<byte>(bytes, 0, bytes.Length), WebSocketMessageType.Text, true, CancellationToken.None);
 
-				LogDeviceActivity(dbContext, userWebSocket.DeviceId, "Initial Bases", serialisedMessage);
+				LogDeviceActivity(dbContext, userWebSocket.DeviceId, "Initial Bases", serialisedBasesMessage);
+				#endregion
 
+				#region Collars
 				List<Collar> collars = await dbContext.Collar.AsNoTracking().Where(b => b.UserId == UserId && !b.Deleted).Include(b => b.LastStatus).ThenInclude(c => c.BaseConnectedTo).ToListAsync();
 
 				List<Messages.Collar> msgCollars = new List<Messages.Collar>();
@@ -63,43 +66,54 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 					Messages.Collar mb = mapper.Map<Messages.Collar>(new Tuple<Collar, CollarStatus>(b, b.LastStatus));
 					//go and pick up the name of the pet if pet assoc. to collar 
 					PetCollar petCollar = await dbContext.PetCollar.FirstOrDefaultAsync(p => p.CollarId == b.CollarId && p.IsActive);
-					if (petCollar != null) {
+					if (petCollar != null)
+					{
 						mb.Name = dbContext.Pet.FirstOrDefault(pet => pet.PetId == petCollar.PetId && !pet.Deleted).Name;
-							}
+					}
 					msgCollars.Add(mb);
 				}
 
-				string serialisedText2 = JsonConvert.SerializeObject(msgCollars);
-				log.Info(serialisedText2);
 				var msg2 = new CustomWebSocketMessage
 				{
 					MessagDateTime = DateTime.Now,
 					Type = WSMessageType.Collars,
-					Text = serialisedText2,
+					Text = JsonConvert.SerializeObject(msgCollars),
 					UserId = CustomWebSocketMessage.SystemUserId
 				};
 
-				string serialisedMessage2 = JsonConvert.SerializeObject(msg2);
-
-				byte[] bytes2 = Encoding.ASCII.GetBytes(serialisedMessage2);
+				string serialisedCollarsMessage = JsonConvert.SerializeObject(msg2);
+				log.Info("Initial Collars: " + serialisedCollarsMessage);
+				byte[] bytes2 = Encoding.ASCII.GetBytes(serialisedCollarsMessage);
 				await webSocket.SendAsync(new ArraySegment<byte>(bytes2, 0, bytes2.Length), WebSocketMessageType.Text, true, CancellationToken.None);
 
-				LogDeviceActivity(dbContext, userWebSocket.DeviceId, "Initial Collars", serialisedMessage2);
+				LogDeviceActivity(dbContext, userWebSocket.DeviceId, "Initial Collars", serialisedCollarsMessage);
+				#endregion
 			}
 			catch (Exception e)
 			{
-				string test = e.Message;
+				log.Error("CustomWebSocketMessageHandler - SendInitialMessages Error: " + e.Message);
 			}
 		}
 
 		public void LogDeviceActivity(ApplicationDbContext dbContext, string DeviceId, string Reason, string Message)
 		{
-            DeviceId = DeviceId.Replace("\"", "");
-
-            if (DeviceId == string.Empty || (dbContext.Device.FirstOrDefault(d=>d.DeviceId == DeviceId) != null && dbContext.Device.FirstOrDefault(d => d.DeviceId == DeviceId).IsLogging))
+			if (DeviceId != null)
 			{
-				dbContext.DeviceLog.Add(new Models.DeviceLog() { DeviceId = DeviceId, CreationDate = DateTime.Now, Reason = Reason, Message = Message });
-				dbContext.SaveChanges();
+				DeviceId = DeviceId.Replace("\"", "");
+
+				if (DeviceId == string.Empty || (dbContext.Device.FirstOrDefault(d => d.DeviceId == DeviceId) != null && dbContext.Device.FirstOrDefault(d => d.DeviceId == DeviceId).IsLogging))
+				{
+					dbContext.DeviceLog.Add(new Models.DeviceLog() { DeviceId = DeviceId, CreationDate = DateTime.Now, Reason = Reason, Message = Message });
+
+					try
+					{
+						dbContext.SaveChanges();
+					}
+					catch (Exception e)
+					{
+						log.Error("CustomWebSocketMessageHandler - LogDeviceActivity Error: " + e.Message);
+					}
+				}
 			}
 		}
 
@@ -108,6 +122,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 			string msg = Encoding.ASCII.GetString(buffer).Trim('\0');
 			try
 			{
+				#region Messages Samples
 				//{"m":"{\"bn\":1,\"co\":1,\"cot\":\"\",\"pl\":0,\"ch\":0,\"bt\":0,\"hbt\":0,\"r\":0}","d":1541440447,"u":"SilviaCampo","t":12}
 
 				//{"m":"{\"bn\":1,\"co\":0,\"cot\":\"\",\"pl\":0,\"ch\":0,\"bt\":0,\"hbt\":0,\"r\":0}","d":1542291224,"u":"SilviaCampo","t":12}
@@ -123,93 +138,110 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 				//{"m":"{\"cn\":1,\"la\":45.513025,\"lo\":-73.720863,\"d\":3343659132}","d":1541440470,"u":"SilviaCampo","t":7}
 
 				//{"m":"{\"cn\":1,\"co\":1,\"cot\":\"Me\",\"gps\":0,\"bt\":0,\"r\":0}","d":1542026359,"u":"SilviaCampo","t":13}
+				#endregion
 
 				var message = JsonConvert.DeserializeObject<CustomWebSocketMessage>(msg);
-
 				LogDeviceActivity(dbContext, userWebSocket.DeviceId, "Message from device", msg);
+				log.Info(userWebSocket.DeviceId + " - " + msg);
 
-				log.Info(userWebSocket.DeviceId + " - " + msg.Replace("\0", string.Empty));
 				User user = dbContext.User.FirstOrDefault(u => u.Name == userWebSocket.Username);
 				string UserId = user.UserID;
 
 				if (message.Type == WSMessageType.BaseStatus)
 				{
+					#region BaseStatusMessage
 					Messages.BaseStatus bs = JsonConvert.DeserializeObject<Messages.BaseStatus>(message.Text);
 					Base b = dbContext.Base.FirstOrDefault(f => f.BaseNumber == bs.BaseNumber && f.UserId == UserId);
-					BaseStatus lastStatus = dbContext.BaseStatus.FirstOrDefault(f => f.BaseId == b.BaseId && f.IsActive == true);
-					if (lastStatus != null)
+					if (b != null)
 					{
-						lastStatus.IsActive = false;
-						dbContext.Update(lastStatus);
+						BaseStatus lastStatus = dbContext.BaseStatus.FirstOrDefault(f => f.BaseId == b.BaseId && f.IsActive == true);
+						if (lastStatus != null)
+						{
+							lastStatus.IsActive = false;
+							dbContext.Update(lastStatus);
+						}
+
+						var newStatus = new BaseStatus
+						{
+							BaseId = b.BaseId,
+							ConnectedTo = userWebSocket.DeviceId,
+							IsConnected = bs.IsConnected,
+							IsCharging = bs.IsCharging,
+							IsPlugged = bs.IsPlugged,
+							Battery = bs.Battery,
+							HasBattery = bs.HasBattery,
+							UserId = b.UserId,
+							CreationDate = message.MessagDateTime, //TODO: or now?
+							IsActive = true
+						};
+						dbContext.Add(newStatus);
+
+						b.LastStatusId = newStatus.BaseStatusId;
+						dbContext.Update(b);
+
+						await dbContext.SaveChangesAsync();
+
+						if (bs.IsConnected)
+						{
+							bs.ConnectedToName = dbContext.Device.AsNoTracking().FirstOrDefault(d => d.DeviceId == userWebSocket.DeviceId).GetName;
+						}
+						message.Text = JsonConvert.SerializeObject(bs);
+						await BroadcastOthers1(message, userWebSocket, wsFactory);
 					}
-
-					var newStatus = new BaseStatus
-					{
-						BaseId = b.BaseId,
-						ConnectedTo = userWebSocket.DeviceId,
-						IsConnected = bs.IsConnected,
-						IsCharging = bs.IsCharging,
-						IsPlugged = bs.IsPlugged,
-						Battery = bs.Battery,
-						HasBattery = bs.HasBattery,
-						UserId = b.UserId,
-						CreationDate = message.MessagDateTime, //TODO: or now?
-						IsActive = true
-					};
-					dbContext.Add(newStatus);
-
-					b.LastStatusId = newStatus.BaseStatusId;
-					dbContext.Update(b);
-
-					await dbContext.SaveChangesAsync();
-
-					if (bs.IsConnected)
-					{
-						bs.ConnectedToName = dbContext.Device.AsNoTracking().FirstOrDefault(d => d.DeviceId == userWebSocket.DeviceId).GetName;
+					else {
+						//Todo: notify device basenumber doesn't exist
 					}
-					message.Text = JsonConvert.SerializeObject(bs);
-					await BroadcastOthers1(message, userWebSocket, wsFactory);
+					#endregion
 				}
 				else if (message.Type == WSMessageType.CollarStatus)
 				{
+					#region CollarStatusMessage
 					Messages.CollarStatus cs = JsonConvert.DeserializeObject<Messages.CollarStatus>(message.Text);
 					Collar collar = dbContext.Collar.FirstOrDefault(f => f.CollarNumber == cs.CollarNumber && f.UserId == UserId);
-					Base b = dbContext.Base.FirstOrDefault(f => f.BaseNumber == cs.BaseNumber && f.UserId == UserId && !f.Deleted);
-					CollarStatus lastStatus = dbContext.CollarStatus.FirstOrDefault(f => f.CollarId == collar.CollarId && f.IsActive == true);
-					if (lastStatus != null)
+					Base b = dbContext.Base.FirstOrDefault(f => f.BaseNumber == cs.BaseNumber && f.UserId == UserId);
+					if (collar != null && b != null)
 					{
-						lastStatus.IsActive = false;
-						dbContext.Update(lastStatus);
+						CollarStatus lastStatus = dbContext.CollarStatus.FirstOrDefault(f => f.CollarId == collar.CollarId && f.IsActive == true);
+						if (lastStatus != null)
+						{
+							lastStatus.IsActive = false;
+							dbContext.Update(lastStatus);
+						}
+
+						var newStatus = new CollarStatus
+						{
+							CollarId = collar.CollarId,
+							IsConnected = cs.IsConnected,
+							IsGPSConnected = cs.IsGPSConnected,
+							Battery = cs.Battery,
+							Radio = cs.Radio,
+							ConnectedTo = b.BaseId,
+							UserId = collar.UserId,
+							CreationDate = message.MessagDateTime, //TODO: or now?
+							IsActive = true
+						};
+						dbContext.Add(newStatus);
+
+						collar.LastStatusId = newStatus.CollarStatusId;
+						dbContext.Update(collar);
+
+						await dbContext.SaveChangesAsync();
+						await BroadcastOthers(buffer, userWebSocket, wsFactory);
 					}
-
-					collar.LastStatus = new CollarStatus
+					else
 					{
-						CollarId = collar.CollarId,
-						IsConnected = cs.IsConnected,
-						IsGPSConnected = cs.IsGPSConnected,
-						Battery = cs.Battery,
-						Radio = cs.Radio,
-						ConnectedTo = b.BaseId,
-						UserId = collar.UserId,
-						CreationDate = message.MessagDateTime, //TODO: or now?
-						IsActive = true
-					};
-					dbContext.Add(collar.LastStatus);
-
-					collar.LastStatusId = collar.LastStatus.CollarStatusId;
-
-					dbContext.Update(collar);
-					await dbContext.SaveChangesAsync();
-					await BroadcastOthers(buffer, userWebSocket, wsFactory);
+						//Todo: notify device basenumber or collarnumber doesn't exist
+					}
+					#endregion
 				}
 				else if (message.Type == WSMessageType.DeviceInfo)
 				{
+					#region DeviceInfoMessage
 					Messages.Device d = JsonConvert.DeserializeObject<Messages.Device>(message.Text);
 					d.UserId = UserId;
-					Device device = dbContext.Device.FirstOrDefault(c => c.UserId == d.UserId && c.Type == d.Type && c.Platform == d.Platform && c.Manufacturer == d.Manufacturer && c.Model == d.Model);
+					Device device = dbContext.Device.FirstOrDefault(c => c.UserId == d.UserId && c.Type == d.Type && c.Platform == d.Platform && c.Manufacturer == d.Manufacturer && c.Model == d.Model && c.Name == d.Name);
 					if (device != null)
 					{
-						device.Name = d.Name; // maybe the user update the phone's name
 						device.OSVersion = d.OSVersion;
 						dbContext.Update(device);
 						await dbContext.SaveChangesAsync();
@@ -228,23 +260,27 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 						};
 						dbContext.Add(device);
 						await dbContext.SaveChangesAsync();
-						//notify someone
+						//notify the user
 						await emailSender.SendEmailAsync(user.Email, "New Device is connecting to your account",
 							$"A new device {d.Model} - {d.Name} is connected to your account. If this is not yours please, go <a href='https://test.whereisfinder.com/Device/Edit/{d.DeviceId}'>here</a> to modify its access.");
 					}
-					
+
 					//return guid
 					userWebSocket.DeviceId = device.DeviceId;
 					await SendDeviceInformation(userWebSocket, device.DeviceId);
 
 					LogDeviceActivity(dbContext, userWebSocket.DeviceId, "Device Id", device.DeviceId);
+					#endregion
 				}
 				else if (message.Type == WSMessageType.DiscoverBases)
 				{
+					#region DiscoveredBasesMessage
 					List<string> d = JsonConvert.DeserializeObject<List<string>>(message.Text);
 					List<Base> bases = await dbContext.Base.AsNoTracking().Where(b => b.UserId == UserId && !b.Deleted && b.LastStatus.ConnectedTo == userWebSocket.DeviceId).Include(b => b.LastStatus).ToListAsync();
-					foreach (Base b in bases) {
-						if (d.Count == 0 || !d.Contains(b.HWId)) {
+					foreach (Base b in bases)
+					{
+						if (d.Count == 0 || !d.Contains(b.HWId))
+						{
 							BaseStatus lastStatus = dbContext.BaseStatus.FirstOrDefault(f => f.BaseId == b.BaseId && f.IsActive == true);
 							if (lastStatus != null)
 							{
@@ -252,7 +288,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 								dbContext.Update(lastStatus);
 							}
 
-							b.LastStatus = new BaseStatus
+							var newStatus = new BaseStatus
 							{
 								BaseId = b.BaseId,
 								ConnectedTo = null,
@@ -265,9 +301,8 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 								CreationDate = DateTime.Now,
 								IsActive = true
 							};
-							dbContext.Add(b.LastStatus);
-
-							b.LastStatusId = b.LastStatus.BaseStatusId;
+							dbContext.Add(newStatus);
+							b.LastStatusId = newStatus.BaseStatusId;
 							dbContext.Update(b);
 
 							await dbContext.SaveChangesAsync();
@@ -275,12 +310,15 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 							await BroadcastOthers(buffer, userWebSocket, wsFactory);
 						}
 					}
-					
+					#endregion
 				}
-				else if (message.Type == WSMessageType.LastGPS) {
+				else if (message.Type == WSMessageType.LastGPS)
+				{
 
 				}
-				else if (message.Type == WSMessageType.TrackingInfo) {
+				else if (message.Type == WSMessageType.TrackingInfo)
+				{
+					#region TrackingInfoMessage
 					Messages.GPSPoint p = JsonConvert.DeserializeObject<Messages.GPSPoint>(message.Text);
 					Collar collar = dbContext.Collar.FirstOrDefault(f => f.CollarNumber == p.CollarNumber && f.UserId == UserId);
 					string petId = dbContext.PetCollar.FirstOrDefault(c => c.CollarId == collar.CollarId && c.IsActive).PetId;
@@ -302,13 +340,15 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 					dbContext.Update(pet);
 
 					await dbContext.SaveChangesAsync();
+					#endregion
 				}
 			}
 			catch (Exception e)
 			{
-				log.Info("Error:" + msg.Replace("\0", string.Empty) + " - " + e.Message);
+				log.Error("CustomWebSocketMessageHandler - HandleMessage Error:" + msg + " - " + e.Message);
 				LogDeviceActivity(dbContext, userWebSocket.DeviceId, "Message from device rejected", msg + " - " + e.Message);
-				await userWebSocket.WebSocket.SendAsync(new ArraySegment<byte>(buffer, 0, result.Count), result.MessageType, result.EndOfMessage, CancellationToken.None);				
+				//TODO: remove echo the wrong message
+				await userWebSocket.WebSocket.SendAsync(new ArraySegment<byte>(buffer, 0, result.Count), result.MessageType, result.EndOfMessage, CancellationToken.None);
 			}
 		}
 
@@ -383,7 +423,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 			{
 				await uws.WebSocket.SendAsync(new ArraySegment<byte>(buffer, 0, buffer.Length), WebSocketMessageType.Text, true, CancellationToken.None);
 				if (dbContext != null)
-				LogDeviceActivity(dbContext, uws.DeviceId, "Message from broadcastAll", message);
+					LogDeviceActivity(dbContext, uws.DeviceId, "Message from broadcastAll", message);
 			}
 		}
 		//updates?
@@ -395,7 +435,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 				await uws.WebSocket.SendAsync(new ArraySegment<byte>(buffer, 0, buffer.Length), WebSocketMessageType.Binary, true, CancellationToken.None);
 			}
 		}
-//edit base
+		//edit base
 		public async Task SendBaseCoreAsync(webGDPR.Infrastructure.CustomWebSockets.Messages.BaseCore c, string username, ICustomWebSocketFactory wsFactory)
 		{
 			string serialisedText = JsonConvert.SerializeObject(c);
@@ -412,7 +452,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 			byte[] bytes = Encoding.ASCII.GetBytes(serialisedMessage);
 			await BroadcastGroup(bytes, username, wsFactory);
 		}
-//delete base
+		//delete base
 		public async Task SendDeletedBaseAsync(byte baseNumber, string username, ICustomWebSocketFactory wsFactory)
 		{
 			string serialisedText = JsonConvert.SerializeObject(baseNumber);
@@ -429,7 +469,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 			byte[] bytes = Encoding.ASCII.GetBytes(serialisedMessage);
 			await BroadcastGroup(bytes, username, wsFactory);
 		}
-//edit collar
+		//edit collar
 		public async Task SendCollarCoreAsync(webGDPR.Infrastructure.CustomWebSockets.Messages.CollarCore collar, string username, ICustomWebSocketFactory wsFactory)
 		{
 			string serialisedText = JsonConvert.SerializeObject(collar);
@@ -446,7 +486,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 			byte[] bytes = Encoding.ASCII.GetBytes(serialisedMessage);
 			await BroadcastGroup(bytes, username, wsFactory);
 		}
-//delete collar
+		//delete collar
 		public async Task SendDeletedCollarAsync(byte collarNumber, string username, ICustomWebSocketFactory wsFactory)
 		{
 			string serialisedText = JsonConvert.SerializeObject(collarNumber);
@@ -463,7 +503,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 			byte[] bytes = Encoding.ASCII.GetBytes(serialisedMessage);
 			await BroadcastGroup(bytes, username, wsFactory);
 		}
-//add base
+		//add base
 		public async Task SendBaseAsync(webGDPR.Infrastructure.CustomWebSockets.Messages.Base b, string username, ICustomWebSocketFactory wsFactory)
 		{
 			string serialisedText = JsonConvert.SerializeObject(b);
@@ -480,7 +520,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 			byte[] bytes = Encoding.ASCII.GetBytes(serialisedMessage);
 			await BroadcastGroup(bytes, username, wsFactory);
 		}
-//add collar
+		//add collar
 		public async Task SendCollarAsync(webGDPR.Infrastructure.CustomWebSockets.Messages.Collar c, string username, ICustomWebSocketFactory wsFactory)
 		{
 			string serialisedText = JsonConvert.SerializeObject(c);
