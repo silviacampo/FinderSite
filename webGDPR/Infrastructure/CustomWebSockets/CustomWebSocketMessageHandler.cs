@@ -144,6 +144,18 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 				LogDeviceActivity(dbContext, userWebSocket.DeviceId, "Message from device", msg);
 				log.Info(userWebSocket.DeviceId + " - " + msg);
 
+				if (message.Type == WSMessageType.Packet)
+				{
+					Messages.Packet p = JsonConvert.DeserializeObject<Messages.Packet>(message.Text);
+					var packetContent = Packet.Packet.DeserializeAndValidate(p.Data);
+					List<Tuple<string, string>> values = packetContent.GetValues();
+					string @base = p.HWId;
+					byte collar = packetContent.GetCollar();
+					Packet.PacketType command = packetContent.Header.Command;
+					LogDeviceActivity(dbContext, userWebSocket.DeviceId, "Message from device", $"BaseHWId: {@base}, CollarNumber: {collar}, Command: {command.ToString()}, Content: {packetContent.ToString()}");
+					log.Info(userWebSocket.DeviceId + " - " + $"BaseHWId: {@base}, CollarNumber: {collar}, Command: {command.ToString()}, Content: {packetContent.ToString()}");
+				}
+
 				User user = dbContext.User.FirstOrDefault(u => u.Name == userWebSocket.Username);
 				string UserId = user.UserID;
 
