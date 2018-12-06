@@ -11,6 +11,7 @@
 
 	.files ul li {
 		padding-left: 16px;
+		padding-top: 10px;
 	}
 
 	.files ul li::before {
@@ -35,7 +36,7 @@
 						<ul>
 							@foreach (string fn in fd.FileNames)
 							{
-								<li>@fn</li>
+								<li>@fn &nbsp;&nbsp;<a class="btn btn-default" href="@Url.Action("SendDownloadAsync", new {type=fd.DirectoryName, filename=fn })">Send to devices</a></li>
 							}
 						</ul>
 					}

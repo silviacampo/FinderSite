@@ -8,6 +8,36 @@ namespace webGDPR.Infrastructure
 {
     public class CustomPaths
     {
+		public static int GetType(string directoryName) {
+			int type = 0;
+			switch (directoryName) {
+				case "gps":
+					type = 1;
+					break;
+				case "baseloraupdate":
+					type = 3;
+					break;
+				case "basebleupdate":
+					type = 4;
+					break;
+				case "collarloraupdate":
+					type = 5;
+					break;
+				case "collargpsupdate":
+					type = 2;
+					break;
+				case "baseconfig":
+					type = 6;
+					break;
+				case "collarconfig":
+					type = 7;
+					break;
+				default:
+					break;
+			}
+			return type;
+		}
+
 		public static string GetUserPath(string UserId)
 		{
 			return Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "user", UserId);

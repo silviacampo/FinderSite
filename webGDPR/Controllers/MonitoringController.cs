@@ -172,6 +172,11 @@ namespace webGDPR.Controllers
             return RedirectToAction(nameof(Upload));
         }
 
+		public async Task SendDownloadAsync(string type, string filename ) {
+			
+			string localUrl = $"/device/download?type={CustomPaths.GetType(type)}&filename={filename}";
+			await _webSocketMessageHandler.SendDownloadFile(localUrl, _wsFactory, _context);
+		}
 
 		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
