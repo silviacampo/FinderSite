@@ -103,7 +103,7 @@
 				@foreach (webGDPR.Models.CollarStatus dl in Model.CollarStatus)
 				{
 					<tr>
-						<td>@dl.CreationDate</td>
+						<td>@dl.CreationDate.ToLocalTime()</td>
 						<td>@dl.IsConnected</td>
 						<td>@if (dl.BaseConnectedTo != null) { @dl.BaseConnectedTo.Name}</td>
 						<td>@dl.IsGPSConnected</td>

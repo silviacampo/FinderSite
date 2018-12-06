@@ -28,7 +28,7 @@
 				<td>@ws.DeviceId</td>
 				<td>@ws.IP</td>
 				<td>@ws.WebSocket.State</td>
-				<td>@ws.CreationDate.ToString()</td>
+				<td>@ws.CreationDate.ToLocalTime()</td>
 			</tr>
 }
 			</tbody>
@@ -60,7 +60,7 @@
 			{
 				<tr>
 					<td>@dl.DeviceId</td>
-					<td>@dl.CreationDate</td>
+					<td>@dl.CreationDate.ToLocalTime()</td>
 					<td>@dl.Reason</td>
 					<td width="300px"><span style="max-width:150px;white-space:normal">@dl.Message</span></td>
 				</tr>
