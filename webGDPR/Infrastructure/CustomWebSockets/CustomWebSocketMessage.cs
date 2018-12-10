@@ -44,6 +44,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 		DiscoverBases = 14,
 		DeviceBanned = 15,
 		DownloadFile = 16,
-		Packet = 17
+		Packet = 17,
+		Files = 18
 	}
 }

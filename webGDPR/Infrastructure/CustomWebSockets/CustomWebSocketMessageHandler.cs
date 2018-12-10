@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.WebSockets;
 using System.Text;
@@ -87,6 +88,38 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 				await webSocket.SendAsync(new ArraySegment<byte>(bytes2, 0, bytes2.Length), WebSocketMessageType.Text, true, CancellationToken.None);
 
 				LogDeviceActivity(dbContext, userWebSocket.DeviceId, "Initial Collars", serialisedCollarsMessage);
+				#endregion
+
+				#region LastFiles
+				List<Messages.File> msgFiles = new List<Messages.File>();
+				DirectoryInfo dir = new DirectoryInfo(CustomPaths.GetDownloadPath());
+				foreach (DirectoryInfo di in dir.GetDirectories())
+				{
+					FileInfo fi = di.GetFiles().OrderByDescending(f => f.CreationTime).FirstOrDefault();
+					if (fi != null)
+					{
+						Messages.File msgfi = new Messages.File
+						{
+							Filename = fi.Name,
+							Type = CustomPaths.GetType(di.Name)
+						};
+						msgFiles.Add(msgfi);
+					}
+				}
+				var filesmsg = new CustomWebSocketMessage
+				{
+					MessagDateTime = DateTime.Now,
+					Type = WSMessageType.Files,
+					Text = JsonConvert.SerializeObject(msgFiles),
+					UserId = CustomWebSocketMessage.SystemUserId
+				};
+
+				string serialisedFilesMessage = JsonConvert.SerializeObject(filesmsg);
+				log.Info("Last Files: " + serialisedFilesMessage);
+				byte[] filesbytes = Encoding.ASCII.GetBytes(serialisedFilesMessage);
+				await webSocket.SendAsync(new ArraySegment<byte>(filesbytes, 0, filesbytes.Length), WebSocketMessageType.Text, true, CancellationToken.None);
+
+				LogDeviceActivity(dbContext, userWebSocket.DeviceId, "Last Files", serialisedFilesMessage);
 				#endregion
 			}
 			catch (Exception e)
