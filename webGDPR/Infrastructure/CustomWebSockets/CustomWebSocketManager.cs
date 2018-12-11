@@ -49,7 +49,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 					string username = context.Request.Query["u"];
 					string password = context.Request.Query["p"];
                     string deviceId = context.Request.Query["g"];
-                    deviceId = deviceId.Replace("\"", "");
+                    deviceId = deviceId?.Replace("\"", "");
 
 					if (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password))
 					{
