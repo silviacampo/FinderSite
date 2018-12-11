@@ -38,6 +38,13 @@ namespace webGDPR.Infrastructure
 			return type;
 		}
 
+		public static string GetDownloadURL(string type, string filename) {
+			return $"/device/download?type={GetType(type)}&filename={filename}";
+				}
+		public static string GetDownloadURL(int type, string filename)
+		{
+			return $"/device/download?type={type}&filename={filename}";
+		}
 		public static string GetUserPath(string UserId)
 		{
 			return Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "user", UserId);

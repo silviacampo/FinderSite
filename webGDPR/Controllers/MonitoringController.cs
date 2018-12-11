@@ -161,8 +161,8 @@ namespace webGDPR.Controllers
 				using (var stream = new FileStream(path, FileMode.Create))
 				{
 					await model.File.CopyToAsync(stream);
-					string localUrl = $"/device/download?type={model.Type}&filename={filefullname}";
-					await _webSocketMessageHandler.SendDownloadFile(localUrl, _wsFactory, _context);
+					string localUrl = CustomPaths.GetDownloadURL(model.Type, filefullname);
+					await _webSocketMessageHandler.SendDownloadFile(new List<string> { localUrl }, _wsFactory, _context);
 				}
 
 				model.Version = string.Empty;
@@ -174,8 +174,8 @@ namespace webGDPR.Controllers
 
 		public async Task<IActionResult> SendDownloadAsync(string type, string filename ) {
 			
-			string localUrl = $"/device/download?type={CustomPaths.GetType(type)}&filename={filename}";
-			await _webSocketMessageHandler.SendDownloadFile(localUrl, _wsFactory, _context);
+			string localUrl = CustomPaths.GetDownloadURL(type, filename);
+			await _webSocketMessageHandler.SendDownloadFile(new List<string> { localUrl }, _wsFactory, _context);
 			return RedirectToAction(nameof(Upload));
 		}
 

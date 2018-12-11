@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Threading;
@@ -15,8 +16,6 @@ namespace webGDPR.Infrastructure
 		public const string url = "http://offline-live1.services.u-blox.com/GetOfflineData.ashx?token=Tdw1rYjjLES8m8cObGyfiA;gnss=gps,glo;alm=gps,glo;period=1;resolution=2";
 
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
-		public const string localUrl = "/device/download?type=1&filename=";
 
 		ICustomWebSocketMessageHandler _webSocketMessageHandler;
 		ICustomWebSocketFactory _wsFactory;
@@ -78,7 +77,7 @@ namespace webGDPR.Infrastructure
 			log.Info("GPSFileService - Writing File");
 			await File.WriteAllBytesAsync(path, filebytes);
 			log.Info("GPSFileService - Send Message to devices");
-			await _webSocketMessageHandler.SendDownloadFile(localUrl + filename, _wsFactory, _dbContext);
+			await _webSocketMessageHandler.SendDownloadFile(new List<string> { CustomPaths.GetDownloadURL(0, filename) }, _wsFactory, _dbContext);
 			log.Info("GPSFileService - Download Finished");
 
 		}

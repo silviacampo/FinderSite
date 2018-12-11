@@ -91,25 +91,21 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 				#endregion
 
 				#region LastFiles
-				List<Messages.File> msgFiles = new List<Messages.File>();
+				List<string> msgFiles = new List<string>();
 				DirectoryInfo dir = new DirectoryInfo(CustomPaths.GetDownloadPath());
 				foreach (DirectoryInfo di in dir.GetDirectories())
 				{
 					FileInfo fi = di.GetFiles().OrderByDescending(f => f.CreationTime).FirstOrDefault();
 					if (fi != null)
 					{
-						Messages.File msgfi = new Messages.File
-						{
-							Filename = fi.Name,
-							Type = CustomPaths.GetType(di.Name)
-						};
-						msgFiles.Add(msgfi);
+						string filepath = CustomPaths.GetDownloadURL(di.Name, fi.Name);
+						msgFiles.Add(filepath);
 					}
 				}
 				var filesmsg = new CustomWebSocketMessage
 				{
 					MessagDateTime = DateTime.Now,
-					Type = WSMessageType.Files,
+					Type = WSMessageType.DownloadFile,
 					Text = JsonConvert.SerializeObject(msgFiles),
 					UserId = CustomWebSocketMessage.SystemUserId
 				};
@@ -420,13 +416,13 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 
 		}
 
-		public async Task SendDownloadFile(string url, ICustomWebSocketFactory wsFactory, ApplicationDbContext dbContext)
+		public async Task SendDownloadFile(List<string> msgFiles, ICustomWebSocketFactory wsFactory, ApplicationDbContext dbContext)
 		{
 			var msg = new CustomWebSocketMessage
 			{
 				MessagDateTime = DateTime.Now,
 				Type = WSMessageType.DownloadFile,
-				Text = url,
+				Text = JsonConvert.SerializeObject(msgFiles),
 				UserId = CustomWebSocketMessage.SystemUserId
 			};
 
