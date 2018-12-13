@@ -114,6 +114,65 @@
 		</a>
 	</div>
 
+	<div class="col-md-12">
+		<h2>Modes</h2>
+		<form asp-action="Details" method="get">
+			<div class="form-actions no-color">
+				<p>
+					Find:
+					<input type="text" name="SearchString2" value="@Model.CurrentFilterMode" />
+					<input type="submit" value="Search" class="btn btn-default" /> |
+					<a asp-action="Details">Back to full List</a>
+				</p>
+			</div>
+		</form>
+		<table class="table">
+			<thead>
+				<tr>
+					<th scope="col">CreationDate</th>
+					<th scope="col">Type</th>
+					<th scope="col">StartDate</th>
+					<th scope="col">EndDate</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (webGDPR.Models.PetMode dl in Model.PetModes)
+				{
+					<tr>
+						<td>@dl.CreationDate.ToLocalTime()</td>
+						<td>@dl.Type.ToString()</td>
+						<td>@dl.StartDate.ToLocalTime()</td>
+						<td>
+							@if (@dl.EndDate.Year != 1)
+							{
+								@dl.EndDate.ToLocalTime()
+							}
+
+						</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+		@{
+			var prevDisabled2 = !Model.PetModes.HasPreviousPage ? "disabled" : "";
+			var nextDisabled2 = !Model.PetModes.HasNextPage ? "disabled" : "";
+		}
+
+		<a asp-action="Details"
+		   asp-route-pageIndex2="@(Model.PetModes.PageIndex - 1)"
+		   asp-route-currentFilter2="@Model.CurrentFilterMode"
+		   class="btn btn-default @prevDisabled2">
+			Previous
+		</a>
+		<a asp-action="Details"
+		   asp-route-pageIndex2="@(Model.PetModes.PageIndex + 1)"
+		   asp-route-currentFilter2="@Model.CurrentFilterMode"
+		   class="btn btn-default @nextDisabled2">
+			Next
+		</a>
+	</div>
+
+
 	<div>
 		<a asp-action="Edit" asp-route-id="@Model.PetId">Edit</a> |
 		<a asp-action="Index">Back to List</a>

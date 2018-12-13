@@ -34,5 +34,8 @@ namespace webGDPR.ViewModels
 		public string CurrentFilter { get; set; }
 
 		public bool EmergencyOn { get; set; }
+
+		public PaginatedList<PetMode> PetModes { get; internal set; }
+		public string CurrentFilterMode { get; internal set; }
 	}
 }

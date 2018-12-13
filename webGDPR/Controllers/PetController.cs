@@ -68,14 +68,14 @@ namespace webGDPR.Controllers
 		}
 
 		// GET: Pet/Details/5
-		public async Task<IActionResult> Details(string id, string searchString, string currentFilter, int? pageIndex)
+		public async Task<IActionResult> Details(string id, string searchString, string currentFilter, int? pageIndex, string searchString2, string currentFilter2, int? pageIndex2)
 		{
 			if (id == null)
 			{
 				return NotFound();
 			}
 
-			var pet = await _context.Pet.AsNoTracking().Include(c => c.LastTrackingInfo).Include(b => b.LastCollar).ThenInclude(c => c.Collar)
+			var pet = await _context.Pet.AsNoTracking().Include(c => c.LastTrackingInfo).Include(m=>m.LastMode).Include(b => b.LastCollar).ThenInclude(c => c.Collar)
 				.FirstOrDefaultAsync(m => m.PetId == id && !m.Deleted);
 			if (pet == null)
 			{
@@ -107,6 +107,26 @@ namespace webGDPR.Controllers
 			int pageSize = 10;
 			model.PetTrackingInfos = await PaginatedList<PetTrackingInfo>.CreateAsync(
 				_context.PetTrackingInfo.Where(s => s.PetId == id && (s.Latitude.ToString().Contains(searchString) || s.Longitude.ToString().Contains(searchString))).Include(d=>d.Collar).OrderByDescending(d => d.CreationDate).AsNoTracking(), pageIndex ?? 1, pageSize);
+
+			if (searchString2 != null)
+			{
+				pageIndex2 = 1;
+			}
+			else
+			{
+				if (currentFilter2 == null)
+				{
+					searchString2 = string.Empty;
+				}
+				else
+				{
+					searchString2 = currentFilter2;
+				}
+			}
+			model.CurrentFilterMode = searchString2;
+
+			model.PetModes = await PaginatedList<PetMode>.CreateAsync(
+				_context.PetMode.Where(s => s.PetId == id && (s.Type.ToString().Contains(searchString2) || s.CreationDate.ToString().Contains(searchString2))).OrderByDescending(d => d.CreationDate).AsNoTracking(), pageIndex2 ?? 1, pageSize);
 			return View(model);
 		}
 
