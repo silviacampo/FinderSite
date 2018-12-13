@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using webGDPR.Data;
 
 namespace webGDPR.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20181213180725_petmode")]
+    partial class petmode
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -367,8 +369,6 @@ namespace webGDPR.Data.Migrations
 
                     b.Property<string>("LastCollarId");
 
-                    b.Property<string>("LastModeId");
-
                     b.Property<string>("LastTrackingInfoId");
 
                     b.Property<string>("Name");
@@ -382,8 +382,6 @@ namespace webGDPR.Data.Migrations
                     b.HasKey("PetId");
 
                     b.HasIndex("LastCollarId");
-
-                    b.HasIndex("LastModeId");
 
                     b.HasIndex("LastTrackingInfoId");
 
@@ -422,6 +420,8 @@ namespace webGDPR.Data.Migrations
                 {
                     b.Property<string>("PetModeId")
                         .ValueGeneratedOnAdd();
+
+                    b.Property<string>("BaseId");
 
                     b.Property<string>("CollarId");
 
@@ -586,10 +586,6 @@ namespace webGDPR.Data.Migrations
                     b.HasOne("webGDPR.Models.PetCollar", "LastCollar")
                         .WithMany()
                         .HasForeignKey("LastCollarId");
-
-                    b.HasOne("webGDPR.Models.PetMode", "LastMode")
-                        .WithMany()
-                        .HasForeignKey("LastModeId");
 
                     b.HasOne("webGDPR.Models.PetTrackingInfo", "LastTrackingInfo")
                         .WithMany()

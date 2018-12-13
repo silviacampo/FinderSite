@@ -117,10 +117,19 @@
 							@Html.DisplayFor(modelItem => item.UserId)
 						</td>*@
 					<td>
+						@if (item.EmergencyOn)
+						{
+							<a class="btn btn-danger active" asp-action="EmergencyOff" asp-route-id="@item.PetId">Lost</a>
+						}
+						else
+						{
+							<a class="btn btn-default" asp-action="EmergencyOn" asp-route-id="@item.PetId">Lost</a>
+						}
 						<a asp-action="Edit" asp-route-id="@item.PetId">Edit</a> |
 						<a asp-action="Details" asp-route-id="@item.PetId">Details</a> |
-						@if (item.Latitude != default(double) || item.Longitude != default(double)) {
-					<a asp-action="Track" asp-route-id="@item.PetId">Track</a>
+						@if (item.Latitude != default(double) || item.Longitude != default(double))
+						{
+							<a asp-action="Track" asp-route-id="@item.PetId">Track</a>
 						}
 						|
 						<a asp-action="Delete" asp-route-id="@item.PetId">Delete</a>

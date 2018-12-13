@@ -30,9 +30,15 @@ namespace webGDPR.Models
 		[ForeignKey("LastTrackingInfoId")]
 		public PetTrackingInfo LastTrackingInfo { get; set; }
 
+		public string LastModeId { get; set; }
+
+		[ForeignKey("LastModeId")]
+		public PetMode LastMode { get; set; }
+
 		public bool Deleted { get; set; }
 
 		public string UserId { get; set; }
 		public List<PetTrackingInfo> TrackingInfos { get; set; }
+
 	}
 }

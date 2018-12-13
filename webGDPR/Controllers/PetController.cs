@@ -49,13 +49,18 @@ namespace webGDPR.Controllers
 			List<PetViewModel> model = new List<PetViewModel>();
 			string UserId = _context.User.FirstOrDefault(u => u.OwnerID == _userManager.GetUserId(User)).UserID;
 
-			List<Pet> pets = await _context.Pet.AsNoTracking().Where(b => b.UserId == UserId && !b.Deleted).Include(c => c.LastTrackingInfo).Include(b => b.LastCollar).ThenInclude(c => c.Collar).ToListAsync();
+			List<Pet> pets = await _context.Pet.AsNoTracking().Where(b => b.UserId == UserId && !b.Deleted).Include(c => c.LastTrackingInfo).Include(m=>m.LastMode).Include(b => b.LastCollar).ThenInclude(c => c.Collar).ToListAsync();
 			foreach (var c in pets)
 			{
 				PetViewModel cvm = _mapper.Map<PetViewModel>(new Tuple<Pet, PetTrackingInfo>(c, c.LastTrackingInfo));
 				if (c.LastCollar != null && c.LastCollar.Collar != null)
 				{
 					cvm.CollarName = c.LastCollar.Collar.Name;
+				}
+				cvm.EmergencyOn = false;
+				if (c.LastMode != null && c.LastMode.Type == PetModeTypes.Emergency && c.LastMode.IsActive)
+				{
+					cvm.EmergencyOn = true;
 				}
 				model.Add(cvm);
 			}
@@ -412,6 +417,66 @@ namespace webGDPR.Controllers
 			}
 
 			return RedirectToAction(nameof(Index));
+		}
+
+		public async Task<IActionResult> EmergencyOn(string id) {
+			bool result = await SetModeAsync(PetModeTypes.Emergency, true, id);
+			if (!result)
+			{
+				return NotFound();
+			}
+			return RedirectToAction(nameof(Index));
+		}
+
+		public async Task<IActionResult> EmergencyOff(string id)
+		{
+			bool result =await SetModeAsync(PetModeTypes.Emergency, false, id);
+			if (!result) {
+				return NotFound();
+			}
+			return RedirectToAction(nameof(Index));
+		}
+
+		private async Task<bool> SetModeAsync(PetModeTypes type, bool activate, string id)
+		{
+			Pet pet = _context.Pet.Where(p=>p.PetId == id).Include(b => b.LastCollar).FirstOrDefault();
+			if (pet == null)
+			{
+				return false;
+			}
+			else {
+				try
+				{
+					if (activate)
+					{
+						PetMode pm = new PetMode()
+						{
+							PetId = pet.PetId,
+							CollarId = pet.LastCollar.CollarId,
+							Type = type,
+							CreationDate = DateTime.Now,
+							StartDate = DateTime.Now,
+							UserId = pet.UserId,
+							IsActive = true
+						};
+						_context.Add(pm);
+						pet.LastModeId = pm.PetModeId;
+						_context.Update(pet);
+					}
+					else
+					{
+						PetMode pm = _context.PetMode.Find(pet.LastModeId);
+						pm.IsActive = false;
+						pm.EndDate = DateTime.Now;
+						_context.Update(pm);
+					}
+					await _context.SaveChangesAsync();
+				}
+				catch (Exception e) {
+					var test = e.Message;
+				}
+				return true;
+			}
 		}
 
 		[HttpPost]

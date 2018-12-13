@@ -32,5 +32,7 @@ namespace webGDPR.ViewModels
 		public PaginatedList<PetTrackingInfo> PetTrackingInfos { get; internal set; }
 
 		public string CurrentFilter { get; set; }
+
+		public bool EmergencyOn { get; set; }
 	}
 }

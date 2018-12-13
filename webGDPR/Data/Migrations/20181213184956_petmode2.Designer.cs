@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using webGDPR.Data;
 
 namespace webGDPR.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20181213184956_petmode2")]
+    partial class petmode2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -587,7 +589,7 @@ namespace webGDPR.Data.Migrations
                         .WithMany()
                         .HasForeignKey("LastCollarId");
 
-                    b.HasOne("webGDPR.Models.PetMode", "LastMode")
+                    b.HasOne("webGDPR.Models.PetTrackingInfo", "LastMode")
                         .WithMany()
                         .HasForeignKey("LastModeId");
 
