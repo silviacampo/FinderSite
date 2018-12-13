@@ -135,21 +135,32 @@ namespace webGDPR.Controllers
 			var result = await _signInManager.PasswordSignInAsync(username, password, false, lockoutOnFailure: true);
 			if (result.Succeeded) {
 				var user = await _context.User.FirstOrDefaultAsync(m => m.Name == username);
-				var collar = await _context.Collar.FirstOrDefaultAsync(m => m.UserId == user.UserID && m.CollarNumber == collarnumber);
-				var petCollar = await _context.PetCollar.FirstOrDefaultAsync(m => m.IsActive && m.CollarId == collar.CollarId);
-
-				var pet = await _context.Pet.Include(b => b.LastTrackingInfo)
-				.FirstOrDefaultAsync(m => m.PetId == petCollar.PetId);
-				if (pet == null)
+				if (user != null)
 				{
+					var collar = await _context.Collar.FirstOrDefaultAsync(m => m.UserId == user.UserID && m.CollarNumber == collarnumber);
+					if (collar != null)
+					{
+						var petCollar = await _context.PetCollar.FirstOrDefaultAsync(m => m.IsActive && m.CollarId == collar.CollarId);
+						if (petCollar != null)
+						{
+							var pet = await _context.Pet.Include(b => b.LastTrackingInfo).FirstOrDefaultAsync(m => m.PetId == petCollar.PetId);
+							if (pet == null)
+							{
+								return NotFound();
+							}
+							if (pet.LastTrackingInfo == null)
+							{
+								return NotFound(); //create a custom page to show that this pet is not tracking any information
+							}
+							pet.TrackingInfos = await _context.PetTrackingInfo.Where(t => t.PetId == petCollar.PetId).Take(10).ToListAsync();
+
+							return View(pet);
+						}
+						return NotFound();
+					}
 					return NotFound();
 				}
-				if (pet.LastTrackingInfo == null) {
-					return NotFound(); //create a custom page to show that this pet is not tracking any information
-				}
-				pet.TrackingInfos = await _context.PetTrackingInfo.Where(t => t.PetId == petCollar.PetId).Take(10).ToListAsync();
-				
-				return View(pet);
+				return NotFound();
 			}
 			return NotFound();
 		}
