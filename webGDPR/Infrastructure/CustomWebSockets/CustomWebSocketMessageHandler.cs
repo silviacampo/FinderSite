@@ -632,5 +632,24 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 			byte[] bytes = Encoding.ASCII.GetBytes(serialisedMessage);
 			await userWebSocket.WebSocket.SendAsync(new ArraySegment<byte>(bytes, 0, bytes.Length), WebSocketMessageType.Text, true, CancellationToken.None);
 		}
-	}
+
+		public async Task SendSwitchModeAsync(byte collarNumber, PetModeTypes mode, string username, ICustomWebSocketFactory wsFactory)
+		{
+			Messages.ConfigMode cm = Packet.PacketHelper.BuildMode(collarNumber, mode);
+			string serialisedText = JsonConvert.SerializeObject(cm);
+			var msg = new CustomWebSocketMessage
+			{
+				MessagDateTime = DateTime.Now,
+				Type = WSMessageType.SwitchMode,
+				Text = serialisedText,
+				UserId = CustomWebSocketMessage.SystemUserId
+			};
+
+			string serialisedMessage = JsonConvert.SerializeObject(msg);
+			log.Info(serialisedMessage);
+			byte[] bytes = Encoding.ASCII.GetBytes(serialisedMessage);
+			await BroadcastGroup(bytes, username, wsFactory);
+		}
+
+}
 }

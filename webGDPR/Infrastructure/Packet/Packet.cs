@@ -47,8 +47,8 @@ namespace webGDPR.Infrastructure.Packet
 					return DataConverter.Serialize((QueryStruct) Data);
 				case PacketType.Acknowledge:
 					return DataConverter.Serialize((AcknowledgeStruct)Data);
-				case PacketType.CollarMode:
-					return DataConverter.Serialize((CollarModeStruct)Data);
+				case PacketType.SwitchMode:
+					return DataConverter.Serialize((SwitchModeStruct)Data);
 				case PacketType.PacketReceived:
 					return DataConverter.Serialize((PacketReceivedStruct)Data);
 				case PacketType.UnitName:
@@ -98,8 +98,8 @@ namespace webGDPR.Infrastructure.Packet
 				case PacketType.Acknowledge:
 					Data = DataConverter.Deserialize<AcknowledgeStruct>(b);
 					break;
-				case PacketType.CollarMode:
-					Data = DataConverter.Deserialize<CollarModeStruct>(b);
+				case PacketType.SwitchMode:
+					Data = DataConverter.Deserialize<SwitchModeStruct>(b);
 					break;
 				case PacketType.PacketReceived:
 					Data = DataConverter.Deserialize<PacketReceivedStruct>(b);
@@ -283,11 +283,11 @@ namespace webGDPR.Infrastructure.Packet
 		FileData = 8,
 		Query = 9,
 		Acknowledge = 10,
-		CollarMode = 11,
+		SwitchMode = 11,
 		PacketReceived = 12,
 		Loopback = 13,
-        UnitName = 14,
-        FileVersion = 15,
+		UnitName = 14,
+		FileVersion = 15,
 		LastCommand,      //This should always be the last command. Do not use. Only for validation
 	}
 }

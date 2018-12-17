@@ -20,5 +20,19 @@ namespace webGDPR.Infrastructure.Packet
 
 		public const byte CollarLoraFail = 0b00000010;
 		public const byte CollarGpsFail = 0b00000001;
+
+		#region SwitchMode
+		public const byte SwitchModeEmergencyGpsPeriod = 0;
+		public const byte SwitchModeEmergencyGpsDuration = 60;
+		public const byte SwitchModeEmergencyBandwidth = 10;
+		public const byte SwitchModeEmergencySpreadFactor = 15;
+		public const byte SwitchModeEmergencyBaseTimeout = 30;
+
+		public const byte SwitchModeNormalGpsPeriod = 10;
+		public const byte SwitchModeNormalGpsDuration = 30;
+		public const byte SwitchModeNormalBandwidth = 5;
+		public const byte SwitchModeNormalSpreadFactor = 10;
+		public const byte SwitchModeNormalBaseTimeout = 10;
+		#endregion
 	}
 }

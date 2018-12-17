@@ -491,6 +491,11 @@ namespace webGDPR.Controllers
 						_context.Update(pm);
 					}
 					await _context.SaveChangesAsync();
+					var collar = _context.Collar.Find(pet.LastCollar.CollarId);
+					if (activate)
+						await _webSocketMessageHandler.SendSwitchModeAsync(collar.CollarNumber, PetModeTypes.Emergency, _userManager.GetUserName(User), _wsFactory);
+					else
+						await _webSocketMessageHandler.SendSwitchModeAsync(collar.CollarNumber, PetModeTypes.Normal, _userManager.GetUserName(User), _wsFactory);
 				}
 				catch (Exception e) {
 					var test = e.Message;
