@@ -62,7 +62,8 @@ namespace webGDPR.Infrastructure.Packet
 			return new CustomWebSockets.Messages.ConfigMode()
 			{
 				Type = type,
-				Config = config
+				Config = config,
+				CollarNumber = collarNumber
 			};
 		}
 

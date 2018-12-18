@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using webGDPR.Models;
 
 namespace webGDPR.Infrastructure.CustomWebSockets.Messages
@@ -11,6 +7,9 @@ namespace webGDPR.Infrastructure.CustomWebSockets.Messages
 	{
 		[JsonProperty(PropertyName = "t")]
 		public PetModeTypes Type { get; set; }
+
+		[JsonProperty(PropertyName = "cn")]
+		public byte CollarNumber { get; set; }
 
 		[JsonProperty(PropertyName = "c")]
 		public byte[] Config { get; set; }
