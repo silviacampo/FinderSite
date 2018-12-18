@@ -21,16 +21,16 @@
 			</thead>
 			<tbody>
 				@foreach (webGDPR.Infrastructure.CustomWebSockets.CustomWebSocket ws in Model.WebSockets)
-	{
-			<tr>
-				<td>@ws.Username</td>
-				<td>@ws.Guid</td>
-				<td>@ws.DeviceId</td>
-				<td>@ws.IP</td>
-				<td>@ws.WebSocket.State</td>
-				<td>@ws.CreationDate.ToLocalTime()</td>
-			</tr>
-}
+				{
+					<tr>
+						<td>@ws.Username</td>
+						<td>@ws.Guid</td>
+						<td>@ws.DeviceId</td>
+						<td>@ws.IP</td>
+						<td>@ws.WebSocket.State</td>
+						<td>@DateTime.SpecifyKind(ws.CreationDate, DateTimeKind.Utc).ToLocalTime()</td>
+					</tr>
+				}
 			</tbody>
 		</table>
 	</div>
@@ -60,7 +60,7 @@
 			{
 				<tr>
 					<td>@dl.DeviceId</td>
-					<td>@dl.CreationDate.ToLocalTime()</td>
+					<td>@DateTime.SpecifyKind(dl.CreationDate, DateTimeKind.Utc).ToLocalTime()</td>
 					<td>@dl.Reason</td>
 					<td width="300px"><span style="max-width:150px;white-space:normal">@dl.Message</span></td>
 				</tr>

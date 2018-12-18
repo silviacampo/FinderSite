@@ -123,7 +123,7 @@
 				@foreach (webGDPR.Models.BaseStatus dl in Model.BaseStatus)
 				{
 				<tr>
-					<td>@dl.CreationDate.ToLocalTime()</td>
+					<td>@DateTime.SpecifyKind(dl.CreationDate, DateTimeKind.Utc).ToLocalTime()</td>
 					<td>@dl.IsConnected</td>
 					<td>@if (dl.DeviceConnectedTo != null) { @dl.DeviceConnectedTo.GetName }</td>
 					<td>@dl.IsPlugged</td>

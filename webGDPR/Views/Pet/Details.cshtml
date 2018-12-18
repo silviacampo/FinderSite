@@ -87,7 +87,7 @@
 				@foreach (webGDPR.Models.PetTrackingInfo dl in Model.PetTrackingInfos)
 				{
 					<tr>
-						<td>@dl.CreationDate.ToLocalTime()</td>
+						<td>@DateTime.SpecifyKind(dl.CreationDate, DateTimeKind.Utc).ToLocalTime()</td>
 						<td>@dl.Latitude</td>
 						<td>@dl.Longitude</td>
 						<td>@dl.Collar.Name</td>
@@ -139,13 +139,13 @@
 				@foreach (webGDPR.Models.PetMode dl in Model.PetModes)
 				{
 					<tr>
-						<td>@dl.CreationDate.ToLocalTime()</td>
+						<td>@DateTime.SpecifyKind(dl.CreationDate, DateTimeKind.Utc).ToLocalTime()</td>
 						<td>@dl.Type.ToString()</td>
-						<td>@dl.StartDate.ToLocalTime()</td>
+						<td>@DateTime.SpecifyKind(dl.StartDate, DateTimeKind.Utc).ToLocalTime()</td>
 						<td>
 							@if (@dl.EndDate.Year != 1)
 							{
-								@dl.EndDate.ToLocalTime()
+								@DateTime.SpecifyKind(dl.EndDate, DateTimeKind.Utc).ToLocalTime()
 							}
 
 						</td>
