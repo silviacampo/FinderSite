@@ -139,7 +139,7 @@ $(document).ready(function () {
 
   var getTrackStyle = function (el) {
     var curVal = el.value,
-      val = (curVal - 1) * 16.666666667,
+      val = 10 + (curVal - 1) * 20,
       style = '';
 
     // Set active label
