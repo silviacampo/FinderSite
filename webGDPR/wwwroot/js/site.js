@@ -167,7 +167,7 @@ $(document).ready(function () {
   $('.range-labels li').on('click', function () {
     var index = $(this).index();
 
-    $rangeInput.val(index + 1).trigger('input');
+    $rangeInput.val(index + 2).trigger('input');
 
   });
 
