@@ -53,7 +53,7 @@
 			<div class="form-group">
 				<label asp-for="DefaultMode" class="control-label"></label>
 				<div class="range">
-					<input asp-for="DefaultMode" type="range" min="2" max="6" step="1" value="DefaultMode">
+					<input asp-for="DefaultMode" type="range" min="2" max="6" step="1" value="@((byte)Model.DefaultMode)">
 				</div>
 				<ul class="range-labels">
 					<li class="@((Model.DefaultMode == PetModeTypes.Young) ? "active selected" : "")">Young</li>
