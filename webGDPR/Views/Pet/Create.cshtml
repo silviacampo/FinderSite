@@ -49,11 +49,25 @@
 				<input asp-for="HealthComments" class="form-control" />
 				<span asp-validation-for="HealthComments" class="text-danger"></span>
 			</div>
+			<div class="form-group">
+				<label asp-for="DefaultMode" class="control-label"></label>
+				<div class="range">
+					<input asp-for="DefaultMode" type="range" min="2" max="6" step="1" value="3">
+				</div>
+				<ul class="range-labels">					
+					<li>Young</li>
+					<li>Active</li>
+					<li class="active selected">Regular</li>
+					<li>Lazy</li>
+					<li>Mature</li>
+				</ul>
+				<span asp-validation-for="DefaultMode" class="text-danger"></span>
+			</div>
 			@*<div class="form-group">
-				<label asp-for="UserId" class="control-label"></label>
-				<input asp-for="UserId" class="form-control" />
-				<span asp-validation-for="UserId" class="text-danger"></span>
-			</div>*@
+			<label asp-for="UserId" class="control-label"></label>
+			<input asp-for="UserId" class="form-control" />
+			<span asp-validation-for="UserId" class="text-danger"></span>
+		</div>*@
 			<div class="form-group">
 				<input type="submit" value="Create" class="btn btn-default" />
 			</div>
@@ -71,7 +85,7 @@
 					<label asp-for="ImageFileName" class="control-label"></label>
 					<input type="file" multiple="multiple" name="imagesFiles" asp-for="ImageFileName" class="form-control" />
 					<span asp-validation-for="ImageFileName" class="text-danger"></span>
-					<input type="button" value="Add" class="btn btn-default" /> <!--onclick: /Home/AddFileIndex-->
+					<input type="button" value="Add" class="btn btn-default" />
 				</div>
 				<div class="form-group">
 					<label asp-for="PageFileName" class="control-label"></label>

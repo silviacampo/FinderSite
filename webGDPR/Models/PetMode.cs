@@ -24,11 +24,12 @@ namespace webGDPR.Models
 	}
 
 	public enum PetModeTypes {
-		Normal = 0,
+		None = 0,
 		Emergency = 1,
-		VeryActive = 2,
+		Young = 2,
 		Active = 3,
-		Lazy = 4,
-		VeryLazy = 5
+		Regular = 4,
+		Lazy = 5,
+		Mature = 6
 	}
 }

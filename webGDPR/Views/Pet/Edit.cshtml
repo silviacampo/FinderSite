@@ -50,6 +50,20 @@
 				<textarea asp-for="HealthComments" class="form-control"></textarea>
 				<span asp-validation-for="HealthComments" class="text-danger"></span>
 			</div>
+			<div class="form-group">
+				<label asp-for="DefaultMode" class="control-label"></label>
+				<div class="range">
+					<input asp-for="DefaultMode" type="range" min="2" max="6" step="1" value="DefaultMode">
+				</div>
+				<ul class="range-labels">
+					<li class="@((Model.DefaultMode == PetModeTypes.Young) ? "active selected" : "")">Young</li>
+					<li class="@((Model.DefaultMode == PetModeTypes.Active) ? "active selected" : "")">Active</li>
+					<li class="@((Model.DefaultMode == PetModeTypes.Regular) ? "active selected" : "")">Regular</li>
+					<li class="@((Model.DefaultMode == PetModeTypes.Lazy) ? "active selected" : "")">Lazy</li>
+					<li class="@((Model.DefaultMode == PetModeTypes.Mature) ? "active selected" : "")">Mature</li>
+				</ul>
+				<span asp-validation-for="DefaultMode" class="text-danger"></span>
+			</div>
 			@*<div class="form-group">
 			<label asp-for="UserId" class="control-label"></label>
 			<input asp-for="UserId" class="form-control" />

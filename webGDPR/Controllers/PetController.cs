@@ -217,7 +217,7 @@ namespace webGDPR.Controllers
 		// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Create([Bind("PetId,Name,Type,Breeding,Color,Age,HealthComments,CollarId")] EditPetViewModel pet, IList<IFormFile> imagesFiles, string pageContent)
+		public async Task<IActionResult> Create([Bind("PetId,Name,Type,Breeding,Color,Age,HealthComments,CollarId,DefaultMode")] EditPetViewModel pet, IList<IFormFile> imagesFiles, string pageContent)
 		{
 			if (ModelState.IsValid)
 			{
@@ -313,7 +313,7 @@ namespace webGDPR.Controllers
 		// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Edit(string id, [Bind("PetId,Name,Type,Breeding,Color,Age,HealthComments,CollarId")] EditPetViewModel pet, IList<IFormFile> imagesFiles, string pageContent)
+		public async Task<IActionResult> Edit(string id, [Bind("PetId,Name,Type,Breeding,Color,Age,HealthComments,CollarId,DefaultMode")] EditPetViewModel pet, IList<IFormFile> imagesFiles, string pageContent)
 		{
 			if (id != pet.PetId)
 			{
@@ -495,7 +495,7 @@ namespace webGDPR.Controllers
 					if (activate)
 						await _webSocketMessageHandler.SendSwitchModeAsync(collar.CollarNumber, type, _userManager.GetUserName(User), _wsFactory);
 					else
-						await _webSocketMessageHandler.SendSwitchModeAsync(collar.CollarNumber, PetModeTypes.Normal, _userManager.GetUserName(User), _wsFactory);
+						await _webSocketMessageHandler.SendSwitchModeAsync(collar.CollarNumber, PetModeTypes.None, _userManager.GetUserName(User), _wsFactory);
 				}
 				catch (Exception e) {
 					var test = e.Message;

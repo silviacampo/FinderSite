@@ -35,6 +35,8 @@ namespace webGDPR.Models
 		[ForeignKey("LastModeId")]
 		public PetMode LastMode { get; set; }
 
+		public PetModeTypes DefaultMode { get; set; } //int matching the enum PetModeTypes 2 a 5
+
 		public bool Deleted { get; set; }
 
 		public string UserId { get; set; }

@@ -53,12 +53,27 @@
 			<dd>
 				@Html.DisplayFor(model => model.HealthComments)
 			</dd>
+			<dt>
+				@Html.DisplayNameFor(model => model.DefaultMode)
+			</dt>
+			<dd>
+				<div class="range">
+					<input asp-for="DefaultMode" type="range" min="2" max="6" step="1" value="DefaultMode">
+				</div>
+				<ul class="range-labels">
+					<li class="@((Model.DefaultMode == PetModeTypes.Young) ? "active selected" : "")">Young</li>
+					<li class="@((Model.DefaultMode == PetModeTypes.Active) ? "active selected" : "")">Active</li>
+					<li class="@((Model.DefaultMode == PetModeTypes.Regular) ? "active selected" : "")">Regular</li>
+					<li class="@((Model.DefaultMode == PetModeTypes.Lazy) ? "active selected" : "")">Lazy</li>
+					<li class="@((Model.DefaultMode == PetModeTypes.Mature) ? "active selected" : "")">Mature</li>
+				</ul>
+			</dd>
 			@*<dt>
-					@Html.DisplayNameFor(model => model.UserId)
-				</dt>
-				<dd>
-					@Html.DisplayFor(model => model.UserId)
-				</dd>*@
+			@Html.DisplayNameFor(model => model.UserId)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.UserId)
+		</dd>*@
 		</dl>
 	</div>
 

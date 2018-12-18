@@ -21,5 +21,9 @@ namespace webGDPR.Models
 		public IEnumerable<SelectListItem> Collars { get; set; }
 
 		public string UserId { get; set; }
+
+		public PetModeTypes DefaultMode { get; set; }
+
+		public IEnumerable<SelectListItem> Modes { get; set; }
 	}
 }

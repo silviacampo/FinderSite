@@ -40,21 +40,24 @@ namespace webGDPR.Infrastructure.Packet
 				case PetModeTypes.Emergency:
 					config = BuildEmergencyMode(collarNumber);
 					break;
-				case PetModeTypes.Normal:
+				case PetModeTypes.None:
 					config = BuildNormalMode(collarNumber);
+					break;
+				case PetModeTypes.Young:
+					config = BuildVeryActiveMode(collarNumber);
 					break;
 				case PetModeTypes.Active:
 					config = BuildActiveMode(collarNumber);
 					break;
-				case PetModeTypes.Lazy:
-					config = BuildLazyMode(collarNumber);
-					break;
-				case PetModeTypes.VeryActive:
-					config = BuildVeryActiveMode(collarNumber);
-					break;
-				case PetModeTypes.VeryLazy:
+				case PetModeTypes.Regular:
 					config = BuildVeryLazyMode(collarNumber);
 					break;
+				case PetModeTypes.Lazy:
+					config = BuildLazyMode(collarNumber);
+					break;				
+				case PetModeTypes.Mature:
+					config = BuildVeryLazyMode(collarNumber);
+					break;				
 				default:
 					config = new byte[0];
 					break;
