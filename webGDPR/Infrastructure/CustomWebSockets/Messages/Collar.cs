@@ -46,6 +46,10 @@ namespace webGDPR.Infrastructure.CustomWebSockets.Messages
 		[JsonIgnore]
 		public string RadioPercentage {	get	{ return Radio.ToString() + "%"; } }
 
+		[JsonProperty(PropertyName = "l")]
+		[JsonConverter(typeof(BoolConverter))]
+		public bool IsLost { get; set; }
+
 		[JsonIgnore]
 		public string UserId { get; set; }
 	}

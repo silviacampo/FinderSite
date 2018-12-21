@@ -34,28 +34,28 @@ namespace webGDPR.Infrastructure.Packet
 			return bytes;
 		}
 
-		public static CustomWebSockets.Messages.ConfigMode BuildMode(byte collarNumber, PetModeTypes type) {
+		public static CustomWebSockets.Messages.ConfigMode BuildMode(byte collarNumber, ConfigModeTypes type) {
 			byte[] config;
 			switch (type) {
-				case PetModeTypes.Emergency:
+				case ConfigModeTypes.Emergency:
 					config = BuildEmergencyMode(collarNumber);
 					break;
-				case PetModeTypes.None:
+				case ConfigModeTypes.None:
 					config = BuildNormalMode(collarNumber);
 					break;
-				case PetModeTypes.Young:
+				case ConfigModeTypes.Young:
 					config = BuildVeryActiveMode(collarNumber);
 					break;
-				case PetModeTypes.Active:
+				case ConfigModeTypes.Active:
 					config = BuildActiveMode(collarNumber);
 					break;
-				case PetModeTypes.Regular:
+				case ConfigModeTypes.Regular:
 					config = BuildVeryLazyMode(collarNumber);
 					break;
-				case PetModeTypes.Lazy:
+				case ConfigModeTypes.Lazy:
 					config = BuildLazyMode(collarNumber);
 					break;				
-				case PetModeTypes.Mature:
+				case ConfigModeTypes.Mature:
 					config = BuildVeryLazyMode(collarNumber);
 					break;				
 				default:

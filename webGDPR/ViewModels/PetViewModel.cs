@@ -38,6 +38,6 @@ namespace webGDPR.ViewModels
 		public PaginatedList<PetMode> PetModes { get; internal set; }
 		public string CurrentFilterMode { get; internal set; }
 
-		public PetModeTypes DefaultMode { get; set; }
+		public ConfigModeTypes DefaultMode { get; set; }
 	}
 }

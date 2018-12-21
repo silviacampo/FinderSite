@@ -22,7 +22,7 @@ namespace webGDPR.Models
 
 		public string UserId { get; set; }
 
-		public PetModeTypes DefaultMode { get; set; }
+		public ConfigModeTypes DefaultMode { get; set; }
 
 		public IEnumerable<SelectListItem> Modes { get; set; }
 	}

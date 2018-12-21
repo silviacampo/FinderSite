@@ -31,6 +31,15 @@ namespace webGDPR.Infrastructure
 
 			CreateMap<CustomWebSockets.Messages.Collar, Models.Collar>().ReverseMap();
 
+			CreateMap<Models.Collar, CustomWebSockets.Messages.CollarCore>()
+				.ForMember(dest => dest.CollarId, opts => opts.MapFrom(src => src.CollarId))
+				.ForMember(dest => dest.UserId, opts => opts.MapFrom(src => src.UserId))
+				.ForMember(dest => dest.BaseNumber, opts => opts.MapFrom(src => src.BaseNumber))
+				.ForMember(dest => dest.CollarNumber, opts => opts.MapFrom(src => src.CollarNumber))
+				.ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.Name))
+				.ForMember(dest => dest.Description, opts => opts.MapFrom(src => src.Description))
+			.ForMember(dest => dest.IsLost, opts => opts.MapFrom(src=> 0));
+
 			CreateMap<CustomWebSockets.Messages.Collar, Models.CollarStatus>()
 				.ForMember(dest => dest.CollarId, opts => opts.MapFrom(src => src.CollarId))
 				.ForMember(dest => dest.IsConnected, opts => opts.MapFrom(src => src.IsConnected))

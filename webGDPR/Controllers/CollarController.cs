@@ -150,6 +150,7 @@ namespace webGDPR.Controllers
 				}
 				_context.Add(c);
                 await _context.SaveChangesAsync();
+				bool isLost = false;
 				if (collar.PetId != null)
 				{
 					PetCollar pc = new PetCollar
@@ -163,15 +164,21 @@ namespace webGDPR.Controllers
 					};
 					_context.Add(pc);
 
-					var pet = await _context.Pet
+					var pet = await _context.Pet.Include(m => m.LastMode)
 					.FirstOrDefaultAsync(m => m.PetId == collar.PetId && !m.Deleted);
 					pet.LastCollarId = pc.PetCollarId;
 					_context.Update(pet);
 
 					await _context.SaveChangesAsync();
+
+					if (pet.LastMode != null && pet.LastMode.Type == ConfigModeTypes.Emergency && pet.LastMode.IsActive)
+					{
+						isLost = true;
+					}
 				}
 				//send message to connected devices
 				Infrastructure.CustomWebSockets.Messages.Collar co = _mapper.Map<Infrastructure.CustomWebSockets.Messages.Collar>(c);
+				co.IsLost = isLost;
 				await _webSocketMessageHandler.SendCollarAsync(co, _userManager.GetUserName(User), _wsFactory);
 				return RedirectToAction(nameof(Index));
             }
@@ -238,7 +245,7 @@ namespace webGDPR.Controllers
 					await _context.SaveChangesAsync();
 
 					PetCollar currentpet = _context.PetCollar.FirstOrDefault(f => f.CollarId == c.CollarId && f.IsActive);
-
+					bool isLost = false;
 					if (collar.PetId != currentpet.PetId)
 					{
 						currentpet.IsActive = false;
@@ -258,14 +265,20 @@ namespace webGDPR.Controllers
 						cpet.LastCollarId = null;
 						_context.Update(cpet);
 
-						Pet pet = _context.Pet.FirstOrDefault(g => g.PetId == collar.PetId);
+						Pet pet = _context.Pet.Include(m => m.LastMode).FirstOrDefault(g => g.PetId == collar.PetId);
 						pet.LastCollarId = pc.PetCollarId;
 						_context.Update(pet);
 
 						await _context.SaveChangesAsync();
+
+						if (pet.LastMode != null && pet.LastMode.Type == ConfigModeTypes.Emergency && pet.LastMode.IsActive)
+						{
+							isLost = true;
+						}
 					}
 					//send message to connected devices
 					Infrastructure.CustomWebSockets.Messages.CollarCore cc = _mapper.Map<Infrastructure.CustomWebSockets.Messages.CollarCore>(c);
+					cc.IsLost = isLost;
 					await _webSocketMessageHandler.SendCollarCoreAsync(cc, _userManager.GetUserName(User), _wsFactory);
 				}
 				catch (DbUpdateConcurrencyException)

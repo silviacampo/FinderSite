@@ -61,11 +61,11 @@
 					<input asp-for="DefaultMode" type="range" min="2" max="6" readonly="readonly" step="1" value="@((byte)Model.DefaultMode)">
 				</div>
 				<ul class="range-labels">
-					<li class="@((Model.DefaultMode == PetModeTypes.Young) ? "active selected" : "")">Young</li>
-					<li class="@((Model.DefaultMode == PetModeTypes.Active) ? "active selected" : "")">Active</li>
-					<li class="@((Model.DefaultMode == PetModeTypes.Regular) ? "active selected" : "")">Regular</li>
-					<li class="@((Model.DefaultMode == PetModeTypes.Lazy) ? "active selected" : "")">Lazy</li>
-					<li class="@((Model.DefaultMode == PetModeTypes.Mature) ? "active selected" : "")">Mature</li>
+					<li class="@((Model.DefaultMode == ConfigModeTypes.Young) ? "active selected" : "")">Young</li>
+					<li class="@((Model.DefaultMode == ConfigModeTypes.Active) ? "active selected" : "")">Active</li>
+					<li class="@((Model.DefaultMode == ConfigModeTypes.Regular) ? "active selected" : "")">Regular</li>
+					<li class="@((Model.DefaultMode == ConfigModeTypes.Lazy) ? "active selected" : "")">Lazy</li>
+					<li class="@((Model.DefaultMode == ConfigModeTypes.Mature) ? "active selected" : "")">Mature</li>
 				</ul>
 			</dd>
 			@*<dt>

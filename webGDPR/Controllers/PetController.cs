@@ -58,7 +58,7 @@ namespace webGDPR.Controllers
 					cvm.CollarName = c.LastCollar.Collar.Name;
 				}
 				cvm.EmergencyOn = false;
-				if (c.LastMode != null && c.LastMode.Type == PetModeTypes.Emergency && c.LastMode.IsActive)
+				if (c.LastMode != null && c.LastMode.Type == ConfigModeTypes.Emergency && c.LastMode.IsActive)
 				{
 					cvm.EmergencyOn = true;
 				}
@@ -254,6 +254,13 @@ namespace webGDPR.Controllers
 					var foundCollar = await _context.Collar.AsNoTracking().FirstAsync(c => c.CollarId == foundPetCollar.CollarId && !c.Deleted);
 					foundCollar.Name = pet.Name;
 					Infrastructure.CustomWebSockets.Messages.CollarCore cc = _mapper.Map<Infrastructure.CustomWebSockets.Messages.CollarCore>(foundCollar);
+					bool isLost = false;
+					PetMode petMode = _context.Pet.Include(m => m.LastMode).FirstOrDefault(g => g.PetId == pet.PetId).LastMode;
+					if (petMode != null && petMode.Type == ConfigModeTypes.Emergency && petMode.IsActive)
+					{
+						isLost = true;
+					}
+					cc.IsLost = isLost;
 					await _webSocketMessageHandler.SendCollarCoreAsync(cc, _userManager.GetUserName(User), _wsFactory);
 				}
 
@@ -370,6 +377,13 @@ namespace webGDPR.Controllers
 						var foundCollar = await _context.Collar.AsNoTracking().FirstAsync(c => c.CollarId == foundPetCollar.CollarId && !c.Deleted);
 						foundCollar.Name = pet.Name;
 						Infrastructure.CustomWebSockets.Messages.CollarCore cc = _mapper.Map<Infrastructure.CustomWebSockets.Messages.CollarCore>(foundCollar);
+						bool isLost = false;
+						PetMode petMode = _context.Pet.Include(m => m.LastMode).FirstOrDefault(g => g.PetId == pet.PetId).LastMode;
+						if (petMode != null && petMode.Type == ConfigModeTypes.Emergency && petMode.IsActive)
+						{
+							isLost = true;
+						}
+						cc.IsLost = isLost;
 						await _webSocketMessageHandler.SendCollarCoreAsync(cc, _userManager.GetUserName(User), _wsFactory);
 					}
 				}
@@ -433,6 +447,7 @@ namespace webGDPR.Controllers
 				var foundPetCollar = await _context.PetCollar.AsNoTracking().FirstAsync(c => c.PetCollarId == pet.LastCollarId);
 				var foundCollar = await _context.Collar.AsNoTracking().FirstAsync(c => c.CollarId == foundPetCollar.CollarId);
 				Infrastructure.CustomWebSockets.Messages.CollarCore cc = _mapper.Map<Infrastructure.CustomWebSockets.Messages.CollarCore>(foundCollar);
+				cc.IsLost = false;
 				await _webSocketMessageHandler.SendCollarCoreAsync(cc, _userManager.GetUserName(User), _wsFactory);
 			}
 
@@ -440,7 +455,7 @@ namespace webGDPR.Controllers
 		}
 
 		public async Task<IActionResult> EmergencyOn(string id) {
-			bool result = await SetModeAsync(PetModeTypes.Emergency, true, id);
+			bool result = await SetModeAsync(ConfigModeTypes.Emergency, true, id);
 			if (!result)
 			{
 				return NotFound();
@@ -450,14 +465,14 @@ namespace webGDPR.Controllers
 
 		public async Task<IActionResult> EmergencyOff(string id)
 		{
-			bool result =await SetModeAsync(PetModeTypes.Emergency, false, id);
+			bool result =await SetModeAsync(ConfigModeTypes.Emergency, false, id);
 			if (!result) {
 				return NotFound();
 			}
 			return RedirectToAction(nameof(Index));
 		}
 
-		private async Task<bool> SetModeAsync(PetModeTypes type, bool activate, string id)
+		private async Task<bool> SetModeAsync(ConfigModeTypes type, bool activate, string id)
 		{
 			Pet pet = _context.Pet.Where(p=>p.PetId == id).Include(b => b.LastCollar).FirstOrDefault();
 			if (pet == null)
@@ -495,7 +510,7 @@ namespace webGDPR.Controllers
 					if (activate)
 						await _webSocketMessageHandler.SendSwitchModeAsync(collar.CollarNumber, type, _userManager.GetUserName(User), _wsFactory);
 					else
-						await _webSocketMessageHandler.SendSwitchModeAsync(collar.CollarNumber, PetModeTypes.None, _userManager.GetUserName(User), _wsFactory);
+						await _webSocketMessageHandler.SendSwitchModeAsync(collar.CollarNumber, ConfigModeTypes.None, _userManager.GetUserName(User), _wsFactory);
 				}
 				catch (Exception e) {
 					var test = e.Message;

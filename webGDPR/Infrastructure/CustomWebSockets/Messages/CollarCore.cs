@@ -22,6 +22,10 @@ namespace webGDPR.Infrastructure.CustomWebSockets.Messages
 		[JsonIgnore]
 		public string Description { get; set; }
 
+		[JsonProperty(PropertyName = "l")]
+		[JsonConverter(typeof(BoolConverter))]
+		public bool IsLost { get; set; }
+
 		[JsonIgnore]
 		public string UserId { get; set; }
 	}

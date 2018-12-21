@@ -11,7 +11,7 @@ namespace webGDPR.Models
 		public string PetId { get; set; }
 		public string CollarId { get; set; }
 
-		public PetModeTypes Type { get; set; }
+		public ConfigModeTypes Type { get; set; }
 
 		public string UserId { get; set; }
 
@@ -23,7 +23,7 @@ namespace webGDPR.Models
 		public DateTime CreationDate { get; set; }
 	}
 
-	public enum PetModeTypes {
+	public enum ConfigModeTypes {
 		None = 0,
 		Emergency = 1,
 		Young = 2,

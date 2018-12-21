@@ -27,6 +27,6 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 		Task SendDeviceBannedMessage(CustomWebSocket userWebSocket);
 		Task SendDownloadFile(List<string> msgFiles, ICustomWebSocketFactory wsFactory, ApplicationDbContext dbContext);
 		void LogDeviceActivity(ApplicationDbContext dbContext, string DeviceId, string Reason, string Message);
-		Task SendSwitchModeAsync(byte collarNumber, PetModeTypes mode, string username, ICustomWebSocketFactory wsFactory);
+		Task SendSwitchModeAsync(byte collarNumber, ConfigModeTypes mode, string username, ICustomWebSocketFactory wsFactory);
 	}
 }

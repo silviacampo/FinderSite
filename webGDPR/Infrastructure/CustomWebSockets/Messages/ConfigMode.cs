@@ -6,7 +6,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets.Messages
 	public class ConfigMode
 	{
 		[JsonProperty(PropertyName = "t")]
-		public PetModeTypes Type { get; set; }
+		public ConfigModeTypes Type { get; set; }
 
 		[JsonProperty(PropertyName = "cn")]
 		public byte CollarNumber { get; set; }

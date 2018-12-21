@@ -69,7 +69,13 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 					PetCollar petCollar = await dbContext.PetCollar.FirstOrDefaultAsync(p => p.CollarId == b.CollarId && p.IsActive);
 					if (petCollar != null)
 					{
-						mb.Name = dbContext.Pet.FirstOrDefault(pet => pet.PetId == petCollar.PetId && !pet.Deleted).Name;
+						Pet p = dbContext.Pet.Include(m => m.LastMode).FirstOrDefault(pet => pet.PetId == petCollar.PetId && !pet.Deleted);
+						mb.Name =p.Name;
+						mb.IsLost = false;
+						if (p.LastMode != null && p.LastMode.Type == ConfigModeTypes.Emergency && p.LastMode.IsActive)
+						{
+							mb.IsLost = true;
+						}
 					}
 					msgCollars.Add(mb);
 				}
@@ -633,7 +639,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 			await userWebSocket.WebSocket.SendAsync(new ArraySegment<byte>(bytes, 0, bytes.Length), WebSocketMessageType.Text, true, CancellationToken.None);
 		}
 
-		public async Task SendSwitchModeAsync(byte collarNumber, PetModeTypes mode, string username, ICustomWebSocketFactory wsFactory)
+		public async Task SendSwitchModeAsync(byte collarNumber, ConfigModeTypes mode, string username, ICustomWebSocketFactory wsFactory)
 		{
 			Messages.ConfigMode cm = Packet.PacketHelper.BuildMode(collarNumber, mode);
 			string serialisedText = JsonConvert.SerializeObject(cm);
