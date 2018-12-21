@@ -255,15 +255,11 @@ namespace webGDPR.Controllers
 					var foundCollar = await _context.Collar.AsNoTracking().FirstAsync(c => c.CollarId == foundPetCollar.CollarId && !c.Deleted);
 					foundCollar.Name = pet.Name;
 					Infrastructure.CustomWebSockets.Messages.CollarCore cc = _mapper.Map<Infrastructure.CustomWebSockets.Messages.CollarCore>(foundCollar);
-					bool isLost = false;
-					PetMode petMode = _context.Pet.Include(m => m.LastMode).FirstOrDefault(g => g.PetId == pet.PetId).LastMode;
-					if (petMode != null && petMode.Type == ConfigModeTypes.Emergency && petMode.IsActive)
-					{
-						isLost = true;
-					}
-					cc.IsLost = isLost;
+					cc.IsLost = false;
 					await _webSocketMessageHandler.SendCollarCoreAsync(cc, _userManager.GetUserName(User), _wsFactory);
 				}
+
+				await SetModeAsync(pet.DefaultMode, true, p.PetId);
 
 				return RedirectToAction(nameof(Index));
 			}
@@ -334,20 +330,17 @@ namespace webGDPR.Controllers
 				{
 					Pet p = _mapper.Map<Pet>(pet);
 					p.UserId = _context.User.FirstOrDefault(u => u.OwnerID == _userManager.GetUserId(User)).UserID;
-					PetCollar currentCollar = _context.PetCollar.FirstOrDefault(c => c.PetId == pet.PetId && c.IsActive);
-					if (currentCollar != null)
-					{
-						if (pet.CollarId == currentCollar.CollarId)
-						{
-							p.LastCollarId = currentCollar.PetCollarId;
-						}
-					}
+
+					Pet currentPet = _context.Pet.AsNoTracking().Include(m => m.LastCollar).Include(m => m.LastMode).FirstOrDefault(g => g.PetId == pet.PetId);
+					PetCollar currentCollar = _context.PetCollar.FirstOrDefault(c => c.PetCollarId == currentPet.LastCollar.PetCollarId);
+					p.LastCollarId = currentPet.LastCollarId;
+
 					bool isLost = false;
-					PetMode petMode = _context.Pet.AsNoTracking().Include(m => m.LastMode).FirstOrDefault(g => g.PetId == pet.PetId).LastMode;
-					if (petMode != null)
+					PetMode currentPetMode = currentPet.LastMode;
+					p.LastModeId = currentPet.LastModeId;
+					if (currentPetMode != null)
 					{
-						p.LastModeId = petMode.PetModeId;
-						if (petMode.Type == ConfigModeTypes.Emergency && petMode.IsActive)
+						if (currentPetMode.Type == ConfigModeTypes.Emergency && currentPetMode.IsActive)
 						{
 							isLost = true;
 						}
@@ -389,6 +382,10 @@ namespace webGDPR.Controllers
 						Infrastructure.CustomWebSockets.Messages.CollarCore cc = _mapper.Map<Infrastructure.CustomWebSockets.Messages.CollarCore>(foundCollar);
 						cc.IsLost = isLost;
 						await _webSocketMessageHandler.SendCollarCoreAsync(cc, _userManager.GetUserName(User), _wsFactory);
+					}
+					if (currentPetMode == null || pet.DefaultMode != currentPet.DefaultMode)
+					{
+						await SetModeAsync(pet.DefaultMode, true, p.PetId);
 					}
 				}
 				catch (DbUpdateConcurrencyException)
@@ -489,35 +486,29 @@ namespace webGDPR.Controllers
 			{
 				try
 				{
-					if (activate)
+					PetMode currentpm = _context.PetMode.Find(pet.LastModeId);
+					currentpm.IsActive = false;
+					currentpm.EndDate = DateTime.Now;
+					_context.Update(currentpm);
+
+					PetMode pm = new PetMode()
 					{
-						PetMode pm = new PetMode()
-						{
-							PetId = pet.PetId,
-							CollarId = pet.LastCollar.CollarId,
-							Type = type,
-							CreationDate = DateTime.Now,
-							StartDate = DateTime.Now,
-							UserId = pet.UserId,
-							IsActive = true
-						};
-						_context.Add(pm);
-						pet.LastModeId = pm.PetModeId;
-						_context.Update(pet);
-					}
-					else
-					{
-						PetMode pm = _context.PetMode.Find(pet.LastModeId);
-						pm.IsActive = false;
-						pm.EndDate = DateTime.Now;
-						_context.Update(pm);
-					}
+						PetId = pet.PetId,
+						CollarId = pet.LastCollar.CollarId,
+						Type = (activate ? type : pet.DefaultMode),
+						CreationDate = DateTime.Now,
+						StartDate = DateTime.Now,
+						UserId = pet.UserId,
+						IsActive = true
+					};
+
+					_context.Add(pm);
+					pet.LastModeId = pm.PetModeId;
+					_context.Update(pet);
+
 					await _context.SaveChangesAsync();
 					var collar = _context.Collar.Find(pet.LastCollar.CollarId);
-					if (activate)
-						await _webSocketMessageHandler.SendSwitchModeAsync(collar.CollarNumber, type, _userManager.GetUserName(User), _wsFactory);
-					else
-						await _webSocketMessageHandler.SendSwitchModeAsync(collar.CollarNumber, ConfigModeTypes.None, _userManager.GetUserName(User), _wsFactory);
+					await _webSocketMessageHandler.SendSwitchModeAsync(collar.CollarNumber, (activate ? type : pet.DefaultMode), _userManager.GetUserName(User), _wsFactory);
 				}
 				catch (Exception e)
 				{
