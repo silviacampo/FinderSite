@@ -52,6 +52,15 @@ namespace webGDPR
 			// in powershell:
 			//dotnet aspnet-codegenerator identity - dc webGDPR.Data.ApplicationDbContext --force
 
+			//services.AddAuthentication()
+			//.AddMicrosoftAccount(microsoftOptions => { ... })
+			//.AddGoogle(googleOptions => { ... })
+			//.AddTwitter(twitterOptions => { ... })
+			//.AddFacebook(facebookOptions => { 
+			//facebookOptions.AppId = Configuration["Authentication:Facebook:AppId"];
+			//facebookOptions.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
+		//});
+
 			services.AddAutoMapper();
 
 			services.AddMvc(options =>
