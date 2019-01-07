@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace webGDPR.Models
 {
-    public class Pet
+	public class Pet
     {
 		public const string InitialName = "Pet 1";
 
@@ -40,6 +38,9 @@ namespace webGDPR.Models
 		public bool Deleted { get; set; }
 
 		public string UserId { get; set; }
+
+		public DateTime CreationDate { get; set; }
+
 		public List<PetTrackingInfo> TrackingInfos { get; set; }
 
 	}

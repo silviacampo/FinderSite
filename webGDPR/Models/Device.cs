@@ -1,4 +1,6 @@
-﻿namespace webGDPR.Models
+﻿using System;
+
+namespace webGDPR.Models
 {
 	public class Device
     {
@@ -15,6 +17,8 @@
 		public bool IsLogging { get; set; }
 
 		public string UserId { get; set; }
+
+		public DateTime CreationDate { get; set; }
 
 		public string GetName
 		{

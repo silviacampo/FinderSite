@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 using webGDPR.Models;
 
 namespace webGDPR.Models
@@ -18,6 +19,8 @@ namespace webGDPR.Models
 		public string Description { get; set; }
 
 		public string UserId { get; set; }
+
+		public DateTime CreationDate { get; set; }
 
 		public string LastStatusId { get; set; }
 
