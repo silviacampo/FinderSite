@@ -6,21 +6,31 @@
 
 @if (SignInManager.IsSignedIn(User))
 {
-    <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post" id="logoutForm" class="navbar-right">
-        <ul class="nav navbar-nav navbar-right">
-            <li>
-                <a asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @UserManager.GetUserName(User)!</a>
-            </li>
-            <li>
-                <button type="submit" class="btn btn-link navbar-btn navbar-link">Logout</button>
-            </li>
-        </ul>
-    </form>
+	<form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post" id="logoutForm" class="navbar-right">
+		<ul class="nav navbar-nav">
+			<li><a asp-area="" asp-controller="Pet" asp-action="Index"><i class="fa fa-paw fa-fw" aria-hidden="true"></i>&nbsp; Pets</a></li>
+			<li><a asp-area="" asp-controller="Collar" asp-action="Index"><i class="fa fa-map-marker fa-fw" aria-hidden="true"></i>&nbsp; Collars</a></li>
+			<li><a asp-area="" asp-controller="Base" asp-action="Index"><i class="fa fa-home fa-fw" aria-hidden="true"></i>&nbsp; Bases</a></li>
+			<li><a asp-area="" asp-controller="Device" asp-action="Index"><i class="fa fa-mobile-phone fa-fw" aria-hidden="true"></i>&nbsp; Devices</a></li>
+		</ul>
+		<ul class="nav navbar-nav">
+			<li><a asp-area="" asp-controller="Monitoring" asp-action="Index"><i class="fa fa-heartbeat fa-fw" aria-hidden="true"></i>&nbsp; Monitoring</a></li>
+			<li><a asp-area="" asp-controller="Monitoring" asp-action="Upload"><i class="fa fa-file fa-fw" aria-hidden="true"></i>&nbsp; Upload</a></li>
+	    </ul>
+		<ul class="nav navbar-nav navbar-right">
+			<li>
+				<a asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @UserManager.GetUserName(User)!</a>
+			</li>
+			<li>
+				<button type="submit" class="btn btn-link navbar-btn navbar-link">Logout</button>
+			</li>
+		</ul>
+	</form>
 }
 else
 {
-    <ul class="nav navbar-nav navbar-right">
-        <li><a asp-area="Identity" asp-page="/Account/Register">Register</a></li>
-        <li><a asp-area="Identity" asp-page="/Account/Login">Login</a></li>
-    </ul>
+	<ul class="nav navbar-nav navbar-right">
+		<li><a asp-area="Identity" asp-page="/Account/Register">Register</a></li>
+		<li><a asp-area="Identity" asp-page="/Account/Login">Login</a></li>
+	</ul>
 }

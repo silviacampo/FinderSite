@@ -92,6 +92,12 @@ namespace webGDPR.Controllers
 
 		}
 
+		[AllowAnonymous]
+		public IActionResult DownloadApp()
+		{
+			return View();
+		}
+
 		// GET: Device/Details/5
 		public async Task<IActionResult> Details(string id)
         {
