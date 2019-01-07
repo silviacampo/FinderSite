@@ -1,139 +1,129 @@
 @model webGDPR.ViewModels.CollarViewModel
 
 @{
-   // Layout = null;
+	ViewData["Title"] = "Collar Details";
 }
 
-<!DOCTYPE html>
-
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Details</title>
-</head>
-<body>
-
-	<div>
-		<h4>Collar</h4>
-		<hr />
-		<dl class="dl-horizontal">
-			<dt>
-				@Html.DisplayNameFor(model => model.HWId)
-			</dt>
-			<dd>
-				@Html.DisplayFor(model => model.HWId)
-			</dd>
-			<dt>
-				@Html.DisplayNameFor(model => model.Name)
-			</dt>
-			<dd>
-				@Html.DisplayFor(model => model.Name)
-			</dd>
-			<dt>
-				@Html.DisplayNameFor(model => model.Description)
-			</dt>
-			<dd>
-				@Html.DisplayFor(model => model.Description)
-			</dd>
-			<dt>
-				@Html.DisplayNameFor(model => model.IsConnected)
-			</dt>
-			<dd>
-				@Html.DisplayFor(model => model.IsConnected)
-			</dd>
-			<dt>
-				@Html.DisplayNameFor(model => model.ConnectedTo)
-			</dt>
-			<dd>
-				@if (Model.BaseConnectedTo != null)
-				{
-					@Html.DisplayFor(model => model.BaseConnectedTo.Name)
-				}
-			</dd>
-			<dt>
-				@Html.DisplayNameFor(model => model.IsGPSConnected)
-			</dt>
-			<dd>
-				@Html.DisplayFor(model => model.IsGPSConnected)
-			</dd>
-			<dt>
-				@Html.DisplayNameFor(model => model.Battery)
-			</dt>
-			<dd>
-				@Html.DisplayFor(model => model.Battery)
-			</dd>
-			<dt>
-				@Html.DisplayNameFor(model => model.Radio)
-			</dt>
-			<dd>
-				@Html.DisplayFor(model => model.Radio)
-			</dd>
-			@*<dt>
-					@Html.DisplayNameFor(model => model.UserId)
-				</dt>
-				<dd>
-					@Html.DisplayFor(model => model.UserId)
-				</dd>*@
-		</dl>
-	</div>
-	<div class="col-md-12">
-		<h2>Status</h2>
-		<form asp-action="Details" method="get">
-			<div class="form-actions no-color">
-				<p>
-					Find:
-					<input type="text" name="SearchString" value="@Model.CurrentFilter" />
-					<input type="submit" value="Search" class="btn btn-default" /> |
-					<a asp-action="Details">Back to full List</a>
-				</p>
-			</div>
-		</form>
-		<table class="table">
-			<thead>
-				<tr>
-					<th scope="col">CreationDate</th>
-					<th scope="col">IsConnected</th>
-					<th scope="col">ConnectedTo</th>
-					<th scope="col">IsGPSConnected</th>
-					<th scope="col">Battery</th>
-					<th scope="col">Radio</th>
-				</tr>
-			</thead>
-			<tbody>
-				@foreach (webGDPR.Models.CollarStatus dl in Model.CollarStatus)
-				{
-					<tr>
-						<td>@DateTime.SpecifyKind(dl.CreationDate, DateTimeKind.Utc).ToLocalTime()</td>
-						<td>@dl.IsConnected</td>
-						<td>@if (dl.BaseConnectedTo != null) { @dl.BaseConnectedTo.Name}</td>
-						<td>@dl.IsGPSConnected</td>
-						<td>@dl.Battery</td>
-						<td>@dl.Radio</td>
-					</tr>
-				}
-			</tbody>
-		</table>
-		@{
-			var prevDisabled = !Model.CollarStatus.HasPreviousPage ? "disabled" : "";
-			var nextDisabled = !Model.CollarStatus.HasNextPage ? "disabled" : "";
+<h4>@ViewData["Title"]</h4>
+<hr />
+<div>
+<dl class="dl-horizontal">
+	<dt>
+		@Html.DisplayNameFor(model => model.HWId)
+	</dt>
+	<dd>
+		@Html.DisplayFor(model => model.HWId)
+	</dd>
+	<dt>
+		@Html.DisplayNameFor(model => model.Name)
+	</dt>
+	<dd>
+		@Html.DisplayFor(model => model.Name)
+	</dd>
+	<dt>
+		@Html.DisplayNameFor(model => model.Description)
+	</dt>
+	<dd>
+		@Html.DisplayFor(model => model.Description)
+	</dd>
+	<dt>
+		@Html.DisplayNameFor(model => model.IsConnected)
+	</dt>
+	<dd>
+		@Html.DisplayFor(model => model.IsConnected)
+	</dd>
+	<dt>
+		@Html.DisplayNameFor(model => model.ConnectedTo)
+	</dt>
+	<dd>
+		@if (Model.BaseConnectedTo != null)
+		{
+			@Html.DisplayFor(model => model.BaseConnectedTo.Name)
 		}
+	</dd>
+	<dt>
+		@Html.DisplayNameFor(model => model.IsGPSConnected)
+	</dt>
+	<dd>
+		@Html.DisplayFor(model => model.IsGPSConnected)
+	</dd>
+	<dt>
+		@Html.DisplayNameFor(model => model.Battery)
+	</dt>
+	<dd>
+		@Html.DisplayFor(model => model.Battery)
+	</dd>
+	<dt>
+		@Html.DisplayNameFor(model => model.Radio)
+	</dt>
+	<dd>
+		@Html.DisplayFor(model => model.Radio)
+	</dd>
+	@*<dt>
+			@Html.DisplayNameFor(model => model.UserId)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.UserId)
+		</dd>*@
+</dl>
+	</div>
+<div class="col-md-12">
+	<h2>Status</h2>
+	<form asp-action="Details" method="get">
+		<div class="form-actions no-color">
+			<p>
+				Find:
+				<input type="text" name="SearchString" value="@Model.CurrentFilter" />
+				<input type="submit" value="Search" class="btn btn-default" /> |
+				<a asp-action="Details">Back to full List</a>
+			</p>
+		</div>
+	</form>
+	<table class="table">
+		<thead>
+			<tr>
+				<th scope="col">CreationDate</th>
+				<th scope="col">IsConnected</th>
+				<th scope="col">ConnectedTo</th>
+				<th scope="col">IsGPSConnected</th>
+				<th scope="col">Battery</th>
+				<th scope="col">Radio</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (webGDPR.Models.CollarStatus dl in Model.CollarStatus)
+			{
+				<tr>
+					<td>@DateTime.SpecifyKind(dl.CreationDate, DateTimeKind.Utc).ToLocalTime()</td>
+					<td>@dl.IsConnected</td>
+					<td>@if (dl.BaseConnectedTo != null)
+					{@dl.BaseConnectedTo.Name}</td>
+					<td>@dl.IsGPSConnected</td>
+					<td>@dl.Battery</td>
+					<td>@dl.Radio</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+	@{
+		var prevDisabled = !Model.CollarStatus.HasPreviousPage ? "disabled" : "";
+		var nextDisabled = !Model.CollarStatus.HasNextPage ? "disabled" : "";
+	}
 
-		<a asp-action="Details"
-		   asp-route-pageIndex="@(Model.CollarStatus.PageIndex - 1)"
-		   asp-route-currentFilter="@Model.CurrentFilter"
-		   class="btn btn-default @prevDisabled">
-			Previous
-		</a>
-		<a asp-action="Details"
-		   asp-route-pageIndex="@(Model.CollarStatus.PageIndex + 1)"
-		   asp-route-currentFilter="@Model.CurrentFilter"
-		   class="btn btn-default @nextDisabled">
-			Next
-		</a>
-	</div>
-	<div>
-		<a asp-action="Edit" asp-route-id="@Model.CollarId">Edit</a> |
-		<a asp-action="Index">Back to List</a>
-	</div>
-</body>
-</html>
+	<a asp-action="Details"
+	   asp-route-pageIndex="@(Model.CollarStatus.PageIndex - 1)"
+	   asp-route-currentFilter="@Model.CurrentFilter"
+	   class="btn btn-default @prevDisabled">
+		Previous
+	</a>
+	<a asp-action="Details"
+	   asp-route-pageIndex="@(Model.CollarStatus.PageIndex + 1)"
+	   asp-route-currentFilter="@Model.CurrentFilter"
+	   class="btn btn-default @nextDisabled">
+		Next
+	</a>
+</div>
+<div>
+	<a asp-action="Edit" asp-route-id="@Model.CollarId">Edit</a> |
+	<a asp-action="Index">Back to List</a>
+</div>

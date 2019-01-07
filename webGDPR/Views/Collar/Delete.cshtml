@@ -1,22 +1,13 @@
 @model webGDPR.ViewModels.CollarViewModel
 
 @{
-   // Layout = null;
+	ViewData["Title"] = "Delete collar";
 }
-
-<!DOCTYPE html>
-
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Delete</title>
-</head>
-<body>
 
 <h3>Are you sure you want to delete this?</h3>
 <div>
-    <h4>Collar</h4>
-    <hr />
+	<h4>Collar</h4>
+	<hr />
 	<dl class="dl-horizontal">
 		<dt>
 			@Html.DisplayNameFor(model => model.HWId)
@@ -47,9 +38,9 @@
 		</dt>
 		<dd>
 			@if (Model.BaseConnectedTo != null)
-		{
-			@Html.DisplayFor(model => model.BaseConnectedTo.Name)
-	}
+			{
+				@Html.DisplayFor(model => model.BaseConnectedTo.Name)
+			}
 		</dd>
 		<dt>
 			@Html.DisplayNameFor(model => model.IsGPSConnected)
@@ -70,18 +61,17 @@
 			@Html.DisplayFor(model => model.Radio)
 		</dd>
 		@*<dt>
-			@Html.DisplayNameFor(model => model.UserId)
-		</dt>
-		<dd>
-			@Html.DisplayFor(model => model.UserId)
-		</dd>*@
+				@Html.DisplayNameFor(model => model.UserId)
+			</dt>
+			<dd>
+				@Html.DisplayFor(model => model.UserId)
+			</dd>*@
 	</dl>
-    
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="CollarId" />
-        <input type="submit" value="Delete" class="btn btn-default" /> |
-        <a asp-action="Index">Back to List</a>
-    </form>
+
+	<form asp-action="Delete">
+		<input type="hidden" asp-for="CollarId" />
+		<input type="submit" value="Delete" class="btn btn-default" /> |
+		<a asp-action="Index">Back to List</a>
+	</form>
 </div>
-</body>
-</html>
+

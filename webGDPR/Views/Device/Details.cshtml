@@ -1,75 +1,65 @@
 @model webGDPR.Models.Device
 
 @{
-   // Layout = null;
+	ViewData["Title"] = "Device Details";
 }
 
-<!DOCTYPE html>
-
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Details</title>
-</head>
-<body>
-
+<h4>@ViewData["Title"]</h4>
+<hr />
 <div>
-    <h4>Device</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Type)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Type)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Platform)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Platform)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Model)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Model)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Manufacturer)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Manufacturer)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.OSVersion)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.OSVersion)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.AliasName)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.AliasName)
-        </dd>
-        @*<dt>
-            @Html.DisplayNameFor(model => model.UserId)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.UserId)
-        </dd>*@
-    </dl>
+	<dl class="dl-horizontal">
+		<dt>
+			@Html.DisplayNameFor(model => model.Type)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.Type)
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.Platform)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.Platform)
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.Name)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.Name)
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.Model)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.Model)
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.Manufacturer)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.Manufacturer)
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.OSVersion)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.OSVersion)
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.AliasName)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.AliasName)
+		</dd>
+		@*<dt>
+				@Html.DisplayNameFor(model => model.UserId)
+			</dt>
+			<dd>
+				@Html.DisplayFor(model => model.UserId)
+			</dd>*@
+	</dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.DeviceId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+	<a asp-action="Edit" asp-route-id="@Model.DeviceId">Edit</a> |
+	<a asp-action="Index">Back to List</a>
 </div>
-</body>
-</html>
+

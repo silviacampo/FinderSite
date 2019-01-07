@@ -1,112 +1,102 @@
 @model IEnumerable<webGDPR.ViewModels.CollarViewModel>
 
 @{
-   // Layout = null;
+	ViewData["Title"] = "Collars";
 }
 
-<!DOCTYPE html>
+<h2>
+	<i class="fa fa-map-marker fa-fw" aria-hidden="true"></i>&nbsp; @ViewData["Title"]
+</h2>
+<p>
+	<a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+	<thead>
+		<tr>
+			<th>
+				@Html.DisplayNameFor(model => model.CollarNumber)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.HWId)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Name)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Description)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.IsConnected)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.ConnectedTo)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.IsGPSConnected)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Battery)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Radio)
+			</th>
 
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Index</title>
-</head>
-<body>
-	<h2>
-		<i class="fa fa-map-marker fa-fw" aria-hidden="true"></i>&nbsp; Collars
-	</h2>
-	<p>
-		<a asp-action="Create">Create New</a>
-	</p>
-	<table class="table">
-		<thead>
+			@*<th>
+					@Html.DisplayNameFor(model => model.UserId)
+				</th>
+				<th>
+					@Html.DisplayNameFor(model => model.BaseNumber)
+				</th>*@
+
+			<th></th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var item in Model)
+		{
 			<tr>
-				<th>
-					@Html.DisplayNameFor(model => model.CollarNumber)
-				</th>
-				<th>
-					@Html.DisplayNameFor(model => model.HWId)
-				</th>
-				<th>
-					@Html.DisplayNameFor(model => model.Name)
-				</th>
-				<th>
-					@Html.DisplayNameFor(model => model.Description)
-				</th>
-				<th>
-					@Html.DisplayNameFor(model => model.IsConnected)
-				</th>
-				<th>
-					@Html.DisplayNameFor(model => model.ConnectedTo)
-				</th>
-				<th>
-					@Html.DisplayNameFor(model => model.IsGPSConnected)
-				</th>
-				<th>
-					@Html.DisplayNameFor(model => model.Battery)
-				</th>
-				<th>
-					@Html.DisplayNameFor(model => model.Radio)
-				</th>
-
-				@*<th>
-						@Html.DisplayNameFor(model => model.UserId)
-					</th>
-					<th>
-						@Html.DisplayNameFor(model => model.BaseNumber)
-					</th>*@
-
-				<th></th>
+				<td>
+					@Html.DisplayFor(modelItem => item.CollarNumber)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.HWId)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Name)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Description)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.IsConnected)
+				</td>
+				<td>
+					@if (item.BaseConnectedTo != null)
+					{
+						@Html.DisplayFor(modelItem => item.BaseConnectedTo.Name)
+					}
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.IsGPSConnected)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Battery)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Radio)
+				</td>
+				@*<td>
+						@Html.DisplayFor(modelItem => item.UserId)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.BaseNumber)
+					</td>*@
+				<td>
+					<a asp-action="Edit" asp-route-id="@item.CollarId">Edit</a> |
+					<a asp-action="Details" asp-route-id="@item.CollarId">Details</a> |
+					<a asp-action="Delete" asp-route-id="@item.CollarId">Delete</a>
+				</td>
 			</tr>
-		</thead>
-		<tbody>
-			@foreach (var item in Model)
-			{
-				<tr>
-					<td>
-						@Html.DisplayFor(modelItem => item.CollarNumber)
-					</td>
-					<td>
-						@Html.DisplayFor(modelItem => item.HWId)
-					</td>
-					<td>
-						@Html.DisplayFor(modelItem => item.Name)
-					</td>
-					<td>
-						@Html.DisplayFor(modelItem => item.Description)
-					</td>
-					<td>
-						@Html.DisplayFor(modelItem => item.IsConnected)
-					</td>
-					<td>
-						@if (item.BaseConnectedTo != null)
-						{
-							@Html.DisplayFor(modelItem => item.BaseConnectedTo.Name)
-						}
-					</td>
-					<td>
-						@Html.DisplayFor(modelItem => item.IsGPSConnected)
-					</td>
-					<td>
-						@Html.DisplayFor(modelItem => item.Battery)
-					</td>
-					<td>
-						@Html.DisplayFor(modelItem => item.Radio)
-					</td>
-					@*<td>
-							@Html.DisplayFor(modelItem => item.UserId)
-						</td>
-						<td>
-							@Html.DisplayFor(modelItem => item.BaseNumber)
-						</td>*@
-					<td>
-						<a asp-action="Edit" asp-route-id="@item.CollarId">Edit</a> |
-						<a asp-action="Details" asp-route-id="@item.CollarId">Details</a> |
-						<a asp-action="Delete" asp-route-id="@item.CollarId">Delete</a>
-					</td>
-				</tr>
-			}
-		</tbody>
-	</table>
-</body>
-</html>
+		}
+	</tbody>
+</table>
