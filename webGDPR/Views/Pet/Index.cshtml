@@ -24,31 +24,31 @@
 				<th>
 					@Html.DisplayNameFor(model => model.Name)
 				</th>
-				<th>
+				<th  class="visible-md visible-lg">
 					@Html.DisplayNameFor(model => model.Type)
 				</th>
-				<th>
+				<th class="visible-md visible-lg">
 					@Html.DisplayNameFor(model => model.Breeding)
 				</th>
-				<th>
+				<th  class="visible-md visible-lg">
 					@Html.DisplayNameFor(model => model.Color)
 				</th>
-				<th>
+				<th  class="visible-md visible-lg">
 					@Html.DisplayNameFor(model => model.Age)
 				</th>
-				<th>
+				<th  class="visible-md visible-lg">
 					@Html.DisplayNameFor(model => model.HealthComments)
 				</th>
 				<th>
 					@Html.DisplayNameFor(model => model.CollarName)
 				</th>
-				<th>
+				<th  class="visible-md visible-lg">
 					@Html.DisplayNameFor(model => model.Latitude)
 				</th>
-				<th>
+				<th  class="visible-md visible-lg">
 					@Html.DisplayNameFor(model => model.Longitude)
 				</th>
-				<th>
+				<th  class="visible-md visible-lg">
 					@Html.DisplayNameFor(model => model.LocationCreationDate)
 				</th>
 				@*<th>
@@ -70,43 +70,43 @@
 					<td>
 						@Html.DisplayFor(modelItem => item.Name)
 					</td>
-					<td>
+					<td  class="visible-md visible-lg">
 						@Html.DisplayFor(modelItem => item.Type)
 					</td>
-					<td>
+					<td  class="visible-md visible-lg">
 						@Html.DisplayFor(modelItem => item.Breeding)
 					</td>
-					<td>
+					<td  class="visible-md visible-lg">
 						@Html.DisplayFor(modelItem => item.Color)
 					</td>
-					<td>
+					<td  class="visible-md visible-lg">
 						@Html.DisplayFor(modelItem => item.Age)
 					</td>
-					<td>
+					<td  class="visible-md visible-lg">
 						@Html.DisplayFor(modelItem => item.HealthComments)
 					</td>
-					<th>
+					<td>
 						@if (!string.IsNullOrEmpty(item.CollarName))
 						{
 							@Html.DisplayFor(modelItem => item.CollarName)
 						}
-					</th>
-					<th>
+					</td>
+					<td  class="visible-md visible-lg">
 						@if (item.Latitude != default(long))
 						{
 							@Html.DisplayFor(modelItem => item.Latitude)
 						}
-					</th>
-					<th>
+					</td>
+					<td  class="visible-md visible-lg">
 						@if (item.Longitude != default(long))
 						{
 							@Html.DisplayFor(modelItem => item.Longitude)}
-					</th>
-					<th>
+					</td>
+					<td  class="visible-md visible-lg">
 						@if (item.LocationCreationDate != DateTime.MinValue)
 						{
 							@Html.DisplayFor(modelItem => item.LocationCreationDate)}
-					</th>
+					</td>
 					@*<td>
 							@Html.DisplayFor(modelItem => item.ImageFileName)
 						</td>

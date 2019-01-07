@@ -12,19 +12,19 @@
 <table class="table">
 	<thead>
 		<tr>
-			<th>
+			<th  class="visible-md visible-lg">
 				@Html.DisplayNameFor(model => model.BaseNumber)
 			</th>
-			<th>
+			<th  class="visible-md visible-lg">
 				@Html.DisplayNameFor(model => model.HWId)
 			</th>
 			<th>
 				@Html.DisplayNameFor(model => model.Name)
 			</th>
-			<th>
+			<th  class="visible-md visible-lg">
 				@Html.DisplayNameFor(model => model.Text)
 			</th>
-			<th>
+			<th  class="visible-md visible-lg">
 				@Html.DisplayNameFor(model => model.Description)
 			</th>
 			<th>
@@ -33,19 +33,19 @@
 			<th>
 				@Html.DisplayNameFor(model => model.ConnectedTo)
 			</th>
-			<th>
+			<th  class="visible-md visible-lg">
 				@Html.DisplayNameFor(model => model.IsPlugged)
 			</th>
-			<th>
+			<th  class="visible-md visible-lg">
 				@Html.DisplayNameFor(model => model.IsCharging)
 			</th>
-			<th>
+			<th  class="visible-md visible-lg">
 				@Html.DisplayNameFor(model => model.Battery)
 			</th>
-			<th>
+			<th  class="visible-md visible-lg">
 				@Html.DisplayNameFor(model => model.HasBattery)
 			</th>
-			<th>
+			<th  class="visible-md visible-lg">
 				@Html.DisplayNameFor(model => model.Radio)
 			</th>
 
@@ -60,19 +60,19 @@
 		@foreach (var item in Model)
 		{
 			<tr>
-				<td>
+				<td  class="visible-md visible-lg">
 					@Html.DisplayFor(modelItem => item.BaseNumber)
 				</td>
-				<td>
+				<td  class="visible-md visible-lg">
 					@Html.DisplayFor(modelItem => item.HWId)
 				</td>
 				<td>
 					@Html.DisplayFor(modelItem => item.Name)
 				</td>
-				<td>
+				<td  class="visible-md visible-lg">
 					@Html.DisplayFor(modelItem => item.Text)
 				</td>
-				<td>
+				<td  class="visible-md visible-lg">
 					@Html.DisplayFor(modelItem => item.Description)
 				</td>
 				<td>
@@ -84,19 +84,19 @@
 						@Html.DisplayFor(modelItem => item.DeviceConnectedTo.GetName)
 					}
 				</td>
-				<td>
+				<td  class="visible-md visible-lg">
 					@Html.DisplayFor(modelItem => item.IsPlugged)
 				</td>
-				<td>
+				<td  class="visible-md visible-lg">
 					@Html.DisplayFor(modelItem => item.IsCharging)
 				</td>
-				<td>
+				<td  class="visible-md visible-lg">
 					@Html.DisplayFor(modelItem => item.Battery)
 				</td>
-				<td>
+				<td  class="visible-md visible-lg">
 					@Html.DisplayFor(modelItem => item.HasBattery)
 				</td>
-				<td>
+				<td  class="visible-md visible-lg">
 					@Html.DisplayFor(modelItem => item.Radio)
 				</td>
 				@*<td>
