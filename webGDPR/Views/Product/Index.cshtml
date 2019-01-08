@@ -1,0 +1,109 @@
+@model IEnumerable<webGDPR.Models.Product>
+
+@{
+	ViewData["Title"] = "Products";
+}
+
+<h2>
+	<i class="fa fa-cube fa-fw" aria-hidden="true"></i>&nbsp; @ViewData["Title"]
+</h2>
+<p>
+	<a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+	<thead>
+		<tr>
+			<th>
+				@Html.DisplayNameFor(model => model.Model)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Name)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Text)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Description)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Category)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Price)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Weight)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Width)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Height)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Deep)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.QuantityInStock)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.CreationDate)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Deleted)
+			</th>
+			<th></th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var item in Model)
+		{
+			<tr>
+				<td>
+					@Html.DisplayFor(modelItem => item.Model)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Name)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Text)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Description)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Category)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Price)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Weight)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Width)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Height)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Deep)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.QuantityInStock)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.CreationDate)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Deleted)
+				</td>
+				<td>
+					<a asp-action="Edit" asp-route-id="@item.ProductId">Edit</a> |
+					<a asp-action="Details" asp-route-id="@item.ProductId">Details</a> |
+					<a asp-action="Delete" asp-route-id="@item.ProductId">Delete</a>
+				</td>
+			</tr>
+		}
+	</tbody>
+</table>

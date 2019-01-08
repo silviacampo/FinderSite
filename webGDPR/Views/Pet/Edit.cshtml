@@ -1,19 +1,10 @@
 @model EditPetViewModel
 
 @{
-   // Layout = null;
+	ViewData["Title"] = "Edit pet";
 }
 
-<!DOCTYPE html>
-
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Edit</title>
-</head>
-<body>
-
-<h4>Pet</h4>
+<h4>@ViewData["Title"]</h4>
 <hr />
 <div class="row">
 	<form asp-action="Edit" enctype="multipart/form-data">
@@ -65,10 +56,10 @@
 				<span asp-validation-for="DefaultMode" class="text-danger"></span>
 			</div>
 			@*<div class="form-group">
-			<label asp-for="UserId" class="control-label"></label>
-			<input asp-for="UserId" class="form-control" />
-			<span asp-validation-for="UserId" class="text-danger"></span>
-		</div>*@
+					<label asp-for="UserId" class="control-label"></label>
+					<input asp-for="UserId" class="form-control" />
+					<span asp-validation-for="UserId" class="text-danger"></span>
+				</div>*@
 			<div class="form-group">
 				<input type="submit" value="Save" class="btn btn-default" />
 			</div>
@@ -81,12 +72,12 @@
 				or <a asp-controller="Collar" asp-action="Create" target="_blank">Create New</a>
 			</div>
 			@if (ViewData["imagesFilenames"] != null)
-	{
-		@foreach (var f in ViewData["imagesFilenames"] as List<string>)
-{
-		<img src="@f" />
-}
-}
+			{
+				@foreach (var f in ViewData["imagesFilenames"] as List<string>)
+				{
+					<img src="@f" />
+				}
+			}
 			<div class="form-group">
 				<label asp-for="ImageFileName" class="control-label"></label>
 				<input type="file" multiple="multiple" name="imagesFiles" asp-for="ImageFileName" class="form-control" />
@@ -103,8 +94,5 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+	<a asp-action="Index">Back to List</a>
 </div>
-
-</body>
-</html>

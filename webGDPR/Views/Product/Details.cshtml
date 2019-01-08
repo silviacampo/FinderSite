@@ -1,0 +1,95 @@
+@model webGDPR.Models.Product
+
+@{
+	ViewData["Title"] = "Product Details";
+}
+
+<h4>@ViewData["Title"]</h4>
+<hr />
+<div>
+<dl class="dl-horizontal">
+	<dt>
+		@Html.DisplayNameFor(model => model.Model)
+	</dt>
+	<dd>
+		@Html.DisplayFor(model => model.Model)
+	</dd>
+	<dt>
+		@Html.DisplayNameFor(model => model.Name)
+	</dt>
+	<dd>
+		@Html.DisplayFor(model => model.Name)
+	</dd>
+	<dt>
+		@Html.DisplayNameFor(model => model.Text)
+	</dt>
+	<dd>
+		@Html.DisplayFor(model => model.Text)
+	</dd>
+	<dt>
+		@Html.DisplayNameFor(model => model.Description)
+	</dt>
+	<dd>
+		@Html.DisplayFor(model => model.Description)
+	</dd>
+	<dt>
+		@Html.DisplayNameFor(model => model.Category)
+	</dt>
+	<dd>
+		@Html.DisplayFor(model => model.Category)
+	</dd>
+	<dt>
+		@Html.DisplayNameFor(model => model.Price)
+	</dt>
+	<dd>
+		@Html.DisplayFor(model => model.Price)
+	</dd>
+	<dt>
+		@Html.DisplayNameFor(model => model.Weight)
+	</dt>
+	<dd>
+		@Html.DisplayFor(model => model.Weight)
+	</dd>
+	<dt>
+		@Html.DisplayNameFor(model => model.Width)
+	</dt>
+	<dd>
+		@Html.DisplayFor(model => model.Width)
+	</dd>
+	<dt>
+		@Html.DisplayNameFor(model => model.Height)
+	</dt>
+	<dd>
+		@Html.DisplayFor(model => model.Height)
+	</dd>
+	<dt>
+		@Html.DisplayNameFor(model => model.Deep)
+	</dt>
+	<dd>
+		@Html.DisplayFor(model => model.Deep)
+	</dd>
+	<dt>
+		@Html.DisplayNameFor(model => model.QuantityInStock)
+	</dt>
+	<dd>
+		@Html.DisplayFor(model => model.QuantityInStock)
+	</dd>
+	<dt>
+		@Html.DisplayNameFor(model => model.CreationDate)
+	</dt>
+	<dd>
+		@Html.DisplayFor(model => model.CreationDate)
+	</dd>
+	<dt>
+		@Html.DisplayNameFor(model => model.Deleted)
+	</dt>
+	<dd>
+		@Html.DisplayFor(model => model.Deleted)
+	</dd>
+</dl>
+</div>
+<div>
+	<a asp-action="Edit" asp-route-id="@Model.ProductId">Edit</a> |
+	<a asp-action="Index">Back to List</a>
+</div>
+

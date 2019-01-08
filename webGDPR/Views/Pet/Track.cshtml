@@ -1,17 +1,6 @@
 ﻿@model webGDPR.Models.Pet
 
-@{
-	//Layout = null;
-}
 
-<!DOCTYPE html>
-
-<html style="height: 100%;width: 100%;">
-<head>
-	<meta name="viewport" content="width=device-width" />
-	<title>Track</title>
-</head>
-<body style="height: 100%;width: 100%;">
 	<div id="mapContainer" style="height:600px">
 		<script>
 			var contentString = '<div id="content">' +
@@ -33,5 +22,3 @@
 		<div id="card-map" class="card-text card-map"  data-geo-lat="@Model.LastTrackingInfo.Latitude" , data-geo-lng="@Model.LastTrackingInfo.Longitude"></div>
 		<div id="pano"></div>
 	</div>
-</body>
-</html>

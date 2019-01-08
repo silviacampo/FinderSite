@@ -1,0 +1,89 @@
+@model webGDPR.Models.Product
+
+@{
+	ViewData["Title"] = "Create product";
+}
+
+<h4>@ViewData["Title"]</h4>
+<hr />
+<div class="row">
+	<div class="col-md-4">
+		<form asp-action="Create">
+			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+			<div class="form-group">
+				<label asp-for="Model" class="control-label"></label>
+				<input asp-for="Model" class="form-control" />
+				<span asp-validation-for="Model" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="Name" class="control-label"></label>
+				<input asp-for="Name" class="form-control" />
+				<span asp-validation-for="Name" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="Text" class="control-label"></label>
+				<input asp-for="Text" class="form-control" />
+				<span asp-validation-for="Text" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="Description" class="control-label"></label>
+				<input asp-for="Description" class="form-control" />
+				<span asp-validation-for="Description" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="Category" class="control-label"></label>
+				<input asp-for="Category" class="form-control" />
+				<span asp-validation-for="Category" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="Price" class="control-label"></label>
+				<input asp-for="Price" class="form-control" />
+				<span asp-validation-for="Price" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="Weight" class="control-label"></label>
+				<input asp-for="Weight" class="form-control" />
+				<span asp-validation-for="Weight" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="Width" class="control-label"></label>
+				<input asp-for="Width" class="form-control" />
+				<span asp-validation-for="Width" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="Height" class="control-label"></label>
+				<input asp-for="Height" class="form-control" />
+				<span asp-validation-for="Height" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="Deep" class="control-label"></label>
+				<input asp-for="Deep" class="form-control" />
+				<span asp-validation-for="Deep" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="QuantityInStock" class="control-label"></label>
+				<input asp-for="QuantityInStock" class="form-control" />
+				<span asp-validation-for="QuantityInStock" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="CreationDate" class="control-label"></label>
+				<input asp-for="CreationDate" class="form-control" />
+				<span asp-validation-for="CreationDate" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<div class="checkbox">
+					<label>
+						<input asp-for="Deleted" /> @Html.DisplayNameFor(model => model.Deleted)
+					</label>
+				</div>
+			</div>
+			<div class="form-group">
+				<input type="submit" value="Create" class="btn btn-default" />
+			</div>
+		</form>
+	</div>
+</div>
+
+<div>
+	<a asp-action="Index">Back to List</a>
+</div>

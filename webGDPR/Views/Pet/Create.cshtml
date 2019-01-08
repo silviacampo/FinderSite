@@ -1,19 +1,10 @@
 @model EditPetViewModel
 
 @{
-    //Layout = null;
+	ViewData["Title"] = "Create pet";
 }
 
-<!DOCTYPE html>
-
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Create</title>
-</head>
-<body>
-
-<h4>Pet</h4>
+<h4>@ViewData["Title"]</h4>
 <hr />
 <div class="row">
 	<form asp-action="Create" enctype="multipart/form-data">
@@ -54,7 +45,7 @@
 				<div class="range">
 					<input asp-for="DefaultMode" type="range" min="2" max="6" step="1" value="3">
 				</div>
-				<ul class="range-labels">					
+				<ul class="range-labels">
 					<li>Young</li>
 					<li>Active</li>
 					<li class="active selected">Regular</li>
@@ -64,10 +55,10 @@
 				<span asp-validation-for="DefaultMode" class="text-danger"></span>
 			</div>
 			@*<div class="form-group">
-			<label asp-for="UserId" class="control-label"></label>
-			<input asp-for="UserId" class="form-control" />
-			<span asp-validation-for="UserId" class="text-danger"></span>
-		</div>*@
+					<label asp-for="UserId" class="control-label"></label>
+					<input asp-for="UserId" class="form-control" />
+					<span asp-validation-for="UserId" class="text-danger"></span>
+				</div>*@
 			<div class="form-group">
 				<input type="submit" value="Create" class="btn btn-default" />
 			</div>
@@ -81,23 +72,20 @@
 				<span asp-validation-for="CollarId" class="text-danger"></span>
 				or <a asp-controller="Collar" asp-action="Create" target="_blank">Create New</a>
 			</div>
-				<div class="form-group">
-					<label asp-for="ImageFileName" class="control-label"></label>
-					<input type="file" multiple="multiple" name="imagesFiles" asp-for="ImageFileName" class="form-control" />
-					<span asp-validation-for="ImageFileName" class="text-danger"></span>
-					<input type="button" value="Add" class="btn btn-default" />
-				</div>
-				<div class="form-group">
-					<label asp-for="PageFileName" class="control-label"></label>
-					<textarea id = "FullDescription" class ="form-control" name="pageContent" rows = "200" ></textarea>
-					<span asp-validation-for="PageFileName" class="text-danger"></span>
-				</div>
+			<div class="form-group">
+				<label asp-for="ImageFileName" class="control-label"></label>
+				<input type="file" multiple="multiple" name="imagesFiles" asp-for="ImageFileName" class="form-control" />
+				<span asp-validation-for="ImageFileName" class="text-danger"></span>
+				<input type="button" value="Add" class="btn btn-default" />
+			</div>
+			<div class="form-group">
+				<label asp-for="PageFileName" class="control-label"></label>
+				<textarea id="FullDescription" class="form-control" name="pageContent" rows="200"></textarea>
+				<span asp-validation-for="PageFileName" class="text-danger"></span>
+			</div>
 		</div>
 	</form>
 </div>
 <div>
-    <a asp-action="Index">Back to List</a>
+	<a asp-action="Index">Back to List</a>
 </div>
-
-</body>
-</html>

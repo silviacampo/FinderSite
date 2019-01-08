@@ -16,6 +16,8 @@ namespace webGDPR.Models
 		public float Height { get; set; }
 		public float Deep { get; set; }
 
+		public int QuantityInStock { get; set; }
+
 		public DateTime CreationDate { get; set; }
 
 		public bool Deleted { get; set; }
