@@ -58,9 +58,9 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 						{
 							WebSocket webSocket = await context.WebSockets.AcceptWebSocketAsync();
 
-							string UserId = dbContext.User.FirstOrDefault(u => u.Name == username).UserID;
+							User user = dbContext.User.FirstOrDefault(u => u.Name == username);
 
-							Device found = dbContext.Device.AsNoTracking().FirstOrDefault(b => b.UserId == UserId && b.DeviceId == deviceId);
+							Device found = dbContext.Device.AsNoTracking().FirstOrDefault(b => b.UserId == user.UserID && b.DeviceId == deviceId);
 
 							CustomWebSocket userWebSocket = new CustomWebSocket()
 							{
@@ -75,8 +75,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 
 							wsmHandler.LogDeviceActivity(dbContext, deviceId, "WebSocket Add", JsonConvert.SerializeObject(userWebSocket));
 							//Device is banned or User has missing subscription
-							if (dbContext.Device.FirstOrDefault(d => d.DeviceId == deviceId && d.Banned) != null 
-								
+							if ((found != null && found.Banned) || user.MissingSubscription
 								)
 							{
 								await wsmHandler.SendDeviceBannedMessage(userWebSocket);
