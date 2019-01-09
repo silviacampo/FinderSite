@@ -74,7 +74,10 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 							wsFactory.Add(userWebSocket);
 
 							wsmHandler.LogDeviceActivity(dbContext, deviceId, "WebSocket Add", JsonConvert.SerializeObject(userWebSocket));
-							if (dbContext.Device.FirstOrDefault(d => d.DeviceId == deviceId && d.Banned) != null)
+							//Device is banned or User has missing subscription
+							if (dbContext.Device.FirstOrDefault(d => d.DeviceId == deviceId && d.Banned) != null 
+								
+								)
 							{
 								await wsmHandler.SendDeviceBannedMessage(userWebSocket);
 								wsFactory.Remove(userWebSocket.Guid);

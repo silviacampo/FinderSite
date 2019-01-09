@@ -6,5 +6,6 @@ namespace webGDPR.Data
 	{
 		public string Name { get; set; }
 		//public int Age { get; set; }
+		public bool MissingSubscription { get; set; }
 	}
 }
