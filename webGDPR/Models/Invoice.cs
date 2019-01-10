@@ -1,9 +1,9 @@
-﻿//https://stripe.com order.api +- 6% facturacion
+﻿//https://stripe.com order.api 2.9% + 30 cents tax and address validation, recurring payments
+//https://www.paypal.com/ca/webapps/mpp/merchant-fees 2.9% + 30 cents recurring payments, address is collect by paypal and transfert to us - user needs to create an account with paypal but may feel more secure using paypal
+//could be both, none of them have fees.
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace webGDPR.Models
 {

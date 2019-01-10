@@ -15,6 +15,7 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using webGDPR.Data;
 using webGDPR.Infrastructure;
+using webGDPR.Infrastructure.CustomWebSockets;
 using webGDPR.Models;
 
 namespace webGDPR.Controllers
@@ -25,12 +26,16 @@ namespace webGDPR.Controllers
         private readonly ApplicationDbContext _context;
 		UserManager<ApplicationUser> _userManager;
 		IMapper _mapper;
+		ICustomWebSocketMessageHandler _webSocketMessageHandler;
+		ICustomWebSocketFactory _wsFactory;
 
-		public DeviceController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IMapper mapper)
-        {
+		public DeviceController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IMapper mapper, ICustomWebSocketMessageHandler webSocketMessageHandler, ICustomWebSocketFactory wsFactory)
+		{
             _context = context;
 			_userManager = userManager;
 			_mapper = mapper;
+			_webSocketMessageHandler = webSocketMessageHandler;
+			_wsFactory = wsFactory;
 		}
 
         // GET: Device
@@ -169,24 +174,32 @@ namespace webGDPR.Controllers
 
             if (ModelState.IsValid)
             {
-                try
-                {
+				try
+				{
 					var found = await _context.Device.AsNoTracking().FirstAsync(c => c.DeviceId == id);
 					device.UserId = found.UserId;
 					_context.Update(device);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!DeviceExists(device.DeviceId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+					await _context.SaveChangesAsync();
+					if (device.Banned)
+					{
+						CustomWebSocket ws = _wsFactory.ClientByDeviceId(device.DeviceId);
+						if (ws != null)
+						{
+							await _webSocketMessageHandler.SendDeviceBannedMessage(ws);
+						}
+					}
+				}
+				catch (DbUpdateConcurrencyException)
+				{
+					if (!DeviceExists(device.DeviceId))
+					{
+						return NotFound();
+					}
+					else
+					{
+						throw;
+					}
+				}
                 return RedirectToAction(nameof(Index));
             }
             return View(device);

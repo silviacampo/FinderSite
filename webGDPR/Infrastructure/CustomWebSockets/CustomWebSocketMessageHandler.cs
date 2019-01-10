@@ -657,5 +657,22 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 			await BroadcastGroup(bytes, username, wsFactory);
 		}
 
-}
+		public async Task SendMissingSubscriptionMessageAsync(CustomWebSocket userWebSocket)
+		{
+			//{"Text":"MissingSubscription","MessagDateTime":"2018-10-05T12:43:47.647797-04:00","UserId":"system","Type":19}
+			string serialisedText = "MissingSubscription";
+			var msg = new CustomWebSocketMessage
+			{
+				MessagDateTime = DateTime.Now,
+				Type = WSMessageType.MissingSubscription,
+				Text = serialisedText,
+				UserId = CustomWebSocketMessage.SystemUserId
+			};
+
+			string serialisedMessage = JsonConvert.SerializeObject(msg);
+			log.Info(serialisedMessage);
+			byte[] bytes = Encoding.ASCII.GetBytes(serialisedMessage);
+			await userWebSocket.WebSocket.SendAsync(new ArraySegment<byte>(bytes, 0, bytes.Length), WebSocketMessageType.Text, true, CancellationToken.None);
+		}
+	}
 }

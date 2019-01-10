@@ -45,6 +45,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 		DeviceBanned = 15,
 		DownloadFile = 16,
 		Packet = 17,
-		SwitchMode = 18
+		SwitchMode = 18,
+		MissingSubscription = 19
 	}
 }

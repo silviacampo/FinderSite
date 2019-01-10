@@ -75,13 +75,20 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 
 							wsmHandler.LogDeviceActivity(dbContext, deviceId, "WebSocket Add", JsonConvert.SerializeObject(userWebSocket));
 							//Device is banned or User has missing subscription
-							if ((found != null && found.Banned) || user.MissingSubscription
-								)
+							if (found != null && found.Banned)
 							{
 								await wsmHandler.SendDeviceBannedMessage(userWebSocket);
 								wsFactory.Remove(userWebSocket.Guid);
 
-								wsmHandler.LogDeviceActivity(dbContext, deviceId, "WebSocket Remove", JsonConvert.SerializeObject(userWebSocket));
+								wsmHandler.LogDeviceActivity(dbContext, deviceId, "WebSocket Remove - Device Banned", JsonConvert.SerializeObject(userWebSocket));
+								await webSocket.CloseAsync(WebSocketCloseStatus.Empty, string.Empty, CancellationToken.None);
+							}
+							else if (user.MissingSubscription)
+							{
+								await wsmHandler.SendMissingSubscriptionMessageAsync(userWebSocket);
+								wsFactory.Remove(userWebSocket.Guid);
+
+								wsmHandler.LogDeviceActivity(dbContext, deviceId, "WebSocket Remove - Missing Subscription", JsonConvert.SerializeObject(userWebSocket));
 								await webSocket.CloseAsync(WebSocketCloseStatus.Empty, string.Empty, CancellationToken.None);
 							}
 							else

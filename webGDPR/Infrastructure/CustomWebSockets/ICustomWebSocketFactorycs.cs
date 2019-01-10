@@ -11,5 +11,6 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 		List<CustomWebSocket> Group(string username);
 		List<CustomWebSocket> Others(CustomWebSocket client);
 		CustomWebSocket Client(Guid guid);
+		CustomWebSocket ClientByDeviceId(string deviceId);
 	}
 }
