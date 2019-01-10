@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace webGDPR.Models
 {
@@ -15,5 +16,9 @@ namespace webGDPR.Models
 		public string Email { get; set; }
 
 		public bool MissingSubscription { get; set; }
+
+		public List<Base> Bases { get; set; }
+		public List<Collar> Collars { get; set; }
+		public List<Device> Devices { get; set; }
 	}
 }

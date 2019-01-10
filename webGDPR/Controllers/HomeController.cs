@@ -20,7 +20,7 @@ namespace webGDPR.Controllers
 			log.Info("test");
 			//ViewData["Host"] = Request.Host.Host;
 			var test = ViewData["Host"];
-			return View("AddFileIndex");
+			return View();
         }
 
 		public IActionResult CreateAccountWizard()
