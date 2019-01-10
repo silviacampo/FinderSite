@@ -61,7 +61,7 @@ namespace webGDPR.Controllers
 		[Authorize]
 		public async Task<IActionResult> Dashboard()
 		{
-			User user = await _context.User.Include(b => b.Bases).Include(c => c.Collars).Include(d => d.Devices).FirstOrDefaultAsync(u => u.OwnerID == _userManager.GetUserId(User));
+			User user = await _context.User.Include(b => b.Bases).Include(c => c.Collars).Include(d => d.Devices).Include(d => d.Pets).FirstOrDefaultAsync(u => u.OwnerID == _userManager.GetUserId(User));
 			return View(user);
 		}
 

@@ -29,6 +29,12 @@
 					<b>Missing Install app</b>
 				</li>
 			}
+			@if (Model.Pets.Count() == 0)
+			{
+				<li>
+					<b>You haven't create any pet....</b>
+				</li>
+			}
 		</ul>
 	</div>
 	<div class="col-md-3">
