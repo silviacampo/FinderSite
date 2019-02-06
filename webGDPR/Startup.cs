@@ -72,6 +72,7 @@ namespace webGDPR
 			services.AddSingleton<IEmailConfiguration>(Configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>());
 			services.AddTransient<IEmailSender, EmailSender>();
 
+
 			// Authorization handlers.
 			services.AddScoped<IAuthorizationHandler, UserIsOwnerAuthorizationHandler>();
 			services.AddSingleton<IAuthorizationHandler, UserAdministratorsAuthorizationHandler>();
