@@ -28,7 +28,8 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 
 		public async Task Invoke(HttpContext context, ICustomWebSocketFactory wsFactory, ICustomWebSocketMessageHandler wsmHandler, SignInManager<ApplicationUser> signInManager, ApplicationDbContext dbContext, IMapper mapper, IEmailSender emailSender)
 		{
-			if (_wsFactory == null) {
+			if (_wsFactory == null)
+			{
 				_wsFactory = wsFactory;
 			}
 
@@ -47,62 +48,48 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 				if (context.WebSockets.IsWebSocketRequest)
 				{
 					string username = context.Request.Query["u"];
-					string password = context.Request.Query["p"];
-                    string deviceId = context.Request.Query["g"];
-                    deviceId = deviceId?.Replace("\"", "");
+					string deviceId = context.Request.Query["g"];
+					deviceId = deviceId?.Replace("\"", "");
 
-					if (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password))
+					WebSocket webSocket = await context.WebSockets.AcceptWebSocketAsync();
+
+					User user = dbContext.User.FirstOrDefault(u => u.Name == username);
+
+					Device found = dbContext.Device.AsNoTracking().FirstOrDefault(b => b.UserId == user.UserID && b.DeviceId == deviceId);
+
+					CustomWebSocket userWebSocket = new CustomWebSocket()
 					{
-						var result = await signInManager.PasswordSignInAsync(username, password, false, lockoutOnFailure: true);
-						if (result.Succeeded)
-						{
-							WebSocket webSocket = await context.WebSockets.AcceptWebSocketAsync();
+						WebSocket = webSocket,
+						Username = username,
+						DeviceId = (found == null) ? string.Empty : deviceId,
+						Guid = Guid.NewGuid(),
+						CreationDate = DateTime.Now,
+						IP = context.Connection.RemoteIpAddress.ToString(),
+						CredentialsChecked = false
+					};
+					wsFactory.Add(userWebSocket);
 
-							User user = dbContext.User.FirstOrDefault(u => u.Name == username);
+					wsmHandler.LogDeviceActivity(dbContext, deviceId, "WebSocket Add", JsonConvert.SerializeObject(userWebSocket));
+					//Device is banned or User has missing subscription
+					if (found != null && found.Banned)
+					{
+						await wsmHandler.SendDeviceBannedMessage(userWebSocket);
+						wsFactory.Remove(userWebSocket.Guid);
 
-							Device found = dbContext.Device.AsNoTracking().FirstOrDefault(b => b.UserId == user.UserID && b.DeviceId == deviceId);
-
-							CustomWebSocket userWebSocket = new CustomWebSocket()
-							{
-								WebSocket = webSocket,
-								Username = username,
-								DeviceId = (found == null) ? string.Empty : deviceId,
-								Guid = Guid.NewGuid(),
-								CreationDate = DateTime.Now,
-								IP = context.Connection.RemoteIpAddress.ToString()
-							};
-							wsFactory.Add(userWebSocket);
-
-							wsmHandler.LogDeviceActivity(dbContext, deviceId, "WebSocket Add", JsonConvert.SerializeObject(userWebSocket));
-							//Device is banned or User has missing subscription
-							if (found != null && found.Banned)
-							{
-								await wsmHandler.SendDeviceBannedMessage(userWebSocket);
-								wsFactory.Remove(userWebSocket.Guid);
-
-								wsmHandler.LogDeviceActivity(dbContext, deviceId, "WebSocket Remove - Device Banned", JsonConvert.SerializeObject(userWebSocket));
-								await webSocket.CloseAsync(WebSocketCloseStatus.Empty, string.Empty, CancellationToken.None);
-							}
-							else if (user.MissingSubscription)
-							{
-								await wsmHandler.SendMissingSubscriptionMessageAsync(userWebSocket);
-								wsFactory.Remove(userWebSocket.Guid);
-
-								wsmHandler.LogDeviceActivity(dbContext, deviceId, "WebSocket Remove - Missing Subscription", JsonConvert.SerializeObject(userWebSocket));
-								await webSocket.CloseAsync(WebSocketCloseStatus.Empty, string.Empty, CancellationToken.None);
-							}
-							else
-							{
-								await wsmHandler.SendInitialMessages(userWebSocket, dbContext, mapper);
-								await Listen(context, userWebSocket, wsFactory, wsmHandler, dbContext, mapper, emailSender);
-							}
-						}
-						else {
-							wsmHandler.LogDeviceActivity(dbContext, deviceId, "Attempt Sign in", JsonConvert.SerializeObject(result));
-						}
+						wsmHandler.LogDeviceActivity(dbContext, deviceId, "WebSocket Remove - Device Banned", JsonConvert.SerializeObject(userWebSocket));
+						await webSocket.CloseAsync(WebSocketCloseStatus.Empty, string.Empty, CancellationToken.None);
 					}
-					else {
-						wsmHandler.LogDeviceActivity(dbContext, deviceId, "Attempt without username/password", JsonConvert.SerializeObject(context.Request.QueryString));
+					else if (user.MissingSubscription)
+					{
+						await wsmHandler.SendMissingSubscriptionMessageAsync(userWebSocket);
+						wsFactory.Remove(userWebSocket.Guid);
+
+						wsmHandler.LogDeviceActivity(dbContext, deviceId, "WebSocket Remove - Missing Subscription", JsonConvert.SerializeObject(userWebSocket));
+						await webSocket.CloseAsync(WebSocketCloseStatus.Empty, string.Empty, CancellationToken.None);
+					}
+					else
+					{						
+						await Listen(context, userWebSocket, wsFactory, wsmHandler, dbContext, mapper, emailSender, signInManager);
 					}
 				}
 				else
@@ -113,37 +100,40 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 			await _next(context);
 		}
 
-		private async Task Listen(HttpContext context, CustomWebSocket userWebSocket, ICustomWebSocketFactory wsFactory, ICustomWebSocketMessageHandler wsmHandler, ApplicationDbContext dbContext, IMapper mapper, IEmailSender emailSender)
+		private async Task Listen(HttpContext context, CustomWebSocket userWebSocket, ICustomWebSocketFactory wsFactory, ICustomWebSocketMessageHandler wsmHandler, ApplicationDbContext dbContext, IMapper mapper, IEmailSender emailSender, SignInManager<ApplicationUser> signInManager)
 		{
-            WebSocket webSocket = userWebSocket.WebSocket;
-            var buffer = new byte[1024 * 4];
-            WebSocketReceiveResult result;
-            try {
-                result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
-                while (!result.CloseStatus.HasValue)
-                {
-                    await wsmHandler.HandleMessage(result, buffer, userWebSocket, wsFactory, dbContext, mapper, emailSender);
+			WebSocket webSocket = userWebSocket.WebSocket;
+			var buffer = new byte[1024 * 4];
+			WebSocketReceiveResult result;
+			try
+			{
+				result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+				while (!result.CloseStatus.HasValue)
+				{
+					await wsmHandler.HandleMessage(result, buffer, userWebSocket, wsFactory, dbContext, mapper, emailSender, signInManager);
 
-                    buffer = new byte[1024 * 4];
-                    result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
-                }
-                await webSocket.CloseAsync(result.CloseStatus.Value, result.CloseStatusDescription, CancellationToken.None);
-                wsmHandler.LogDeviceActivity(dbContext, userWebSocket.DeviceId, "WebSocket Remove", JsonConvert.SerializeObject(userWebSocket));
-                wsFactory.Remove(userWebSocket.Guid);
-            }
-            catch (WebSocketException e)
-            {
-                //await webSocket.CloseAsync(WebSocketCloseStatus.Empty, null, CancellationToken.None);
-                wsmHandler.LogDeviceActivity(dbContext, userWebSocket.DeviceId, "WebSocket Remove", JsonConvert.SerializeObject(userWebSocket));
-                wsFactory.Remove(userWebSocket.Guid);
-            }			
+					buffer = new byte[1024 * 4];
+					result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+				}
+				await webSocket.CloseAsync(result.CloseStatus.Value, result.CloseStatusDescription, CancellationToken.None);
+				wsmHandler.LogDeviceActivity(dbContext, userWebSocket.DeviceId, "WebSocket Remove", JsonConvert.SerializeObject(userWebSocket));
+				wsFactory.Remove(userWebSocket.Guid);
+			}
+			catch (WebSocketException e)
+			{
+				//await webSocket.CloseAsync(WebSocketCloseStatus.Empty, null, CancellationToken.None);
+				wsmHandler.LogDeviceActivity(dbContext, userWebSocket.DeviceId, "WebSocket Remove", JsonConvert.SerializeObject(userWebSocket));
+				wsFactory.Remove(userWebSocket.Guid);
+			}
 
 		}
 
-		public static void CloseAll() {
-			foreach (var userWebSocket in _wsFactory.All()) {
+		public static void CloseAll()
+		{
+			foreach (var userWebSocket in _wsFactory.All())
+			{
 				_wsmHandler.LogDeviceActivity(_dbContext, userWebSocket.DeviceId, "WebSocket Remove - Server shutdown", JsonConvert.SerializeObject(userWebSocket));
-				Task.Run(()=> userWebSocket.WebSocket.CloseAsync(WebSocketCloseStatus.Empty, string.Empty, CancellationToken.None));
+				Task.Run(() => userWebSocket.WebSocket.CloseAsync(WebSocketCloseStatus.Empty, string.Empty, CancellationToken.None));
 			}
 		}
 

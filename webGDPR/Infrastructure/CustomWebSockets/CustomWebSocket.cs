@@ -14,5 +14,6 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 		public Guid Guid { get; set; }
 		public DateTime CreationDate { get; set; }
 		public string IP { get; set; }
+		public bool CredentialsChecked { get; set; }
 	}
 }

@@ -46,6 +46,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 		DownloadFile = 16,
 		Packet = 17,
 		SwitchMode = 18,
-		MissingSubscription = 19
+		MissingSubscription = 19,
+		Login = 20
 	}
 }
