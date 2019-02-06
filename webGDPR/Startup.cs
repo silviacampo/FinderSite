@@ -173,13 +173,16 @@ WantedBy=multi-user.target
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
 			
-			applicationLifetime.ApplicationStopping.Register(OnShutdown);
-		}
+			applicationLifetime.ApplicationStopping.Register(() =>
+			{
+				CustomWebSocketManager.CloseAll();
+				Console.WriteLine("HandleStopping Completed");
+			});
 
-		private void OnShutdown()
-		{
-			//https://thinkrethink.net/2017/03/09/application-shutdown-in-asp-net-core/
-			CustomWebSocketManager.CloseAll();
+			applicationLifetime.ApplicationStopped.Register(() =>
+			{
+				Console.WriteLine("HandleStopped Completed");
+			});
 		}
 	}
 }
