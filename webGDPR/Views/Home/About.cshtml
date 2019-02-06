@@ -19,6 +19,10 @@
 	<button id="sendButton" type="submit" disabled>Send</button>
 	<button id="closeButton" disabled>Close Socket</button>
 </div>
+<div>
+	<button id="loginMessageButton">Login Message</button>
+	<button id="deviceInfoMessageButton">Device Info Message</button>
+</div>
 
 <h2>Communication Log</h2>
 <table style="width: 800px">
@@ -41,11 +45,13 @@
         var sendButton = document.getElementById("sendButton");
         var sendForm = document.getElementById("sendForm");
         var commsLog = document.getElementById("commsLog");
-        var closeButton = document.getElementById("closeButton");
+		var closeButton = document.getElementById("closeButton");
+		var loginMessageButton = document.getElementById("loginMessageButton");
+		var deviceInfoMessageButton = document.getElementById("deviceInfoMessageButton");
         var socket;
         var scheme = document.location.protocol == "https:" ? "wss" : "ws";
         var port = document.location.port ? (":" + document.location.port) : "";
-		connectionUrl.value = scheme + "://" + document.location.hostname + port + "/ws?u=SilviaCampo&p=As!123456&g=68b73ced-1659-483c-929e-274a97706405" ;
+		connectionUrl.value = scheme + "://" + document.location.hostname + port + "/ws?u=SilviaCampo&g=68b73ced-1659-483c-929e-274a97706405" ;
         function updateState() {
             function disable() {
                 sendMessage.disabled = true;
@@ -87,7 +93,13 @@
                         break;
                 }
             }
-        }
+	}
+	loginMessageButton.onclick = function () {
+		sendMessage.value = '{"m":"As!123456","d":1541440447,"u":"SilviaCampo","t":20}';
+	}
+	deviceInfoMessageButton.onclick = function () {
+		sendMessage.value = '{"m":"{\"t\":\"Phone\",\"p\":\"Android\",\"n\":\"Nexus 5\",\"mo\":\"Nexus 5\",\"ma\":\"LGE\",\"os\":\"6.0.1\"}","d":1541440447,"u":"SilviaCampo","t":5 }';
+	}
         closeButton.onclick = function () {
             if (!socket || socket.readyState != WebSocket.OPEN) {
                 alert("socket not connected");
