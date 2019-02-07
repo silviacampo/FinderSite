@@ -22,6 +22,11 @@
 <div>
 	<button id="loginMessageButton">Login Message</button>
 	<button id="deviceInfoMessageButton">Device Info Message</button>
+	<button id="discoveredBasesMessageButton">Discovered Bases Message</button>
+	<button id="baseStatusMessageButton">Base Status Message</button>
+	<button id="collarStatusMessageButton">Collar Status Message</button>
+	<button id="trackinginfoMessageButton">Tracking Info Message</button>
+	<button id="packageMessageButton">Package Message</button>
 </div>
 
 <h2>Communication Log</h2>
@@ -47,7 +52,13 @@
         var commsLog = document.getElementById("commsLog");
 		var closeButton = document.getElementById("closeButton");
 		var loginMessageButton = document.getElementById("loginMessageButton");
-		var deviceInfoMessageButton = document.getElementById("deviceInfoMessageButton");
+	var deviceInfoMessageButton = document.getElementById("deviceInfoMessageButton");
+	var discoveredBasesMessageButton = document.getElementById("discoveredBasesMessageButton");
+	var baseStatusMessageButton = document.getElementById("baseStatusMessageButton");
+	var collarStatusMessageButton = document.getElementById("collarStatusMessageButton");
+	var trackinginfoMessageButton = document.getElementById("trackinginfoMessageButton");
+	var packageMessageButton = document.getElementById("packageMessageButton");
+
         var socket;
         var scheme = document.location.protocol == "https:" ? "wss" : "ws";
         var port = document.location.port ? (":" + document.location.port) : "";
@@ -98,8 +109,23 @@
 		sendMessage.value = '{"m":"As!123456","d":1541440447,"u":"SilviaCampo","t":20}';
 	}
 	deviceInfoMessageButton.onclick = function () {
-		sendMessage.value = '{"m":"{\"t\":\"Phone\",\"p\":\"Android\",\"n\":\"Nexus 5\",\"mo\":\"Nexus 5\",\"ma\":\"LGE\",\"os\":\"6.0.1\"}","d":1541440447,"u":"SilviaCampo","t":5 }';
+		sendMessage.value = '{"m":"{\\"t\\":\\"Desktop\\",\\"p\\":\\"WPF\\",\\"n\\":\\"DESKTOP-I5\\",\\"mo\\":\\"\\",\\"ma\\":\\"\\",\\"os\\":\\"Microsoft Windows NT 6.2.9200.0\\"}","d":1545754845,"u":"SilviaCampo","t":5}';
 	}
+	discoveredBasesMessageButton.onclick = function () {
+		sendMessage.value = '{"m":"[\\"102\\",\\"100\\"]","d":1545485962,"u":"SilviaCampo","t":14}';
+	}
+	baseStatusMessageButton.onclick = function () {
+		sendMessage.value = '{"m":"{\\"bn\\":1,\\"co\\":0,\\"cot\\":\\"\\",\\"pl\\":0,\\"ch\\":0,\\"bt\\":0,\\"hbt\\":0,\\"r\\":0}","d":1545518726,"u":"SilviaCampo","t":12}';
+	}
+	collarStatusMessageButton.onclick = function () {
+		sendMessage.value = '{ "m":"{\\"cn\\":1,\\"bn\\":1,\\"co\\":0,\\"cot\\":\\"\\",\\"gps\\":1,\\"b\\":60,\\"r\\":40}","d":"1545518726","u":"SilviaCampo","t":13}';
+	}
+	trackinginfoMessageButton.onclick = function () {
+		sendMessage.value = '{"m":"{\\"cn\\":1,\\"la\\":45.513025,\\"lo\\":-73.720863,\\"d\\":3343659132}","d":1541440470,"u":"SilviaCampo","t":7}';
+	}
+	packageMessageButton.onclick = function () {
+		sendMessage.value = '{"m":"{\\"d\\":\\"VRACAAAAAAAAAABA4gEAAgAAAIM=\\",\\"hw\\":\\"102\\"}","d":1545485964,"u":"SilviaCampo","t":17}';
+	}	
         closeButton.onclick = function () {
             if (!socket || socket.readyState != WebSocket.OPEN) {
                 alert("socket not connected");
