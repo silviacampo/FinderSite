@@ -28,25 +28,25 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 	public enum WSMessageType
 	{
 		None = 0,
-		Base = 1,
-		Collar = 2,
-		Bases = 3,
-		Collars = 4,
+		Base = 1,  // O
+		Collar = 2,  // O
+		Bases = 3, // O
+		Collars = 4,  // O
 		DeviceInfo = 5,
 		LastGPS = 6,
 		TrackingInfo = 7,
-		DeletedBase = 8,
-		DeletedCollar = 9,
-		BaseCore = 10,
-		CollarCore = 11,
+		DeletedBase = 8,  // O
+		DeletedCollar = 9,  // O
+		BaseCore = 10,  // O
+		CollarCore = 11,  // O
 		BaseStatus = 12,
 		CollarStatus = 13,
 		DiscoverBases = 14,
-		DeviceBanned = 15,
-		DownloadFile = 16,
+		DeviceBanned = 15,  // O
+		DownloadFile = 16,  // O
 		Packet = 17,
-		SwitchMode = 18,
-		MissingSubscription = 19,
+		SwitchMode = 18, // O
+		MissingSubscription = 19, // O
 		Login = 20
 	}
 }
