@@ -684,10 +684,10 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 			await BroadcastGroup(bytes, username, wsFactory);
 		}
 
-		public async Task SendDeviceBannedMessage(CustomWebSocket userWebSocket)
+		public async Task SendDeviceBannedMessage(CustomWebSocket userWebSocket, bool value)
 		{
-			//{"Text":"DeviceBanned","MessagDateTime":"2018-10-05T12:43:47.647797-04:00","IsIncoming":true,"UserId":"system","Type":14}
-			string serialisedText = "DeviceBanned";
+			//{"Text":"True","MessagDateTime":"2018-10-05T12:43:47.647797-04:00","IsIncoming":true,"UserId":"system","Type":14}
+			string serialisedText = value.ToString();
 			var msg = new CustomWebSocketMessage
 			{
 				MessagDateTime = DateTime.Now,
@@ -720,10 +720,10 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 			await BroadcastGroup(bytes, username, wsFactory);
 		}
 
-		public async Task SendMissingSubscriptionMessageAsync(CustomWebSocket userWebSocket)
+		public async Task SendMissingSubscriptionMessageAsync(CustomWebSocket userWebSocket, bool value)
 		{
-			//{"Text":"MissingSubscription","MessagDateTime":"2018-10-05T12:43:47.647797-04:00","UserId":"system","Type":19}
-			string serialisedText = "MissingSubscription";
+			//{"Text":"True","MessagDateTime":"2018-10-05T12:43:47.647797-04:00","UserId":"system","Type":19}
+			string serialisedText = value.ToString();
 			var msg = new CustomWebSocketMessage
 			{
 				MessagDateTime = DateTime.Now,

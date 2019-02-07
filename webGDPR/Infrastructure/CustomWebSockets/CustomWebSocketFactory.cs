@@ -56,7 +56,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 
 		public CustomWebSocket ClientByDeviceId(string deviceId)
 		{
-			return List.First(c => c.DeviceId == deviceId);
+			return List.FirstOrDefault(c => c.DeviceId == deviceId);
 		}
 	}
 }

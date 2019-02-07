@@ -25,8 +25,8 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 		Task SendDeletedCollarAsync(byte collarNumber, string username, ICustomWebSocketFactory wsFactory);
 		Task SendBaseAsync(webGDPR.Infrastructure.CustomWebSockets.Messages.Base b, string username, ICustomWebSocketFactory wsFactory);
 		Task SendCollarAsync(webGDPR.Infrastructure.CustomWebSockets.Messages.Collar c, string username, ICustomWebSocketFactory wsFactory);
-		Task SendDeviceBannedMessage(CustomWebSocket userWebSocket);
-		Task SendMissingSubscriptionMessageAsync(CustomWebSocket userWebSocket);
+		Task SendDeviceBannedMessage(CustomWebSocket userWebSocket, bool value);
+		Task SendMissingSubscriptionMessageAsync(CustomWebSocket userWebSocket, bool value);
 		Task SendDownloadFile(List<string> msgFiles, ICustomWebSocketFactory wsFactory, ApplicationDbContext dbContext);
 		void LogDeviceActivity(ApplicationDbContext dbContext, string DeviceId, string Reason, string Message);
 		Task SendSwitchModeAsync(byte collarNumber, ConfigModeTypes mode, string username, ICustomWebSocketFactory wsFactory);

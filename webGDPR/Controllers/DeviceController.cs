@@ -180,12 +180,12 @@ namespace webGDPR.Controllers
 					device.UserId = found.UserId;
 					_context.Update(device);
 					await _context.SaveChangesAsync();
-					if (device.Banned)
+					if (found.Banned != device.Banned) //only when value changes
 					{
 						CustomWebSocket ws = _wsFactory.ClientByDeviceId(device.DeviceId);
 						if (ws != null)
 						{
-							await _webSocketMessageHandler.SendDeviceBannedMessage(ws);
+							await _webSocketMessageHandler.SendDeviceBannedMessage(ws, device.Banned); //yes or not
 						}
 					}
 				}
