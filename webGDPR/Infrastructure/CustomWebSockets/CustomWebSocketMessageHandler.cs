@@ -195,6 +195,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 						if (validCredentials.Result)
 						{
 							userWebSocket.CredentialsChecked = true;
+							await SendLoginAsync(userWebSocket);
 							await SendInitialMessages(userWebSocket, dbContext, mapper);
 						}
 						else
@@ -442,6 +443,22 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 				//TODO: remove echo the wrong message
 				await userWebSocket.WebSocket.SendAsync(new ArraySegment<byte>(buffer, 0, result.Count), result.MessageType, result.EndOfMessage, CancellationToken.None);
 			}
+		}
+
+		private async Task SendLoginAsync(CustomWebSocket userWebSocket)
+		{
+			var msg = new CustomWebSocketMessage
+			{
+				MessagDateTime = DateTime.Now,
+				Type = WSMessageType.Login,
+				Text = string.Empty,
+				UserId = CustomWebSocketMessage.SystemUserId
+			};
+
+			string serialisedMessage = JsonConvert.SerializeObject(msg);
+			log.Info(serialisedMessage);
+			byte[] bytes = Encoding.ASCII.GetBytes(serialisedMessage);
+			await userWebSocket.WebSocket.SendAsync(new ArraySegment<byte>(bytes, 0, bytes.Length), WebSocketMessageType.Text, true, CancellationToken.None);
 		}
 
 		private async Task SendDeviceInformation(CustomWebSocket userWebSocket, string c)
