@@ -133,6 +133,9 @@ namespace webGDPR.Controllers
 				user.MissingSubscription = v;
 				_context.Update(user);
 				await _context.SaveChangesAsync();
+				var appUser = await _userManager.FindByIdAsync(user.OwnerID);
+				appUser.MissingSubscription = v;
+				await _userManager.UpdateAsync(appUser);
 				await _webSocketMessageHandler.SendMissingSubscriptionMessageAsync(v, user.Name, _wsFactory);
 				return true;
 			}
