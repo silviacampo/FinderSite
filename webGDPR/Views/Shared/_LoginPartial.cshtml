@@ -9,11 +9,14 @@
 	<form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post" id="logoutForm" class="navbar-right">
 		<ul class="nav navbar-nav">
 			<li><a asp-area="" asp-controller="User" asp-action="Dashboard"><i class="fa fa-tachometer fa-fw" aria-hidden="true"></i>&nbsp; Dashboard</a></li>
-			<li><a asp-area="" asp-controller="Pet" asp-action="Index"><i class="fa fa-paw fa-fw" aria-hidden="true"></i>&nbsp; Pets</a></li>
-			<li><a asp-area="" asp-controller="Collar" asp-action="Index"><i class="fa fa-map-marker fa-fw" aria-hidden="true"></i>&nbsp; Collars</a></li>
-			<li><a asp-area="" asp-controller="Base" asp-action="Index"><i class="fa fa-home fa-fw" aria-hidden="true"></i>&nbsp; Bases</a></li>
-			<li><a asp-area="" asp-controller="Device" asp-action="Index"><i class="fa fa-mobile-phone fa-fw" aria-hidden="true"></i>&nbsp; Devices</a></li>
-		</ul>
+			@if (!((await UserManager.GetUserAsync(User)).MissingSubscription))
+			{
+				<li><a asp-area="" asp-controller="Pet" asp-action="Index"><i class="fa fa-paw fa-fw" aria-hidden="true"></i>&nbsp; Pets</a></li>
+				<li><a asp-area="" asp-controller="Collar" asp-action="Index"><i class="fa fa-map-marker fa-fw" aria-hidden="true"></i>&nbsp; Collars</a></li>
+				<li><a asp-area="" asp-controller="Base" asp-action="Index"><i class="fa fa-home fa-fw" aria-hidden="true"></i>&nbsp; Bases</a></li>
+				<li><a asp-area="" asp-controller="Device" asp-action="Index"><i class="fa fa-mobile-phone fa-fw" aria-hidden="true"></i>&nbsp; Devices</a></li>
+			}
+			</ul>
 		<ul class="nav navbar-nav">
 			<li><a asp-area="" asp-controller="Monitoring" asp-action="Index"><i class="fa fa-heartbeat fa-fw" aria-hidden="true"></i>&nbsp; Monitoring</a></li>
 			<li><a asp-area="" asp-controller="Monitoring" asp-action="Upload"><i class="fa fa-file fa-fw" aria-hidden="true"></i>&nbsp; Upload</a></li>

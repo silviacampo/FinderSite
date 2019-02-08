@@ -75,6 +75,69 @@ namespace webGDPR.Controllers
 			return View(vm);
         }
 
+		public async Task<IActionResult> Users(string searchString, string currentFilter, int? pageIndex)
+		{
+			MonitoringUsersViewModel vm = new MonitoringUsersViewModel();
+
+			if (searchString != null)
+			{
+				pageIndex = 1;
+			}
+			else
+			{
+				if (currentFilter == null)
+				{
+					searchString = string.Empty;
+				}
+				else
+				{
+					searchString = currentFilter;
+				}
+			}
+			vm.CurrentFilter = searchString;
+			int pageSize = 50;
+			vm.Users = await PaginatedList<User>.CreateAsync(
+				_context.User.Where(s => s.UserID.Contains(searchString) || s.Name.Contains(searchString)).OrderBy(d => d.Name).AsNoTracking(), pageIndex ?? 1, pageSize);
+			return View(vm);
+		}
+
+		public async Task<IActionResult> MissingSubscriptionOn(string id)
+		{
+			bool result = await SetMissingSubscriptionAsync(true, id);
+			if (!result)
+			{
+				return NotFound();
+			}
+			return RedirectToAction(nameof(Users));
+		}
+
+		public async Task<IActionResult> MissingSubscriptionOff(string id)
+		{
+			bool result = await SetMissingSubscriptionAsync(false, id);
+			if (!result)
+			{
+				return NotFound();
+			}
+			return RedirectToAction(nameof(Users));
+		}
+
+		private async Task<bool> SetMissingSubscriptionAsync(bool v, string id)
+		{
+			User user = _context.User.FirstOrDefault(p => p.UserID == id);
+			if (user == null)
+			{
+				return false;
+			}
+			else
+			{
+				user.MissingSubscription = v;
+				_context.Update(user);
+				await _context.SaveChangesAsync();
+				await _webSocketMessageHandler.SendMissingSubscriptionMessageAsync(v, user.Name, _wsFactory);
+				return true;
+			}
+		}
+
 		// GET: Monitoring/Upload
 		public IActionResult Upload()
 		{

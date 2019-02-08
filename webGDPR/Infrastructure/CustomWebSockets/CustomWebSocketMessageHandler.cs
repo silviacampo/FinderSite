@@ -196,7 +196,25 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 						{
 							userWebSocket.CredentialsChecked = true;
 							await SendLoginAsync(userWebSocket);
-							await SendInitialMessages(userWebSocket, dbContext, mapper);
+
+							//Device is banned or User has missing subscription
+							Device found = dbContext.Device.AsNoTracking().FirstOrDefault(b => b.UserId == user.UserID && b.DeviceId == userWebSocket.DeviceId);
+							if (found != null && found.Banned)
+							{
+								await SendDeviceBannedMessage(userWebSocket, true);
+								wsFactory.Remove(userWebSocket.Guid);
+
+								LogDeviceActivity(dbContext, userWebSocket.DeviceId, "WebSocket Remove - Device Banned", JsonConvert.SerializeObject(userWebSocket));
+								await userWebSocket.WebSocket.CloseAsync(WebSocketCloseStatus.Empty, string.Empty, CancellationToken.None);
+							}
+							else
+							{
+								if (user.MissingSubscription)
+								{
+									await SendMissingSubscriptionMessageAsync(true, userWebSocket.Username, wsFactory);
+								}
+								await SendInitialMessages(userWebSocket, dbContext, mapper);
+							}							
 						}
 						else
 						{
@@ -720,7 +738,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 			await BroadcastGroup(bytes, username, wsFactory);
 		}
 
-		public async Task SendMissingSubscriptionMessageAsync(CustomWebSocket userWebSocket, bool value)
+		public async Task SendMissingSubscriptionMessageAsync(bool value, string username, ICustomWebSocketFactory wsFactory)
 		{
 			//{"Text":"True","MessagDateTime":"2018-10-05T12:43:47.647797-04:00","UserId":"system","Type":19}
 			string serialisedText = value.ToString();
@@ -735,7 +753,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 			string serialisedMessage = JsonConvert.SerializeObject(msg);
 			log.Info(serialisedMessage);
 			byte[] bytes = Encoding.ASCII.GetBytes(serialisedMessage);
-			await userWebSocket.WebSocket.SendAsync(new ArraySegment<byte>(bytes, 0, bytes.Length), WebSocketMessageType.Text, true, CancellationToken.None);
+			await BroadcastGroup(bytes, username, wsFactory);
 		}
 	}
 }
