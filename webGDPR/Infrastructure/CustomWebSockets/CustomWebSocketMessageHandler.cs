@@ -194,8 +194,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 						var validCredentials = signInManager.UserManager.CheckPasswordAsync(foundUser, message.Text);
 						if (validCredentials.Result)
 						{
-							userWebSocket.CredentialsChecked = true;
-							await SendLoginAsync(userWebSocket);
+							userWebSocket.CredentialsChecked = true;							
 
 							//Device is banned or User has missing subscription
 							Device found = dbContext.Device.AsNoTracking().FirstOrDefault(b => b.UserId == user.UserID && b.DeviceId == userWebSocket.DeviceId);
@@ -203,12 +202,12 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 							{
 								await SendDeviceBannedMessage(userWebSocket, true);
 								wsFactory.Remove(userWebSocket.Guid);
-
 								LogDeviceActivity(dbContext, userWebSocket.DeviceId, "WebSocket Remove - Device Banned", JsonConvert.SerializeObject(userWebSocket));
 								await userWebSocket.WebSocket.CloseAsync(WebSocketCloseStatus.Empty, string.Empty, CancellationToken.None);
 							}
 							else
 							{
+								await SendLoginAsync(userWebSocket);
 								if (user.MissingSubscription)
 								{
 									await SendMissingSubscriptionMessageAsync(true, userWebSocket.Username, wsFactory);
