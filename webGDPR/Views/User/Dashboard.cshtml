@@ -14,7 +14,7 @@
 			@if (Model.MissingSubscription)
 			{
 				<li>
-					<b>Missing Subscription</b>
+					<b><a asp-action="FixMissingSubscription">Missing Subscription</a></b>
 				</li>
 			}
 			@if (Model.Bases.Count() + @Model.Collars.Count() == 0)

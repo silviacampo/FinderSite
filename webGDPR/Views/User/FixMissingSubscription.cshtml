@@ -5,8 +5,45 @@
 
 <h2>Fix Missing Subscription</h2>
 
-Show the pets you have in your list, active pets.
-Show the subscritions you are paying.
+You have the following trackers:
+<table class="table">
+	<thead>
+		<tr>
+			<th class="visible-md visible-lg">
+				@Html.DisplayNameFor(model => model.Collars[0].CollarNumber)
+			</th>
+			<th class="visible-md visible-lg">
+				@Html.DisplayNameFor(model => model.Collars[0].HWId)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Collars[0].Name)
+			</th>
+			<th class="visible-md visible-lg">
+				@Html.DisplayNameFor(model => model.Collars[0].Description)
+			</th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var item in @Model.Collars)
+		{
+			<tr>
+				<td class="visible-md visible-lg">
+					@Html.DisplayFor(modelItem => item.CollarNumber)
+				</td>
+				<td class="visible-md visible-lg">
+					@Html.DisplayFor(modelItem => item.HWId)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Name)
+				</td>
+				<td class="visible-md visible-lg">
+					@Html.DisplayFor(modelItem => item.Description)
+				</td>				
+			</tr>
+		}
+	</tbody>
+</table>
+But you are paying a subscription for only one tracker.
 
 Button to register
 
