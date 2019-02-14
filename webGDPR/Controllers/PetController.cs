@@ -150,16 +150,18 @@ namespace webGDPR.Controllers
 		}
 
 		//http://localhost:51420/Pet/Map?username=SilviaCampo&password=As!123456&collarnumber=1
-		[AllowAnonymous]
-		public async Task<IActionResult> Map(string username, string password, int collarnumber)
+		//http://localhost:51420/Identity/Account/SilentLogin?Username=SilviaCampo&ReturnUrl=%2FPet%2FMap%3Fusername%3DSilviaCampo%26collarnumber%3D1
+		//[AllowAnonymous]
+		//public async Task<IActionResult> Map(string username, string password, int collarnumber)
+		public async Task<IActionResult> Map(string username, int collarnumber)
 		{
-			if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(username) || collarnumber < 1)
-			{
-				return NotFound();
-			}
-			var result = await _signInManager.PasswordSignInAsync(username, password, false, lockoutOnFailure: true);
-			if (result.Succeeded)
-			{
+			//if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(username) || collarnumber < 1)
+			//{
+			//	return NotFound();
+			//}
+			//var result = await _signInManager.PasswordSignInAsync(username, password, false, lockoutOnFailure: true);
+			//if (result.Succeeded)
+			//{
 				var user = await _context.User.FirstOrDefaultAsync(m => m.Name == username);
 				if (user != null)
 				{
@@ -187,8 +189,8 @@ namespace webGDPR.Controllers
 					return NotFound();
 				}
 				return NotFound();
-			}
-			return NotFound();
+			//}
+			//return NotFound();
 		}
 
 		// GET: Pet/Create

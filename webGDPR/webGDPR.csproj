@@ -68,6 +68,9 @@
     <Content Update="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Update="Areas\Identity\Pages\Account\SilentLogin.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
     <Content Update="Pages\Shared\InstallApplicationContent.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>

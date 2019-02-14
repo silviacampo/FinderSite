@@ -13,12 +13,12 @@ using webGDPR.Data;
 namespace webGDPR.Areas.Identity.Pages.Account
 {
 	[AllowAnonymous]
-    public class LoginModel : PageModel
+    public class SilentLoginModel : PageModel
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ILogger<LoginModel> _logger;
 
-        public LoginModel(SignInManager<ApplicationUser> signInManager, ILogger<LoginModel> logger)
+        public SilentLoginModel(SignInManager<ApplicationUser> signInManager, ILogger<LoginModel> logger)
         {
             _signInManager = signInManager;
             _logger = logger;
@@ -30,9 +30,8 @@ namespace webGDPR.Areas.Identity.Pages.Account
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
 
         public string ReturnUrl { get; set; }
-		public string Username { get; set; }
 
-		[TempData]
+        [TempData]
         public string ErrorMessage { get; set; }
 
         public class InputModel
@@ -50,7 +49,7 @@ namespace webGDPR.Areas.Identity.Pages.Account
             public bool RememberMe { get; set; }
         }
 
-        public async Task OnGetAsync(string username = null, string returnUrl = null)
+        public async Task OnGetAsync(string returnUrl = null)
         {
             if (!string.IsNullOrEmpty(ErrorMessage))
             {
@@ -65,7 +64,6 @@ namespace webGDPR.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
             ReturnUrl = returnUrl;
-			Username = username;
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
