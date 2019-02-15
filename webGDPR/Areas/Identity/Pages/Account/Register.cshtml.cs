@@ -86,6 +86,7 @@ namespace webGDPR.Areas.Identity.Pages.Account
 			[Display(Name = "Pet Name (Optional, default to Pet 1)")]
 			public string PetName { get; set; }
 
+			//http://jasonwatmore.com/post/2013/10/16/aspnet-mvc-required-checkbox-with-data-annotations
 			//[Range(typeof(bool), "true", "true", ErrorMessage = "You have to accept the subscription.")]
 			[Display(Name = "I accept to subscribe to the monthly plan")]
 			public bool Subscribe { get; set; }
