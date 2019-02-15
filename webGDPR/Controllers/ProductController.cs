@@ -54,10 +54,11 @@ namespace webGDPR.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ProductId,Model,Name,Text,Description,Category,Price,Weight,Width,Height,Deep,QuantityInStock,CreationDate,Deleted")] Product product)
+        public async Task<IActionResult> Create([Bind("ProductId,Model,Name,Text,Description,Category, Type,Price,Weight,Width,Height,Length,QuantityInStock,Deleted")] Product product)
         {
             if (ModelState.IsValid)
             {
+				product.CreationDate = DateTime.Now;
                 _context.Add(product);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -86,7 +87,7 @@ namespace webGDPR.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("ProductId,Model,Name,Text,Description,Category,Price,Weight,Width,Height,Deep,QuantityInStock,CreationDate,Deleted")] Product product)
+        public async Task<IActionResult> Edit(string id, [Bind("ProductId,Model,Name,Text,Description,Category, Type,Price,Weight,Width,Height,Length,QuantityInStock,Deleted")] Product product)
         {
             if (id != product.ProductId)
             {
@@ -97,7 +98,9 @@ namespace webGDPR.Controllers
             {
                 try
                 {
-                    _context.Update(product);
+					var foundproduct = await _context.Product.AsNoTracking().FirstAsync(p=>p.ProductId == id);
+					product.CreationDate = foundproduct.CreationDate;
+					_context.Update(product);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
