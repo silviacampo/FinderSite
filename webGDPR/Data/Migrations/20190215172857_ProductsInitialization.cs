@@ -10,7 +10,7 @@ namespace webGDPR.Data.Migrations
 				migrationBuilder.InsertData(
 				table: "product",
 			   columns: new[] { "Model","Name","Text","Type","Price" },
-			   values: new object[] { "S-1", "Subscription-1", "Monthly Subscription", "services", 10 });
+			   values: new object[] { "S-1", "Subscription", "Monthly Subscription", "services", 10 });
 
 				migrationBuilder.InsertData(
 				table: "product",
