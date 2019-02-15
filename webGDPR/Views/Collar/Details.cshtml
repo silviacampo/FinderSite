@@ -94,7 +94,13 @@
 			@foreach (webGDPR.Models.CollarStatus dl in Model.CollarStatus)
 			{
 				<tr>
-					<td>@DateTime.SpecifyKind(dl.CreationDate, DateTimeKind.Utc).ToLocalTime()</td>
+					<td>
+						<script type="text/javascript">
+							  var strDate = new String('@dl.CreationDate.ToString("MM/dd/yyyy hh:mm:ss tt") UTC');
+							  var localTime = new Date(strDate);
+							  document.write(localTime.toLocaleString());
+						</script>
+					</td>
 					<td>@dl.IsConnected</td>
 					<td>@if (dl.BaseConnectedTo != null)
 					{@dl.BaseConnectedTo.Name}</td>
