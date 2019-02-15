@@ -22,5 +22,7 @@ namespace webGDPR.Models
 		public List<Device> Devices { get; set; }
 
 		public List<Pet> Pets { get; set; }
+
+		public List<Subscription> Subscriptions { get; set; }
 	}
 }

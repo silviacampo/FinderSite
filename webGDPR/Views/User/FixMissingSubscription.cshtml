@@ -44,6 +44,42 @@ You have the following trackers:
 	</tbody>
 </table>
 But you are paying a subscription for only one tracker.
-
+<table class="table">
+	<thead>
+		<tr>
+			<th class="visible-md visible-lg">
+				@Html.DisplayNameFor(model => model.Subscriptions[0].Product.Name)
+			</th>
+			<th class="visible-md visible-lg">
+				@Html.DisplayNameFor(model => model.Subscriptions[0].CreationDate)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Subscriptions[0].ExpirationDate)
+			</th>
+			<th class="visible-md visible-lg">
+				@Html.DisplayNameFor(model => model.Subscriptions[0].Note)
+			</th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var item in @Model.Subscriptions)
+		{
+			<tr>
+				<td class="visible-md visible-lg">
+					@Html.DisplayFor(modelItem => item.Product.Name)
+				</td>
+				<td class="visible-md visible-lg">
+					@Html.DisplayFor(modelItem => item.CreationDate)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.ExpirationDate)
+				</td>
+				<td class="visible-md visible-lg">
+					@Html.DisplayFor(modelItem => item.Note)
+				</td>
+			</tr>
+		}
+	</tbody>
+</table>
 Button to register
 

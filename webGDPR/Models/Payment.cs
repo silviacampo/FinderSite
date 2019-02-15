@@ -2,5 +2,7 @@
 {
 	public class Payment
 	{
+		public string PaymentId { get; set; }
+
 	}
 }
