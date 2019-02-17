@@ -18,15 +18,15 @@ namespace webGDPR.Models
 		public string Type { get; set; } //good (one shoot payment) - service (recurrent payments)
 		public string Category { get; set; }
 		public decimal Price { get; set; }
-		public float Weight { get; set; }
-		public float Width { get; set; }
-		public float Height { get; set; }
-		public float Length { get; set; }
+		public float? Weight { get; set; }
+		public float? Width { get; set; }
+		public float? Height { get; set; }
+		public float? Length { get; set; }
 
-		public int QuantityInStock { get; set; }
+		public int? QuantityInStock { get; set; }
 
 		public DateTime CreationDate { get; set; }
-
+		public bool IsActive { get; set; }
 		public bool Deleted { get; set; }
 	}
 }

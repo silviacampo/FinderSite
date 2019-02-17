@@ -93,7 +93,13 @@
 			@foreach (webGDPR.Models.PetTrackingInfo dl in Model.PetTrackingInfos)
 			{
 				<tr>
-					<td>@DateTime.SpecifyKind(dl.CreationDate, DateTimeKind.Utc).ToLocalTime()</td>
+					<td>
+						<script type="text/javascript">
+							  var strDate = new String('@dl.CreationDate.ToString("MM/dd/yyyy hh:mm:ss tt") UTC');
+							  var localTime = new Date(strDate);
+							  document.write(localTime.toLocaleString());
+						</script>
+					</td>
 					<td>@dl.Latitude</td>
 					<td>@dl.Longitude</td>
 					<td>@dl.Collar.Name</td>
@@ -145,13 +151,29 @@
 			@foreach (webGDPR.Models.PetMode dl in Model.PetModes)
 			{
 				<tr>
-					<td>@DateTime.SpecifyKind(dl.CreationDate, DateTimeKind.Utc).ToLocalTime()</td>
+					<td>
+						<script type="text/javascript">
+							  var strDate = new String('@dl.CreationDate.ToString("MM/dd/yyyy hh:mm:ss tt") UTC');
+							  var localTime = new Date(strDate);
+							  document.write(localTime.toLocaleString());
+						</script>
+					</td>
 					<td>@dl.Type.ToString()</td>
-					<td>@DateTime.SpecifyKind(dl.StartDate, DateTimeKind.Utc).ToLocalTime()</td>
+					<td>
+						<script type="text/javascript">
+							  var strDate = new String('@dl.StartDate.ToString("MM/dd/yyyy hh:mm:ss tt") UTC');
+							  var localTime = new Date(strDate);
+							  document.write(localTime.toLocaleString());
+						</script>
+					</td>
 					<td>
 						@if (@dl.EndDate.Year != 1)
 						{
-							@DateTime.SpecifyKind(dl.EndDate, DateTimeKind.Utc).ToLocalTime()
+							<script type="text/javascript">
+							  var strDate = new String('@dl.EndDate.ToString("MM/dd/yyyy hh:mm:ss tt") UTC');
+							  var localTime = new Date(strDate);
+							  document.write(localTime.toLocaleString());
+							</script>
 						}
 
 					</td>

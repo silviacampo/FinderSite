@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -65,7 +66,8 @@ namespace webGDPR.Areas.Identity.Pages.Account
             [Display(Name = "Password")]
             public string Password { get; set; }
 
-            [DataType(DataType.Password)]
+			[Required]
+			[DataType(DataType.Password)]
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
@@ -83,6 +85,15 @@ namespace webGDPR.Areas.Identity.Pages.Account
 			[DataType(DataType.Text)]
 			[Display(Name = "Pet Name (Optional, default to Pet 1)")]
 			public string PetName { get; set; }
+
+			//http://jasonwatmore.com/post/2013/10/16/aspnet-mvc-required-checkbox-with-data-annotations
+			//[Range(typeof(bool), "true", "true", ErrorMessage = "You have to accept the subscription.")]
+			[Display(Name = "I accept to subscribe to the monthly plan")]
+			public bool Subscribe { get; set; }
+
+			//[Range(typeof(bool), "true", "true", ErrorMessage = "You have to accept the Terms and Conditions.")]
+			[Display(Name = "I accept the terms and conditions")]
+			public bool AcceptTC { get; set; }
 		}
 
         public void OnGet(string returnUrl = null)
@@ -142,6 +153,11 @@ namespace webGDPR.Areas.Identity.Pages.Account
 			p.LastCollarId = pc.PetCollarId;
 			_context.Update(p);
 
+			Subscription subs = new Subscription();
+			subs.CreationDate = DateTime.Now;
+			subs.UserId = u.UserID;
+			subs.ProductId = _context.Product.FirstOrDefault(prod => prod.Name == "Subscription" && prod.IsActive).ProductId;
+			_context.Add(subs);
 			await _context.SaveChangesAsync();
 		}
 

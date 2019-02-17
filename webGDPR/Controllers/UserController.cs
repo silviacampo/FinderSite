@@ -65,6 +65,13 @@ namespace webGDPR.Controllers
 			return View(user);
 		}
 
+		[Authorize]
+		public async Task<IActionResult> FixMissingSubscription()
+		{
+			User user = await _context.User.Include(c => c.Collars).Include(d => d.Subscriptions).FirstOrDefaultAsync(u => u.OwnerID == _userManager.GetUserId(User));
+			return View(user);
+		}
+
 		//
 		// GET: /<controller>/Create
 		[HttpGet]

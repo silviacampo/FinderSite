@@ -24,6 +24,9 @@ namespace webGDPR.Data
 		public DbSet<PetMode> PetMode { get; set; }
 
 		public DbSet<Product> Product { get; set; }
+		public DbSet<Payment> Payment { get; set; }
+		public DbSet<Subscription> Subscription { get; set; }
+
 		public DbSet<Invoice> Invoice { get; set; }
 		public DbSet<InvoiceItem> InvoiceItem { get; set; }
 	}

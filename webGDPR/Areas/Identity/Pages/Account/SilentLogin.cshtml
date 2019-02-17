@@ -1,0 +1,22 @@
+@page
+@model LoginModel
+
+@{
+    Layout = "";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body>
+	<form method="post" name="login">
+		<input type="hidden" asp-for="Input.Name" value="@Model.Username" />
+		<input type="hidden" asp-for="Input.Password" name="password" />
+	</form>
+
+	@section Scripts {
+		<partial name="_ValidationScriptsPartial" />
+	}
+</body>
+</html>

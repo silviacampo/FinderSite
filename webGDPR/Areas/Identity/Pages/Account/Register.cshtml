@@ -18,10 +18,10 @@
 				<span asp-validation-for="Input.Name" class="text-danger"></span>
 			</div>
 			@*<div class="form-group">
-					<label asp-for="Input.Age"></label>
-					<input asp-for="Input.Age" class="form-control" />
-					<span asp-validation-for="Input.Age" class="text-danger"></span>
-				</div>*@
+			<label asp-for="Input.Age"></label>
+			<input asp-for="Input.Age" class="form-control" />
+			<span asp-validation-for="Input.Age" class="text-danger"></span>
+		</div>*@
 			<div class="form-group">
 				<label asp-for="Input.Email"></label>
 				<input asp-for="Input.Email" class="form-control" />
@@ -52,17 +52,46 @@
 				<input asp-for="Input.PetName" class="form-control" />
 				<span asp-validation-for="Input.PetName" class="text-danger"></span>
 			</div>
-            <div class="form-group">
-                Subscription Payment Section
-                checkbox to accept pay the subscription
-                plus, checkbox to accept terms and conditions
-                <div id="paypal-button-container"></div>
-                <script src="https://www.paypalobjects.com/api/checkout.js"></script>
-                <script>
-                    // Render the PayPal button
-                    paypal.Button.render({
-                        // Set your environment
-                        env: 'sandbox', // sandbox | production
+			<div class="form-group">
+				<div class="checkbox">
+					<label>
+						<input asp-for="Input.Subscribe" /><label asp-for="Input.Subscribe"></label>
+					</label>
+					<span asp-validation-for="Input.Subscribe" class="text-danger"></span>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="checkbox">
+					<label>
+						<input asp-for="Input.AcceptTC" /><label asp-for="Input.AcceptTC"></label>
+					</label>
+					<span asp-validation-for="Input.AcceptTC" class="text-danger"></span>
+				</div>
+			</div>
+			@*<script>
+				// extend jquery range validator to work for required checkboxes
+				var defaultRangeValidator = $.validator.methods.range;
+				$.validator.methods.range = function (value, element, param) {
+					if (element.type === 'checkbox') {
+						// if it's a checkbox return true if it is checked
+						return element.checked;
+					} else {
+						// otherwise run the default validation function
+						return defaultRangeValidator.call(this, value, element, param);
+					}
+				}
+			</script>*@
+			<div class="form-group">
+				Subscription Payment Section
+				checkbox to accept pay the subscription
+				plus, checkbox to accept terms and conditions
+				<div id="paypal-button-container"></div>
+				<script src="https://www.paypalobjects.com/api/checkout.js"></script>
+				<script>
+					// Render the PayPal button
+					paypal.Button.render({
+						// Set your environment
+						env: 'sandbox', // sandbox | production
 
                         // Specify the style of the button
                         style: {
