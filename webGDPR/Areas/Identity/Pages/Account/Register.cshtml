@@ -52,74 +52,81 @@
 				<input asp-for="Input.PetName" class="form-control" />
 				<span asp-validation-for="Input.PetName" class="text-danger"></span>
 			</div>
-			<div class="form-group">
-				Subscription Payment Section
-				checkbox to accept pay the subscription
-				plus, checkbox to accept terms and conditions
-				<div id="paypal-button-container"></div>
-				<script src="https://www.paypalobjects.com/api/checkout.js"></script>
-				<script>
-					// Render the PayPal button
-					paypal.Button.render({
-						// Set your environment
-						env: 'sandbox', // sandbox | production
+            <div class="form-group">
+                Subscription Payment Section
+                checkbox to accept pay the subscription
+                plus, checkbox to accept terms and conditions
+                <div id="paypal-button-container"></div>
+                <script src="https://www.paypalobjects.com/api/checkout.js"></script>
+                <script>
+                    // Render the PayPal button
+                    paypal.Button.render({
+                        // Set your environment
+                        env: 'sandbox', // sandbox | production
 
-						// Specify the style of the button
-						style: {
-							layout: 'vertical',  // horizontal | vertical
-							size: 'medium',    // medium | large | responsive
-							shape: 'rect',      // pill | rect
-							color: 'gold'       // gold | blue | silver | white | black
-						},
+                        // Specify the style of the button
+                        style: {
+                            layout: 'vertical',  // horizontal | vertical
+                            size: 'medium',    // medium | large | responsive
+                            shape: 'rect',      // pill | rect
+                            color: 'gold'       // gold | blue | silver | white | black
+                        },
 
-						// Specify allowed and disallowed funding sources
-						//
-						// Options:
-						// - paypal.FUNDING.CARD
-						// - paypal.FUNDING.CREDIT
-						// - paypal.FUNDING.ELV
-						funding: {
-							allowed: [
-								paypal.FUNDING.CARD,
-								paypal.FUNDING.CREDIT
-							],
-							disallowed: []
-						},
+                        // Specify allowed and disallowed funding sources
+                        //
+                        // Options:
+                        // - paypal.FUNDING.CARD
+                        // - paypal.FUNDING.CREDIT
+                        // - paypal.FUNDING.ELV
+                        funding: {
+                            allowed: [
+                                paypal.FUNDING.CARD,
+                                paypal.FUNDING.CREDIT
+                            ],
+                            disallowed: []
+                        },
 
-						// Enable Pay Now checkout flow (optional)
-						commit: true,
+                        // Enable Pay Now checkout flow (optional)
+                        commit: true,
 
-						// PayPal Client IDs - replace with your own
-						// Create a PayPal app: https://developer.paypal.com/developer/applications/create
-						client: {
-							sandbox: 'AZDxjDScFpQtjWTOUtWKbyN_bDt4OgqaF4eYXlewfBP4-8aqX3PiV8e1GWU6liB2CUXlkA59kJXE7M6R',
-							production: 'AatWk8OWcDZPa0suLM2BcZiiriW_YR5DN6XrUv3Fe6-zgNcwdbqaN9wksgf2YLVPNyed8gIuxlSFk_0X'
-						},
+                        // PayPal Client IDs - replace with your own
+                        // Create a PayPal app: https://developer.paypal.com/developer/applications/create
+                        client: {
+                            sandbox: 'AZDxjDScFpQtjWTOUtWKbyN_bDt4OgqaF4eYXlewfBP4-8aqX3PiV8e1GWU6liB2CUXlkA59kJXE7M6R',
+                            production: 'AatWk8OWcDZPa0suLM2BcZiiriW_YR5DN6XrUv3Fe6-zgNcwdbqaN9wksgf2YLVPNyed8gIuxlSFk_0X'
+                        },
 
-						payment: function (data, actions) {
-							return actions.payment.create({
-								payment: {
-									transactions: [
-										{
-											amount: {
-												total: '0.01',
-												currency: 'USD'
-											}
-										}
-									]
-								}
-							});
-						},
+                        payment: function (data, actions) {
+                            return actions.payment.create({
+                                payment: {
+                                    transactions: [
+                                        {
+                                            amount: {
+                                                total: '0.01',
+                                                currency: 'USD'
+                                            }
+                                        }
+                                    ]
+                                }
+                            });
+                        },
 
-						onAuthorize: function (data, actions) {
-							return actions.payment.execute()
-								.then(function () {
-									window.alert('Payment Complete!');
-								});
-						}
-					}, '#paypal-button-container');
-				</script>
-			</div>
+                        onAuthorize: function (data, actions) {
+                            return actions.payment.execute()
+                                .then(function () {
+                                    window.alert('Payment Complete!');
+                                });
+                        }
+                    }, '#paypal-button-container');
+                </script>
+                <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+                    <input type="hidden" name="cmd" value="_s-xclick">
+                    <input type="hidden" name="hosted_button_id" value="GY6GG7E7X2HUY">
+                    <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_subscribeCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+                    <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+                </form>
+
+            </div>
 			<button type="submit" class="btn btn-default">Register</button>
 		</form>
 	</div>
