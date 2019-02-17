@@ -23,7 +23,7 @@
 				<tr>
 					<th scope="col">UserId</th>
 					<th scope="col">Name</th>
-					<th scope="col">Missing Subscription</th>
+					@*<th scope="col">Missing Subscription</th>*@
 					<th scope="col"></th>
 
 				</tr>
@@ -34,15 +34,15 @@
 				<tr>
 					<td>@u.UserID</td>
 					<td>@u.Name</td>
-					<td>@u.MissingSubscription</td>
+					@*<td>@u.MissingSubscription</td>*@
 					<td>
 						@if (u.MissingSubscription)
 						{
-							<a class="btn btn-default" asp-action="MissingSubscriptionOff" asp-route-id="@u.UserID">Subscription Paid</a>
+                        <a class="btn btn-danger active" asp-action="MissingSubscriptionOff" asp-route-id="@u.UserID">Missing Subscription</a>
 						}
 						else
 						{
-							<a class="btn btn-danger active" asp-action="MissingSubscriptionOn" asp-route-id="@u.UserID">Missing Subscription</a>
+							<a class="btn btn-default" asp-action="MissingSubscriptionOn" asp-route-id="@u.UserID">Missing Subscription</a>
 						}
 					</td>
 				</tr>
