@@ -171,4 +171,123 @@ $(document).ready(function () {
 
   });
 
-  });
+});
+
+  var ctxSc = document.getElementById('scatterChart').getContext('2d');
+	var scatterData = {
+    datasets: [{
+    borderColor: 'rgba(99,0,125, .2)',
+  backgroundColor: 'rgba(99,0,125, .5)',
+  label: 'km walked',
+			data: [{
+    x: 0,
+  y: 1.711,
+			}, {
+    x: 1,
+  y: 2.708,
+			}, {
+    x: 2,
+  y: 4.285,
+			}, {
+    x: 3,
+  y: 6.772,
+			}, {
+    x: 4,
+  y: 1.068,
+			}, {
+    x: 5,
+  y: 1.681,
+			}, {
+    x: 6,
+  y: 2.635,
+			}, {
+    x: 7,
+  y:4.106,
+			}, {
+    x: 8,
+  y: 6.339,
+			}, {
+    x: 9,
+  y: 9.659,
+			}, {
+    x: 10,
+  y: 1.445,
+			}, {
+    x: 11,
+  y: 2.110,
+			}, {
+    x: 12,
+  y: 2.992,
+			}, {
+    x: 13,
+  y: 4.102,
+			}, {
+    x: 14,
+  y: 5.429,
+			}, {
+    x: 15,
+  y: 6.944,
+			}, {
+    x: 16,
+  y: 8.607,
+			}, {
+    x: 17,
+  y: 1.038,
+			}, {
+    x: 18,
+  y: 1.223,
+			}, {
+    x: 19,
+  y: 1.413,
+			}, {
+    x: 20,
+  y: 1.607,
+			}, {
+    x: 21,
+  y: 0,
+			}, {
+    x: 22,
+  y: 2.1,
+			}, {
+    x: 23,
+  y: 2.199,
+			}]
+}]
+}
+
+	var config1 = new Chart.Scatter(ctxSc, {
+    data: scatterData,
+		options: {
+    title: {
+    display: true,
+  text: 'Pet Activity'
+},
+			scales: {
+    xAxes: [{
+    type: 'linear',
+  position: 'bottom',
+					ticks: {
+    userCallback: function (tick) {
+								return tick.toString() + 'H';
+},
+},
+					scaleLabel: {
+    labelString: 'Day hours',
+  display: true,
+}
+}],
+				yAxes: [{
+    type: 'linear',
+					ticks: {
+    userCallback: function (tick) {
+							return tick.toString() + 'Km';
+}
+},
+					scaleLabel: {
+    labelString: 'Distance',
+  display: true
+}
+}]
+}
+}
+});
