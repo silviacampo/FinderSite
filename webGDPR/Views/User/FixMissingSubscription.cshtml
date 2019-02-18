@@ -48,7 +48,7 @@ But you are paying a subscription for only one tracker.
 	<thead>
 		<tr>
 			<th class="visible-md visible-lg">
-				@Html.DisplayNameFor(model => model.Subscriptions[0].Product.Name)
+				@Html.DisplayNameFor(model => model.Subscriptions[0].Product.Text)
 			</th>
 			<th class="visible-md visible-lg">
 				@Html.DisplayNameFor(model => model.Subscriptions[0].CreationDate)
@@ -66,7 +66,7 @@ But you are paying a subscription for only one tracker.
 		{
 			<tr>
 				<td class="visible-md visible-lg">
-					@Html.DisplayFor(modelItem => item.Product.Name)
+					@Html.DisplayFor(modelItem => item.Product.Text)
 				</td>
 				<td class="visible-md visible-lg">
 					@Html.DisplayFor(modelItem => item.CreationDate)

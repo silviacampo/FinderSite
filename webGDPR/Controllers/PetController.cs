@@ -149,19 +149,10 @@ namespace webGDPR.Controllers
             return View(pet);
         }
 
-        //http://localhost:51420/Pet/Map?username=SilviaCampo&password=As!123456&collarnumber=1
+        // GET: Pet/Map?username=SilviaCampo&collarnumber=1
         //http://localhost:51420/Identity/Account/SilentLogin?Username=SilviaCampo&ReturnUrl=%2FPet%2FMap%3Fusername%3DSilviaCampo%26collarnumber%3D1
-        //[AllowAnonymous]
-        //public async Task<IActionResult> Map(string username, string password, int collarnumber)
         public async Task<IActionResult> Map(string username, int collarnumber)
         {
-            //if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(username) || collarnumber < 1)
-            //{
-            //	return NotFound();
-            //}
-            //var result = await _signInManager.PasswordSignInAsync(username, password, false, lockoutOnFailure: true);
-            //if (result.Succeeded)
-            //{
             var user = await _context.User.FirstOrDefaultAsync(m => m.Name == username);
             if (user != null)
             {
@@ -189,12 +180,93 @@ namespace webGDPR.Controllers
                 return NotFound();
             }
             return NotFound();
-            //}
-            //return NotFound();
         }
 
-        // GET: Pet/Create
-        public async Task<IActionResult> Create()
+		// GET: Pet/Stats/5
+		public async Task<IActionResult> Stats(string id, string searchString, string currentFilter, int? pageIndex, string searchString2, string currentFilter2, int? pageIndex2)
+		{
+			if (id == null)
+			{
+				return NotFound();
+			}
+
+			var pet = await _context.Pet.AsNoTracking().Include(c => c.LastTrackingInfo).Include(m => m.LastMode).Include(b => b.LastCollar).ThenInclude(c => c.Collar)
+				.FirstOrDefaultAsync(m => m.PetId == id && !m.Deleted);
+			if (pet == null)
+			{
+				return NotFound();
+			}
+
+			PetViewModel model = _mapper.Map<PetViewModel>(new Tuple<Pet, PetTrackingInfo>(pet, pet.LastTrackingInfo));
+			if (pet.LastCollar != null && pet.LastCollar.Collar != null)
+			{
+				model.CollarName = pet.LastCollar.Collar.Name;
+			}
+
+			if (searchString != null)
+			{
+				pageIndex = 1;
+			}
+			else
+			{
+				if (currentFilter == null)
+				{
+					searchString = string.Empty;
+				}
+				else
+				{
+					searchString = currentFilter;
+				}
+			}
+			model.CurrentFilter = searchString;
+			int pageSize = 10;
+			model.PetTrackingInfos = await PaginatedList<PetTrackingInfo>.CreateAsync(
+				_context.PetTrackingInfo.Where(s => s.PetId == id && (s.Latitude.ToString().Contains(searchString) || s.Longitude.ToString().Contains(searchString))).Include(d => d.Collar).OrderByDescending(d => d.CreationDate).AsNoTracking(), pageIndex ?? 1, pageSize);
+
+			List<PetTrackingInfo> PetTrackingInfos = _context.PetTrackingInfo.Where(s => s.PetId == id).OrderBy(s=>s.CreationDate).ToList(); //Todo: only last month
+			double[] totalDistance = new double[24];
+
+			for (int i = 0; i < PetTrackingInfos.Count - 1; i++) {
+
+				var distance = DistanceCalculation.Calculate(PetTrackingInfos[0].Latitude, PetTrackingInfos[0].Longitude, PetTrackingInfos[1].Latitude, PetTrackingInfos[1].Longitude, 'K');
+				int hour = PetTrackingInfos[1].CreationDate.Hour;
+				totalDistance[hour] += distance;
+			}
+
+			double totaldays = (PetTrackingInfos[PetTrackingInfos.Count - 1].CreationDate.Date - PetTrackingInfos[0].CreationDate.Date).TotalDays;
+
+			double[] avgDistance = new double[24];
+			for (int j = 0; j < 24; j++) {
+				if (totaldays > 0)
+					avgDistance[j] = totalDistance[j] / totaldays;
+				else
+					avgDistance[j] = totalDistance[j];
+			}
+
+			if (searchString2 != null)
+			{
+				pageIndex2 = 1;
+			}
+			else
+			{
+				if (currentFilter2 == null)
+				{
+					searchString2 = string.Empty;
+				}
+				else
+				{
+					searchString2 = currentFilter2;
+				}
+			}
+			model.CurrentFilterMode = searchString2;
+
+			model.PetModes = await PaginatedList<PetMode>.CreateAsync(
+				_context.PetMode.Where(s => s.PetId == id && (s.Type.ToString().Contains(searchString2) || s.CreationDate.ToString().Contains(searchString2))).OrderByDescending(d => d.CreationDate).AsNoTracking(), pageIndex2 ?? 1, pageSize);
+			return View(model);
+		}
+
+		// GET: Pet/Create
+		public async Task<IActionResult> Create()
         {
             string UserId = _context.User.FirstOrDefault(u => u.OwnerID == _userManager.GetUserId(User)).UserID;
             List<string> petCollars = await _context.PetCollar.Where(p => p.IsActive).Select(c => c.CollarId).ToListAsync();
@@ -216,8 +288,6 @@ namespace webGDPR.Controllers
         }
 
         // POST: Pet/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("PetId,Name,Type,Breeding,Color,Age,HealthComments,CollarId,DefaultMode")] EditPetViewModel pet, IList<IFormFile> imagesFiles, string pageContent)
@@ -315,8 +385,6 @@ namespace webGDPR.Controllers
         }
 
         // POST: Pet/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, [Bind("PetId,Name,Type,Breeding,Color,Age,HealthComments,CollarId,DefaultMode")] EditPetViewModel pet, IList<IFormFile> imagesFiles, string pageContent)

@@ -38,7 +38,7 @@ namespace webGDPR.Areas.Identity.Pages.Account.Manage
             _logger = logger;
 			_context = context;
 		}
-
+		//Todo: update this method with all new tables and columns added
 		private async Task<Dictionary<string, string>> ReadClient(ApplicationUser user, string UserId)
 		{
 			var personalData = new Dictionary<string, string>();

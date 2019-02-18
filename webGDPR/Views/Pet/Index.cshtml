@@ -121,6 +121,7 @@
 						}}
 					<a asp-action="Edit" asp-route-id="@item.PetId">Edit</a> |
 					<a asp-action="Details" asp-route-id="@item.PetId">Details</a> |
+					<a asp-action="Stats" asp-route-id="@item.PetId">Stats</a> |
 					@if (item.Latitude != default(double) || item.Longitude != default(double))
 					{
 						<a asp-action="Track" asp-route-id="@item.PetId">Track</a>

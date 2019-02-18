@@ -1,0 +1,195 @@
+﻿@model webGDPR.ViewModels.PetViewModel
+
+@{
+	ViewData["Title"] = "Pet Details";
+}
+
+<h4>@ViewData["Title"]</h4>
+<hr />
+<div>
+	<dl class="dl-horizontal">
+		<dt>
+			@Html.DisplayNameFor(model => model.Name)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.Name)
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.Type)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.Type)
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.Breeding)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.Breeding)
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.Age)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.Age)
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.HealthComments)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.HealthComments)
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.DefaultMode)
+		</dt>
+		<dd>
+			<div class="range">
+				<input asp-for="DefaultMode" type="range" min="2" max="6" readonly="readonly" step="1" value="@((byte)Model.DefaultMode)">
+			</div>
+			<ul class="range-labels">
+				<li class="@((Model.DefaultMode == ConfigModeTypes.Young) ? "active selected" : "")">Young</li>
+				<li class="@((Model.DefaultMode == ConfigModeTypes.Active) ? "active selected" : "")">Active</li>
+				<li class="@((Model.DefaultMode == ConfigModeTypes.Regular) ? "active selected" : "")">Regular</li>
+				<li class="@((Model.DefaultMode == ConfigModeTypes.Lazy) ? "active selected" : "")">Lazy</li>
+				<li class="@((Model.DefaultMode == ConfigModeTypes.Mature) ? "active selected" : "")">Mature</li>
+			</ul>
+		</dd>
+	</dl>
+</div>
+
+<div class="col-md-12">
+	<h2>Locations</h2>
+	<form asp-action="Details" method="get">
+		<div class="form-actions no-color">
+			<p>
+				Find:
+				<input type="text" name="SearchString" value="@Model.CurrentFilter" />
+				<input type="submit" value="Search" class="btn btn-default" /> |
+				<a asp-action="Details">Back to full List</a>
+			</p>
+		</div>
+	</form>
+	<table class="table">
+		<thead>
+			<tr>
+				<th scope="col">CreationDate</th>
+				<th scope="col">Latitude</th>
+				<th scope="col">Longitude</th>
+				<th scope="col">Collar</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (webGDPR.Models.PetTrackingInfo dl in Model.PetTrackingInfos)
+			{
+				<tr>
+					<td>
+						<script type="text/javascript">
+							  var strDate = new String('@dl.CreationDate.ToString("MM/dd/yyyy hh:mm:ss tt") UTC');
+							  var localTime = new Date(strDate);
+							  document.write(localTime.toLocaleString());
+						</script>
+					</td>
+					<td>@dl.Latitude</td>
+					<td>@dl.Longitude</td>
+					<td>@dl.Collar.Name</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+	@{
+		var prevDisabled = !Model.PetTrackingInfos.HasPreviousPage ? "disabled" : "";
+		var nextDisabled = !Model.PetTrackingInfos.HasNextPage ? "disabled" : "";
+	}
+
+	<a asp-action="Details"
+	   asp-route-pageIndex="@(Model.PetTrackingInfos.PageIndex - 1)"
+	   asp-route-currentFilter="@Model.CurrentFilter"
+	   class="btn btn-default @prevDisabled">
+		Previous
+	</a>
+	<a asp-action="Details"
+	   asp-route-pageIndex="@(Model.PetTrackingInfos.PageIndex + 1)"
+	   asp-route-currentFilter="@Model.CurrentFilter"
+	   class="btn btn-default @nextDisabled">
+		Next
+	</a>
+</div>
+
+<div class="col-md-12">
+	<h2>Modes</h2>
+	<form asp-action="Details" method="get">
+		<div class="form-actions no-color">
+			<p>
+				Find:
+				<input type="text" name="SearchString2" value="@Model.CurrentFilterMode" />
+				<input type="submit" value="Search" class="btn btn-default" /> |
+				<a asp-action="Details">Back to full List</a>
+			</p>
+		</div>
+	</form>
+	<table class="table">
+		<thead>
+			<tr>
+				<th scope="col">CreationDate</th>
+				<th scope="col">Type</th>
+				<th scope="col">StartDate</th>
+				<th scope="col">EndDate</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (webGDPR.Models.PetMode dl in Model.PetModes)
+			{
+				<tr>
+					<td>
+						<script type="text/javascript">
+							  var strDate = new String('@dl.CreationDate.ToString("MM/dd/yyyy hh:mm:ss tt") UTC');
+							  var localTime = new Date(strDate);
+							  document.write(localTime.toLocaleString());
+						</script>
+					</td>
+					<td>@dl.Type.ToString()</td>
+					<td>
+						<script type="text/javascript">
+							  var strDate = new String('@dl.StartDate.ToString("MM/dd/yyyy hh:mm:ss tt") UTC');
+							  var localTime = new Date(strDate);
+							  document.write(localTime.toLocaleString());
+						</script>
+					</td>
+					<td>
+						@if (@dl.EndDate.Year != 1)
+						{
+							<script type="text/javascript">
+							  var strDate = new String('@dl.EndDate.ToString("MM/dd/yyyy hh:mm:ss tt") UTC');
+							  var localTime = new Date(strDate);
+							  document.write(localTime.toLocaleString());
+							</script>
+						}
+
+					</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+	@{
+		var prevDisabled2 = !Model.PetModes.HasPreviousPage ? "disabled" : "";
+		var nextDisabled2 = !Model.PetModes.HasNextPage ? "disabled" : "";
+	}
+
+	<a asp-action="Details"
+	   asp-route-pageIndex2="@(Model.PetModes.PageIndex - 1)"
+	   asp-route-currentFilter2="@Model.CurrentFilterMode"
+	   class="btn btn-default @prevDisabled2">
+		Previous
+	</a>
+	<a asp-action="Details"
+	   asp-route-pageIndex2="@(Model.PetModes.PageIndex + 1)"
+	   asp-route-currentFilter2="@Model.CurrentFilterMode"
+	   class="btn btn-default @nextDisabled2">
+		Next
+	</a>
+</div>
+
+
+<div>
+	<a asp-action="Edit" asp-route-id="@Model.PetId">Edit</a> |
+	<a asp-action="Index">Back to List</a>
+</div>
