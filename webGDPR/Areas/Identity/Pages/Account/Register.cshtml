@@ -63,12 +63,12 @@
 			<div class="form-group">
 				<div class="checkbox">
 					<label>
-						<input asp-for="Input.AcceptTC" /><label asp-for="Input.AcceptTC"></label>
+						<input asp-for="Input.AcceptTC" /><label asp-for="Input.AcceptTC"></label> <a asp-controller="Home" target="_blank" asp-action="TermsAndConditions">Read more...</a>
 					</label>
 					<span asp-validation-for="Input.AcceptTC" class="text-danger"></span>
 				</div>
 			</div>
-			@*<script>
+			<script>
 				// extend jquery range validator to work for required checkboxes
 				var defaultRangeValidator = $.validator.methods.range;
 				$.validator.methods.range = function (value, element, param) {
@@ -80,7 +80,7 @@
 						return defaultRangeValidator.call(this, value, element, param);
 					}
 				}
-			</script>*@
+			</script>
 			<div class="form-group">
 				Subscription Payment Section
 				checkbox to accept pay the subscription

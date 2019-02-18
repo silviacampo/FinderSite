@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using webGDPR.Data;
+using webGDPR.Infrastructure;
 using webGDPR.Models;
 
 namespace webGDPR.Areas.Identity.Pages.Account
@@ -86,13 +87,12 @@ namespace webGDPR.Areas.Identity.Pages.Account
 			[Display(Name = "Pet Name (Optional, default to Pet 1)")]
 			public string PetName { get; set; }
 
-			//http://jasonwatmore.com/post/2013/10/16/aspnet-mvc-required-checkbox-with-data-annotations
-			//[Range(typeof(bool), "true", "true", ErrorMessage = "You have to accept the subscription.")]
 			[Display(Name = "I accept to subscribe to the monthly plan")]
+			[MustBeTrue(ErrorMessage = "You have to accept the subscription.")]
 			public bool Subscribe { get; set; }
 
-			//[Range(typeof(bool), "true", "true", ErrorMessage = "You have to accept the Terms and Conditions.")]
-			[Display(Name = "I accept the terms and conditions")]
+			[Display(Name = "I accept the Terms and Conditions.")]
+			[MustBeTrue(ErrorMessage = "You have to accept the Terms and Conditions.")]
 			public bool AcceptTC { get; set; }
 		}
 
