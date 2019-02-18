@@ -228,8 +228,8 @@ namespace webGDPR.Controllers
 
 			for (int i = 0; i < PetTrackingInfos.Count - 1; i++) {
 
-				var distance = DistanceCalculation.Calculate(PetTrackingInfos[0].Latitude, PetTrackingInfos[0].Longitude, PetTrackingInfos[1].Latitude, PetTrackingInfos[1].Longitude, 'K');
-				int hour = PetTrackingInfos[1].CreationDate.Hour;
+				var distance = DistanceCalculation.Calculate(PetTrackingInfos[i].Latitude, PetTrackingInfos[i].Longitude, PetTrackingInfos[i+1].Latitude, PetTrackingInfos[i+1].Longitude, 'K');
+				int hour = PetTrackingInfos[i + 1].CreationDate.Hour;
 				totalDistance[hour] += distance;
 			}
 
