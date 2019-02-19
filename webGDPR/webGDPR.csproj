@@ -90,6 +90,9 @@
     <Content Update="Views\Monitoring\Index.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
+    <Content Update="Views\Pet\Map2.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
     <Content Update="Views\Pet\Stats.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>

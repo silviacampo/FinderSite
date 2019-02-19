@@ -182,6 +182,43 @@ namespace webGDPR.Controllers
             return NotFound();
         }
 
+		// GET: Pet/Map2?u=SilviaCampo&g=34a33904-49d5-4edc-be95-00af3e64eecd&cn=2
+		//http://localhost:51420/Identity/Account/SilentLogin?Username=SilviaCampo&ReturnUrl=%2FPet%2FMap%3Fusername%3DSilviaCampo%26collarnumber%3D1
+		[AllowAnonymous]
+		public async Task<IActionResult> Map2(string u, string g, int cn)
+		{
+			var device = await _context.Device.FirstOrDefaultAsync(d => d.DeviceId == g);
+			if (device != null) {
+				var user = await _context.User.FirstOrDefaultAsync(m => m.Name == u);
+				if (user != null)
+				{
+					var collar = await _context.Collar.FirstOrDefaultAsync(m => m.UserId == user.UserID && m.CollarNumber == cn);
+					if (collar != null)
+					{
+						var petCollar = await _context.PetCollar.FirstOrDefaultAsync(m => m.IsActive && m.CollarId == collar.CollarId);
+						if (petCollar != null)
+						{
+							var pet = await _context.Pet.Include(b => b.LastTrackingInfo).FirstOrDefaultAsync(m => m.PetId == petCollar.PetId);
+							if (pet == null)
+							{
+								return NotFound();
+							}
+							if (pet.LastTrackingInfo == null)
+							{
+								return NotFound(); //create a custom page to show that this pet is not tracking any information
+							}
+							pet.TrackingInfos = await _context.PetTrackingInfo.Where(t => t.PetId == petCollar.PetId).Take(10).ToListAsync();
+
+							return View(pet);
+						}
+						return NotFound();
+					}
+					return NotFound();
+				}
+			}
+			return NotFound();
+		}
+
 		// GET: Pet/Stats/5
 		public async Task<IActionResult> Stats(string id, string searchString, string currentFilter, int? pageIndex, string searchString2, string currentFilter2, int? pageIndex2)
 		{
