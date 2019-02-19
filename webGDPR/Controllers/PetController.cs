@@ -627,7 +627,38 @@ namespace webGDPR.Controllers
             }
         }
 
-        [HttpPost]
+		public async Task<IActionResult> StatsPeriod6Month(string id) {
+			bool result = await SetStatsPeriodAsync("6M", id);
+			if (!result)
+			{
+				return NotFound();
+			}
+			return RedirectToAction(nameof(Stats), new { id });
+		}
+		public async Task<IActionResult> StatsPeriodMonth(string id)
+		{
+			bool result = await SetStatsPeriodAsync("M", id);
+			if (!result)
+			{
+				return NotFound();
+			}
+			return RedirectToAction(nameof(Stats), new { id });
+		}
+		public async Task<IActionResult> StatsPeriodWeek(string id)
+		{
+			bool result = await SetStatsPeriodAsync("W", id);
+			if (!result)
+			{
+				return NotFound();
+			}
+			return RedirectToAction(nameof(Stats), new { id });
+		}
+		private Task<bool> SetStatsPeriodAsync(string period, string id)
+		{
+			throw new NotImplementedException();
+		}
+
+		[HttpPost]
         public FileStreamResult UploadImages(string PetId, IList<IFormFile> files)
         {
             FileStreamResult result = null;

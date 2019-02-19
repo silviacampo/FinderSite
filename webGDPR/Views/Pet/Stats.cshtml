@@ -55,6 +55,11 @@
 		</dd>
 	</dl>
 </div>
+<div class="btn-group" role="group" aria-label="...">
+	<a class="btn btn-default" asp-action="StatsPeriodWeek" asp-route-id="@Model.PetId">last week</a>
+	<a class="btn btn-default" asp-action="StatsPeriodMonth" asp-route-id="@Model.PetId">last month</a>
+	<a class="btn btn-default" asp-action="StatsPeriod6Month" asp-route-id="@Model.PetId">last 6 months</a>	
+</div>
 <canvas id="activityChart"></canvas>
 
 
