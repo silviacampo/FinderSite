@@ -639,7 +639,7 @@ namespace webGDPR.Controllers
         }
 
 		[HttpPost]
-		public async Task<IActionResult> StatsPeriod(string id)
+		public async Task<IActionResult> StatsPeriod(string id, string period)
 		{
 			//bool result = await SetStatsPeriodAsync("W", id);
 			//if (!result)

@@ -426,7 +426,7 @@ var myBarChart = new Chart(ctxB, {
   }
 });
 
-  $("#WeekBtn").click(function () {
+$("#btnWeek").click(function () {
     $.ajax({
       url: '/pet/StatsPeriod',
       type: 'POST',

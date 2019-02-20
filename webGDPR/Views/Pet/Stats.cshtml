@@ -66,9 +66,9 @@
 	</div>
 </div>
 <div class="btn-group" role="group" aria-label="..." style="float:right;">
-	<button class="btn btn-default" id="WeekBtn" asp-route-id="@Model.PetId">last week</button>
-	<button class="btn btn-default" id="WeekBtn" asp-route-id="@Model.PetId">last month</button>
-	<button class="btn btn-default" id="WeekBtn" asp-route-id="@Model.PetId">last 6 months</button>
+	<button class="btn btn-default" id="btnWeek" data-period="W" data-petId="@Model.PetId">last week</button>
+	<button class="btn btn-default" id="btnMonth" data-period="M" data-petId="@Model.PetId">last month</button>
+	<button class="btn btn-default" id="btnSemester" data-period="S" data-petId="@Model.PetId">last 6 months</button>
 </div>
 
 <div class="well well-lg" style="margin-top:10px;">
