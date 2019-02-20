@@ -1,68 +1,65 @@
 ﻿@model webGDPR.ViewModels.PetViewModel
 
 @{
-	ViewData["Title"] = "Pet Details";
+	ViewData["Title"] = "Pet Facts";
 }
 
 <h4>@ViewData["Title"]</h4>
-<hr />
-<div>
-	<dl class="dl-horizontal">
-		<dt>
-			@Html.DisplayNameFor(model => model.Name)
-		</dt>
-		<dd>
-			@Html.DisplayFor(model => model.Name)
-		</dd>
-		<dt>
-			@Html.DisplayNameFor(model => model.Type)
-		</dt>
-		<dd>
-			@Html.DisplayFor(model => model.Type)
-		</dd>
-		<dt>
-			@Html.DisplayNameFor(model => model.Breeding)
-		</dt>
-		<dd>
-			@Html.DisplayFor(model => model.Breeding)
-		</dd>
-		<dt>
-			@Html.DisplayNameFor(model => model.Age)
-		</dt>
-		<dd>
-			@Html.DisplayFor(model => model.Age)
-		</dd>
-		<dt>
-			@Html.DisplayNameFor(model => model.HealthComments)
-		</dt>
-		<dd>
-			@Html.DisplayFor(model => model.HealthComments)
-		</dd>
-		<dt>
-			@Html.DisplayNameFor(model => model.DefaultMode)
-		</dt>
-		<dd>
-			<div class="range">
-				<input asp-for="DefaultMode" type="range" min="2" max="6" readonly="readonly" step="1" value="@((byte)Model.DefaultMode)">
-			</div>
-			<ul class="range-labels">
-				<li class="@((Model.DefaultMode == ConfigModeTypes.Young) ? "active selected" : "")">Young</li>
-				<li class="@((Model.DefaultMode == ConfigModeTypes.Active) ? "active selected" : "")">Active</li>
-				<li class="@((Model.DefaultMode == ConfigModeTypes.Regular) ? "active selected" : "")">Regular</li>
-				<li class="@((Model.DefaultMode == ConfigModeTypes.Lazy) ? "active selected" : "")">Lazy</li>
-				<li class="@((Model.DefaultMode == ConfigModeTypes.Mature) ? "active selected" : "")">Mature</li>
-			</ul>
-		</dd>
-	</dl>
+<div class="panel panel-default">
+	<!-- Default panel contents -->
+	<div class="panel-heading">@Html.DisplayFor(model => model.Name)</div>
+	<div class="panel-body">
+		<div>
+			<dl class="dl-horizontal">
+				<dt>
+					@Html.DisplayNameFor(model => model.Type)
+				</dt>
+				<dd>
+					@Html.DisplayFor(model => model.Type)
+				</dd>
+				<dt>
+					@Html.DisplayNameFor(model => model.Breeding)
+				</dt>
+				<dd>
+					@Html.DisplayFor(model => model.Breeding)
+				</dd>
+				<dt>
+					@Html.DisplayNameFor(model => model.Age)
+				</dt>
+				<dd>
+					@Html.DisplayFor(model => model.Age)
+				</dd>
+				<dt>
+					@Html.DisplayNameFor(model => model.HealthComments)
+				</dt>
+				<dd>
+					@Html.DisplayFor(model => model.HealthComments)
+				</dd>
+				<dt>
+					@Html.DisplayNameFor(model => model.DefaultMode)
+				</dt>
+				<dd>
+					<div class="range" style="margin:15px;">
+						<input asp-for="DefaultMode" type="range" min="2" max="6" readonly="readonly" step="1" value="@((byte)Model.DefaultMode)">
+					</div>
+					<ul class="range-labels">
+						<li class="@((Model.DefaultMode == ConfigModeTypes.Young) ? "active selected" : "")">Young</li>
+						<li class="@((Model.DefaultMode == ConfigModeTypes.Active) ? "active selected" : "")">Active</li>
+						<li class="@((Model.DefaultMode == ConfigModeTypes.Regular) ? "active selected" : "")">Regular</li>
+						<li class="@((Model.DefaultMode == ConfigModeTypes.Lazy) ? "active selected" : "")">Lazy</li>
+						<li class="@((Model.DefaultMode == ConfigModeTypes.Mature) ? "active selected" : "")">Mature</li>
+					</ul>
+				</dd>
+			</dl>
+		</div>
+	</div>
 </div>
-<div class="btn-group" role="group" aria-label="...">
+<div class="btn-group" role="group" aria-label="..." >
 	<a class="btn btn-default" asp-action="StatsPeriodWeek" asp-route-id="@Model.PetId">last week</a>
 	<a class="btn btn-default" asp-action="StatsPeriodMonth" asp-route-id="@Model.PetId">last month</a>
-	<a class="btn btn-default" asp-action="StatsPeriod6Month" asp-route-id="@Model.PetId">last 6 months</a>	
+	<a class="btn btn-default" asp-action="StatsPeriod6Month" asp-route-id="@Model.PetId">last 6 months</a>
 </div>
 <canvas id="activityChart"></canvas>
-
-
 <div class="col-md-12">
 	<h2>Locations</h2>
 	<form asp-action="Details" method="get">
