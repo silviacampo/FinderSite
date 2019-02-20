@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using webGDPR.Data;
 using webGDPR.Models;
@@ -20,13 +21,14 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 		static ICustomWebSocketFactory _wsFactory;
 		static ICustomWebSocketMessageHandler _wsmHandler;
 		static ApplicationDbContext _dbContext;
+		static ILogger<CustomWebSocketManager> _logger;
 
 		public CustomWebSocketManager(RequestDelegate next)
 		{
 			_next = next;
 		}
 
-		public async Task Invoke(HttpContext context, ICustomWebSocketFactory wsFactory, ICustomWebSocketMessageHandler wsmHandler, SignInManager<ApplicationUser> signInManager, ApplicationDbContext dbContext, IMapper mapper, IEmailSender emailSender)
+		public async Task Invoke(HttpContext context, ICustomWebSocketFactory wsFactory, ICustomWebSocketMessageHandler wsmHandler, SignInManager<ApplicationUser> signInManager, ApplicationDbContext dbContext, IMapper mapper, IEmailSender emailSender, ILogger<CustomWebSocketManager> logger)
 		{
 			if (_wsFactory == null)
 			{
@@ -41,6 +43,11 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 			if (_dbContext == null)
 			{
 				_dbContext = dbContext;
+			}
+
+			if (_logger == null)
+			{
+				_logger = logger;
 			}
 
 			if (context.Request.Path == "/ws")
@@ -113,8 +120,20 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 		{
 			foreach (var userWebSocket in _wsFactory.All())
 			{
-				_wsmHandler.LogDeviceActivity(_dbContext, userWebSocket.DeviceId, "WebSocket Remove - Server shutdown", JsonConvert.SerializeObject(userWebSocket));
-				Task.Run(() => userWebSocket.WebSocket.CloseAsync(WebSocketCloseStatus.Empty, string.Empty, CancellationToken.None));
+				Task.Run(() =>
+				{
+					try
+					{
+						if (userWebSocket.WebSocket.State == WebSocketState.Open)
+						userWebSocket.WebSocket.CloseAsync(WebSocketCloseStatus.Empty, string.Empty, CancellationToken.None);
+						_wsmHandler.LogDeviceActivity(_dbContext, userWebSocket.DeviceId, "WebSocket Remove - Server shutdown", JsonConvert.SerializeObject(userWebSocket));
+					}
+					catch (Exception ex)
+					{
+						_logger.LogError(ex.Message);
+					}
+				}
+				);
 			}
 		}
 
