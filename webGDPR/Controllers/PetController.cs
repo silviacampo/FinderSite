@@ -234,7 +234,7 @@ namespace webGDPR.Controllers
 				return NotFound();
 			}
 
-			PetViewModel model = _mapper.Map<PetViewModel>(new Tuple<Pet, PetTrackingInfo>(pet, pet.LastTrackingInfo));
+			PetStatsModel model = _mapper.Map<PetStatsModel>(new Tuple<Pet, PetTrackingInfo>(pet, pet.LastTrackingInfo));
 			if (pet.LastCollar != null && pet.LastCollar.Collar != null)
 			{
 				model.CollarName = pet.LastCollar.Collar.Name;
@@ -272,13 +272,15 @@ namespace webGDPR.Controllers
 
 			double totaldays = (PetTrackingInfos[PetTrackingInfos.Count - 1].CreationDate.Date - PetTrackingInfos[0].CreationDate.Date).TotalDays;
 
-			double[] avgDistance = new double[24];
+			model.AvgDistance = new double[24];
 			for (int j = 0; j < 24; j++) {
 				if (totaldays > 0)
-					avgDistance[j] = totalDistance[j] / totaldays;
+					model.AvgDistance[j] = totalDistance[j] / totaldays;
 				else
-					avgDistance[j] = totalDistance[j];
+					model.AvgDistance[j] = totalDistance[j];
 			}
+
+			model.AvgDistanceDay = model.AvgDistance.Sum();
 
 			if (searchString2 != null)
 			{
