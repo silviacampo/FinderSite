@@ -270,7 +270,9 @@ namespace webGDPR.Controllers
 				totalDistance[hour] += distance;
 			}
 
-			double totaldays = (PetTrackingInfos[PetTrackingInfos.Count - 1].CreationDate.Date - PetTrackingInfos[0].CreationDate.Date).TotalDays;
+			double totaldays = 0;
+			if (PetTrackingInfos.Count > 0)
+				totaldays = (PetTrackingInfos[PetTrackingInfos.Count - 1].CreationDate.Date - PetTrackingInfos[0].CreationDate.Date).TotalDays;
 
 			model.AvgDistance = new double[24];
 			for (int j = 0; j < 24; j++) {
@@ -636,31 +638,15 @@ namespace webGDPR.Controllers
             }
         }
 
-		public async Task<IActionResult> StatsPeriod6Month(string id) {
-			bool result = await SetStatsPeriodAsync("6M", id);
-			if (!result)
-			{
-				return NotFound();
-			}
-			return RedirectToAction(nameof(Stats), new { id });
-		}
-		public async Task<IActionResult> StatsPeriodMonth(string id)
+		[HttpPost]
+		public async Task<IActionResult> StatsPeriod(string id)
 		{
-			bool result = await SetStatsPeriodAsync("M", id);
-			if (!result)
-			{
-				return NotFound();
-			}
-			return RedirectToAction(nameof(Stats), new { id });
-		}
-		public async Task<IActionResult> StatsPeriodWeek(string id)
-		{
-			bool result = await SetStatsPeriodAsync("W", id);
-			if (!result)
-			{
-				return NotFound();
-			}
-			return RedirectToAction(nameof(Stats), new { id });
+			//bool result = await SetStatsPeriodAsync("W", id);
+			//if (!result)
+			//{
+			//	return NotFound();
+			//}
+			return Json(new { success = true });
 		}
 		private Task<bool> SetStatsPeriodAsync(string period, string id)
 		{

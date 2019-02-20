@@ -425,3 +425,20 @@ var myBarChart = new Chart(ctxB, {
     }
   }
 });
+
+  $("#WeekBtn").click(function () {
+    $.ajax({
+      url: '/pet/StatsPeriod',
+      type: 'POST',
+      data: {
+        'id': '1', 'period':'W'
+      },
+      contentType: 'application/json; charset=utf-8',
+      success: function (data) {
+        alert(data.success);
+      },
+      error: function () {
+        alert("error");
+      }
+    });
+  });
