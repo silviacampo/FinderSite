@@ -65,12 +65,18 @@
 		</div>
 	</div>
 </div>
-<div class="btn-group" role="group" aria-label="..." >
+<div class="btn-group" role="group" aria-label="..." style="float:right;">
 	<a class="btn btn-default" asp-action="StatsPeriodWeek" asp-route-id="@Model.PetId">last week</a>
 	<a class="btn btn-default" asp-action="StatsPeriodMonth" asp-route-id="@Model.PetId">last month</a>
 	<a class="btn btn-default" asp-action="StatsPeriod6Month" asp-route-id="@Model.PetId">last 6 months</a>
 </div>
-<canvas id="activityChart"></canvas>
+
+<div class="well well-lg" style="margin-top:10px;">
+	@Model.Name has been walking about @String.Format("{0:0.000}", Model.AvgDistanceDay) km/day
+	<canvas id="activityChart"></canvas>
+</div>
+
+
 @*<div class="col-md-12">
 	<h2>Locations</h2>
 	<form asp-action="Details" method="get">
