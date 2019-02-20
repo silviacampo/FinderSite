@@ -10,7 +10,7 @@
 	<div class="panel-heading">@Html.DisplayFor(model => model.Name)</div>
 	<div class="panel-body">
 		<div>
-			<dl class="dl-horizontal">
+			<dl class="dl-horizontal col-md-8 col-sm-12">
 				<dt>
 					@Html.DisplayNameFor(model => model.Type)
 				</dt>
@@ -51,6 +51,17 @@
 					</ul>
 				</dd>
 			</dl>
+			<div class="dl-horizontal col-md-4 hidden-xs hidden-sm">
+				@if (ViewData["imagesFilenames"] != null)
+				{
+					@foreach (var f in ViewData["imagesFilenames"] as List<string>)
+					{
+						<img src="@f" />
+						break;
+					}
+				}
+			</div>
+
 		</div>
 	</div>
 </div>
@@ -60,7 +71,7 @@
 	<a class="btn btn-default" asp-action="StatsPeriod6Month" asp-route-id="@Model.PetId">last 6 months</a>
 </div>
 <canvas id="activityChart"></canvas>
-<div class="col-md-12">
+@*<div class="col-md-12">
 	<h2>Locations</h2>
 	<form asp-action="Details" method="get">
 		<div class="form-actions no-color">
@@ -190,10 +201,9 @@
 	   class="btn btn-default @nextDisabled2">
 		Next
 	</a>
-</div>
+</div>*@
 
 
 <div>
-	<a asp-action="Edit" asp-route-id="@Model.PetId">Edit</a> |
 	<a asp-action="Index">Back to List</a>
 </div>

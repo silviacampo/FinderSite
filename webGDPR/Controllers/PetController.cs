@@ -282,6 +282,13 @@ namespace webGDPR.Controllers
 
 			model.AvgDistanceDay = model.AvgDistance.Sum();
 
+			try
+			{
+				Tuple<string, List<string>> files = await ReadFiles(pet);
+				ViewData["imagesFilenames"] = files.Item2;
+			}
+			catch (Exception e) { }
+
 			if (searchString2 != null)
 			{
 				pageIndex2 = 1;
