@@ -426,12 +426,12 @@ var myBarChart = new Chart(ctxB, {
   }
 });
 
-$("#btnWeek").click(function () {
+$('#btnWeek, #btnMonth, #btnSemester').click(function () {
     $.ajax({
       url: '/pet/StatsPeriod',
-      type: 'POST',
+      type: 'GET',
       data: {
-        'id': '1', 'period':'W'
+        'id': $(this).attr('data-petId'), 'period': $(this).attr('data-period')
       },
       contentType: 'application/json; charset=utf-8',
       success: function (data) {

@@ -638,9 +638,10 @@ namespace webGDPR.Controllers
             }
         }
 
-		[HttpPost]
+		[HttpGet]
 		public async Task<IActionResult> StatsPeriod(string id, string period)
 		{
+			var test = Request.QueryString.ToString();
 			//bool result = await SetStatsPeriodAsync("W", id);
 			//if (!result)
 			//{
