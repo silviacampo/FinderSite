@@ -10,33 +10,68 @@
 <div class="row">
     <div class="col-md-3">
         <h2>Issues</h2>
-        <ul>
-            @if (Model.MissingSubscription)
-            {
-                <li>
-                    <b><a asp-action="FixMissingSubscription">Missing Subscription</a></b>
-                </li>
-            }
-            @if (Model.Bases.Count() + @Model.Collars.Count() == 0)
-            {
-                <li>
-                    <b>Missing Initialization</b>
-                </li>
-            }
-            @if (Model.Devices.Count() == 0)
-            {
-                <li>
-                    <b>Missing Install app</b>
-                </li>
-            }
-
-        </ul>
+		<ul>
+			@if (Model.MissingSubscription)
+			{
+				<li>
+					<b><a asp-action="FixMissingSubscription">Missing Subscription</a></b>
+				</li>
+			}
+			@if (Model.Bases.Count() + @Model.Collars.Count() == 0)
+			{
+				<li>
+					<b>Missing Initialization</b>
+				</li>
+			}
+			@if (Model.Devices.Count() == 0)
+			{
+				<li>
+					<b>Missing Install app</b>
+				</li>
+			}
+			@if (Model.Bases.Any(b => b.LastStatus == null || !b.LastStatus.IsConnected))
+			{
+				<li>
+					<b>Bases Disconnected</b>
+				</li>
+			}
+			@if (Model.Collars.Any(b => b.LastStatus == null || !b.LastStatus.IsConnected))
+			{
+				<li>
+					<b>Collars Disconnected</b>
+				</li>
+			}
+			@if (Model.Pets.Any(b => b.LastTrackingInfo == null || b.LastTrackingInfo.CreationDate.AddDays(1) < DateTime.Now))
+			{
+				<li>
+					<b>Pet not moving the last 24 h</b>
+				</li>
+			}
+			@if (Model.Collars.Any(b => b.LastStatus != null && b.LastStatus.Battery < 30))
+			{
+				<li>
+					<b>Collars with battery less than 30%</b>
+				</li>
+			}
+			@if (Model.Collars.Any(b => b.LastStatus != null && b.LastStatus.Radio < 20) || Model.Bases.Any(b => b.LastStatus != null && b.LastStatus.Radio < 20))
+			{
+				<li>
+					<b>Collars with lora failing to connect</b>
+				</li>
+			}
+			@if (Model.Collars.Any(b => b.LastStatus != null && b.LastStatus.IsNotGPSConnected))
+			{
+				<li>
+					<b>Collars with GPS failing to connect</b>
+				</li>
+			}
+		</ul>
     </div>
 
     <div class="col-md-6">
         <h2>Overview</h2>
         <ul>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkId=518008">Your pet has been going farther latelly...</a></li>
+            <li><a href="https://go.microsoft.com/fwlink/?LinkId=518008">Your pet has been going farther latelly/ moving less or more...</a></li>
             <li><a href="https://go.microsoft.com/fwlink/?LinkId=699320">Fundamentals of ASP.NET Core such as Startup and middleware.</a></li>
             <li><a href="https://go.microsoft.com/fwlink/?LinkId=398602">Working with Data</a></li>
             <li><a href="https://go.microsoft.com/fwlink/?LinkId=398603">Security</a></li>
