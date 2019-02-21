@@ -62,6 +62,14 @@ namespace webGDPR.Controllers
 		public async Task<IActionResult> Dashboard()
 		{
 			User user = await _context.User.Include(b => b.Bases).Include(c => c.Collars).Include(d => d.Devices).Include(d => d.Pets).FirstOrDefaultAsync(u => u.OwnerID == _userManager.GetUserId(User));
+			foreach (Collar c in user.Collars) {
+				PetCollar petCollar = await _context.PetCollar.FirstOrDefaultAsync(p => p.CollarId == c.CollarId && p.IsActive);
+				if (petCollar != null)
+				{
+					Pet p = _context.Pet.FirstOrDefault(pet => pet.PetId == petCollar.PetId && !pet.Deleted);
+					c.Name = p.Name;
+				}
+			}			
 			return View(user);
 		}
 
