@@ -187,7 +187,7 @@ namespace webGDPR.Controllers
 		[AllowAnonymous]
 		public async Task<IActionResult> Map2(string u, string g, int cn)
 		{
-			var device = await _context.Device.FirstOrDefaultAsync(d => d.DeviceId == g);
+			var device = await _context.Device.FirstOrDefaultAsync(d => d.DeviceId == g && !d.Banned);
 			if (device != null) {
 				var user = await _context.User.FirstOrDefaultAsync(m => m.Name == u);
 				if (user != null)
