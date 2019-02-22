@@ -77,6 +77,26 @@
 	<partial name="_ActivityStatsPartial" model="@Model" />
 </div>
 
+<div id="mapContainer" style="height:500px" class="well well-lg" >
+	<script>
+			var contentString = '<div id="content">' +
+				'<div id="siteNotice">' +
+				'</div>' +
+				'<h3 id="firstHeading" class="firstHeading">@Model.Name</h3>' +
+				@*'<div id="bodyContent">' +
+				'<p>@Model.Description</p>' +
+				'</div>' +*@
+				'</div>';
+
+			var coordinates = [];
+			@foreach (PetTrackingInfo p in Model.PetTrackingInfos) {
+			 	<text>
+					coordinates.push({ lat: @p.Latitude, lng: @p.Longitude });
+				</text>
+			}
+	</script>
+	<div id="card-map" class="card-text card-map" data-geo-lat="@Model.PetTrackingInfos[0].Latitude" , data-geo-lng="@Model.PetTrackingInfos[0].Longitude"></div>	
+</div>
 
 @*<div class="col-md-12">
 	<h2>Locations</h2>
