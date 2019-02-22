@@ -2,7 +2,9 @@
 @{
 	ViewData["Title"] = "_ActivityStats";
 }
-
+<script>
+	var petActivity = JSON.parse('@Html.Raw(Json.Serialize(Model.AvgDistance))'); 
+</script>
 @Model.Name has been walking about @String.Format("{0:0.000}", Model.AvgDistanceDay) km/day
 <canvas id="activityChart"></canvas>
 

@@ -302,7 +302,7 @@ function initActivityChart() {
       labels: ["00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"],
       datasets: [{
         label: 'kms walked',
-        data: [5, 6, 3, 5, 2, 3, 2, 0.5, 3, 1.55, 0, 0, 0, 0.25, 3, 4, 2, 3, 2, 0, 3, 5, 2, 3],
+        data: petActivity,
         backgroundColor: [
           'rgba(153, 102, 255, 0.2)', //0 Black
           'rgba(180, 101, 225, 0.2)', //1
@@ -359,7 +359,7 @@ function initActivityChart() {
       },
       {
         label: 'medium kms walked',
-        data: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        data: avgActivity,
         backgroundColor: [
           'rgba(153, 102, 255, 0.2)', //0 Black
           'rgba(180, 101, 225, 0.2)', //1
@@ -430,6 +430,9 @@ function initActivityChart() {
 initActivityChart();
 
 $('#btnWeek, #btnMonth, #btnSemester').click(function () {
+  if ($(this).id != 'btnWeek') {
+    $('#btnWeek').removeClass('active');
+  }
     $.ajax({
       url: '/pet/StatsPeriod',
       type: 'GET',

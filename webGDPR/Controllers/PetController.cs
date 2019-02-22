@@ -260,7 +260,7 @@ namespace webGDPR.Controllers
 			model.PetTrackingInfos = await PaginatedList<PetTrackingInfo>.CreateAsync(
 				_context.PetTrackingInfo.Where(s => s.PetId == id && (s.Latitude.ToString().Contains(searchString) || s.Longitude.ToString().Contains(searchString))).Include(d => d.Collar).OrderByDescending(d => d.CreationDate).AsNoTracking(), pageIndex ?? 1, pageSize);
 
-			List<PetTrackingInfo> PetTrackingInfos = _context.PetTrackingInfo.Where(s => s.PetId == id).OrderBy(s=>s.CreationDate).ToList(); //Todo: only last month
+			List<PetTrackingInfo> PetTrackingInfos = _context.PetTrackingInfo.Where(s => s.PetId == id && s.CreationDate > DateTime.Now.AddDays(-7)).OrderBy(s => s.CreationDate).ToList();
 			double[] totalDistance = new double[24];
 
 			for (int i = 0; i < PetTrackingInfos.Count - 1; i++) {
@@ -639,11 +639,25 @@ namespace webGDPR.Controllers
         }
 
 		[HttpGet]
-		public async Task<IActionResult> StatsPeriod(string id, string period)
+		public async Task<IActionResult> StatsPeriod(string id, string period = "W")
 		{
 			var pet = await _context.Pet.AsNoTracking().FirstOrDefaultAsync(m => m.PetId == id && !m.Deleted);
 
-			List<PetTrackingInfo> PetTrackingInfos = _context.PetTrackingInfo.Where(s => s.PetId == id).OrderBy(s => s.CreationDate).ToList(); //Todo: only follow the period
+			List<PetTrackingInfo> PetTrackingInfos = new List<PetTrackingInfo>();
+
+			if (period == "W")
+			{
+				PetTrackingInfos = _context.PetTrackingInfo.Where(s => s.PetId == id && s.CreationDate > DateTime.Now.AddDays(-7)).OrderBy(s => s.CreationDate).ToList();
+			}
+			else if (period == "M")
+			{
+				PetTrackingInfos = _context.PetTrackingInfo.Where(s => s.PetId == id && s.CreationDate > DateTime.Now.AddMonths(-1)).OrderBy(s => s.CreationDate).ToList();
+			}
+			else
+			{
+				PetTrackingInfos = _context.PetTrackingInfo.Where(s => s.PetId == id && s.CreationDate > DateTime.Now.AddMonths(-6)).OrderBy(s => s.CreationDate).ToList();
+			}
+
 			double[] totalDistance = new double[24];
 
 			for (int i = 0; i < PetTrackingInfos.Count - 1; i++)

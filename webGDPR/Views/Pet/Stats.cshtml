@@ -66,13 +66,15 @@
 	</div>
 </div>
 <div class="btn-group" role="group" aria-label="..." style="float:right;">
-	<button class="btn btn-default" id="btnWeek" data-period="W" data-petId="@Model.PetId">last week</button>
+	<button class="btn btn-default active" id="btnWeek" data-period="W" data-petId="@Model.PetId">last week</button>
 	<button class="btn btn-default" id="btnMonth" data-period="M" data-petId="@Model.PetId">last month</button>
 	<button class="btn btn-default" id="btnSemester" data-period="S" data-petId="@Model.PetId">last 6 months</button>
 </div>
-
-<div id="activityStats" class="well well-lg" style="margin-top:10px;">
-	<partial name="_ActivityStatsPartial" model="@Model" />	
+<script>
+	var avgActivity = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
+</script>
+<div id="activityStats" class="well well-lg" style="margin-top:10px;">	
+	<partial name="_ActivityStatsPartial" model="@Model" />
 </div>
 
 
