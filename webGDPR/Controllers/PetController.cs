@@ -284,6 +284,14 @@ namespace webGDPR.Controllers
 
 			model.AvgDistanceDay = model.AvgDistance.Sum();
 
+			model.MediumAvgDistance = new double[24];
+			for (int j = 0; j < 24; j++)
+			{
+				model.MediumAvgDistance[j] = 1;
+			}
+
+			model.MediumAvgDistanceDay = model.MediumAvgDistance.Sum();
+
 			try
 			{
 				Tuple<string, List<string>> files = await ReadFiles(pet);

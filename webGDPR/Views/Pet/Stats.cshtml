@@ -71,7 +71,7 @@
 	<button class="btn btn-default" id="btnSemester" data-period="S" data-petId="@Model.PetId">last 6 months</button>
 </div>
 <script>
-	var avgActivity = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
+	var avgActivity = JSON.parse('@Html.Raw(Json.Serialize(Model.MediumAvgDistance))'); 
 </script>
 <div id="activityStats" class="well well-lg" style="margin-top:10px;">	
 	<partial name="_ActivityStatsPartial" model="@Model" />

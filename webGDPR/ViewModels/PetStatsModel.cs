@@ -43,5 +43,9 @@ namespace webGDPR.ViewModels
 		public double[] AvgDistance { get; set; }
 
 		public double AvgDistanceDay { get; set; }
+
+		public double[] MediumAvgDistance { get; set; }
+
+		public double MediumAvgDistanceDay { get; set; }
 	}
 }
