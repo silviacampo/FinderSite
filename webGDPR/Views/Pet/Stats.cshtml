@@ -72,8 +72,7 @@
 </div>
 
 <div id="activityStats" class="well well-lg" style="margin-top:10px;">
-	@Model.Name has been walking about @String.Format("{0:0.000}", Model.AvgDistanceDay) km/day
-	<canvas id="activityChart"></canvas>
+	<partial name="_ActivityStatsPartial" model="@Model" />	
 </div>
 
 

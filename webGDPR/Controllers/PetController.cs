@@ -641,6 +641,8 @@ namespace webGDPR.Controllers
 		[HttpGet]
 		public async Task<IActionResult> StatsPeriod(string id, string period)
 		{
+			var pet = await _context.Pet.AsNoTracking().FirstOrDefaultAsync(m => m.PetId == id && !m.Deleted);
+
 			List<PetTrackingInfo> PetTrackingInfos = _context.PetTrackingInfo.Where(s => s.PetId == id).OrderBy(s => s.CreationDate).ToList(); //Todo: only follow the period
 			double[] totalDistance = new double[24];
 
@@ -656,9 +658,13 @@ namespace webGDPR.Controllers
 			if (PetTrackingInfos.Count > 0)
 				totaldays = (PetTrackingInfos[PetTrackingInfos.Count - 1].CreationDate.Date - PetTrackingInfos[0].CreationDate.Date).TotalDays;
 
-			PetStatsModel model = new PetStatsModel();
+			PetStatsModel model = new PetStatsModel
+			{
+				Name = pet.Name,
 
-			model.AvgDistance = new double[24];
+				AvgDistance = new double[24]
+			};
+
 			for (int j = 0; j < 24; j++)
 			{
 				if (totaldays > 0)
