@@ -641,13 +641,35 @@ namespace webGDPR.Controllers
 		[HttpGet]
 		public async Task<IActionResult> StatsPeriod(string id, string period)
 		{
-			var test = Request.QueryString.ToString();
-			//bool result = await SetStatsPeriodAsync("W", id);
-			//if (!result)
-			//{
-			//	return NotFound();
-			//}
-			return Json(new { success = true });
+			List<PetTrackingInfo> PetTrackingInfos = _context.PetTrackingInfo.Where(s => s.PetId == id).OrderBy(s => s.CreationDate).ToList(); //Todo: only follow the period
+			double[] totalDistance = new double[24];
+
+			for (int i = 0; i < PetTrackingInfos.Count - 1; i++)
+			{
+
+				var distance = DistanceCalculation.Calculate(PetTrackingInfos[i].Latitude, PetTrackingInfos[i].Longitude, PetTrackingInfos[i + 1].Latitude, PetTrackingInfos[i + 1].Longitude, 'K');
+				int hour = PetTrackingInfos[i + 1].CreationDate.Hour;
+				totalDistance[hour] += distance;
+			}
+
+			double totaldays = 0;
+			if (PetTrackingInfos.Count > 0)
+				totaldays = (PetTrackingInfos[PetTrackingInfos.Count - 1].CreationDate.Date - PetTrackingInfos[0].CreationDate.Date).TotalDays;
+
+			PetStatsModel model = new PetStatsModel();
+
+			model.AvgDistance = new double[24];
+			for (int j = 0; j < 24; j++)
+			{
+				if (totaldays > 0)
+					model.AvgDistance[j] = totalDistance[j] / totaldays;
+				else
+					model.AvgDistance[j] = totalDistance[j];
+			}
+
+			model.AvgDistanceDay = model.AvgDistance.Sum();
+
+			return PartialView("_ActivityStatsPartial", model);
 		}
 		private Task<bool> SetStatsPeriodAsync(string period, string id)
 		{

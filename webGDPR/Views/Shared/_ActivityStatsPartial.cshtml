@@ -1,0 +1,8 @@
+﻿@model webGDPR.ViewModels.PetStatsModel
+@{
+	ViewData["Title"] = "_ActivityStats";
+}
+
+@Model.Name has not been walking about @String.Format("{0:0.000}", Model.AvgDistanceDay) km/day
+<canvas id="activityChart"></canvas>
+

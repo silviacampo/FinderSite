@@ -71,7 +71,7 @@
 	<button class="btn btn-default" id="btnSemester" data-period="S" data-petId="@Model.PetId">last 6 months</button>
 </div>
 
-<div class="well well-lg" style="margin-top:10px;">
+<div id="activityStats" class="well well-lg" style="margin-top:10px;">
 	@Model.Name has been walking about @String.Format("{0:0.000}", Model.AvgDistanceDay) km/day
 	<canvas id="activityChart"></canvas>
 </div>

@@ -435,7 +435,7 @@ $('#btnWeek, #btnMonth, #btnSemester').click(function () {
       },
       contentType: 'application/json; charset=utf-8',
       success: function (data) {
-        alert(data.success);
+        $('#activityStats').html(data);
       },
       error: function () {
         alert("error");
