@@ -487,7 +487,7 @@ try {
                     lng: location.lng
                   },
                   icon: {
-                    url: "http://maps.google.com/mapfiles/ms/icons/" + location.color +"-dot.png"
+                    url: "https://localhost:44392/images/" + location.color +"-dot.png"
                   }
                 });
             });
