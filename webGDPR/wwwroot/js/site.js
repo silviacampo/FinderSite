@@ -492,8 +492,18 @@ try {
                 });
             });
 
+            var myArray = [];
+
+            for (var i = 0; i < markers.length; i += 2) {
+              myArray.push(markers.slice(i, 2));
+            }
+
             // Add a marker clusterer to manage the markers.
             var markerCluster = new MarkerClusterer(map, markers,
+            { imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m' });
+
+          // Add a marker clusterer to manage the markers.
+          var markerCluster1 = new MarkerClusterer(map, myArray[0],
             { imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m' });
 
           //https://localhost:44392/images/home.png to scale to 30 x 30
