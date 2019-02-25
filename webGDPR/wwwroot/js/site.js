@@ -494,7 +494,8 @@ try {
 
             // Add a marker clusterer to manage the markers.
             var markerCluster = new MarkerClusterer(map, markers,
-                { imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m' });
+            { imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m' });
+
           //https://localhost:44392/images/home.png to scale to 30 x 30
           var image = {
             url: 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png',
