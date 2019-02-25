@@ -82,20 +82,20 @@
 			var contentString = '<div id="content">' +
 				'<div id="siteNotice">' +
 				'</div>' +
-				'<h3 id="firstHeading" class="firstHeading">@Model.Name</h3>' +
+				'<h3 id="firstHeading" class="firstHeading">Home</h3>' +
 				@*'<div id="bodyContent">' +
 				'<p>@Model.Description</p>' +
 				'</div>' +*@
 				'</div>';
 
 			var coordinates = [];
-			@foreach (PetTrackingInfo p in Model.PetTrackingInfos) {
+			@foreach (Tuple<PetTrackingInfo,string> p in Model.PointVisited) {
 			 	<text>
-					coordinates.push({ lat: @p.Latitude, lng: @p.Longitude });
+					coordinates.push({ lat: @p.Item1.Latitude, lng: @p.Item1.Longitude, color: "@p.Item2" });
 				</text>
 			}
 	</script>
-	<div id="card-map" class="card-text card-map" data-geo-lat="@Model.PetTrackingInfos[0].Latitude" , data-geo-lng="@Model.PetTrackingInfos[0].Longitude"></div>	
+	<div id="stat-map" class="card-text card-map" data-geo-lat="@Model.Latitude" , data-geo-lng="@Model.Longitude"></div>	
 </div>
 
 @*<div class="col-md-12">

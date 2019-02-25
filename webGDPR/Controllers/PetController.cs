@@ -299,6 +299,42 @@ namespace webGDPR.Controllers
 			}
 			catch (Exception e) { }
 
+			//model.Latitude =  //user home latitude
+			//model.Longitude =  //user home longitude
+			model.PointVisited = new List<Tuple<PetTrackingInfo, string>>();
+			foreach (PetTrackingInfo pti in _context.PetTrackingInfo.Where(s => s.PetId == id).OrderBy(s => s.CreationDate).ToList()) {
+				string color = string.Empty;
+				if (pti.CreationDate.Hour < 2)
+				{
+					color = "purple";
+				}
+				else if (pti.CreationDate.Hour < 6)
+				{
+					color = "red";
+				}
+				else if (pti.CreationDate.Hour < 10)
+				{
+					color = "orange";
+				}
+				else if (pti.CreationDate.Hour < 14)
+				{
+					color = "yellow";
+				}
+				else if (pti.CreationDate.Hour < 18)
+				{
+					color = "green";
+				}
+				else if (pti.CreationDate.Hour < 22)
+				{
+					color = "blue";
+				}
+				else
+				{
+					color = "purple";
+				}
+				model.PointVisited.Add(new Tuple<PetTrackingInfo, string>(pti, color));
+			}
+
 			if (searchString2 != null)
 			{
 				pageIndex2 = 1;

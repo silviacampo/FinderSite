@@ -47,5 +47,7 @@ namespace webGDPR.ViewModels
 		public double[] MediumAvgDistance { get; set; }
 
 		public double MediumAvgDistanceDay { get; set; }
+
+		public List<Tuple<PetTrackingInfo, string>> PointVisited { get; internal set; }
 	}
 }

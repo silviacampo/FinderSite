@@ -97,18 +97,14 @@ $(document).ready(function () {
                 path.setMap(map);
 
                 //Markers and MarkersCluster
-                //http://www.lass.it/Web/viewer.aspx?id=4
-                var flag = {
-                    url: 'https://test.whereisfinder.com/images/blue.png',
-                    // This marker is 20 pixels wide by 32 pixels high.
-                    size: new google.maps.Size(32, 25)
-                };
-
+                //https://medium.com/@letian1997/how-to-change-javascript-google-map-marker-color-8a72131d1207
                 var markers = coordinates.map(function (location, i) {
                     return new google.maps.Marker({
                         position: location,
                         label: i.toString(),
-                        icon: flag
+                      icon: {
+                        url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
+                      }
                     });
                 });
 
@@ -362,7 +358,7 @@ function initActivityChart() {
                     label: 'medium kms walked',
                     data: avgActivity,
                     backgroundColor: [
-                        'rgba(153, 102, 255, 0.2)', //0 Black
+                        'rgba(153, 102, 255, 0.2)', //0 Purple
                         'rgba(180, 101, 225, 0.2)', //1
                         'rgba(205, 100, 195, 0.2)', //2
                         'rgba(230, 100, 165, 0.2)', //3
@@ -388,7 +384,7 @@ function initActivityChart() {
                         'rgba(128, 117, 250, 0.2)' //23
                     ],
                     borderColor: [
-                        'rgba(153, 102, 255, 1)', //0 Black
+                        'rgba(153, 102, 255, 1)', //0 Purple
                         'rgba(180, 101, 225, 1)', //1
                         'rgba(205, 100, 195, 1)', //2
                         'rgba(230, 100, 165, 1)', //3
@@ -457,16 +453,16 @@ $('#btnWeek, #btnMonth, #btnSemester').click(function () {
 
 try {
     if ($('.card-map').length > 0) {
-        var map1 = $('#stat-map');
-        if (map1.data('geoLat') && map1.data('geoLng')) {
-            var deviceLocation = {
-                lat: map1.data('geoLat'),
-                lng: map1.data('geoLng')
+        var mapPetStats = $('#stat-map');
+        if (mapPetStats.data('geoLat') && mapPetStats.data('geoLng')) {
+            var centerLocation = {
+                lat: mapPetStats.data('geoLat'),
+                lng: mapPetStats.data('geoLng')
             };
 
-            var map = new google.maps.Map(document.getElementById('card-map'), {
+          var map = new google.maps.Map(document.getElementById('stat-map'), {
                 zoom: 17,
-                center: deviceLocation,
+                center: centerLocation,
                 mapTypeId: 'terrain'
             });
 
@@ -474,68 +470,47 @@ try {
                 content: contentString
             });
 
-            var panorama = new google.maps.StreetViewPanorama(
-                document.getElementById('pano'), {
-                    position: deviceLocation,
-                    pov: {
-                        heading: 34,
-                        pitch: 10
-                    }
-                });
-            map.setStreetView(panorama);
-
-            var lineSymbol = {
-                path: google.maps.SymbolPath.FORWARD_OPEN_ARROW
-            };
-
-            var lineSymbolCat = {
-                path: google.maps.SymbolPath.CIRCLE,
-                scale: 4,
-                strokeColor: '#FF0000'
-            };
-
-            var path = new google.maps.Polyline({
-                path: coordinates.concat([deviceLocation]),
-                geodesic: true,
-                icons: [{
-                    icon: lineSymbolCat,
-                    offset: '100%'
-                },
-                {
-                    icon: lineSymbol,
-                    offset: '30%',
-                    repeat: '50px'
-                }],
-                strokeColor: '#000000',
-                strokeOpacity: 1.0,
-                strokeWeight: 2
-            });
-
-            path.setMap(map);
-
             //Markers and MarkersCluster
-            //http://www.lass.it/Web/viewer.aspx?id=4
-            var flag = {
-                url: 'https://test.whereisfinder.com/images/blue.png',
-                // This marker is 20 pixels wide by 32 pixels high.
-                size: new google.maps.Size(32, 25)
-            };
-
-            var markers = coordinates.map(function (location, i) {
-                return new google.maps.Marker({
-                    position: location,
-                    label: i.toString(),
-                    icon: flag
+            // https://medium.com/@letian1997/how-to-change-javascript-google-map-marker-color-8a72131d1207
+          /*          
+           * http://maps.google.com/mapfiles/ms/icons/purple-dot.png
+           * http://maps.google.com/mapfiles/ms/icons/red-dot.png
+           * http://maps.google.com/mapfiles/ms/icons/orange-dot.png
+           * http://maps.google.com/mapfiles/ms/icons/yellow-dot.png
+           * http://maps.google.com/mapfiles/ms/icons/green-dot.png
+           * http://maps.google.com/mapfiles/ms/icons/blue-dot.png
+           * */
+            var markers = coordinates.map(function (location) {
+              return new google.maps.Marker({
+                  position: {
+                    lat: location.lat,
+                    lng: location.lng
+                  },
+                  icon: {
+                    url: "http://maps.google.com/mapfiles/ms/icons/" + location.color +"-dot.png"
+                  }
                 });
             });
 
             // Add a marker clusterer to manage the markers.
             var markerCluster = new MarkerClusterer(map, markers,
                 { imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m' });
+          //https://localhost:44392/images/home.png to scale to 30 x 30
+          var image = {
+            url: 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png',
+            // This marker is 20 pixels wide by 32 pixels high.
+            size: new google.maps.Size(20, 32),
+            // The origin for this image is (0, 0).
+            origin: new google.maps.Point(0, 0),
+            // The anchor for this image is the base of the flagpole at (0, 32).
+            anchor: new google.maps.Point(0, 32)
+          };
 
             var marker = new google.maps.Marker({
-                position: deviceLocation,
-                map: map
+                position: centerLocation,
+              map: map,
+              icon: image
+
             });
 
             marker.addListener('click', function () {
