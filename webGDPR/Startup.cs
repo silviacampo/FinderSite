@@ -100,19 +100,19 @@ namespace webGDPR
                 app.UseHsts();
             }
 
-			//fuerza bruta para que login no sea http
-			//app.Use((context, next) =>
-			// {
-			//     context.Request.Scheme = "https";
-			//     return next();
-			// });
+            //fuerza bruta para que login no sea http
+            app.Use((context, next) =>
+             {
+                 context.Request.Scheme = "https";
+                 return next();
+             });
 
-			// app.UseForwardedHeaders(new ForwardedHeadersOptions
-			//{
-			//	ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
-			//});
+            // app.UseForwardedHeaders(new ForwardedHeadersOptions
+            //{
+            //	ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            //});
 
-			var forwardOpts = new ForwardedHeadersOptions { ForwardedHeaders = ForwardedHeaders.All };
+            var forwardOpts = new ForwardedHeadersOptions { ForwardedHeaders = ForwardedHeaders.All };
 			forwardOpts.KnownNetworks.Clear();
 			forwardOpts.KnownProxies.Clear();
 			app.UseForwardedHeaders(forwardOpts);
