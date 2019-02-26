@@ -4,6 +4,9 @@
 }
 
 <h2>@ViewData["Title"]</h2>
-
+<p>This is your current location:</p>
+<div class="well well-lg">@Model.FormattedAddress</div>
+<p>If it's wrong, please enter your current location below and click Update.</p>
+<hr />
 <partial name="_PickLocationPartial" model="@Model" />
 

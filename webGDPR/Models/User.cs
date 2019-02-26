@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace webGDPR.Models
@@ -17,6 +18,9 @@ namespace webGDPR.Models
 
 		public double Latitude { get; set; }
 		public double Longitude { get; set; }
+
+		[DisplayName("Address")]
+		public string FormattedAddress { get; set; }
 
 		public bool MissingSubscription { get; set; }
 
