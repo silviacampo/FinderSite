@@ -503,14 +503,14 @@ try {
             { imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m' });
 
           // Add a marker clusterer to manage the markers.
-          var markerCluster1 = new MarkerClusterer(map, myArray[0],
-            { imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m' });
+          //var markerCluster1 = new MarkerClusterer(map, myArray[0],
+          //    { imagePath: 'https://localhost:44392/images/m' });
 
           //https://localhost:44392/images/home.png to scale to 30 x 30
           var image = {
-            url: 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png',
+              url: 'https://localhost:44392/images/home.png',
             // This marker is 20 pixels wide by 32 pixels high.
-            size: new google.maps.Size(20, 32),
+            size: new google.maps.Size(30, 30),
             // The origin for this image is (0, 0).
             origin: new google.maps.Point(0, 0),
             // The anchor for this image is the base of the flagpole at (0, 32).
