@@ -74,6 +74,13 @@ namespace webGDPR.Controllers
 		}
 
 		[Authorize]
+		public async Task<IActionResult> PickLocation()
+		{
+			User user = await _context.User.FirstOrDefaultAsync(u => u.OwnerID == _userManager.GetUserId(User));
+			return View(user);
+		}
+
+		[Authorize]
 		public async Task<IActionResult> FixMissingSubscription()
 		{
 			User user = await _context.User.Include(c => c.Collars).Include(d => d.Subscriptions).ThenInclude(e => e.Product).FirstOrDefaultAsync(u => u.OwnerID == _userManager.GetUserId(User));

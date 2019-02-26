@@ -15,6 +15,9 @@ namespace webGDPR.Models
 		[DataType(DataType.EmailAddress)]
 		public string Email { get; set; }
 
+		public double Latitude { get; set; }
+		public double Longitude { get; set; }
+
 		public bool MissingSubscription { get; set; }
 
 		public List<Base> Bases { get; set; }
