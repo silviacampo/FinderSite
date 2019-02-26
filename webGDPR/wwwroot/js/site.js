@@ -502,9 +502,11 @@ try {
             var markerCluster = new MarkerClusterer(map, markers,
             { imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m' });
 
-          // Add a marker clusterer to manage the markers.
-          //var markerCluster1 = new MarkerClusterer(map, myArray[0],
-          //    { imagePath: 'https://localhost:44392/images/m' });
+
+
+            // Add a marker clusterer to manage the markers.
+            var markerCluster1 = new MarkerClusterer(map, markers,
+              { imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m' });
 
           //https://localhost:44392/images/home.png to scale to 30 x 30
           var image = {
