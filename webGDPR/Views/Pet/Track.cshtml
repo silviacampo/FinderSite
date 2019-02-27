@@ -1,8 +1,10 @@
 ﻿@model webGDPR.Models.Pet
+@{
+    ViewData["Title"] = "Pet Track";
+}
 
-
-	<div id="mapContainer" style="height:600px">
-		<script>
+<div id="mapContainer" style="height:600px">
+    <script>
 			var contentString = '<div id="content">' +
 				'<div id="siteNotice">' +
 				'</div>' +
@@ -18,7 +20,7 @@
 					coordinates.push({ lat: @p.Latitude, lng: @p.Longitude });
 				</text>
 			 }
-		</script>
-		<div id="card-map" class="card-text card-map"  data-geo-lat="@Model.LastTrackingInfo.Latitude" , data-geo-lng="@Model.LastTrackingInfo.Longitude"></div>
-		<div id="pano"></div>
-	</div>
+    </script>
+    <div id="card-map" class="card-text card-map" data-geo-lat="@Model.LastTrackingInfo.Latitude" , data-geo-lng="@Model.LastTrackingInfo.Longitude"></div>
+    <div id="pano"></div>
+</div>
