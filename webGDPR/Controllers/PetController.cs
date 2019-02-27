@@ -773,8 +773,6 @@ namespace webGDPR.Controllers
 				}
 				model.PointVisited.Add(new Tuple<PetTrackingInfo, string>(pti, color));
 			}
-
-
 			return PartialView("_ActivityStatsPartial", model);
 		}
 		private Task<bool> SetStatsPeriodAsync(string period, string id)

@@ -29,6 +29,13 @@
 					<b>Missing Install app</b>
 				</li>
 			}
+			@if (Model.Latitude == 0 && Model.Longitude == 0)
+			{
+				<li>
+					<b>Missing user location</b>
+				</li>
+			}
+
 			@if (Model.Pets.Any(b => b.LastMode != null && b.LastMode.Type == ConfigModeTypes.Emergency))
 			{
 				<li>
@@ -104,13 +111,13 @@
                                 @Html.DisplayFor(modelItem => item.LastStatus.DeviceConnectedTo.GetName)
                             }
                         </td>*@
-                        <td class="visible-md visible-lg visible-sm" valign="middle">
-                            <i class="fa fa-plug fa-fw" style="color:gray" aria-hidden="true"></i>
-                            @if (!(item.LastStatus != null && item.LastStatus.IsPlugged))
-                        {
-                            <i style="color:black; font-weight:bold; font-size:x-large;margin-left:-18px;padding-top:0px;padding-bottom:0px;">\</i>
-                    }
-                        </td>
+						<td class="visible-md visible-lg visible-sm" valign="middle">
+							<i class="fa fa-plug fa-fw" style="color:gray" aria-hidden="true"></i>
+							@if (!(item.LastStatus != null && item.LastStatus.IsPlugged))
+							{
+								<i style="color:black; font-weight:bold; font-size:x-large;margin-left:-18px;padding-top:0px;padding-bottom:0px;">\</i>
+							}
+						</td>
                         <td class="visible-md visible-lg visible-sm">
                             @if (item.LastStatus != null)
                         {
