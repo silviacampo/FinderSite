@@ -299,8 +299,10 @@ namespace webGDPR.Controllers
 			}
 			catch (Exception e) { }
 
-			//model.Latitude =  //user home latitude
-			//model.Longitude =  //user home longitude
+			User user = await _context.User.FirstOrDefaultAsync(u => u.OwnerID == _userManager.GetUserId(User));
+			model.Latitude = user.Latitude;
+			model.Longitude = user.Longitude;
+
 			model.PointVisited = new List<Tuple<PetTrackingInfo, string>>();
 			foreach (PetTrackingInfo pti in _context.PetTrackingInfo.Where(s => s.PetId == id).OrderBy(s => s.CreationDate).ToList()) {
 				string color = string.Empty;
