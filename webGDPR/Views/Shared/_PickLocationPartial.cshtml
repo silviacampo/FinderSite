@@ -5,6 +5,17 @@
 		https://maps.googleapis.com/maps/api/geocode/json?latlng=40.714224,-73.961452&key=
 *@
 
+@if (!string.IsNullOrEmpty(Model.FormattedAddress))
+{
+<p>This is your current location:</p>
+<div class="well well-lg">@Model.FormattedAddress</div>
+<p>If it's wrong, please enter your current location below and click Update.</p>
+<hr />
+}
+else
+{
+<p>Please enter your current location below and click Update.</p>
+}
 <div class="row">
 	<form asp-action="PickLocation" enctype="multipart/form-data">
 		<div class="col-md-8">
