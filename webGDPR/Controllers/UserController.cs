@@ -15,8 +15,10 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using webGDPR.Authorization;
 using webGDPR.Data;
+using webGDPR.Infrastructure;
 using webGDPR.Infrastructure.CustomWebSockets;
 using webGDPR.Models;
+using webGDPR.ViewModels;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -77,6 +79,138 @@ namespace webGDPR.Controllers
 				}
 			}
 			return View(user);
+		}
+
+		[Authorize]
+		public async Task<IActionResult> HWOverview()
+		{
+			HWOverviewViewModel model = new HWOverviewViewModel();
+
+			User user = await _context.User.Include(b => b.Bases).Include(c => c.Collars).Include(d => d.Devices).Include(d => d.Pets).FirstOrDefaultAsync(u => u.OwnerID == _userManager.GetUserId(User));
+			foreach (Collar c in user.Collars)
+			{
+				PetCollar petCollar = await _context.PetCollar.FirstOrDefaultAsync(p => p.CollarId == c.CollarId && p.IsActive);
+				if (petCollar != null)
+				{
+					Pet p = _context.Pet.FirstOrDefault(pet => pet.PetId == petCollar.PetId && !pet.Deleted);
+					c.Name = p.Name;
+				}
+			}
+			model.User = user;
+
+			List<BaseStatus> BasesStatus = _context.BaseStatus.Where(s => s.UserId == user.UserID && s.CreationDate > DateTime.Now.AddDays(-7)).OrderBy(s => s.CreationDate).ToList();
+
+			TimeSpan disconnectedMiliseconds = new TimeSpan(0);
+			List<Tuple<string, TimeSpan>> connectedToMiliseconds = new List<Tuple<string, TimeSpan>>();
+			foreach (Device d in user.Devices) {
+				connectedToMiliseconds.Add(new Tuple<string, TimeSpan>(d.DeviceId, new TimeSpan(0)));
+			}
+
+			for (int i = 0; i < BasesStatus.Count - 1; i++)
+			{
+				TimeSpan x = BasesStatus[i + 1].CreationDate - BasesStatus[i].CreationDate;
+				if (BasesStatus[i].IsConnected) {
+						var y = connectedToMiliseconds.FirstOrDefault(d => d.Item1 == BasesStatus[i + 1].ConnectedTo);
+						y.Item2.Add(x); 
+				}
+				else {
+					//Disconnected time
+					disconnectedMiliseconds.Add(x);
+				}
+			}
+			string deviceId = connectedToMiliseconds.OrderByDescending(d => d.Item2.Ticks).First().Item1;
+
+			//Most connected to X device
+
+			//time charging batteries : has a battery that is charging, only if close to 24hs...
+
+			//Radio strenth average
+
+			List<CollarStatus> CollarsStatus = _context.CollarStatus.Where(s => s.UserId == user.UserID && s.CreationDate > DateTime.Now.AddDays(-7)).OrderBy(s => s.CreationDate).ToList();
+
+			List<PetTrackingInfo> PetTrackingInfos = _context.PetTrackingInfo.Where(s => s.UserId == user.UserID && s.CreationDate > DateTime.Now.AddDays(-7)).OrderBy(s => s.CreationDate).ToList();
+
+			//Disconnected time
+			//Most connected to X base
+			
+			//gps Disconnected time
+			//gps disconnedted rel to closed location in time
+
+			//Battery level avg
+			//Time with battery < 25
+
+			//Radio strenth average
+			//radio strenth rel to closed location in time
+
+			double[] totalDistance = new double[24];
+
+			for (int i = 0; i < PetTrackingInfos.Count - 1; i++)
+			{
+
+				var distance = DistanceCalculation.Calculate(PetTrackingInfos[i].Latitude, PetTrackingInfos[i].Longitude, PetTrackingInfos[i + 1].Latitude, PetTrackingInfos[i + 1].Longitude, 'K');
+				int hour = PetTrackingInfos[i + 1].CreationDate.Hour;
+				totalDistance[hour] += distance;
+			}
+
+			double totaldays = 0;
+			if (PetTrackingInfos.Count > 0)
+				totaldays = (PetTrackingInfos[PetTrackingInfos.Count - 1].CreationDate.Date - PetTrackingInfos[0].CreationDate.Date).TotalDays;
+
+			model.AvgDistance = new double[24];
+			for (int j = 0; j < 24; j++)
+			{
+				if (totaldays > 0)
+					model.AvgDistance[j] = totalDistance[j] / totaldays;
+				else
+					model.AvgDistance[j] = totalDistance[j];
+			}
+
+			model.AvgDistanceDay = model.AvgDistance.Sum();
+
+			model.MediumAvgDistance = new double[24];
+			for (int j = 0; j < 24; j++)
+			{
+				model.MediumAvgDistance[j] = 1;
+			}
+
+			model.MediumAvgDistanceDay = model.MediumAvgDistance.Sum();
+
+			model.PointVisited = new List<Tuple<PetTrackingInfo, string>>();
+			foreach (PetTrackingInfo pti in PetTrackingInfos)
+			{
+				string color = string.Empty;
+				if (pti.CreationDate.Hour < 2)
+				{
+					color = "purple";
+				}
+				else if (pti.CreationDate.Hour < 6)
+				{
+					color = "red";
+				}
+				else if (pti.CreationDate.Hour < 10)
+				{
+					color = "orange";
+				}
+				else if (pti.CreationDate.Hour < 14)
+				{
+					color = "yellow";
+				}
+				else if (pti.CreationDate.Hour < 18)
+				{
+					color = "green";
+				}
+				else if (pti.CreationDate.Hour < 22)
+				{
+					color = "blue";
+				}
+				else
+				{
+					color = "purple";
+				}
+				model.PointVisited.Add(new Tuple<PetTrackingInfo, string>(pti, color));
+			}
+
+			return View(model);
 		}
 
 		[HttpGet]
