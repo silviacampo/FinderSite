@@ -10,6 +10,7 @@
 <div class="row">
 	<div class="col-md-3">
 		<h2>Issues</h2>
+		No device is connected - chequear las websocket activas
 		<ul>
 			@if (Model.MissingSubscription)
 			{
@@ -292,6 +293,8 @@ else
 			<IMG SRC="https://www.paypalobjects.com/en_US/i/btn/btn_unsubscribe_LG.gif" BORDER="0">
 		</A>
 		<ul>
+			<li><a asp-area="" asp-controller="User" asp-action="PickLocation"><i class="fa fa-location-arrow fa-fw" aria-hidden="true"></i>&nbsp; Pick Location</a></li>
+			<li><a asp-area="" asp-controller="Device" asp-action="DownloadApp"><i class="fa fa-download fa-fw" aria-hidden="true"></i>&nbsp; Download App</a></li>
 			<li><a href="https://go.microsoft.com/fwlink/?LinkID=517851">Buy another base or collar</a></li>
 			<li>
 				<a href="https://go.microsoft.com/fwlink/?LinkID=517851">Add a pet description</a>
