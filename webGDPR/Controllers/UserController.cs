@@ -122,24 +122,29 @@ namespace webGDPR.Controllers
 					if (user.Devices.Count > 0)
 					{
 						//Time connected to X device
-						var y = connectedToMiliseconds.FirstOrDefault(d => d.Item1 == BasesStatus[i].ConnectedTo);
-						y.Item2.Add(x);
+						Tuple<string, TimeSpan> t = connectedToMiliseconds.FirstOrDefault(d => d.Item1 == BasesStatus[i].ConnectedTo);
+						TimeSpan ts = t.Item2;
+						ts = ts.Add(x);
+
+						connectedToMiliseconds.Remove(t);
+						connectedToMiliseconds.Add(Tuple.Create(t.Item1, ts));
+
 					}
 				}
 				else {
 					//Disconnected time
-					disconnectedMiliseconds.Add(x);
+					disconnectedMiliseconds = disconnectedMiliseconds.Add(x);
 				}
 				
 				//time per Radio strenth
 				if (RadioMiliseconds[BasesStatus[i].Radio] == null) {
 					RadioMiliseconds[BasesStatus[i].Radio] = new TimeSpan(0);
 				}
-				RadioMiliseconds[BasesStatus[i].Radio].Add(x);
+				RadioMiliseconds[BasesStatus[i].Radio] = RadioMiliseconds[BasesStatus[i].Radio].Add(x);
 				
 				//time charging batteries
 				if (BasesStatus[i].IsCharging) {
-					IsChargingMiliseconds.Add(x);
+					IsChargingMiliseconds = IsChargingMiliseconds.Add(x);
 				}
 			}
 
@@ -154,9 +159,10 @@ namespace webGDPR.Controllers
 			for (int j = 0; j < RadioMiliseconds.Count(); j++) {
 				totalRadio = totalRadio + RadioMiliseconds[j].TotalSeconds * j;
 			}
+			double avgRadio = 0;
 			if (totalTime > 0)
 			{
-				double avgRadio = totalRadio / totalTime;
+				avgRadio = totalRadio / totalTime;
 			}
 			//time charging batteries : has a battery that is charging, only if close to 24hs...
 			BatteriesChargingMore75percent = (7 * 3 / 4) - (IsChargingMiliseconds.TotalDays * 3 / 4) <= 0; 
@@ -165,16 +171,71 @@ namespace webGDPR.Controllers
 
 			List<PetTrackingInfo> PetTrackingInfos = _context.PetTrackingInfo.Where(s => s.UserId == user.UserID && s.CreationDate > DateTime.Now.AddDays(-7)).OrderBy(s => s.CreationDate).ToList();
 
-			//Disconnected time
-			//Most connected to X base
-			
+			TimeSpan disconnectedCollarMiliseconds = new TimeSpan(0);
+
+			List<Tuple<string, TimeSpan>> connectedToBaseMiliseconds = new List<Tuple<string, TimeSpan>>();
+			foreach (Base d in user.Bases)
+			{
+				connectedToBaseMiliseconds.Add(new Tuple<string, TimeSpan>(d.BaseId, new TimeSpan(0)));
+			}
+
+			string MostConnectedBaseId = string.Empty;
+
+			TimeSpan[] RadioCollarMiliseconds = new TimeSpan[101];
+
+			for (int i = 0; i < CollarsStatus.Count - 1; i++)
+			{
+				TimeSpan x = CollarsStatus[i + 1].CreationDate - CollarsStatus[i].CreationDate;
+				if (CollarsStatus[i].IsConnected)
+				{
+					if (user.Bases.Count > 0)
+					{
+						//Time connected to X device
+						Tuple<string, TimeSpan> t = connectedToBaseMiliseconds.FirstOrDefault(d => d.Item1 == CollarsStatus[i].ConnectedTo);
+						TimeSpan ts = t.Item2;
+						ts = ts.Add(x);
+						connectedToBaseMiliseconds.Remove(t);
+						connectedToBaseMiliseconds.Add(Tuple.Create(t.Item1, ts));
+					}
+				}
+				else
+				{
+					//Disconnected time
+					disconnectedCollarMiliseconds = disconnectedCollarMiliseconds.Add(x);
+				}
+
+				//time per Radio strenth
+				if (RadioCollarMiliseconds[CollarsStatus[i].Radio] == null)
+				{
+					RadioCollarMiliseconds[CollarsStatus[i].Radio] = new TimeSpan(0);
+				}
+				RadioCollarMiliseconds[CollarsStatus[i].Radio] = RadioCollarMiliseconds[CollarsStatus[i].Radio].Add(x);
+			}
+
+			//Base is most connected to
+
+			if (user.Bases.Count > 0)
+				MostConnectedBaseId = connectedToBaseMiliseconds.OrderByDescending(d => d.Item2.Ticks).First().Item1;
+
+			//Radio strenth average
+			double totalRadioCollarTime = RadioCollarMiliseconds.Sum(r => r.TotalSeconds);
+			double totalRadioCollar = 0;
+			for (int j = 0; j < RadioCollarMiliseconds.Count(); j++)
+			{
+				totalRadioCollar = totalRadioCollar + RadioCollarMiliseconds[j].TotalSeconds * j;
+			}
+			double avgRadioCollar = 0;
+			if (totalRadioCollarTime > 0)
+			{
+				avgRadioCollar = totalRadioCollar / totalRadioCollarTime;
+			}
+
 			//gps Disconnected time
 			//gps disconnedted rel to closed location in time
 
 			//Battery level avg
 			//Time with battery < 25
 
-			//Radio strenth average
 			//radio strenth rel to closed location in time
 
 			double[] totalDistance = new double[24];
