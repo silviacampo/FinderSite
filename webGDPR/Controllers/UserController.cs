@@ -98,33 +98,68 @@ namespace webGDPR.Controllers
 			}
 			model.User = user;
 
-			List<BaseStatus> BasesStatus = _context.BaseStatus.Where(s => s.UserId == user.UserID && s.CreationDate > DateTime.Now.AddDays(-7)).OrderBy(s => s.CreationDate).ToList();
+			List<BaseStatus> BasesStatus = _context.BaseStatus.Where(s => s.UserId == user.UserID && s.CreationDate > DateTime.Now.AddDays(-700)).OrderBy(s => s.CreationDate).ToList();
 
 			TimeSpan disconnectedMiliseconds = new TimeSpan(0);
+
 			List<Tuple<string, TimeSpan>> connectedToMiliseconds = new List<Tuple<string, TimeSpan>>();
 			foreach (Device d in user.Devices) {
 				connectedToMiliseconds.Add(new Tuple<string, TimeSpan>(d.DeviceId, new TimeSpan(0)));
 			}
 
+			string MostConnectedDeviceId = string.Empty;
+
+			TimeSpan[] RadioMiliseconds = new TimeSpan[101];
+
+			TimeSpan IsChargingMiliseconds = new TimeSpan(0);
+
+			bool BatteriesChargingMore75percent = false;
+
 			for (int i = 0; i < BasesStatus.Count - 1; i++)
 			{
 				TimeSpan x = BasesStatus[i + 1].CreationDate - BasesStatus[i].CreationDate;
 				if (BasesStatus[i].IsConnected) {
-						var y = connectedToMiliseconds.FirstOrDefault(d => d.Item1 == BasesStatus[i + 1].ConnectedTo);
-						y.Item2.Add(x); 
+					if (user.Devices.Count > 0)
+					{
+						//Time connected to X device
+						var y = connectedToMiliseconds.FirstOrDefault(d => d.Item1 == BasesStatus[i].ConnectedTo);
+						y.Item2.Add(x);
+					}
 				}
 				else {
 					//Disconnected time
 					disconnectedMiliseconds.Add(x);
 				}
+				
+				//time per Radio strenth
+				if (RadioMiliseconds[BasesStatus[i].Radio] == null) {
+					RadioMiliseconds[BasesStatus[i].Radio] = new TimeSpan(0);
+				}
+				RadioMiliseconds[BasesStatus[i].Radio].Add(x);
+				
+				//time charging batteries
+				if (BasesStatus[i].IsCharging) {
+					IsChargingMiliseconds.Add(x);
+				}
 			}
-			string deviceId = connectedToMiliseconds.OrderByDescending(d => d.Item2.Ticks).First().Item1;
 
-			//Most connected to X device
+			//Device is most connected to
 
-			//time charging batteries : has a battery that is charging, only if close to 24hs...
+			if (user.Devices.Count > 0)
+				MostConnectedDeviceId = connectedToMiliseconds.OrderByDescending(d => d.Item2.Ticks).First().Item1;
 
 			//Radio strenth average
+			double totalTime = RadioMiliseconds.Sum(r=>r.TotalSeconds);
+			double totalRadio = 0;
+			for (int j = 0; j < RadioMiliseconds.Count(); j++) {
+				totalRadio = totalRadio + RadioMiliseconds[j].TotalSeconds * j;
+			}
+			if (totalTime > 0)
+			{
+				double avgRadio = totalRadio / totalTime;
+			}
+			//time charging batteries : has a battery that is charging, only if close to 24hs...
+			BatteriesChargingMore75percent = (7 * 3 / 4) - (IsChargingMiliseconds.TotalDays * 3 / 4) <= 0; 
 
 			List<CollarStatus> CollarsStatus = _context.CollarStatus.Where(s => s.UserId == user.UserID && s.CreationDate > DateTime.Now.AddDays(-7)).OrderBy(s => s.CreationDate).ToList();
 
