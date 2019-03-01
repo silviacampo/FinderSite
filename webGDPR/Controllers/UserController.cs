@@ -195,72 +195,72 @@ namespace webGDPR.Controllers
 
 			List<PetTrackingInfo> PetTrackingInfos = _context.PetTrackingInfo.Where(s => s.UserId == user.UserID && s.CreationDate > DateTime.Now.AddDays(-7)).OrderBy(s => s.CreationDate).ToList();
 
-			TimeSpan disconnectedCollarMiliseconds = new TimeSpan(0);
+			//TimeSpan disconnectedCollarMiliseconds = new TimeSpan(0);
 
-			List<Tuple<string, TimeSpan>> connectedToBaseMiliseconds = new List<Tuple<string, TimeSpan>>();
-			foreach (Base d in user.Bases)
-			{
-				connectedToBaseMiliseconds.Add(new Tuple<string, TimeSpan>(d.BaseId, new TimeSpan(0)));
-			}
+			//List<Tuple<string, TimeSpan>> connectedToBaseMiliseconds = new List<Tuple<string, TimeSpan>>();
+			//foreach (Base d in user.Bases)
+			//{
+			//	connectedToBaseMiliseconds.Add(new Tuple<string, TimeSpan>(d.BaseId, new TimeSpan(0)));
+			//}
 
-			string MostConnectedBaseId = string.Empty;
+			//string MostConnectedBaseId = string.Empty;
 
-			TimeSpan[] RadioCollarMiliseconds = new TimeSpan[101];
+			//TimeSpan[] RadioCollarMiliseconds = new TimeSpan[101];
 
-			for (int i = 0; i < CollarsStatus.Count - 1; i++)
-			{
-				TimeSpan x = CollarsStatus[i + 1].CreationDate - CollarsStatus[i].CreationDate;
-				if (CollarsStatus[i].IsConnected)
-				{
-					if (user.Bases.Count > 0)
-					{
-						//Time connected to X device
-						Tuple<string, TimeSpan> t = connectedToBaseMiliseconds.FirstOrDefault(d => d.Item1 == CollarsStatus[i].ConnectedTo);
-						TimeSpan ts = t.Item2;
-						ts = ts.Add(x);
-						connectedToBaseMiliseconds.Remove(t);
-						connectedToBaseMiliseconds.Add(Tuple.Create(t.Item1, ts));
-					}
-				}
-				else
-				{
-					//Disconnected time
-					disconnectedCollarMiliseconds = disconnectedCollarMiliseconds.Add(x);
-				}
+			//for (int i = 0; i < CollarsStatus.Count - 1; i++)
+			//{
+			//	TimeSpan x = CollarsStatus[i + 1].CreationDate - CollarsStatus[i].CreationDate;
+			//	if (CollarsStatus[i].IsConnected)
+			//	{
+			//		if (user.Bases.Count > 0)
+			//		{
+			//			//Time connected to X device
+			//			Tuple<string, TimeSpan> t = connectedToBaseMiliseconds.FirstOrDefault(d => d.Item1 == CollarsStatus[i].ConnectedTo);
+			//			TimeSpan ts = t.Item2;
+			//			ts = ts.Add(x);
+			//			connectedToBaseMiliseconds.Remove(t);
+			//			connectedToBaseMiliseconds.Add(Tuple.Create(t.Item1, ts));
+			//		}
+			//	}
+			//	else
+			//	{
+			//		//Disconnected time
+			//		disconnectedCollarMiliseconds = disconnectedCollarMiliseconds.Add(x);
+			//	}
 
-				//time per Radio strenth
-				if (RadioCollarMiliseconds[CollarsStatus[i].Radio] == null)
-				{
-					RadioCollarMiliseconds[CollarsStatus[i].Radio] = new TimeSpan(0);
-				}
-				RadioCollarMiliseconds[CollarsStatus[i].Radio] = RadioCollarMiliseconds[CollarsStatus[i].Radio].Add(x);
-			}
+			//	//time per Radio strenth
+			//	if (RadioCollarMiliseconds[CollarsStatus[i].Radio] == null)
+			//	{
+			//		RadioCollarMiliseconds[CollarsStatus[i].Radio] = new TimeSpan(0);
+			//	}
+			//	RadioCollarMiliseconds[CollarsStatus[i].Radio] = RadioCollarMiliseconds[CollarsStatus[i].Radio].Add(x);
+			//}
 
-			//Base is most connected to
+			////Base is most connected to
 
-			if (user.Bases.Count > 0)
-				MostConnectedBaseId = connectedToBaseMiliseconds.OrderByDescending(d => d.Item2.Ticks).First().Item1;
+			//if (user.Bases.Count > 0)
+			//	MostConnectedBaseId = connectedToBaseMiliseconds.OrderByDescending(d => d.Item2.Ticks).First().Item1;
 
-			//Radio strenth average
-			double totalRadioCollarTime = RadioCollarMiliseconds.Sum(r => r.TotalSeconds);
-			double totalRadioCollar = 0;
-			for (int j = 0; j < RadioCollarMiliseconds.Count(); j++)
-			{
-				totalRadioCollar = totalRadioCollar + RadioCollarMiliseconds[j].TotalSeconds * j;
-			}
-			double avgRadioCollar = 0;
-			if (totalRadioCollarTime > 0)
-			{
-				avgRadioCollar = totalRadioCollar / totalRadioCollarTime;
-			}
+			////Radio strenth average
+			//double totalRadioCollarTime = RadioCollarMiliseconds.Sum(r => r.TotalSeconds);
+			//double totalRadioCollar = 0;
+			//for (int j = 0; j < RadioCollarMiliseconds.Count(); j++)
+			//{
+			//	totalRadioCollar = totalRadioCollar + RadioCollarMiliseconds[j].TotalSeconds * j;
+			//}
+			//double avgRadioCollar = 0;
+			//if (totalRadioCollarTime > 0)
+			//{
+			//	avgRadioCollar = totalRadioCollar / totalRadioCollarTime;
+			//}
 
-			//gps Disconnected time
-			//gps disconnedted rel to closed location in time
+			////gps Disconnected time
+			////gps disconnedted rel to closed location in time
 
-			//Battery level avg
-			//Time with battery < 25
+			////Battery level avg
+			////Time with battery < 25
 
-			//radio strenth rel to closed location in time
+			////radio strenth rel to closed location in time
 
 			double[] totalDistance = new double[24];
 

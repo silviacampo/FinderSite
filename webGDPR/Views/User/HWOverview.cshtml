@@ -9,6 +9,23 @@
 
 <div class="row">
 	<div class="col-md-3">
+		<div class="well well-lg">
+			Most Connected Device: @Model.MostConnectedToDevice.AliasName
+		</div>
+		@{
+			var basesChargingToMuch = Model.BaseStats.Where(bs => bs.BatteriesChargingMore75percent).ToList();
+			if (basesChargingToMuch.Count > 0)
+			{
+				string[] names = basesChargingToMuch.Select(b => b.Base.Name).ToArray();
+				<div class="alert alert-danger">
+					<strong>Danger!</strong> These bases are charging to much: @string.Join(",", names).
+				</div>
+
+			}
+		}
+		<div class="alert alert-danger">
+			<strong>Danger!</strong> Indicates a dangerous or potentially negative action.
+		</div>
 		@*<div class="@(@Model.disrv.attributes == null ? "rotate" : "")""@()alert alert-warning">
 			<strong>Warning!</strong> Indicates a warning that might need attention.
 		</div>
