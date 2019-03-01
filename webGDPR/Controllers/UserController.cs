@@ -98,75 +98,98 @@ namespace webGDPR.Controllers
 			}
 			model.User = user;
 
-			List<BaseStatus> BasesStatus = _context.BaseStatus.Where(s => s.UserId == user.UserID && s.CreationDate > DateTime.Now.AddDays(-700)).OrderBy(s => s.CreationDate).ToList();
-
-			TimeSpan disconnectedMiliseconds = new TimeSpan(0);
-
-			List<Tuple<string, TimeSpan>> connectedToMiliseconds = new List<Tuple<string, TimeSpan>>();
-			foreach (Device d in user.Devices) {
-				connectedToMiliseconds.Add(new Tuple<string, TimeSpan>(d.DeviceId, new TimeSpan(0)));
+			model.BaseStats = new List<BaseStats>();
+			foreach (Base b in user.Bases) {
+				model.BaseStats.Add(new BaseStats() { Base = b });
 			}
 
-			string MostConnectedDeviceId = string.Empty;
-
-			TimeSpan[] RadioMiliseconds = new TimeSpan[101];
-
-			TimeSpan IsChargingMiliseconds = new TimeSpan(0);
-
-			bool BatteriesChargingMore75percent = false;
-
-			for (int i = 0; i < BasesStatus.Count - 1; i++)
+			model.CollarStats = new List<CollarStats>();
+			foreach (Collar c in user.Collars)
 			{
-				TimeSpan x = BasesStatus[i + 1].CreationDate - BasesStatus[i].CreationDate;
-				if (BasesStatus[i].IsConnected) {
-					if (user.Devices.Count > 0)
+				model.CollarStats.Add(new CollarStats() { Collar = c });
+			}
+
+			List<Tuple<string, TimeSpan>> SumConnectedToTimeSpan = new List<Tuple<string, TimeSpan>>();
+			foreach (Device d in user.Devices)
+			{
+				SumConnectedToTimeSpan.Add(new Tuple<string, TimeSpan>(d.DeviceId, new TimeSpan(0)));
+			}
+
+			foreach (BaseStats bs in model.BaseStats) {
+				List<BaseStatus> BasesStatus = _context.BaseStatus.Where(s => s.BaseId == bs.Base.BaseId && s.CreationDate > DateTime.Now.AddDays(-700)).OrderBy(s => s.CreationDate).ToList();
+
+				bs.DisconnectedTimeSpan = new TimeSpan(0);
+				bs.ConnectedToTimeSpan = new List<Tuple<string, TimeSpan>>();
+				foreach (Device d in user.Devices)
+				{
+					bs.ConnectedToTimeSpan.Add(new Tuple<string, TimeSpan>(d.DeviceId, new TimeSpan(0)));
+				}
+
+				bs.RadioTimeSpan = new TimeSpan[101];
+				bs.IsChargingTimeSpan = new TimeSpan(0);
+				bs.BatteriesChargingMore75percent = false;
+
+				for (int i = 0; i < BasesStatus.Count - 1; i++)
+				{
+					TimeSpan x = BasesStatus[i + 1].CreationDate - BasesStatus[i].CreationDate;
+					if (BasesStatus[i].IsConnected)
 					{
-						//Time connected to X device
-						Tuple<string, TimeSpan> t = connectedToMiliseconds.FirstOrDefault(d => d.Item1 == BasesStatus[i].ConnectedTo);
-						TimeSpan ts = t.Item2;
-						ts = ts.Add(x);
+						if (user.Devices.Count > 0)
+						{
+							//Time connected to X device
+							Tuple<string, TimeSpan> t = bs.ConnectedToTimeSpan.FirstOrDefault(d => d.Item1 == BasesStatus[i].ConnectedTo);
+							TimeSpan ts = t.Item2;
+							ts = ts.Add(x);
+							bs.ConnectedToTimeSpan.Remove(t);
+							bs.ConnectedToTimeSpan.Add(Tuple.Create(t.Item1, ts));
 
-						connectedToMiliseconds.Remove(t);
-						connectedToMiliseconds.Add(Tuple.Create(t.Item1, ts));
+							Tuple<string, TimeSpan> st = SumConnectedToTimeSpan.FirstOrDefault(d => d.Item1 == BasesStatus[i].ConnectedTo);
+							TimeSpan sts = st.Item2;
+							sts = sts.Add(x);
+							SumConnectedToTimeSpan.Remove(st);
+							SumConnectedToTimeSpan.Add(Tuple.Create(st.Item1, sts));
+							
+						}
+					}
+					else
+					{
+						//Disconnected time
+						bs.DisconnectedTimeSpan = bs.DisconnectedTimeSpan.Add(x);
+					}
+					//time per Radio strenth
+					if (bs.RadioTimeSpan[BasesStatus[i].Radio] == null)
+					{
+						bs.RadioTimeSpan[BasesStatus[i].Radio] = new TimeSpan(0);
+					}
+					bs.RadioTimeSpan[BasesStatus[i].Radio] = bs.RadioTimeSpan[BasesStatus[i].Radio].Add(x);
 
+					//time charging batteries
+					if (BasesStatus[i].IsCharging)
+					{
+						bs.IsChargingTimeSpan = bs.IsChargingTimeSpan.Add(x);
 					}
 				}
-				else {
-					//Disconnected time
-					disconnectedMiliseconds = disconnectedMiliseconds.Add(x);
+				//Radio strenth average
+				double totalTime = bs.RadioTimeSpan.Sum(r => r.TotalSeconds);
+				double totalRadio = 0;
+				for (int j = 0; j < bs.RadioTimeSpan.Count(); j++)
+				{
+					totalRadio = totalRadio + bs.RadioTimeSpan[j].TotalSeconds * j;
 				}
-				
-				//time per Radio strenth
-				if (RadioMiliseconds[BasesStatus[i].Radio] == null) {
-					RadioMiliseconds[BasesStatus[i].Radio] = new TimeSpan(0);
+				double avgRadio = 0;
+				if (totalTime > 0)
+				{
+					avgRadio = totalRadio / totalTime;
 				}
-				RadioMiliseconds[BasesStatus[i].Radio] = RadioMiliseconds[BasesStatus[i].Radio].Add(x);
-				
-				//time charging batteries
-				if (BasesStatus[i].IsCharging) {
-					IsChargingMiliseconds = IsChargingMiliseconds.Add(x);
-				}
+				//time charging batteries : has a battery that is charging, only if close to 24hs...
+				bs.BatteriesChargingMore75percent = (7 * 3 / 4) - (bs.IsChargingTimeSpan.TotalDays * 3 / 4) <= 0;
 			}
 
 			//Device is most connected to
-
 			if (user.Devices.Count > 0)
-				MostConnectedDeviceId = connectedToMiliseconds.OrderByDescending(d => d.Item2.Ticks).First().Item1;
-
-			//Radio strenth average
-			double totalTime = RadioMiliseconds.Sum(r=>r.TotalSeconds);
-			double totalRadio = 0;
-			for (int j = 0; j < RadioMiliseconds.Count(); j++) {
-				totalRadio = totalRadio + RadioMiliseconds[j].TotalSeconds * j;
-			}
-			double avgRadio = 0;
-			if (totalTime > 0)
 			{
-				avgRadio = totalRadio / totalTime;
+				model.MostConnectedToDevice = user.Devices.FirstOrDefault(c=>c.DeviceId == SumConnectedToTimeSpan.OrderByDescending(d => d.Item2.Ticks).First().Item1);
 			}
-			//time charging batteries : has a battery that is charging, only if close to 24hs...
-			BatteriesChargingMore75percent = (7 * 3 / 4) - (IsChargingMiliseconds.TotalDays * 3 / 4) <= 0;
-
 
 			List<CollarStatus> CollarsStatus = _context.CollarStatus.Where(s => s.UserId == user.UserID && s.CreationDate > DateTime.Now.AddDays(-700)).OrderBy(s => s.CreationDate).ToList();
 
