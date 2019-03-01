@@ -165,9 +165,10 @@ namespace webGDPR.Controllers
 				avgRadio = totalRadio / totalTime;
 			}
 			//time charging batteries : has a battery that is charging, only if close to 24hs...
-			BatteriesChargingMore75percent = (7 * 3 / 4) - (IsChargingMiliseconds.TotalDays * 3 / 4) <= 0; 
+			BatteriesChargingMore75percent = (7 * 3 / 4) - (IsChargingMiliseconds.TotalDays * 3 / 4) <= 0;
 
-			List<CollarStatus> CollarsStatus = _context.CollarStatus.Where(s => s.UserId == user.UserID && s.CreationDate > DateTime.Now.AddDays(-7)).OrderBy(s => s.CreationDate).ToList();
+
+			List<CollarStatus> CollarsStatus = _context.CollarStatus.Where(s => s.UserId == user.UserID && s.CreationDate > DateTime.Now.AddDays(-700)).OrderBy(s => s.CreationDate).ToList();
 
 			List<PetTrackingInfo> PetTrackingInfos = _context.PetTrackingInfo.Where(s => s.UserId == user.UserID && s.CreationDate > DateTime.Now.AddDays(-7)).OrderBy(s => s.CreationDate).ToList();
 
