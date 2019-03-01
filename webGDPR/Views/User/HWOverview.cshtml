@@ -9,31 +9,31 @@
 
 <div class="row">
 	<div class="col-md-3">
-		<div class="well well-lg">
-			Most Connected Device: @Model.MostConnectedToDevice.AliasName
-		</div>
+		@{
+			var basesDisconnectedToMuch = Model.BaseStats.Where(bs => bs.DisconnectedTimeSpan.TotalHours > 1).ToList();
+			if (basesDisconnectedToMuch.Count > 0)
+			{
+				string[] names = basesDisconnectedToMuch.Select(b => b.Base.Name).ToArray();
+				<div class="alert alert-danger">
+					<strong>Danger!</strong> These bases are disconnected to much: @string.Join(",", names).
+				</div>
+			}
+		}
+
 		@{
 			var basesChargingToMuch = Model.BaseStats.Where(bs => bs.BatteriesChargingMore75percent).ToList();
 			if (basesChargingToMuch.Count > 0)
 			{
 				string[] names = basesChargingToMuch.Select(b => b.Base.Name).ToArray();
-				<div class="alert alert-danger">
-					<strong>Danger!</strong> These bases are charging to much: @string.Join(",", names).
+				<div class="alert alert-warning">
+					<strong>Warning!</strong> These bases are charging to much: @string.Join(",", names).
 				</div>
-
 			}
 		}
-		<div class="alert alert-danger">
-			<strong>Danger!</strong> Indicates a dangerous or potentially negative action.
-		</div>
-		@*<div class="@(@Model.disrv.attributes == null ? "rotate" : "")""@()alert alert-warning">
-			<strong>Warning!</strong> Indicates a warning that might need attention.
-		</div>
 
-		<div class="alert alert-danger">
-			<strong>Danger!</strong> Indicates a dangerous or potentially negative action.
-		</div>*@
-
+		<div class="well well-lg">
+			Most Connected Device: @Model.MostConnectedToDevice.AliasName
+		</div>
 		<h2>Issues</h2>
 		<ul>
 			@if (Model.User.MissingSubscription)
