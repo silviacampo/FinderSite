@@ -9,6 +9,14 @@
 
 <div class="row">
 	<div class="col-md-3">
+		@*<div class="@(@Model.disrv.attributes == null ? "rotate" : "")""@()alert alert-warning">
+			<strong>Warning!</strong> Indicates a warning that might need attention.
+		</div>
+
+		<div class="alert alert-danger">
+			<strong>Danger!</strong> Indicates a dangerous or potentially negative action.
+		</div>*@
+
 		<h2>Issues</h2>
 		<ul>
 			@if (Model.User.MissingSubscription)
