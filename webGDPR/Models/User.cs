@@ -6,6 +6,8 @@ namespace webGDPR.Models
 {
 	public class User
 	{
+		public const int DefaultMaxDistanceBeforeAlert = 1000;
+
 		public string UserID { get; set; }
 
 		// user ID from AspNetUser table.
@@ -19,6 +21,10 @@ namespace webGDPR.Models
 		public double Latitude { get; set; }
 		public double Longitude { get; set; }
 
+		public int MaxDistanceBeforeAlert { get; set; } //in meters
+
+		public string TimeZoneId { get; internal set; }
+
 		[DisplayName("Address")]
 		public string FormattedAddress { get; set; }
 
@@ -31,5 +37,6 @@ namespace webGDPR.Models
 		public List<Pet> Pets { get; set; }
 
 		public List<Subscription> Subscriptions { get; set; }
+
 	}
 }

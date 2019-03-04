@@ -18,6 +18,7 @@ using webGDPR.Data;
 using webGDPR.Infrastructure;
 using webGDPR.Infrastructure.CustomWebSockets;
 using webGDPR.Models;
+using webGDPR.Models.Helper;
 using webGDPR.ViewModels;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -379,6 +380,28 @@ namespace webGDPR.Controllers
 				user.Latitude = addresses.First().Coordinates.Latitude;
 				user.Longitude = addresses.First().Coordinates.Longitude;
 				user.FormattedAddress = addresses.First().FormattedAddress;
+
+				using (var client = new HttpClient())
+				{
+					try
+					{
+						string url = $"https://maps.googleapis.com/maps/api/timezone/json?location={user.Latitude},{user.Longitude}&timestamp={new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds()}&key=AIzaSyCTWrqkwFGLjbd3Xl3vAspkszIefneqFT4";
+						using (var result = await client.GetAsync(url))
+						{
+							if (result.IsSuccessStatusCode)
+							{
+								TimeZoneAPIResponse timezone = JsonConvert.DeserializeObject<TimeZoneAPIResponse>(await result.Content.ReadAsStringAsync());
+								user.TimeZoneId = timezone.timeZoneId;
+							}
+						}
+					}
+					catch (Exception ex)
+					{
+						var test = ex.Message;
+					}
+				}
+
+
 				_context.Update(user);
 				await _context.SaveChangesAsync();
 				/*
