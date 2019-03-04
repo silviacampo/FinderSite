@@ -581,9 +581,11 @@ $('#btnWeek, #btnMonth, #btnSemester').click(function () {
 },
     options: {
     scales: {
-    yAxes: [{ 
+      yAxes: [{
+
     ticks: {
-    beginAtZero: true
+      beginAtZero: true, max: 100,
+      min: 0
 }
 }]
 }
