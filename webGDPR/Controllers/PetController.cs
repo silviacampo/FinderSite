@@ -498,6 +498,7 @@ namespace webGDPR.Controllers
                     Pet currentPet = _context.Pet.AsNoTracking().Include(m => m.LastCollar).Include(m => m.LastMode).FirstOrDefault(g => g.PetId == pet.PetId);
                     PetCollar currentCollar = _context.PetCollar.FirstOrDefault(c => c.PetCollarId == currentPet.LastCollar.PetCollarId);
                     p.LastCollarId = currentPet.LastCollarId;
+                    p.LastTrackingInfoId = currentPet.LastTrackingInfoId;
 
                     bool isLost = false;
                     PetMode currentPetMode = currentPet.LastMode;
