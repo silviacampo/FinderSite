@@ -392,6 +392,7 @@ namespace webGDPR.Controllers
 							{
 								TimeZoneAPIResponse timezone = JsonConvert.DeserializeObject<TimeZoneAPIResponse>(await result.Content.ReadAsStringAsync());
 								user.TimeZoneId = timezone.timeZoneId;
+								user.Offset = timezone.rawOffset / (60 * 60);
 							}
 						}
 					}

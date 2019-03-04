@@ -25,6 +25,8 @@ namespace webGDPR.Models
 
 		public string TimeZoneId { get; internal set; }
 
+		public int Offset { get; set; } //in hours
+
 		[DisplayName("Address")]
 		public string FormattedAddress { get; set; }
 
