@@ -34,6 +34,24 @@
 		<div class="well well-lg">
 			Most Connected Device: @Model.MostConnectedToDevice.AliasName
 		</div>
+		<div class="btn-group" role="group" aria-label="..." style="float:right;">
+			<button class="btn btn-default active" id="btnWeek" data-period="W">last week</button>
+			<button class="btn btn-default" id="btnMonth" data-period="M">last month</button>
+			<button class="btn btn-default" id="btnSemester" data-period="S">last 6 months</button>
+		</div>
+		<script>
+			var names = JSON.parse('@Html.Raw(Json.Serialize(Model.BaseStats.Select(b => b.Base.Name).ToArray()))');  
+			var disconnectedTimes = JSON.parse('@Html.Raw(Json.Serialize(Model.BaseStats.Select(b => b.DisconnectedTimeSpan.TotalMinutes).ToArray()))'); 
+			var radios = JSON.parse('@Html.Raw(Json.Serialize(Model.BaseStats.Select(b => b.AvgRadio).ToArray()))'); 
+		</script>
+		<div id="activityStats" class="well well-lg" style="margin-top:10px;">
+			<h5>Disconnected Time for Bases</h5>
+			<canvas id="horizontalBar"></canvas>
+			<h5>Radio Average Strenght for Bases</h5>
+			<canvas id="verticalBarChart"></canvas>
+		</div>
+
+
 		<h2>Issues</h2>
 		<ul>
 			@if (Model.User.MissingSubscription)
@@ -106,219 +124,219 @@
 		</ul>
 	</div>
 
-    <div class="col-md-3">
-        <h2>Overview</h2>
-        <div class="well well-lg" style="margin-right:10px;">
-            <h3>
-                <i class="fa fa-home fa-fw" aria-hidden="true"></i>
-            </h3>
-            <table class="table">
-                <tbody>
-                    @foreach (var item in Model.User.Bases)
-                {
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Name)
-                        </td>
-                        <td>
-                            @if (item.LastStatus != null && item.LastStatus.IsConnected)
-                        {
-                            <i class="fa fa-circle fa-fw" style="color:green;position:relative;top:7px;left:0px;" aria-hidden="true"></i>
-                    }
-                    else
-                    {
-                        <i class="fa fa-circle fa-fw" style="color:red;position:relative;top:7px;left:0px;" aria-hidden="true"></i>
-                }
-                        </td>
-                        @*<td>
-                            @if (item.LastStatus != null && item.LastStatus.DeviceConnectedTo != null)
-                            {
-                                @Html.DisplayFor(modelItem => item.LastStatus.DeviceConnectedTo.GetName)
-                            }
-                        </td>*@
-						<td class="visible-md visible-lg visible-sm" valign="middle">
-							<div style="position:relative;top:0px;left:0px; min-width:20px;">
-								<i class="fa fa-plug fa-fw" style="color:gray;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
-								@if (!(item.LastStatus != null && item.LastStatus.IsPlugged))
-								{
-									<i style="color:black; font-weight:bold; font-size:x-large;padding-top:0px;padding-bottom:0px;position:absolute;top:0px;left:6px">\</i>
-								}
-							</div>
-							
-						</td>
-						<td class="visible-md visible-lg visible-sm">
-							<div style="position:relative;top:0px;left:0px; min-width:20px;">
-								@if (item.LastStatus != null)
-								{
-									if (item.LastStatus.Battery < 25)
+		<div class="col-md-3">
+			<h2>Overview</h2>
+			<div class="well well-lg" style="margin-right:10px;">
+				<h3>
+					<i class="fa fa-home fa-fw" aria-hidden="true"></i>
+				</h3>
+				<table class="table">
+					<tbody>
+						@foreach (var item in Model.User.Bases)
+						{
+							<tr>
+								<td>
+									@Html.DisplayFor(modelItem => item.Name)
+								</td>
+								<td>
+									@if (item.LastStatus != null && item.LastStatus.IsConnected)
 									{
-										<i class="fa fa-battery-empty fa-fw" style="color:lightblue;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
-									}
-									else if (item.LastStatus.Battery < 50)
-									{
-										<i class="fa fa-battery-quarter fa-fw" style="color:lightblue;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
-									}
-									else if (item.LastStatus.Battery < 75)
-									{
-										<i class="fa fa-battery-half fa-fw" style="color:lightblue;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
-									}
-									else if (item.LastStatus.Battery < 100)
-									{
-										<i class="fa fa-battery-three-quarters fa-fw" style="color:lightblue;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
+										<i class="fa fa-circle fa-fw" style="color:green;position:relative;top:7px;left:0px;" aria-hidden="true"></i>
 									}
 									else
 									{
-										<i class="fa fa-battery-full fa-fw" style="color:lightblue;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
+										<i class="fa fa-circle fa-fw" style="color:red;position:relative;top:7px;left:0px;" aria-hidden="true"></i>
 									}
-								}
-								else
-								{
-									<i class="fa fa-battery-empty fa-fw" style="color:lightblue;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
-								}
-								@if (!(item.LastStatus != null && item.LastStatus.HasBattery))
-								{
-									<i style="color:black; font-weight:bold; font-size:x-large;position:absolute;top:0px;left:4px">\</i>
-								}
-								@if (item.LastStatus != null && item.LastStatus.IsCharging)
-								{
-									<i class="fa fa-bolt fa-fw" style="color:black;position:absolute;top:10px;left:0px">\</i>
-								}
-							</div>
-								
-						</td>
-						<td class="visible-md visible-lg visible-sm">
-							<div style="position:relative;top:0px;left:0px; min-width:20px;">
-								<i class="fa fa-signal fa-fw" style="color:gray;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
-								@if (item.LastStatus != null)
-								{
-									<i style="color:black;font-weight:bold;font-size:small;position:absolute;top:5px;left:6px">item.LastStatus.RadioPercentage</i>
-								}
-								else
-								{
-									<i style="color:black;font-weight:bold;font-size:small;position:absolute;top:5px;left:6px">0%</i>
-								}
-							</div>
+								</td>
+								@*<td>
+									@if (item.LastStatus != null && item.LastStatus.DeviceConnectedTo != null)
+									{
+										@Html.DisplayFor(modelItem => item.LastStatus.DeviceConnectedTo.GetName)
+									}
+								</td>*@
+								<td class="visible-md visible-lg visible-sm" valign="middle">
+									<div style="position:relative;top:0px;left:0px; min-width:20px;">
+										<i class="fa fa-plug fa-fw" style="color:gray;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
+										@if (!(item.LastStatus != null && item.LastStatus.IsPlugged))
+										{
+											<i style="color:black; font-weight:bold; font-size:x-large;padding-top:0px;padding-bottom:0px;position:absolute;top:0px;left:6px">\</i>
+										}
+									</div>
 
-						</td>
-                    </tr>
-            }
-                </tbody>
-            </table>
-            <hr />
-            <h3>
-                <i class="fa fa-paw fa-fw" aria-hidden="true"></i>
-            </h3>
-            <table class="table">
-                <tbody>
-                    @foreach (var item in Model.User.Collars)
-                {
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Name)
-                        </td>
-                        <td>
-                            @if (item.LastStatus != null && item.LastStatus.IsConnected)
-                        {
-                            <i class="fa fa-circle fa-fw" style="color:green;position:relative;top:7px;left:0px" aria-hidden="true"></i>
-                    }
-                    else
-                    {
-                        <i class="fa fa-circle fa-fw" style="color:red;position:relative;top:7px;left:0px" aria-hidden="true"></i>
-                }
-                        </td>
-                        @*<td>
-                            @if (item.BaseConnectedTo != null)
-                            {
-                                @Html.DisplayFor(modelItem => item.BaseConnectedTo.Name)
-                            }
-                        </td>*@
-						<td class="visible-md visible-lg visible-sm" valign="middle">
-							<div style="position:relative;top:0px;left:0px; min-width:20px;">
-								<i class="fa fa-map-marker fa-fw" style="color:gray;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
-								@if (!(item.LastStatus != null && item.LastStatus.IsGPSConnected))
-								{
-									<i style="color:black; font-weight:bold; font-size:x-large;padding-top:0px;padding-bottom:0px;position:absolute;top:0px;left:6px">\</i>
-								}
-							</div>
-						</td>
-						<td class="visible-md visible-lg visible-sm">
-							<div style="position:relative;top:0px;left:0px; min-width:20px;">
-								@if (item.LastStatus != null)
-								{
-									if (item.LastStatus.Battery < 25)
+								</td>
+								<td class="visible-md visible-lg visible-sm">
+									<div style="position:relative;top:0px;left:0px; min-width:20px;">
+										@if (item.LastStatus != null)
+										{
+											if (item.LastStatus.Battery < 25)
+											{
+												<i class="fa fa-battery-empty fa-fw" style="color:lightblue;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
+											}
+											else if (item.LastStatus.Battery < 50)
+											{
+												<i class="fa fa-battery-quarter fa-fw" style="color:lightblue;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
+											}
+											else if (item.LastStatus.Battery < 75)
+											{
+												<i class="fa fa-battery-half fa-fw" style="color:lightblue;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
+											}
+											else if (item.LastStatus.Battery < 100)
+											{
+												<i class="fa fa-battery-three-quarters fa-fw" style="color:lightblue;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
+											}
+											else
+											{
+												<i class="fa fa-battery-full fa-fw" style="color:lightblue;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
+											}
+										}
+										else
+										{
+											<i class="fa fa-battery-empty fa-fw" style="color:lightblue;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
+										}
+										@if (!(item.LastStatus != null && item.LastStatus.HasBattery))
+										{
+											<i style="color:black; font-weight:bold; font-size:x-large;position:absolute;top:0px;left:4px">\</i>
+										}
+										@if (item.LastStatus != null && item.LastStatus.IsCharging)
+										{
+											<i class="fa fa-bolt fa-fw" style="color:black;position:absolute;top:10px;left:0px">\</i>
+										}
+									</div>
+
+								</td>
+								<td class="visible-md visible-lg visible-sm">
+									<div style="position:relative;top:0px;left:0px; min-width:20px;">
+										<i class="fa fa-signal fa-fw" style="color:gray;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
+										@if (item.LastStatus != null)
+										{
+											<i style="color:black;font-weight:bold;font-size:small;position:absolute;top:5px;left:6px">item.LastStatus.RadioPercentage</i>
+										}
+										else
+										{
+											<i style="color:black;font-weight:bold;font-size:small;position:absolute;top:5px;left:6px">0%</i>
+										}
+									</div>
+
+								</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+				<hr />
+				<h3>
+					<i class="fa fa-paw fa-fw" aria-hidden="true"></i>
+				</h3>
+				<table class="table">
+					<tbody>
+						@foreach (var item in Model.User.Collars)
+						{
+							<tr>
+								<td>
+									@Html.DisplayFor(modelItem => item.Name)
+								</td>
+								<td>
+									@if (item.LastStatus != null && item.LastStatus.IsConnected)
 									{
-										<i class="fa fa-battery-empty fa-fw" style="color:lightblue;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
-									}
-									else if (item.LastStatus.Battery < 50)
-									{
-										<i class="fa fa-battery-quarter fa-fw" style="color:lightblue;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
-									}
-									else if (item.LastStatus.Battery < 75)
-									{
-										<i class="fa fa-battery-half fa-fw" style="color:lightblue;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
-									}
-									else if (item.LastStatus.Battery < 100)
-									{
-										<i class="fa fa-battery-three-quarters fa-fw" style="color:lightblue;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
+										<i class="fa fa-circle fa-fw" style="color:green;position:relative;top:7px;left:0px" aria-hidden="true"></i>
 									}
 									else
 									{
-										<i class="fa fa-battery-full fa-fw" style="color:lightblue;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
+										<i class="fa fa-circle fa-fw" style="color:red;position:relative;top:7px;left:0px" aria-hidden="true"></i>
 									}
-								}
-								else
-								{
-									<i class="fa fa-battery-empty fa-fw" style="color:lightblue;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
-								}
-							</div>
-						</td>
-                        <td class="visible-md visible-lg visible-sm">
-                            <div style="position:relative;top:0px;left:0px; min-width:20px;">
-								<i class="fa fa-signal fa-fw" style="color:gray;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
-								@if (item.LastStatus != null)
-								{
-									<i style="color:black;font-weight:bold;font-size:small;position:absolute;top:5px;left:6px">item.LastStatus.RadioPercentage</i>
-								}
-								else
-								{
-									<i style="color:black;font-weight:bold;font-size:small;position:absolute;top:5px;left:6px">0%</i>
-								}
-							</div>
-                        </td>
-                    </tr>
-            }
-                </tbody>
-            </table>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <h2>&nbsp;</h2>
-        <ul>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkId=518008">Your pet has been going farther latelly/ moving less or more...</a></li>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkId=699320">Fundamentals of ASP.NET Core such as Startup and middleware.</a></li>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkId=398602">Working with Data</a></li>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkId=398603">Security</a></li>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkID=699321">Client side development</a></li>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkID=699322">Develop on different platforms</a></li>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkID=699323">Read more on the documentation site</a></li>
-        </ul>
-    </div>
-	<div class="col-md-3">
-		<h2>Actions</h2>
-		<A HREF="https://www.paypal.com/cgi-bin/webscr?cmd=_subscr-find&alias=ZQET46VWP86V6">
-			<IMG SRC="https://www.paypalobjects.com/en_US/i/btn/btn_unsubscribe_LG.gif" BORDER="0">
-		</A>
-		<ul>
-			<li><a asp-area="" asp-controller="User" asp-action="PickLocation"><i class="fa fa-location-arrow fa-fw" aria-hidden="true"></i>&nbsp; Pick Location</a></li>
-			<li><a asp-area="" asp-controller="Device" asp-action="DownloadApp"><i class="fa fa-download fa-fw" aria-hidden="true"></i>&nbsp; Download App</a></li>
-			<li><a href="https://go.microsoft.com/fwlink/?LinkID=517851">Buy another base or collar</a></li>
-			<li>
-				<a href="https://go.microsoft.com/fwlink/?LinkID=517851">Add a pet description</a>
-				@if (Model.User.Pets.Count() == 0)
-				{<b>You haven't create any pet....</b>}
-			</li>
-			<li><a href="https://go.microsoft.com/fwlink/?LinkID=398609">Check devices connection with your account</a></li>
-		</ul>
+								</td>
+								@*<td>
+									@if (item.BaseConnectedTo != null)
+									{
+										@Html.DisplayFor(modelItem => item.BaseConnectedTo.Name)
+									}
+								</td>*@
+								<td class="visible-md visible-lg visible-sm" valign="middle">
+									<div style="position:relative;top:0px;left:0px; min-width:20px;">
+										<i class="fa fa-map-marker fa-fw" style="color:gray;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
+										@if (!(item.LastStatus != null && item.LastStatus.IsGPSConnected))
+										{
+											<i style="color:black; font-weight:bold; font-size:x-large;padding-top:0px;padding-bottom:0px;position:absolute;top:0px;left:6px">\</i>
+										}
+									</div>
+								</td>
+								<td class="visible-md visible-lg visible-sm">
+									<div style="position:relative;top:0px;left:0px; min-width:20px;">
+										@if (item.LastStatus != null)
+										{
+											if (item.LastStatus.Battery < 25)
+											{
+												<i class="fa fa-battery-empty fa-fw" style="color:lightblue;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
+											}
+											else if (item.LastStatus.Battery < 50)
+											{
+												<i class="fa fa-battery-quarter fa-fw" style="color:lightblue;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
+											}
+											else if (item.LastStatus.Battery < 75)
+											{
+												<i class="fa fa-battery-half fa-fw" style="color:lightblue;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
+											}
+											else if (item.LastStatus.Battery < 100)
+											{
+												<i class="fa fa-battery-three-quarters fa-fw" style="color:lightblue;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
+											}
+											else
+											{
+												<i class="fa fa-battery-full fa-fw" style="color:lightblue;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
+											}
+										}
+										else
+										{
+											<i class="fa fa-battery-empty fa-fw" style="color:lightblue;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
+										}
+									</div>
+								</td>
+								<td class="visible-md visible-lg visible-sm">
+									<div style="position:relative;top:0px;left:0px; min-width:20px;">
+										<i class="fa fa-signal fa-fw" style="color:gray;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
+										@if (item.LastStatus != null)
+										{
+											<i style="color:black;font-weight:bold;font-size:small;position:absolute;top:5px;left:6px">item.LastStatus.RadioPercentage</i>
+										}
+										else
+										{
+											<i style="color:black;font-weight:bold;font-size:small;position:absolute;top:5px;left:6px">0%</i>
+										}
+									</div>
+								</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div class="col-md-3">
+			<h2>&nbsp;</h2>
+			<ul>
+				<li><a href="https://go.microsoft.com/fwlink/?LinkId=518008">Your pet has been going farther latelly/ moving less or more...</a></li>
+				<li><a href="https://go.microsoft.com/fwlink/?LinkId=699320">Fundamentals of ASP.NET Core such as Startup and middleware.</a></li>
+				<li><a href="https://go.microsoft.com/fwlink/?LinkId=398602">Working with Data</a></li>
+				<li><a href="https://go.microsoft.com/fwlink/?LinkId=398603">Security</a></li>
+				<li><a href="https://go.microsoft.com/fwlink/?LinkID=699321">Client side development</a></li>
+				<li><a href="https://go.microsoft.com/fwlink/?LinkID=699322">Develop on different platforms</a></li>
+				<li><a href="https://go.microsoft.com/fwlink/?LinkID=699323">Read more on the documentation site</a></li>
+			</ul>
+		</div>
+		<div class="col-md-3">
+			<h2>Actions</h2>
+			<A HREF="https://www.paypal.com/cgi-bin/webscr?cmd=_subscr-find&alias=ZQET46VWP86V6">
+				<IMG SRC="https://www.paypalobjects.com/en_US/i/btn/btn_unsubscribe_LG.gif" BORDER="0">
+			</A>
+			<ul>
+				<li><a asp-area="" asp-controller="User" asp-action="PickLocation"><i class="fa fa-location-arrow fa-fw" aria-hidden="true"></i>&nbsp; Pick Location</a></li>
+				<li><a asp-area="" asp-controller="Device" asp-action="DownloadApp"><i class="fa fa-download fa-fw" aria-hidden="true"></i>&nbsp; Download App</a></li>
+				<li><a href="https://go.microsoft.com/fwlink/?LinkID=517851">Buy another base or collar</a></li>
+				<li>
+					<a href="https://go.microsoft.com/fwlink/?LinkID=517851">Add a pet description</a>
+					@if (Model.User.Pets.Count() == 0)
+					{<b>You haven't create any pet....</b>}
+				</li>
+				<li><a href="https://go.microsoft.com/fwlink/?LinkID=398609">Check devices connection with your account</a></li>
+			</ul>
+		</div>
 	</div>
-</div>
 

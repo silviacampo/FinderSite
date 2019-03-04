@@ -541,3 +541,51 @@ $('#btnWeek, #btnMonth, #btnSemester').click(function () {
     });
 });
 
+ var chartDisconnection = new Chart(document.getElementById("horizontalBar"), {
+    "type": "horizontalBar",
+    "data": {
+      "labels": names,
+      "datasets": [{
+    "label": "Time disconnected in minutes",
+  "data": disconnectedTimes,
+  "fill": false,
+        "backgroundColor": ["rgba(201, 203, 207, 0.2)", "rgba(201, 203, 207, 0.2)",
+          "rgba(201, 203, 207, 0.2)", "rgba(201, 203, 207, 0.2)"],
+        "borderColor": ["rgb(201, 203, 207)", "rgb(201, 203, 207)", "rgb(201, 203, 207)", "rgb(201, 203, 207)"],
+  "borderWidth": 1
+}]
+},
+    "options": {
+    "scales": {
+    "xAxes": [{
+    "ticks": {
+    "beginAtZero": true
+}
+}]
+}
+}
+});
+
+  var ctxB = document.getElementById("verticalBarChart").getContext('2d');
+  var myBarChart = new Chart(ctxB, {
+    type: 'bar',
+    data: {
+    labels: names,
+      datasets: [{
+    label: 'Average Radio Strength',
+  data: radios,
+  backgroundColor: ["rgb(201, 203, 207)", "rgb(201, 203, 207)", "rgb(201, 203, 207)", "rgb(201, 203, 207)"],
+  borderColor: ["rgb(201, 203, 207)", "rgb(201, 203, 207)", "rgb(201, 203, 207)", "rgb(201, 203, 207)"],
+  borderWidth: 1
+}]
+},
+    options: {
+    scales: {
+    yAxes: [{ 
+    ticks: {
+    beginAtZero: true
+}
+}]
+}
+}
+});

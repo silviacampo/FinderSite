@@ -177,10 +177,10 @@ namespace webGDPR.Controllers
 				{
 					totalRadio = totalRadio + bs.RadioTimeSpan[j].TotalSeconds * j;
 				}
-				double avgRadio = 0;
+				bs.AvgRadio = 0;
 				if (totalTime > 0)
 				{
-					avgRadio = totalRadio / totalTime;
+				bs.AvgRadio = totalRadio / totalTime;
 				}
 				//time charging batteries : has a battery that is charging, only if close to 24hs...
 				bs.BatteriesChargingMore75percent = (7 * 3 / 4) - (bs.IsChargingTimeSpan.TotalDays * 3 / 4) <= 0;
