@@ -536,7 +536,7 @@ namespace webGDPR.Controllers
                         await _context.SaveChangesAsync();
 
                     }
-                    SaveFiles(p, imagesFiles, pageContent);
+                    SaveFiles(p, imagesFiles, pageContent); 
 
                     //send message to connected devices
                     if (pet.CollarId != null)
