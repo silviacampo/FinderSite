@@ -260,33 +260,12 @@ namespace webGDPR.Controllers
 			model.PetTrackingInfos = await PaginatedList<PetTrackingInfo>.CreateAsync(
 				_context.PetTrackingInfo.Where(s => s.PetId == id && (s.Latitude.ToString().Contains(searchString) || s.Longitude.ToString().Contains(searchString))).Include(d => d.Collar).OrderByDescending(d => d.CreationDate).AsNoTracking(), pageIndex ?? 1, pageSize);
 
-			User user = await _context.User.FirstOrDefaultAsync(u => u.OwnerID == _userManager.GetUserId(User));
-			model.Latitude = user.Latitude;
-			model.Longitude = user.Longitude;
-
-			List<PetTrackingInfo> PetTrackingInfos = _context.PetTrackingInfo.Where(s => s.PetId == id && s.CreationDate > DateTime.Now.AddDays(-7)).OrderBy(s => s.CreationDate).ToList();
-			double[] totalDistance = new double[24];
-
-			for (int i = 0; i < PetTrackingInfos.Count - 1; i++) {
-
-				var distance = DistanceCalculation.Calculate(PetTrackingInfos[i].Latitude, PetTrackingInfos[i].Longitude, PetTrackingInfos[i+1].Latitude, PetTrackingInfos[i+1].Longitude, 'K');
-				int hour = ((PetTrackingInfos[i + 1].CreationDate.Hour + user.Offset) < 0) ? (PetTrackingInfos[i + 1].CreationDate.Hour + user.Offset + 24) : (((PetTrackingInfos[i + 1].CreationDate.Hour + user.Offset) > 23) ? (PetTrackingInfos[i + 1].CreationDate.Hour + user.Offset - 24) : (PetTrackingInfos[i + 1].CreationDate.Hour + user.Offset));
-				totalDistance[hour] += distance;
+			try
+			{
+				Tuple<string, List<string>> files = await ReadFiles(pet);
+				ViewData["imagesFilenames"] = files.Item2;
 			}
-
-			double totaldays = 0;
-			if (PetTrackingInfos.Count > 0)
-				totaldays = (PetTrackingInfos[PetTrackingInfos.Count - 1].CreationDate.Date - PetTrackingInfos[0].CreationDate.Date).TotalDays;
-
-			model.AvgDistance = new double[24];
-			for (int j = 0; j < 24; j++) {
-				if (totaldays > 0)
-					model.AvgDistance[j] = totalDistance[j] / totaldays;
-				else
-					model.AvgDistance[j] = totalDistance[j];
-			}
-
-			model.AvgDistanceDay = model.AvgDistance.Sum();
+			catch (Exception e) { }
 
 			model.MediumAvgDistance = new double[24];
 			for (int j = 0; j < 24; j++)
@@ -295,52 +274,9 @@ namespace webGDPR.Controllers
 			}
 
 			model.MediumAvgDistanceDay = model.MediumAvgDistance.Sum();
-
-			try
-			{
-				Tuple<string, List<string>> files = await ReadFiles(pet);
-				ViewData["imagesFilenames"] = files.Item2;
-			}
-			catch (Exception e) { }
-
+			model.AvgDistance = new double[24];
 			
-
-			model.PointVisited = new List<Tuple<PetTrackingInfo, string>>();
-			foreach (PetTrackingInfo pti in PetTrackingInfos) {
-				string color = string.Empty;
-
-				int hour = ((pti.CreationDate.Hour + user.Offset) <0)? (pti.CreationDate.Hour + user.Offset + 24): (((pti.CreationDate.Hour + user.Offset) > 23) ? (pti.CreationDate.Hour + user.Offset - 24) : (pti.CreationDate.Hour + user.Offset));
-
-				if (hour < 2)
-				{
-					color = "purple";
-				}
-				else if (hour < 6)
-				{
-					color = "red";
-				}
-				else if (hour < 10)
-				{
-					color = "orange";
-				}
-				else if (hour < 14)
-				{
-					color = "yellow";
-				}
-				else if (hour < 18)
-				{
-					color = "green";
-				}
-				else if (hour < 22)
-				{
-					color = "blue";
-				}
-				else
-				{
-					color = "purple";
-				}
-				model.PointVisited.Add(new Tuple<PetTrackingInfo, string>(pti, color));
-			}
+			await CalculateStatsAsync(model, id);
 
 			if (searchString2 != null)
 			{
@@ -695,6 +631,19 @@ namespace webGDPR.Controllers
 		{
 			var pet = await _context.Pet.AsNoTracking().FirstOrDefaultAsync(m => m.PetId == id && !m.Deleted);
 
+			PetStatsModel model = new PetStatsModel
+			{
+				Name = pet.Name,
+
+				AvgDistance = new double[24]
+			};
+
+			await CalculateStatsAsync(model, id, period);
+			 
+			return PartialView("_ActivityStatsPartial", model);
+		}
+		private async Task CalculateStatsAsync(PetStatsModel model, string id, string period = "W")
+		{
 			List<PetTrackingInfo> PetTrackingInfos = new List<PetTrackingInfo>();
 
 			if (period == "W")
@@ -710,13 +659,6 @@ namespace webGDPR.Controllers
 				PetTrackingInfos = _context.PetTrackingInfo.Where(s => s.PetId == id && s.CreationDate > DateTime.Now.AddMonths(-6)).OrderBy(s => s.CreationDate).ToList();
 			}
 
-			PetStatsModel model = new PetStatsModel
-			{
-				Name = pet.Name,
-
-				AvgDistance = new double[24]
-			};
-
 			User user = await _context.User.FirstOrDefaultAsync(u => u.OwnerID == _userManager.GetUserId(User));
 			model.Latitude = user.Latitude;
 			model.Longitude = user.Longitude;
@@ -725,7 +667,6 @@ namespace webGDPR.Controllers
 
 			for (int i = 0; i < PetTrackingInfos.Count - 1; i++)
 			{
-
 				var distance = DistanceCalculation.Calculate(PetTrackingInfos[i].Latitude, PetTrackingInfos[i].Longitude, PetTrackingInfos[i + 1].Latitude, PetTrackingInfos[i + 1].Longitude, 'K');
 				int hour = ((PetTrackingInfos[i + 1].CreationDate.Hour + user.Offset) < 0) ? (PetTrackingInfos[i + 1].CreationDate.Hour + user.Offset + 24) : (((PetTrackingInfos[i + 1].CreationDate.Hour + user.Offset) > 23) ? (PetTrackingInfos[i + 1].CreationDate.Hour + user.Offset - 24) : (PetTrackingInfos[i + 1].CreationDate.Hour + user.Offset));
 				totalDistance[hour] += distance;
@@ -734,8 +675,6 @@ namespace webGDPR.Controllers
 			double totaldays = 0;
 			if (PetTrackingInfos.Count > 0)
 				totaldays = (PetTrackingInfos[PetTrackingInfos.Count - 1].CreationDate.Date - PetTrackingInfos[0].CreationDate.Date).TotalDays;
-
-
 
 			for (int j = 0; j < 24; j++)
 			{
@@ -783,11 +722,6 @@ namespace webGDPR.Controllers
 				}
 				model.PointVisited.Add(new Tuple<PetTrackingInfo, string>(pti, color));
 			}
-			return PartialView("_ActivityStatsPartial", model);
-		}
-		private Task<bool> SetStatsPeriodAsync(string period, string id)
-		{
-			throw new NotImplementedException();
 		}
 
 		[HttpPost]
