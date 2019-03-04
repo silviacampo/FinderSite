@@ -467,7 +467,7 @@ function initActivityMap() {
               lng: location.lng
             },
             icon: {
-              url: "https://localhost:44392/images/" + location.color + "-dot.png"
+                url: "https://test.whereisfinder.com/images/" + location.color + "-dot.png"
             }
           });
         });
@@ -490,7 +490,7 @@ function initActivityMap() {
 
         //https://localhost:44392/images/home.png to scale to 30 x 30
         var image = {
-          url: 'https://localhost:44392/images/home.png',
+            url: 'https://test.whereisfinder.com/images/home.png',
           // This marker is 20 pixels wide by 32 pixels high.
           size: new google.maps.Size(30, 30),
           // The origin for this image is (0, 0).
