@@ -432,7 +432,7 @@ initActivityChart();
 
 function initActivityMap() {
   try {
-    if ($('.card-map').length > 0) {
+    if ($('#stat-map').length > 0) {
       var mapPetStats = $('#stat-map');
       if (mapPetStats.data('geoLat') && mapPetStats.data('geoLng')) {
         var centerLocation = {
@@ -660,3 +660,88 @@ var myBarChart2 = new Chart(ctxB2, {
     }
   }
 });
+
+try {
+  if ($('#service-map').length > 0) {
+    var mapService = $('#service-map');
+    if (mapService.data('geoLat') && mapService.data('geoLng')) {
+      var centerLocation = {
+        lat: mapService.data('geoLat'),
+        lng: mapService.data('geoLng')
+      };
+
+      var map = new google.maps.Map(document.getElementById('service-map'), {
+        zoom: 17,
+        center: centerLocation,
+        mapTypeId: 'terrain'
+      });
+
+      var infowindow = new google.maps.InfoWindow({
+        content: contentString
+      });
+
+      //Markers and MarkersCluster
+      // https://medium.com/@letian1997/how-to-change-javascript-google-map-marker-color-8a72131d1207
+      /*          
+       * http://maps.google.com/mapfiles/ms/icons/purple-dot.png
+       * http://maps.google.com/mapfiles/ms/icons/red-dot.png
+       * http://maps.google.com/mapfiles/ms/icons/orange-dot.png
+       * http://maps.google.com/mapfiles/ms/icons/yellow-dot.png
+       * http://maps.google.com/mapfiles/ms/icons/green-dot.png
+       * http://maps.google.com/mapfiles/ms/icons/blue-dot.png
+       * */
+      var markers = coordinates.map(function (location) {
+        return new google.maps.Marker({
+          position: {
+            lat: location.lat,
+            lng: location.lng
+          },
+          icon: {
+            url: "https://test.whereisfinder.com/images/" + location.color + "-dot.png"
+          }
+        });
+      });
+
+      var myArray = [];
+
+      for (var i = 0; i < markers.length; i += 2) {
+        myArray.push(markers.slice(i, 2));
+      }
+
+      // Add a marker clusterer to manage the markers.
+      var markerCluster = new MarkerClusterer(map, markers,
+        { imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m' });
+
+
+
+      // Add a marker clusterer to manage the markers.
+      var markerCluster1 = new MarkerClusterer(map, markers,
+        { imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m' });
+
+      //https://localhost:44392/images/home.png to scale to 30 x 30
+      var image = {
+        url: 'https://test.whereisfinder.com/images/home.png',
+        // This marker is 20 pixels wide by 32 pixels high.
+        size: new google.maps.Size(30, 30),
+        // The origin for this image is (0, 0).
+        origin: new google.maps.Point(0, 0),
+        // The anchor for this image is the base of the flagpole at (0, 32).
+        anchor: new google.maps.Point(0, 32)
+      };
+
+      var marker = new google.maps.Marker({
+        position: centerLocation,
+        map: map,
+        icon: image
+
+      });
+
+      marker.addListener('click', function () {
+        infowindow.open(map, marker);
+      });
+    }
+  }
+}
+catch (err) {
+  console.log(err);
+}

@@ -198,6 +198,8 @@ namespace webGDPR.Controllers
 				model.MostConnectedToDevice = user.Devices.FirstOrDefault(c=>c.DeviceId == SumConnectedToDeviceTimeSpan.OrderByDescending(d => d.Item2.Ticks).First().Item1);
 			}
 
+			model.PointsServiceLevel = new List<PointServiceLevel>();
+
 			foreach (CollarStats cs in model.CollarStats)
 			{
 				List<CollarStatus> CollarsStatus = _context.CollarStatus.Where(s => s.CollarId==  cs.Collar.CollarId && s.CreationDate > DateTime.Now.AddDays(-700)).OrderBy(s => s.CreationDate).ToList();
@@ -215,9 +217,7 @@ namespace webGDPR.Controllers
 
 				cs.RadioTimeSpan = new TimeSpan[101];				
 
-				cs.BatteryTimeSpan = new TimeSpan[101];
-
-				cs.PointsServiceLevel = new List<PointServiceLevel>();
+				cs.BatteryTimeSpan = new TimeSpan[101];				
 
 				for (int i = 0; i < CollarsStatus.Count - 1; i++)
 				{
@@ -256,6 +256,18 @@ namespace webGDPR.Controllers
 						cs.RadioTimeSpan[CollarsStatus[i].Radio] = new TimeSpan(0);
 					}
 					cs.RadioTimeSpan[CollarsStatus[i].Radio] = cs.RadioTimeSpan[CollarsStatus[i].Radio].Add(x);
+
+					if (!CollarsStatus[i].IsGPSConnected || CollarsStatus[i].Radio < 50) {
+						var lastTracking = PetTrackingInfos.Where(p => p.CreationDate < CollarsStatus[i].CreationDate).OrderByDescending(p => p.CreationDate).First();
+
+						model.PointsServiceLevel.Add(new PointServiceLevel()
+						{
+							Radio = CollarsStatus[i].Radio,
+							GPS = CollarsStatus[i].IsGPSConnected,
+							Latitude = lastTracking.Latitude,
+							Longitude = lastTracking.Longitude
+						});
+					}
 
 					//time per Battery charge
 					if (cs.BatteryTimeSpan[CollarsStatus[i].Battery] == null)
@@ -301,9 +313,6 @@ namespace webGDPR.Controllers
 			{
 				model.MostConnectedToBase = user.Bases.FirstOrDefault(c => c.BaseId == SumConnectedToBaseTimeSpan.OrderByDescending(d => d.Item2.Ticks).First().Item1);
 			}
-
-			////gps disconnedted rel to closed location in time
-			////radio strenth rel to closed location in time
 			return View(model);
 		}
 

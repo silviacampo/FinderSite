@@ -107,6 +107,27 @@
 				<h5>Radio/Battery Average Strenght for Collar</h5>
 				<canvas id="verticalBarChart2"></canvas>
 			</div>
+
+			<h5>Places visited</h5>
+			<script>
+			var contentString = '<div id="content">' +
+				'<div id="siteNotice">' +
+				'</div>' +
+				'<h3 id="firstHeading" class="firstHeading">Home</h3>' +
+				@*'<div id="bodyContent">' +
+				'<p>@Model.Description</p>' +
+				'</div>' +*@
+				'</div>';
+
+			var coordinates = [];
+			@foreach (webGDPR.ViewModels.PointServiceLevel p in Model.PointsServiceLevel) {
+			 	<text>
+					coordinates.push({ lat: @p.Latitude, lng: @p.Longitude, color: "red" });
+				</text>
+			}
+			</script>
+			<div id="service-map" class="card-text card-map" data-geo-lat="@Model.User.Latitude" , data-geo-lng="@Model.User.Longitude" style="height:500px;"></div>
+
 		</div>
 	</div>
 

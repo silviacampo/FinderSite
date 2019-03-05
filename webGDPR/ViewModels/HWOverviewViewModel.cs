@@ -28,6 +28,7 @@ namespace webGDPR.ViewModels
 
 		public List<CollarStats> CollarStats { get; set; }
 
+		public List<PointServiceLevel> PointsServiceLevel { get; set; }
 	}
 
 	public class BaseStats
@@ -52,12 +53,11 @@ namespace webGDPR.ViewModels
 		public double BatteryMinus25Minutes { get; set; }
 		public TimeSpan[] BatteryTimeSpan { get; set; }
 		public double AvgBattery { get; set; }
-		public List<PointServiceLevel> PointsServiceLevel { get; set; }
 	}
 
 	public class PointServiceLevel
 	{
-		public int Battery { get; set; }
+		public bool GPS { get; set; }
 		public int Radio { get; set; }
 		public double Latitude { get; set; }
 		public double Longitude { get; set; }
