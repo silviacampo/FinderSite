@@ -49,7 +49,8 @@ namespace webGDPR.ViewModels
 		public TimeSpan[] RadioTimeSpan { get; set; }
 		public double AvgRadio { get; set; }
 		public TimeSpan GPSDisconnectedTimeSpan { get; set; }
-		public TimeSpan BatteryMinus25TimeSpan { get; set; }
+		public double BatteryMinus25Minutes { get; set; }
+		public TimeSpan[] BatteryTimeSpan { get; set; }
 		public double AvgBattery { get; set; }
 		public List<PointServiceLevel> PointsServiceLevel { get; set; }
 	}

@@ -21,6 +21,39 @@
 		}
 
 		@{
+			var collarsDisconnectedToMuch = Model.CollarStats.Where(bs => bs.DisconnectedTimeSpan.TotalHours > 1).ToList();
+			if (collarsDisconnectedToMuch.Count > 0)
+			{
+				string[] names = collarsDisconnectedToMuch.Select(b => b.Collar.Name).ToArray();
+				<div class="alert alert-danger">
+					<strong>Danger!</strong> These collars are disconnected to much: @string.Join(",", names).
+				</div>
+			}
+		}
+
+		@{
+			var collarsGPSDisconnectedToMuch = Model.CollarStats.Where(bs => bs.GPSDisconnectedTimeSpan.TotalHours > 2).ToList();
+			if (collarsGPSDisconnectedToMuch.Count > 0)
+			{
+				string[] names = collarsGPSDisconnectedToMuch.Select(b => b.Collar.Name).ToArray();
+				<div class="alert alert-danger">
+					<strong>Danger!</strong> These collars are gps disconnected to much: @string.Join(",", names).
+				</div>
+			}
+		}
+
+		@{
+			var collarsBatteryLowToMuch = Model.CollarStats.Where(bs => bs.BatteryMinus25Minutes > (5*60)).ToList();
+			if (collarsBatteryLowToMuch.Count > 0)
+			{
+				string[] names = collarsBatteryLowToMuch.Select(b => b.Collar.Name).ToArray();
+				<div class="alert alert-danger">
+					<strong>Danger!</strong> These collars have battery too low: @string.Join(",", names).
+				</div>
+			}
+		}
+
+		@{
 			var basesChargingToMuch = Model.BaseStats.Where(bs => bs.BatteriesChargingMore75percent).ToList();
 			if (basesChargingToMuch.Count > 0)
 			{
@@ -32,136 +65,54 @@
 		}
 
 		<div class="well well-lg">
-			Most Connected Device: @Model.MostConnectedToDevice.AliasName
+			Most Connected to Device: @Model.MostConnectedToDevice.AliasName
 		</div>
+
+		<div class="well well-lg">
+			Most Connected to Base: @Model.MostConnectedToBase.Name
+		</div>
+
 		<div class="btn-group" role="group" aria-label="..." style="float:right;">
 			<button class="btn btn-default active" id="btnWeek" data-period="W">last week</button>
 			<button class="btn btn-default" id="btnMonth" data-period="M">last month</button>
 			<button class="btn btn-default" id="btnSemester" data-period="S">last 6 months</button>
 		</div>
 		<script>
-			var names = JSON.parse('@Html.Raw(Json.Serialize(Model.BaseStats.Select(b => b.Base.Name).ToArray()))');  
-			var disconnectedTimes = JSON.parse('@Html.Raw(Json.Serialize(Model.BaseStats.Select(b => b.DisconnectedTimeSpan.TotalMinutes).ToArray()))'); 
-			var radios = JSON.parse('@Html.Raw(Json.Serialize(Model.BaseStats.Select(b => b.AvgRadio).ToArray()))'); 
+			var names = JSON.parse('@Html.Raw(Json.Serialize(Model.BaseStats.Select(b => b.Base.Name).ToArray()))');
+			var disconnectedTimes = JSON.parse('@Html.Raw(Json.Serialize(Model.BaseStats.Select(b => b.DisconnectedTimeSpan.TotalMinutes).ToArray()))');
+			var radios = JSON.parse('@Html.Raw(Json.Serialize(Model.BaseStats.Select(b => b.AvgRadio).ToArray()))');
+
+			var namesCollars = JSON.parse('@Html.Raw(Json.Serialize(Model.CollarStats.Select(b => b.Collar.Name).ToArray()))');
+			var disconnectedTimesCollars = JSON.parse('@Html.Raw(Json.Serialize(Model.CollarStats.Select(b => b.DisconnectedTimeSpan.TotalMinutes).ToArray()))');
+			var gpsDisconnectedTimesCollars = JSON.parse('@Html.Raw(Json.Serialize(Model.CollarStats.Select(b => b.GPSDisconnectedTimeSpan.TotalMinutes).ToArray()))');
+			var radiosCollars = JSON.parse('@Html.Raw(Json.Serialize(Model.CollarStats.Select(b => b.AvgRadio).ToArray()))');
+			var batteryCollars = JSON.parse('@Html.Raw(Json.Serialize(Model.CollarStats.Select(b => b.AvgBattery).ToArray()))');
 		</script>
-		<div id="activityStats" class="well well-lg" style="margin-top:10px;">
-			<div class="col-lg-5 col-md-5">
+		<div id="hwStats" class="well well-lg" style="margin-top:10px;">
+			<div class="col-lg-5 col-md-5 well well-lg">
 				<h5>Disconnected Time for Bases</h5>
 				<canvas id="horizontalBar"></canvas>
 			</div>
-			
-			<div class="col-lg-4 col-md-4">
+
+			<div class="col-lg-4 col-md-4 well well-lg">
 				<h5>Radio Average Strenght for Bases</h5>
 				<canvas id="verticalBarChart"></canvas>
 			</div>
-			
+			<div class="col-lg-5 col-md-5 well well-lg">
+				<h5>Disconnected/GPS Disconnected Time for Collars</h5>
+				<canvas id="horizontalBar2"></canvas>
+			</div>
+
+			<div class="col-lg-4 col-md-4 well well-lg">
+				<h5>Radio/Battery Average Strenght for Collar</h5>
+				<canvas id="verticalBarChart2"></canvas>
+			</div>
 		</div>
-
-
-		<h2>Issues</h2>
-		<ul>
-			@if (Model.User.MissingSubscription)
-			{
-				<li>
-					<b><a asp-action="FixMissingSubscription">Missing Subscription</a></b>
-				</li>
-			}
-			@if (Model.User.Bases.Count() + @Model.User.Collars.Count() == 0)
-			{
-				<li>
-					<b>Missing Initialization</b>
-				</li>
-			}
-			@if (Model.User.Devices.Count() == 0)
-			{
-				<li>
-					<b>Missing Install app</b>
-				</li>
-			}
-			@if (Model.User.Latitude == 0 && Model.User.Longitude == 0)
-			{
-				<li>
-					<b>Missing user location</b>
-				</li>
-			}
-
-			@if (Model.User.Pets.Any(b => b.LastMode != null && b.LastMode.Type == ConfigModeTypes.Emergency))
-			{
-				<li>
-					<b>Pet lost</b>
-				</li>
-			}
-			@if (Model.User.Bases.Any(b => b.LastStatus == null || !b.LastStatus.IsConnected))
-			{
-				<li>
-					<b>Bases Disconnected</b>
-				</li>
-			}
-			@if (Model.User.Collars.Any(b => b.LastStatus == null || !b.LastStatus.IsConnected))
-			{
-				<li>
-					<b>Collars Disconnected</b>
-				</li>
-			}
-			@if (Model.User.Pets.Any(b => b.LastTrackingInfo == null || b.LastTrackingInfo.CreationDate.AddDays(1) < DateTime.Now))
-			{
-				<li>
-					<b>Pet not moving the last 24 h</b>
-				</li>
-			}
-			@if (Model.User.Collars.Any(b => b.LastStatus != null && b.LastStatus.Battery < 30))
-			{
-				<li>
-					<b>Collars with battery less than 30%</b>
-				</li>
-			}
-			@if (Model.User.Collars.Any(b => b.LastStatus != null && b.LastStatus.Radio < 20) || Model.User.Bases.Any(b => b.LastStatus != null && b.LastStatus.Radio < 20))
-			{
-				<li>
-					<b>Collars with lora failing to connect</b>
-				</li>
-			}
-			@if (Model.User.Collars.Any(b => b.LastStatus != null && b.LastStatus.IsNotGPSConnected))
-			{
-				<li>
-					<b>Collars with GPS failing to connect</b>
-				</li>
-			}
-		</ul>
 	</div>
 
 		<div class="col-md-3">
 			<h2>Overview</h2>
 
 		</div>
-		@*<div class="col-md-3">
-			<h2>&nbsp;</h2>
-			<ul>
-				<li><a href="https://go.microsoft.com/fwlink/?LinkId=518008">Your pet has been going farther latelly/ moving less or more...</a></li>
-				<li><a href="https://go.microsoft.com/fwlink/?LinkId=699320">Fundamentals of ASP.NET Core such as Startup and middleware.</a></li>
-				<li><a href="https://go.microsoft.com/fwlink/?LinkId=398602">Working with Data</a></li>
-				<li><a href="https://go.microsoft.com/fwlink/?LinkId=398603">Security</a></li>
-				<li><a href="https://go.microsoft.com/fwlink/?LinkID=699321">Client side development</a></li>
-				<li><a href="https://go.microsoft.com/fwlink/?LinkID=699322">Develop on different platforms</a></li>
-				<li><a href="https://go.microsoft.com/fwlink/?LinkID=699323">Read more on the documentation site</a></li>
-			</ul>
-		</div>
-		<div class="col-md-3">
-			<h2>Actions</h2>
-			<A HREF="https://www.paypal.com/cgi-bin/webscr?cmd=_subscr-find&alias=ZQET46VWP86V6">
-				<IMG SRC="https://www.paypalobjects.com/en_US/i/btn/btn_unsubscribe_LG.gif" BORDER="0">
-			</A>
-			<ul>
-				<li><a asp-area="" asp-controller="User" asp-action="PickLocation"><i class="fa fa-location-arrow fa-fw" aria-hidden="true"></i>&nbsp; Pick Location</a></li>
-				<li><a asp-area="" asp-controller="Device" asp-action="DownloadApp"><i class="fa fa-download fa-fw" aria-hidden="true"></i>&nbsp; Download App</a></li>
-				<li><a href="https://go.microsoft.com/fwlink/?LinkID=517851">Buy another base or collar</a></li>
-				<li>
-					<a href="https://go.microsoft.com/fwlink/?LinkID=517851">Add a pet description</a>
-					@if (Model.User.Pets.Count() == 0)
-					{<b>You haven't create any pet....</b>}
-				</li>
-				<li><a href="https://go.microsoft.com/fwlink/?LinkID=398609">Check devices connection with your account</a></li>
-			</ul>
-		</div>*@
 	</div>
 

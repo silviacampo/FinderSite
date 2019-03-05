@@ -110,10 +110,16 @@ namespace webGDPR.Controllers
 				model.CollarStats.Add(new CollarStats() { Collar = c });
 			}
 
-			List<Tuple<string, TimeSpan>> SumConnectedToTimeSpan = new List<Tuple<string, TimeSpan>>();
+			List<Tuple<string, TimeSpan>> SumConnectedToDeviceTimeSpan = new List<Tuple<string, TimeSpan>>();
 			foreach (Device d in user.Devices)
 			{
-				SumConnectedToTimeSpan.Add(new Tuple<string, TimeSpan>(d.DeviceId, new TimeSpan(0)));
+				SumConnectedToDeviceTimeSpan.Add(new Tuple<string, TimeSpan>(d.DeviceId, new TimeSpan(0)));
+			}
+
+			List<Tuple<string, TimeSpan>> SumConnectedToBaseTimeSpan = new List<Tuple<string, TimeSpan>>();
+			foreach (Base b in user.Bases)
+			{
+				SumConnectedToBaseTimeSpan.Add(new Tuple<string, TimeSpan>(b.BaseId, new TimeSpan(0)));
 			}
 
 			foreach (BaseStats bs in model.BaseStats) {
@@ -144,11 +150,11 @@ namespace webGDPR.Controllers
 							bs.ConnectedToTimeSpan.Remove(t);
 							bs.ConnectedToTimeSpan.Add(Tuple.Create(t.Item1, ts));
 
-							Tuple<string, TimeSpan> st = SumConnectedToTimeSpan.FirstOrDefault(d => d.Item1 == BasesStatus[i].ConnectedTo);
+							Tuple<string, TimeSpan> st = SumConnectedToDeviceTimeSpan.FirstOrDefault(d => d.Item1 == BasesStatus[i].ConnectedTo);
 							TimeSpan sts = st.Item2;
 							sts = sts.Add(x);
-							SumConnectedToTimeSpan.Remove(st);
-							SumConnectedToTimeSpan.Add(Tuple.Create(st.Item1, sts));
+							SumConnectedToDeviceTimeSpan.Remove(st);
+							SumConnectedToDeviceTimeSpan.Add(Tuple.Create(st.Item1, sts));
 							
 						}
 					}
@@ -189,148 +195,115 @@ namespace webGDPR.Controllers
 			//Device is most connected to
 			if (user.Devices.Count > 0)
 			{
-				model.MostConnectedToDevice = user.Devices.FirstOrDefault(c=>c.DeviceId == SumConnectedToTimeSpan.OrderByDescending(d => d.Item2.Ticks).First().Item1);
+				model.MostConnectedToDevice = user.Devices.FirstOrDefault(c=>c.DeviceId == SumConnectedToDeviceTimeSpan.OrderByDescending(d => d.Item2.Ticks).First().Item1);
 			}
 
-			List<CollarStatus> CollarsStatus = _context.CollarStatus.Where(s => s.UserId == user.UserID && s.CreationDate > DateTime.Now.AddDays(-700)).OrderBy(s => s.CreationDate).ToList();
+			foreach (CollarStats cs in model.CollarStats)
+			{
+				List<CollarStatus> CollarsStatus = _context.CollarStatus.Where(s => s.CollarId==  cs.Collar.CollarId && s.CreationDate > DateTime.Now.AddDays(-700)).OrderBy(s => s.CreationDate).ToList();
 
-			List<PetTrackingInfo> PetTrackingInfos = _context.PetTrackingInfo.Where(s => s.UserId == user.UserID && s.CreationDate > DateTime.Now.AddDays(-7)).OrderBy(s => s.CreationDate).ToList();
+				List<PetTrackingInfo> PetTrackingInfos = _context.PetTrackingInfo.Where(s => s.CollarId == cs.Collar.CollarId && s.CreationDate > DateTime.Now.AddDays(-700)).OrderBy(s => s.CreationDate).ToList();
 
-			//TimeSpan disconnectedCollarMiliseconds = new TimeSpan(0);
+				cs.DisconnectedTimeSpan = new TimeSpan(0);
+				cs.ConnectedToTimeSpan = new List<Tuple<string, TimeSpan>>();
+				foreach (Base b in user.Bases)
+				{
+					cs.ConnectedToTimeSpan.Add(new Tuple<string, TimeSpan>(b.BaseId, new TimeSpan(0)));
+				}
 
-			//List<Tuple<string, TimeSpan>> connectedToBaseMiliseconds = new List<Tuple<string, TimeSpan>>();
-			//foreach (Base d in user.Bases)
-			//{
-			//	connectedToBaseMiliseconds.Add(new Tuple<string, TimeSpan>(d.BaseId, new TimeSpan(0)));
-			//}
+				cs.GPSDisconnectedTimeSpan = new TimeSpan(0);
 
-			//string MostConnectedBaseId = string.Empty;
+				cs.RadioTimeSpan = new TimeSpan[101];				
 
-			//TimeSpan[] RadioCollarMiliseconds = new TimeSpan[101];
+				cs.BatteryTimeSpan = new TimeSpan[101];
 
-			//for (int i = 0; i < CollarsStatus.Count - 1; i++)
-			//{
-			//	TimeSpan x = CollarsStatus[i + 1].CreationDate - CollarsStatus[i].CreationDate;
-			//	if (CollarsStatus[i].IsConnected)
-			//	{
-			//		if (user.Bases.Count > 0)
-			//		{
-			//			//Time connected to X device
-			//			Tuple<string, TimeSpan> t = connectedToBaseMiliseconds.FirstOrDefault(d => d.Item1 == CollarsStatus[i].ConnectedTo);
-			//			TimeSpan ts = t.Item2;
-			//			ts = ts.Add(x);
-			//			connectedToBaseMiliseconds.Remove(t);
-			//			connectedToBaseMiliseconds.Add(Tuple.Create(t.Item1, ts));
-			//		}
-			//	}
-			//	else
-			//	{
-			//		//Disconnected time
-			//		disconnectedCollarMiliseconds = disconnectedCollarMiliseconds.Add(x);
-			//	}
+				cs.PointsServiceLevel = new List<PointServiceLevel>();
 
-			//	//time per Radio strenth
-			//	if (RadioCollarMiliseconds[CollarsStatus[i].Radio] == null)
-			//	{
-			//		RadioCollarMiliseconds[CollarsStatus[i].Radio] = new TimeSpan(0);
-			//	}
-			//	RadioCollarMiliseconds[CollarsStatus[i].Radio] = RadioCollarMiliseconds[CollarsStatus[i].Radio].Add(x);
-			//}
+				for (int i = 0; i < CollarsStatus.Count - 1; i++)
+				{
+					TimeSpan x = CollarsStatus[i + 1].CreationDate - CollarsStatus[i].CreationDate;
+					if (CollarsStatus[i].IsConnected)
+					{
+						if (user.Bases.Count > 0)
+						{
+							//Time connected to X base
+							Tuple<string, TimeSpan> t = cs.ConnectedToTimeSpan.FirstOrDefault(d => d.Item1 == CollarsStatus[i].ConnectedTo);
+							TimeSpan ts = t.Item2;
+							ts = ts.Add(x);
+							cs.ConnectedToTimeSpan.Remove(t);
+							cs.ConnectedToTimeSpan.Add(Tuple.Create(t.Item1, ts));
 
-			////Base is most connected to
+							Tuple<string, TimeSpan> st = SumConnectedToBaseTimeSpan.FirstOrDefault(d => d.Item1 == CollarsStatus[i].ConnectedTo);
+							TimeSpan sts = st.Item2;
+							sts = sts.Add(x);
+							SumConnectedToBaseTimeSpan.Remove(st);
+							SumConnectedToBaseTimeSpan.Add(Tuple.Create(st.Item1, sts));
 
-			//if (user.Bases.Count > 0)
-			//	MostConnectedBaseId = connectedToBaseMiliseconds.OrderByDescending(d => d.Item2.Ticks).First().Item1;
+						}
+					}
+					else
+					{
+						//Disconnected time
+						cs.DisconnectedTimeSpan = cs.DisconnectedTimeSpan.Add(x);
+					}
+					if (!CollarsStatus[i].IsGPSConnected) {
+						//Disconnected time
+						cs.GPSDisconnectedTimeSpan = cs.GPSDisconnectedTimeSpan.Add(x);
+					}
+						//time per Radio strenth
+					if (cs.RadioTimeSpan[CollarsStatus[i].Radio] == null)
+					{
+						cs.RadioTimeSpan[CollarsStatus[i].Radio] = new TimeSpan(0);
+					}
+					cs.RadioTimeSpan[CollarsStatus[i].Radio] = cs.RadioTimeSpan[CollarsStatus[i].Radio].Add(x);
 
-			////Radio strenth average
-			//double totalRadioCollarTime = RadioCollarMiliseconds.Sum(r => r.TotalSeconds);
-			//double totalRadioCollar = 0;
-			//for (int j = 0; j < RadioCollarMiliseconds.Count(); j++)
-			//{
-			//	totalRadioCollar = totalRadioCollar + RadioCollarMiliseconds[j].TotalSeconds * j;
-			//}
-			//double avgRadioCollar = 0;
-			//if (totalRadioCollarTime > 0)
-			//{
-			//	avgRadioCollar = totalRadioCollar / totalRadioCollarTime;
-			//}
+					//time per Battery charge
+					if (cs.BatteryTimeSpan[CollarsStatus[i].Battery] == null)
+					{
+						cs.BatteryTimeSpan[CollarsStatus[i].Battery] = new TimeSpan(0);
+					}
+					cs.BatteryTimeSpan[CollarsStatus[i].Battery] = cs.BatteryTimeSpan[CollarsStatus[i].Battery].Add(x);
+				}
 
-			////gps Disconnected time
+				//Radio strenth average
+				double totalTime = cs.RadioTimeSpan.Sum(r => r.TotalSeconds);
+				double totalRadio = 0;
+				for (int j = 0; j < cs.RadioTimeSpan.Count(); j++)
+				{
+					totalRadio = totalRadio + cs.RadioTimeSpan[j].TotalSeconds * j;
+				}
+				cs.AvgRadio = 0;
+				if (totalTime > 0)
+				{
+					cs.AvgRadio = totalRadio / totalTime;
+				}
+
+				//Battery power average
+				totalTime = cs.BatteryTimeSpan.Sum(r => r.TotalSeconds);
+				double totalBattery = 0;
+				for (int j = 0; j < cs.BatteryTimeSpan.Count(); j++)
+				{
+					totalBattery = totalBattery + cs.BatteryTimeSpan[j].TotalSeconds * j;
+				}
+				cs.AvgBattery = 0;
+				if (totalTime > 0)
+				{
+					cs.AvgBattery = totalBattery / totalTime;
+				}
+
+				//time charging batteries : has a battery that is charging, only if close to 24hs...
+				TimeSpan[] BatteryMinus25 = cs.BatteryTimeSpan.Take(25).ToArray();
+				cs.BatteryMinus25Minutes = BatteryMinus25.Sum(r => r.TotalSeconds) /60;
+			}
+
+			//Base is most connected to
+			if (user.Bases.Count > 0)
+			{
+				model.MostConnectedToBase = user.Bases.FirstOrDefault(c => c.BaseId == SumConnectedToBaseTimeSpan.OrderByDescending(d => d.Item2.Ticks).First().Item1);
+			}
+
 			////gps disconnedted rel to closed location in time
-
-			////Battery level avg
-			////Time with battery < 25
-
 			////radio strenth rel to closed location in time
-
-			double[] totalDistance = new double[24];
-
-			for (int i = 0; i < PetTrackingInfos.Count - 1; i++)
-			{
-
-				var distance = DistanceCalculation.Calculate(PetTrackingInfos[i].Latitude, PetTrackingInfos[i].Longitude, PetTrackingInfos[i + 1].Latitude, PetTrackingInfos[i + 1].Longitude, 'K');
-				int hour = PetTrackingInfos[i + 1].CreationDate.Hour;
-				totalDistance[hour] += distance;
-			}
-
-			double totaldays = 0;
-			if (PetTrackingInfos.Count > 0)
-				totaldays = (PetTrackingInfos[PetTrackingInfos.Count - 1].CreationDate.Date - PetTrackingInfos[0].CreationDate.Date).TotalDays;
-
-			model.AvgDistance = new double[24];
-			for (int j = 0; j < 24; j++)
-			{
-				if (totaldays > 0)
-					model.AvgDistance[j] = totalDistance[j] / totaldays;
-				else
-					model.AvgDistance[j] = totalDistance[j];
-			}
-
-			model.AvgDistanceDay = model.AvgDistance.Sum();
-
-			model.MediumAvgDistance = new double[24];
-			for (int j = 0; j < 24; j++)
-			{
-				model.MediumAvgDistance[j] = 1;
-			}
-
-			model.MediumAvgDistanceDay = model.MediumAvgDistance.Sum();
-
-			model.PointVisited = new List<Tuple<PetTrackingInfo, string>>();
-			foreach (PetTrackingInfo pti in PetTrackingInfos)
-			{
-				string color = string.Empty;
-				if (pti.CreationDate.Hour < 2)
-				{
-					color = "purple";
-				}
-				else if (pti.CreationDate.Hour < 6)
-				{
-					color = "red";
-				}
-				else if (pti.CreationDate.Hour < 10)
-				{
-					color = "orange";
-				}
-				else if (pti.CreationDate.Hour < 14)
-				{
-					color = "yellow";
-				}
-				else if (pti.CreationDate.Hour < 18)
-				{
-					color = "green";
-				}
-				else if (pti.CreationDate.Hour < 22)
-				{
-					color = "blue";
-				}
-				else
-				{
-					color = "purple";
-				}
-				model.PointVisited.Add(new Tuple<PetTrackingInfo, string>(pti, color));
-			}
-
 			return View(model);
 		}
 
