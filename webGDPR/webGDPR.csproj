@@ -103,6 +103,9 @@
     <Content Update="Views\Pet\Map.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
+    <Content Update="Views\Shared\_HWStatsPartial.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
     <Content Update="Views\User\HWOverview.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>

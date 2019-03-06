@@ -87,6 +87,37 @@ namespace webGDPR.Controllers
 		{
 			HWOverviewViewModel model = new HWOverviewViewModel();
 
+			await CalculateHWStatsAsync(model);
+
+			return View(model);
+		}
+
+		[HttpGet]
+		public async Task<IActionResult> HWPeriod(string period = "W")
+		{
+			HWOverviewViewModel model = new HWOverviewViewModel();
+
+			await CalculateHWStatsAsync(model, period);
+
+			return PartialView("_HWStatsPartial", model);
+		}
+
+		private async Task CalculateHWStatsAsync(HWOverviewViewModel model, string period = "W") {
+			DateTime limitDateTime;
+
+			if (period == "W")
+			{
+				limitDateTime = DateTime.Now.AddDays(-7);
+			}
+			else if (period == "M")
+			{
+				limitDateTime = DateTime.Now.AddMonths(-1);
+			}
+			else
+			{
+				limitDateTime = DateTime.Now.AddMonths(-6);
+			}
+
 			User user = await _context.User.Include(b => b.Bases).Include(c => c.Collars).Include(d => d.Devices).Include(d => d.Pets).FirstOrDefaultAsync(u => u.OwnerID == _userManager.GetUserId(User));
 			foreach (Collar c in user.Collars)
 			{
@@ -100,7 +131,8 @@ namespace webGDPR.Controllers
 			model.User = user;
 
 			model.BaseStats = new List<BaseStats>();
-			foreach (Base b in user.Bases) {
+			foreach (Base b in user.Bases)
+			{
 				model.BaseStats.Add(new BaseStats() { Base = b });
 			}
 
@@ -122,8 +154,9 @@ namespace webGDPR.Controllers
 				SumConnectedToBaseTimeSpan.Add(new Tuple<string, TimeSpan>(b.BaseId, new TimeSpan(0)));
 			}
 
-			foreach (BaseStats bs in model.BaseStats) {
-				List<BaseStatus> BasesStatus = _context.BaseStatus.Where(s => s.BaseId == bs.Base.BaseId && s.CreationDate > DateTime.Now.AddDays(-700)).OrderBy(s => s.CreationDate).ToList();
+			foreach (BaseStats bs in model.BaseStats)
+			{
+				List<BaseStatus> BasesStatus = _context.BaseStatus.Where(s => s.BaseId == bs.Base.BaseId && s.CreationDate > limitDateTime).OrderBy(s => s.CreationDate).ToList();
 
 				bs.DisconnectedTimeSpan = new TimeSpan(0);
 				bs.ConnectedToTimeSpan = new List<Tuple<string, TimeSpan>>();
@@ -155,7 +188,7 @@ namespace webGDPR.Controllers
 							sts = sts.Add(x);
 							SumConnectedToDeviceTimeSpan.Remove(st);
 							SumConnectedToDeviceTimeSpan.Add(Tuple.Create(st.Item1, sts));
-							
+
 						}
 					}
 					else
@@ -186,7 +219,7 @@ namespace webGDPR.Controllers
 				bs.AvgRadio = 0;
 				if (totalTime > 0)
 				{
-				bs.AvgRadio = totalRadio / totalTime;
+					bs.AvgRadio = totalRadio / totalTime;
 				}
 				//time charging batteries : has a battery that is charging, only if close to 24hs...
 				bs.BatteriesChargingMore75percent = (7 * 3 / 4) - (bs.IsChargingTimeSpan.TotalDays * 3 / 4) <= 0;
@@ -195,16 +228,16 @@ namespace webGDPR.Controllers
 			//Device is most connected to
 			if (user.Devices.Count > 0)
 			{
-				model.MostConnectedToDevice = user.Devices.FirstOrDefault(c=>c.DeviceId == SumConnectedToDeviceTimeSpan.OrderByDescending(d => d.Item2.Ticks).First().Item1);
+				model.MostConnectedToDevice = user.Devices.FirstOrDefault(c => c.DeviceId == SumConnectedToDeviceTimeSpan.OrderByDescending(d => d.Item2.Ticks).First().Item1);
 			}
 
 			model.PointsServiceLevel = new List<PointServiceLevel>();
 
 			foreach (CollarStats cs in model.CollarStats)
 			{
-				List<CollarStatus> CollarsStatus = _context.CollarStatus.Where(s => s.CollarId==  cs.Collar.CollarId && s.CreationDate > DateTime.Now.AddDays(-700)).OrderBy(s => s.CreationDate).ToList();
+				List<CollarStatus> CollarsStatus = _context.CollarStatus.Where(s => s.CollarId == cs.Collar.CollarId && s.CreationDate > limitDateTime).OrderBy(s => s.CreationDate).ToList();
 
-				List<PetTrackingInfo> PetTrackingInfos = _context.PetTrackingInfo.Where(s => s.CollarId == cs.Collar.CollarId && s.CreationDate > DateTime.Now.AddDays(-700)).OrderBy(s => s.CreationDate).ToList();
+				List<PetTrackingInfo> PetTrackingInfos = _context.PetTrackingInfo.Where(s => s.CollarId == cs.Collar.CollarId && s.CreationDate > limitDateTime).OrderBy(s => s.CreationDate).ToList();
 
 				cs.DisconnectedTimeSpan = new TimeSpan(0);
 				cs.ConnectedToTimeSpan = new List<Tuple<string, TimeSpan>>();
@@ -215,9 +248,9 @@ namespace webGDPR.Controllers
 
 				cs.GPSDisconnectedTimeSpan = new TimeSpan(0);
 
-				cs.RadioTimeSpan = new TimeSpan[101];				
+				cs.RadioTimeSpan = new TimeSpan[101];
 
-				cs.BatteryTimeSpan = new TimeSpan[101];				
+				cs.BatteryTimeSpan = new TimeSpan[101];
 
 				for (int i = 0; i < CollarsStatus.Count - 1; i++)
 				{
@@ -246,18 +279,20 @@ namespace webGDPR.Controllers
 						//Disconnected time
 						cs.DisconnectedTimeSpan = cs.DisconnectedTimeSpan.Add(x);
 					}
-					if (!CollarsStatus[i].IsGPSConnected) {
+					if (!CollarsStatus[i].IsGPSConnected)
+					{
 						//Disconnected time
 						cs.GPSDisconnectedTimeSpan = cs.GPSDisconnectedTimeSpan.Add(x);
 					}
-						//time per Radio strenth
+					//time per Radio strenth
 					if (cs.RadioTimeSpan[CollarsStatus[i].Radio] == null)
 					{
 						cs.RadioTimeSpan[CollarsStatus[i].Radio] = new TimeSpan(0);
 					}
 					cs.RadioTimeSpan[CollarsStatus[i].Radio] = cs.RadioTimeSpan[CollarsStatus[i].Radio].Add(x);
 
-					if (!CollarsStatus[i].IsGPSConnected || CollarsStatus[i].Radio < 50) {
+					if (!CollarsStatus[i].IsGPSConnected || CollarsStatus[i].Radio < 50)
+					{
 						var lastTracking = PetTrackingInfos.Where(p => p.CreationDate < CollarsStatus[i].CreationDate).OrderByDescending(p => p.CreationDate).First();
 
 						model.PointsServiceLevel.Add(new PointServiceLevel()
@@ -305,7 +340,7 @@ namespace webGDPR.Controllers
 
 				//time charging batteries : has a battery that is charging, only if close to 24hs...
 				TimeSpan[] BatteryMinus25 = cs.BatteryTimeSpan.Take(25).ToArray();
-				cs.BatteryMinus25Minutes = BatteryMinus25.Sum(r => r.TotalSeconds) /60;
+				cs.BatteryMinus25Minutes = BatteryMinus25.Sum(r => r.TotalSeconds) / 60;
 			}
 
 			//Base is most connected to
@@ -313,8 +348,8 @@ namespace webGDPR.Controllers
 			{
 				model.MostConnectedToBase = user.Bases.FirstOrDefault(c => c.BaseId == SumConnectedToBaseTimeSpan.OrderByDescending(d => d.Item2.Ticks).First().Item1);
 			}
-			return View(model);
 		}
+
 
 		[HttpGet]
 		[Authorize]

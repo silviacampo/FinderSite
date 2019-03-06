@@ -73,61 +73,13 @@
 		</div>
 
 		<div class="btn-group" role="group" aria-label="..." style="float:right;">
-			<button class="btn btn-default active" id="btnWeek" data-period="W">last week</button>
-			<button class="btn btn-default" id="btnMonth" data-period="M">last month</button>
-			<button class="btn btn-default" id="btnSemester" data-period="S">last 6 months</button>
+			<button class="btn btn-default active" id="btnHWWeek" data-period="W">last week</button>
+			<button class="btn btn-default" id="btnHWMonth" data-period="M">last month</button>
+			<button class="btn btn-default" id="btnHWSemester" data-period="S">last 6 months</button>
 		</div>
-		<script>
-			var names = JSON.parse('@Html.Raw(Json.Serialize(Model.BaseStats.Select(b => b.Base.Name).ToArray()))');
-			var disconnectedTimes = JSON.parse('@Html.Raw(Json.Serialize(Model.BaseStats.Select(b => b.DisconnectedTimeSpan.TotalMinutes).ToArray()))');
-			var radios = JSON.parse('@Html.Raw(Json.Serialize(Model.BaseStats.Select(b => b.AvgRadio).ToArray()))');
 
-			var namesCollars = JSON.parse('@Html.Raw(Json.Serialize(Model.CollarStats.Select(b => b.Collar.Name).ToArray()))');
-			var disconnectedTimesCollars = JSON.parse('@Html.Raw(Json.Serialize(Model.CollarStats.Select(b => b.DisconnectedTimeSpan.TotalMinutes).ToArray()))');
-			var gpsDisconnectedTimesCollars = JSON.parse('@Html.Raw(Json.Serialize(Model.CollarStats.Select(b => b.GPSDisconnectedTimeSpan.TotalMinutes).ToArray()))');
-			var radiosCollars = JSON.parse('@Html.Raw(Json.Serialize(Model.CollarStats.Select(b => b.AvgRadio).ToArray()))');
-			var batteryCollars = JSON.parse('@Html.Raw(Json.Serialize(Model.CollarStats.Select(b => b.AvgBattery).ToArray()))');
-		</script>
 		<div id="hwStats" class="well well-lg" style="margin-top:10px;">
-			<div class="col-lg-5 col-md-5 well well-lg">
-				<h5>Disconnected Time for Bases</h5>
-				<canvas id="horizontalBar"></canvas>
-			</div>
-
-			<div class="col-lg-4 col-md-4 well well-lg">
-				<h5>Radio Average Strenght for Bases</h5>
-				<canvas id="verticalBarChart"></canvas>
-			</div>
-			<div class="col-lg-5 col-md-5 well well-lg">
-				<h5>Disconnected/GPS Disconnected Time for Collars</h5>
-				<canvas id="horizontalBar2"></canvas>
-			</div>
-
-			<div class="col-lg-4 col-md-4 well well-lg">
-				<h5>Radio/Battery Average Strenght for Collar</h5>
-				<canvas id="verticalBarChart2"></canvas>
-			</div>
-
-			<h5>Places visited</h5>
-			<script>
-			var contentString = '<div id="content">' +
-				'<div id="siteNotice">' +
-				'</div>' +
-				'<h3 id="firstHeading" class="firstHeading">Home</h3>' +
-				@*'<div id="bodyContent">' +
-				'<p>@Model.Description</p>' +
-				'</div>' +*@
-				'</div>';
-
-			var coordinates = [];
-			@foreach (webGDPR.ViewModels.PointServiceLevel p in Model.PointsServiceLevel) {
-			 	<text>
-					coordinates.push({ lat: @p.Latitude, lng: @p.Longitude, color: "red" });
-				</text>
-			}
-			</script>
-			<div id="service-map" class="card-text card-map" data-geo-lat="@Model.User.Latitude" , data-geo-lng="@Model.User.Longitude" style="height:500px;"></div>
-
+			<partial name="_HWStatsPartial" model="@Model" />
 		</div>
 	</div>
 

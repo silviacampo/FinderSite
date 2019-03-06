@@ -13,8 +13,13 @@
   },
   {
     "outputFileName": "wwwroot/js/site.min.js",
-    "inputFiles": [
-      "wwwroot/js/site.js"
-    ]
+	"inputFiles": [
+		"wwwroot/js/site.js",
+		"wwwroot/js/sitepetedit.js",
+		"wwwroot/js/sitepetstats.js",
+		"wwwroot/js/sitepettrack.js",
+		"wwwroot/js/siteuserdashboard.js",
+		"wwwroot/js/siteuserhwoverview.js"
+	]
   }
 ]
