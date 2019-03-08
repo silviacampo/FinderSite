@@ -16,6 +16,7 @@ using Microsoft.Extensions.Logging;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using webGDPR.Infrastructure.CustomWebSockets;
+using webGDPR.Controllers;
 
 namespace webGDPR
 {
@@ -71,6 +72,8 @@ namespace webGDPR
 			services.AddScoped<HostFilter>();
 			services.AddSingleton<IEmailConfiguration>(Configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>());
 			services.AddTransient<IEmailSender, EmailSender>();
+
+			services.AddTransient<PetController>();
 
 
 			// Authorization handlers.

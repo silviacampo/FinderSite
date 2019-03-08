@@ -151,7 +151,7 @@ namespace webGDPR.Controllers
 
         // GET: Pet/Map?username=SilviaCampo&collarnumber=1
         //http://localhost:51420/Identity/Account/SilentLogin?Username=SilviaCampo&ReturnUrl=%2FPet%2FMap%3Fusername%3DSilviaCampo%26collarnumber%3D1
-        public async Task<IActionResult> Map(string username, int collarnumber)
+        public async Task<IActionResult> Map(string username, int collarnumber, string host = "")
         {
             var user = await _context.User.FirstOrDefaultAsync(m => m.Name == username);
             if (user != null)
@@ -172,8 +172,10 @@ namespace webGDPR.Controllers
                             return NotFound(); //create a custom page to show that this pet is not tracking any information
                         }
                         pet.TrackingInfos = await _context.PetTrackingInfo.Where(t => t.PetId == petCollar.PetId).Take(10).ToListAsync();
-
-                        return View(pet);
+						if (!string.IsNullOrEmpty(host)) {
+							ViewData["Host"] = host;
+								}
+						return View("~/Views/Pet/Map.cshtml", pet);
                     }
                     return NotFound();
                 }
