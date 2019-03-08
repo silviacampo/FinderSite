@@ -24,11 +24,11 @@
 		text-align: center;
 	}
 
-		.chart canvas {
-			position: absolute;
-			top: 0;
-			left: 0;
-		}
+	.chart canvas {
+		position: absolute;
+		top: 0;
+		left: 0;
+	}
 
 	.percent {
 		display: inline-block;
@@ -36,15 +36,14 @@
 		z-index: 2;
 	}
 
-		.percent:after {
-			content: '%';
-			margin-left: 0.1em;
-			font-size: .8em;
-		}
-
+	.percent:after {
+		content: '%';
+		margin-left: 0.1em;
+		font-size: .8em;
+	}
 </style>
 
-<span class="chart" data-percent="@Model.BaseStats[0].AvgConnected">
+<span class="chart" data-percent="@Model.BaseStats[0].AvgConnected" data-bar-color="blue">
 	<span class="percent">@Model.BaseStats[0].AvgConnected</span>
 </span>
 <span class="chart" data-percent="@Model.BaseStats[0].AvgPlugIn">

@@ -251,11 +251,11 @@ $(function () {
     easing: 'easeOutBounce',
     onStep: function (from, to, percent) {
       $(this.el).find('.percent').text(Math.round(percent));
-    } //,
+    } ,
     //your options goes here
     //barColor: '#ef1e25',
-    //trackColor: '#f2f2f2',
-    //scaleColor: '#dfe0e0',
+    trackColor: '#f2f2f2',
+    scaleColor: '#dfe0e0' //,
     //scaleLength: 5,
     //lineCap: 'round', // butt, round and square.
     //lineWidth: 3,
