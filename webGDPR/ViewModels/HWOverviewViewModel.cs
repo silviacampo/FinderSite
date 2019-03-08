@@ -40,6 +40,10 @@ namespace webGDPR.ViewModels
 		public double AvgRadio { get; set; }
 		public TimeSpan IsChargingTimeSpan { get; set; }
 		public bool BatteriesChargingMore75percent { get; set; }
+		public TimeSpan PluginTimSpan { get; internal set; }
+
+		public double AvgConnected { get; set; }
+		public double AvgPlugIn { get; set; }
 	}
 
 	public class CollarStats

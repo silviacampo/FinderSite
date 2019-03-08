@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using AutoMapper;
 using Geocoding;
@@ -15,7 +14,6 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using webGDPR.Authorization;
 using webGDPR.Data;
-using webGDPR.Infrastructure;
 using webGDPR.Infrastructure.CustomWebSockets;
 using webGDPR.Models;
 using webGDPR.Models.Helper;
@@ -164,7 +162,7 @@ namespace webGDPR.Controllers
 				{
 					bs.ConnectedToTimeSpan.Add(new Tuple<string, TimeSpan>(d.DeviceId, new TimeSpan(0)));
 				}
-
+				bs.PluginTimSpan = new TimeSpan(0);
 				bs.RadioTimeSpan = new TimeSpan[101];
 				bs.IsChargingTimeSpan = new TimeSpan(0);
 				bs.BatteriesChargingMore75percent = false;
@@ -188,7 +186,6 @@ namespace webGDPR.Controllers
 							sts = sts.Add(x);
 							SumConnectedToDeviceTimeSpan.Remove(st);
 							SumConnectedToDeviceTimeSpan.Add(Tuple.Create(st.Item1, sts));
-
 						}
 					}
 					else
@@ -196,6 +193,12 @@ namespace webGDPR.Controllers
 						//Disconnected time
 						bs.DisconnectedTimeSpan = bs.DisconnectedTimeSpan.Add(x);
 					}
+
+					if (BasesStatus[i].IsPlugged) {
+						//time plugin
+						bs.PluginTimSpan = bs.PluginTimSpan.Add(x);
+					}
+
 					//time per Radio strenth
 					if (bs.RadioTimeSpan[BasesStatus[i].Radio] == null)
 					{
@@ -223,6 +226,10 @@ namespace webGDPR.Controllers
 				}
 				//time charging batteries : has a battery that is charging, only if close to 24hs...
 				bs.BatteriesChargingMore75percent = (7 * 3 / 4) - (bs.IsChargingTimeSpan.TotalDays * 3 / 4) <= 0;
+
+				bs.AvgConnected = 60.00;
+				bs.AvgPlugIn = 70.6;
+				bs.AvgRadio = 75.8;
 			}
 
 			//Device is most connected to
