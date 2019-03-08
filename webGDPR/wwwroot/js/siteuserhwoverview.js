@@ -248,26 +248,21 @@ $('#btnHWWeek, #btnHWMonth, #btnHWSemester').click(function () {
 
 $(function () {
   $('.chart').easyPieChart({
-    //your options goes here
-    barColor: '#ef1e25',
-    trackColor: '#f2f2f2',
-    scaleColor:	'#dfe0e0',
-    scaleLength: 5,
-    lineCap: 'round', // butt, round and square.
-    lineWidth: 3,
-    size:	110,
-    rotate:	0
-  });
-});
-
-$(function () {
-  $('.chart1').easyPieChart({
     easing: 'easeOutBounce',
     onStep: function (from, to, percent) {
       $(this.el).find('.percent').text(Math.round(percent));
-    }
+    } //,
+    //your options goes here
+    //barColor: '#ef1e25',
+    //trackColor: '#f2f2f2',
+    //scaleColor: '#dfe0e0',
+    //scaleLength: 5,
+    //lineCap: 'round', // butt, round and square.
+    //lineWidth: 3,
+    //size: 110,
+    //rotate: 0
   });
-  var chart = window.chart = $('.chart1').data('easyPieChart');
+  var chart = window.chart = $('.chart').data('easyPieChart');
   $('.js_update').on('click', function () {
     chart.update(Math.random() * 200 - 100);
   });

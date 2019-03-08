@@ -14,7 +14,7 @@
 			var batteryCollars = JSON.parse('@Html.Raw(Json.Serialize(Model.CollarStats.Select(b => b.AvgBattery).ToArray()))');
 </script>
 <style>
-	.chart1 {
+	.chart {
 		position: relative;
 		display: inline-block;
 		width: 110px;
@@ -24,7 +24,7 @@
 		text-align: center;
 	}
 
-		.chart1 canvas {
+		.chart canvas {
 			position: absolute;
 			top: 0;
 			left: 0;
@@ -43,11 +43,17 @@
 		}
 
 </style>
-<div class="chart" data-percent="73" data-scale-color="#ffb400">73</div>
 
-<span class="chart1" data-percent="86">
-	<span class="percent">86</span>
+<span class="chart" data-percent="@Model.BaseStats[0].AvgConnected">
+	<span class="percent">@Model.BaseStats[0].AvgConnected</span>
 </span>
+<span class="chart" data-percent="@Model.BaseStats[0].AvgPlugIn">
+	<span class="percent">@Model.BaseStats[0].AvgPlugIn</span>
+</span>
+<span class="chart" data-percent="@Model.BaseStats[0].AvgRadio">
+	<span class="percent">@Model.BaseStats[0].AvgRadio</span>
+</span>
+
 
 <div class="col-lg-5 col-md-5 well well-lg">
 	<h5>Disconnected Time for Bases</h5>
