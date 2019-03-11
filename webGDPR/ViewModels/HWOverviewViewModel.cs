@@ -57,6 +57,9 @@ namespace webGDPR.ViewModels
 		public double BatteryMinus25Minutes { get; set; }
 		public TimeSpan[] BatteryTimeSpan { get; set; }
 		public double AvgBattery { get; set; }
+
+		public double AvgConnected { get; set; }
+		public double AvgGPSConnected { get; set; }
 	}
 
 	public class PointServiceLevel

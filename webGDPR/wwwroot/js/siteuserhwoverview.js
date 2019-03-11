@@ -219,8 +219,8 @@ function initCollarMap() {
   }
 }
 
-initBaseCharts();
-initCollarCharts();
+//initBaseCharts();
+//initCollarCharts();
 initCollarMap();
 
 $('#btnHWWeek, #btnHWMonth, #btnHWSemester').click(function () {

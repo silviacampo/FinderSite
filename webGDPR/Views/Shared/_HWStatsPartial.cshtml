@@ -17,71 +17,128 @@
 	.chart {
 		position: relative;
 		display: inline-block;
-		width: 110px;
-		height: 110px;
-		margin-top: 50px;
-		margin-bottom: 50px;
+		width: 80px;
+		height: 80px;
+		margin-top: 10px;
+		margin-bottom: 10px;
 		text-align: center;
 	}
 
-	.chart canvas {
-		position: absolute;
-		top: 0;
-		left: 0;
-	}
+		.chart canvas {
+			position: absolute;
+			top: 0;
+			left: 0;
+		}
 
 	.percent {
 		display: inline-block;
-		line-height: 110px;
+		line-height: 80px;
 		z-index: 2;
 	}
 
-	.percent:after {
-		content: '%';
-		margin-left: 0.1em;
-		font-size: .8em;
-	}
+		.percent:after {
+			content: '%';
+			margin-left: 0.1em;
+			font-size: .8em;
+		}
 </style>
-
-<span class="chart" data-percent="@Model.BaseStats[0].AvgConnected" data-bar-color="blue">
-	<span class="percent">@Model.BaseStats[0].AvgConnected</span>
-</span>
-<span class="chart" data-percent="@Model.BaseStats[0].AvgPlugIn">
-	<span class="percent">@Model.BaseStats[0].AvgPlugIn</span>
-</span>
-<span class="chart" data-percent="@Model.BaseStats[0].AvgRadio">
-	<span class="percent">@Model.BaseStats[0].AvgRadio</span>
-</span>
-
-
-<div class="col-lg-5 col-md-5 well well-lg">
-	<h5>Disconnected Time for Bases</h5>
-	<canvas id="horizontalBar"></canvas>
+<div class="well well-lg" style="background-color: white;">
+	<h3>
+		<i class="fa fa-home fa-fw" aria-hidden="true"></i>
+	</h3>
+	<hr />
+	<div class="row">
+		<div class="col-md-3 col-sm-3" style="text-align: center; vertical-align:middle;">
+			@Model.BaseStats[0].Base.Name
+		</div>
+		<div class="col-md-3 col-sm-3" style="text-align: center;">
+			<span class="chart" data-percent="@Model.BaseStats[0].AvgConnected" data-bar-color="rgb(201, 203, 207)" data-line-width="10" data-size="80">
+				<span class="percent">@Model.BaseStats[0].AvgConnected</span>
+			</span>
+			<span class="label label-default">Network Connected</span>
+		</div>
+		<div class="col-md-3 col-sm-3" style="text-align: center;">
+			<span class="chart" data-percent="@Model.BaseStats[0].AvgPlugIn" data-bar-color="rgb(201, 203, 207)" data-line-width="10" data-size="80">
+				<span class="percent">@Model.BaseStats[0].AvgPlugIn</span>
+			</span>
+			<span class="label label-default">Power Connected</span>
+		</div>
+		<div class="col-md-3 col-sm-3" style="text-align: center;">
+			<span class="chart" data-percent="@Model.BaseStats[0].AvgRadio" data-bar-color="rgb(201, 203, 207)" data-line-width="10" data-size="80">
+				<span class="percent">@Model.BaseStats[0].AvgRadio</span>
+			</span>
+			<span class="label label-default">Medium Radio Strenth</span>
+		</div>
+	</div>
 </div>
+<div class="well well-lg" style="background-color: white;">
+	<h3>
+		<i class="fa fa-paw fa-fw" aria-hidden="true"></i>
+	</h3>
+	<hr />
+	<div class="row">
+		<div class="col-md-2 col-sm-2" style="text-align: center; vertical-align:middle;">
+			@Model.CollarStats[0].Collar.Name
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-3 col-sm-3" style="text-align: center;">
+			<span class="chart" data-percent="@Model.CollarStats[0].AvgConnected" data-bar-color="rgb(201, 203, 207)" data-line-width="10" data-size="80">
+				<span class="percent">@Model.CollarStats[0].AvgConnected</span>
+			</span>
+			<span class="label label-default">Network Connected</span>
+		</div>
+		<div class="col-md-3 col-sm-3" style="text-align: center;">
+			<span class="chart" data-percent="@Model.CollarStats[0].AvgGPSConnected" data-bar-color="rgb(201, 203, 207)" data-line-width="10" data-size="80">
+				<span class="percent">@Model.CollarStats[0].AvgGPSConnected</span>
+			</span>
+			<span class="label label-default">GPS Connected</span>
+		</div>
+		<div class="col-md-3 col-sm-3" style="text-align: center;">
+			<span class="chart" data-percent="@Model.CollarStats[0].AvgBattery" data-bar-color="rgb(201, 203, 207)" data-line-width="10" data-size="80">
+				<span class="percent">@Model.CollarStats[0].AvgBattery</span>
+			</span>
+			<span class="label label-default">Medium Battery Charge</span>
+		</div>
+		<div class="col-md-3 col-sm-3" style="text-align: center;">
+			<span class="chart" data-percent="@Model.CollarStats[0].AvgRadio" data-bar-color="rgb(201, 203, 207)" data-line-width="10" data-size="80">
+				<span class="percent">@Model.CollarStats[0].AvgRadio</span>
+			</span>
+			<span class="label label-default">Medium Radio Strenth</span>
+		</div>
+	</div>
 
-<div class="col-lg-4 col-md-4 well well-lg">
-	<h5>Radio Average Strenght for Bases</h5>
-	<canvas id="verticalBarChart"></canvas>
 </div>
-<div class="col-lg-5 col-md-5 well well-lg">
-	<h5>Disconnected/GPS Disconnected Time for Collars</h5>
-	<canvas id="horizontalBar2"></canvas>
-</div>
+@*<div class="col-lg-5 col-md-5 well well-lg">
+		<h5>Disconnected Time for Bases</h5>
+		<canvas id="horizontalBar"></canvas>
+	</div>
 
-<div class="col-lg-4 col-md-4 well well-lg">
-	<h5>Radio/Battery Average Strenght for Collar</h5>
-	<canvas id="verticalBarChart2"></canvas>
-</div>
+	<div class="col-lg-4 col-md-4 well well-lg">
+		<h5>Radio Average Strenght for Bases</h5>
+		<canvas id="verticalBarChart"></canvas>
+	</div>
+	<div class="col-lg-5 col-md-5 well well-lg">
+		<h5>Disconnected/GPS Disconnected Time for Collars</h5>
+		<canvas id="horizontalBar2"></canvas>
+	</div>
 
-<h5>Places visited</h5>
-<script>
+	<div class="col-lg-4 col-md-4 well well-lg">
+		<h5>Radio/Battery Average Strenght for Collar</h5>
+		<canvas id="verticalBarChart2"></canvas>
+	</div>*@
+<div class="row well well-lg" style="background-color: white;">
+	<h5>Places visited</h5>
+	<script>
 			var coordinates = [];
 			@foreach (webGDPR.ViewModels.PointServiceLevel p in Model.PointsServiceLevel) {
 			 	<text>
 					coordinates.push({ lat: @p.Latitude, lng: @p.Longitude, color: "red", gps: @p.GPS, radio: @p.Radio });
 				</text>
 			}
-</script>
-<div id="service-map" class="card-text card-map" data-geo-lat="@Model.User.Latitude" , data-geo-lng="@Model.User.Longitude" style="height:500px;"></div>
+	</script>
+	<div id="service-map" class="card-text card-map" data-geo-lat="@Model.User.Latitude" , data-geo-lng="@Model.User.Longitude" style="height:500px;"></div>
+</div>
+
 
 
