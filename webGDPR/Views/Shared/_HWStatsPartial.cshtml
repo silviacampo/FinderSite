@@ -1,4 +1,6 @@
 ﻿@model webGDPR.ViewModels.HWOverviewViewModel
+@using webGDPR.ViewModels;
+
 @{
 	ViewData["Title"] = "_HWStats";
 }
@@ -47,29 +49,33 @@
 		<i class="fa fa-home fa-fw" aria-hidden="true"></i>
 	</h3>
 	<hr />
-	<div class="row">
-		<div class="col-md-3 col-sm-3" style="text-align: center; vertical-align:middle;">
-			@Model.BaseStats[0].Base.Name
+	@foreach (BaseStats bs in Model.BaseStats)
+	{
+		<div class="row">
+			<div class="col-md-3 col-sm-3" style="text-align: center; vertical-align:middle;">
+				@bs.Base.Name
+			</div>
+			<div class="col-md-3 col-sm-3" style="text-align: center;">
+				<span class="chart" data-percent="@bs.AvgConnected" data-bar-color="rgb(201, 203, 207)" data-line-width="10" data-size="80">
+					<span class="percent">@bs.AvgConnected</span>
+				</span>
+				<span class="label label-default">Network Connected</span>
+			</div>
+			<div class="col-md-3 col-sm-3" style="text-align: center;">
+				<span class="chart" data-percent="@bs.AvgPlugIn" data-bar-color="rgb(201, 203, 207)" data-line-width="10" data-size="80">
+					<span class="percent">@bs.AvgPlugIn</span>
+				</span>
+				<span class="label label-default">Power Connected</span>
+			</div>
+			<div class="col-md-3 col-sm-3" style="text-align: center;">
+				<span class="chart" data-percent="@bs.AvgRadio" data-bar-color="rgb(201, 203, 207)" data-line-width="10" data-size="80">
+					<span class="percent">@bs.AvgRadio</span>
+				</span>
+				<span class="label label-default">Medium Radio Strenth</span>
+			</div>
 		</div>
-		<div class="col-md-3 col-sm-3" style="text-align: center;">
-			<span class="chart" data-percent="@Model.BaseStats[0].AvgConnected" data-bar-color="rgb(201, 203, 207)" data-line-width="10" data-size="80">
-				<span class="percent">@Model.BaseStats[0].AvgConnected</span>
-			</span>
-			<span class="label label-default">Network Connected</span>
-		</div>
-		<div class="col-md-3 col-sm-3" style="text-align: center;">
-			<span class="chart" data-percent="@Model.BaseStats[0].AvgPlugIn" data-bar-color="rgb(201, 203, 207)" data-line-width="10" data-size="80">
-				<span class="percent">@Model.BaseStats[0].AvgPlugIn</span>
-			</span>
-			<span class="label label-default">Power Connected</span>
-		</div>
-		<div class="col-md-3 col-sm-3" style="text-align: center;">
-			<span class="chart" data-percent="@Model.BaseStats[0].AvgRadio" data-bar-color="rgb(201, 203, 207)" data-line-width="10" data-size="80">
-				<span class="percent">@Model.BaseStats[0].AvgRadio</span>
-			</span>
-			<span class="label label-default">Medium Radio Strenth</span>
-		</div>
-	</div>
+	}
+
 </div>
 <div class="well well-lg" style="background-color: white;">
 	<h3>

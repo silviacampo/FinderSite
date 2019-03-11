@@ -102,18 +102,21 @@ namespace webGDPR.Controllers
 
 		private async Task CalculateHWStatsAsync(HWOverviewViewModel model, string period = "W") {
 			DateTime limitDateTime;
-
+			TimeSpan periodTimeSpan;
 			if (period == "W")
 			{
 				limitDateTime = DateTime.Now.AddDays(-7);
+				periodTimeSpan = new TimeSpan(7, 0, 0, 0);
 			}
 			else if (period == "M")
 			{
 				limitDateTime = DateTime.Now.AddMonths(-1);
+				periodTimeSpan = new TimeSpan(Convert.ToInt32((DateTime.Now - limitDateTime).TotalDays), 0, 0, 0);
 			}
 			else
 			{
 				limitDateTime = DateTime.Now.AddMonths(-6);
+				periodTimeSpan = new TimeSpan(Convert.ToInt32((DateTime.Now - limitDateTime).TotalDays), 0, 0, 0);
 			}
 
 			User user = await _context.User.Include(b => b.Bases).Include(c => c.Collars).Include(d => d.Devices).Include(d => d.Pets).FirstOrDefaultAsync(u => u.OwnerID == _userManager.GetUserId(User));
@@ -131,12 +134,14 @@ namespace webGDPR.Controllers
 			model.BaseStats = new List<BaseStats>();
 			foreach (Base b in user.Bases)
 			{
+				if (!b.Deleted)
 				model.BaseStats.Add(new BaseStats() { Base = b });
 			}
 
 			model.CollarStats = new List<CollarStats>();
 			foreach (Collar c in user.Collars)
 			{
+				if (!c.Deleted)
 				model.CollarStats.Add(new CollarStats() { Collar = c });
 			}
 
@@ -156,6 +161,13 @@ namespace webGDPR.Controllers
 			{
 				List<BaseStatus> BasesStatus = _context.BaseStatus.Where(s => s.BaseId == bs.Base.BaseId && s.CreationDate > limitDateTime).OrderBy(s => s.CreationDate).ToList();
 
+				if (BasesStatus.Count() > 0)
+				{
+					periodTimeSpan = new TimeSpan(Convert.ToInt32((BasesStatus.Last().CreationDate - BasesStatus.First().CreationDate).TotalDays), 0, 0, 0);
+				}
+				else {
+					periodTimeSpan = new TimeSpan(0);
+				}
 				bs.DisconnectedTimeSpan = new TimeSpan(0);
 				bs.ConnectedToTimeSpan = new List<Tuple<string, TimeSpan>>();
 				foreach (Device d in user.Devices)
@@ -212,24 +224,40 @@ namespace webGDPR.Controllers
 						bs.IsChargingTimeSpan = bs.IsChargingTimeSpan.Add(x);
 					}
 				}
-				//Radio strenth average
-				double totalTime = bs.RadioTimeSpan.Sum(r => r.TotalSeconds);
-				double totalRadio = 0;
-				for (int j = 0; j < bs.RadioTimeSpan.Count(); j++)
+
+				//Connected average
+				if (periodTimeSpan.TotalMinutes > 0)
 				{
-					totalRadio = totalRadio + bs.RadioTimeSpan[j].TotalSeconds * j;
+					bs.AvgConnected = Math.Round((periodTimeSpan - bs.DisconnectedTimeSpan).TotalMinutes * 100 / periodTimeSpan.TotalMinutes, 2);
 				}
-				bs.AvgRadio = 0;
-				if (totalTime > 0)
+				else {
+					bs.AvgConnected = 0;
+				}
+
+				//Plugin average
+				if (periodTimeSpan.TotalMinutes > 0)
 				{
-					bs.AvgRadio = totalRadio / totalTime;
+					bs.AvgPlugIn = Math.Round(bs.PluginTimSpan.TotalMinutes * 100 / periodTimeSpan.TotalMinutes, 2);
+				}
+				else {
+					bs.AvgPlugIn = 0;
+				}
+
+				//Radio strenth average
+				if (periodTimeSpan.TotalMinutes > 0)
+				{
+					double totalRadio = 0;
+					for (int j = 0; j < bs.RadioTimeSpan.Count(); j++)
+					{
+						totalRadio = totalRadio + bs.RadioTimeSpan[j].TotalMinutes * j;
+					}
+					bs.AvgRadio = Math.Round(totalRadio * 100 / periodTimeSpan.TotalMinutes,2);
+				}
+				else {
+					bs.AvgRadio = 0;
 				}
 				//time charging batteries : has a battery that is charging, only if close to 24hs...
 				bs.BatteriesChargingMore75percent = (7 * 3 / 4) - (bs.IsChargingTimeSpan.TotalDays * 3 / 4) <= 0;
-
-				bs.AvgConnected = 60.00;
-				bs.AvgPlugIn = 70.6;
-				bs.AvgRadio = 75.8;
 			}
 
 			//Device is most connected to
@@ -348,6 +376,11 @@ namespace webGDPR.Controllers
 				//time charging batteries : has a battery that is charging, only if close to 24hs...
 				TimeSpan[] BatteryMinus25 = cs.BatteryTimeSpan.Take(25).ToArray();
 				cs.BatteryMinus25Minutes = BatteryMinus25.Sum(r => r.TotalSeconds) / 60;
+
+				cs.AvgConnected = 60.00;
+				cs.AvgGPSConnected = 70.6;
+				cs.AvgRadio = 75.8;
+				cs.AvgBattery = 55;
 			}
 
 			//Base is most connected to
