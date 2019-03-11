@@ -274,6 +274,15 @@ namespace webGDPR.Controllers
 
 				List<PetTrackingInfo> PetTrackingInfos = _context.PetTrackingInfo.Where(s => s.CollarId == cs.Collar.CollarId && s.CreationDate > limitDateTime).OrderBy(s => s.CreationDate).ToList();
 
+				if (CollarsStatus.Count() > 0)
+				{
+					periodTimeSpan = new TimeSpan(Convert.ToInt32((CollarsStatus.Last().CreationDate - CollarsStatus.First().CreationDate).TotalDays), 0, 0, 0);
+				}
+				else
+				{
+					periodTimeSpan = new TimeSpan(0);
+				}
+
 				cs.DisconnectedTimeSpan = new TimeSpan(0);
 				cs.ConnectedToTimeSpan = new List<Tuple<string, TimeSpan>>();
 				foreach (Base b in user.Bases)
@@ -347,40 +356,59 @@ namespace webGDPR.Controllers
 					cs.BatteryTimeSpan[CollarsStatus[i].Battery] = cs.BatteryTimeSpan[CollarsStatus[i].Battery].Add(x);
 				}
 
-				//Radio strenth average
-				double totalTime = cs.RadioTimeSpan.Sum(r => r.TotalSeconds);
-				double totalRadio = 0;
-				for (int j = 0; j < cs.RadioTimeSpan.Count(); j++)
+				//Connected average
+				if (periodTimeSpan.TotalMinutes > 0)
 				{
-					totalRadio = totalRadio + cs.RadioTimeSpan[j].TotalSeconds * j;
+					cs.AvgConnected = Math.Round((periodTimeSpan - cs.DisconnectedTimeSpan).TotalMinutes * 100 / periodTimeSpan.TotalMinutes, 2);
 				}
-				cs.AvgRadio = 0;
-				if (totalTime > 0)
+				else
 				{
-					cs.AvgRadio = totalRadio / totalTime;
+					cs.AvgConnected = 0;
+				}
+
+				//Plugin average
+				if (periodTimeSpan.TotalMinutes > 0)
+				{
+					cs.AvgGPSConnected = Math.Round((periodTimeSpan - cs.GPSDisconnectedTimeSpan).TotalMinutes * 100 / periodTimeSpan.TotalMinutes, 2);
+				}
+				else
+				{
+					cs.AvgGPSConnected = 0;
+				}
+
+				//Radio strenth average
+				if (periodTimeSpan.TotalMinutes > 0)
+				{
+					double totalRadio = 0;
+					for (int j = 0; j < cs.RadioTimeSpan.Count(); j++)
+					{
+						totalRadio = totalRadio + cs.RadioTimeSpan[j].TotalMinutes * j;
+					}
+					cs.AvgRadio = Math.Round(totalRadio * 100 / periodTimeSpan.TotalMinutes, 2);
+				}
+				else
+				{
+					cs.AvgRadio = 0;
 				}
 
 				//Battery power average
-				totalTime = cs.BatteryTimeSpan.Sum(r => r.TotalSeconds);
-				double totalBattery = 0;
-				for (int j = 0; j < cs.BatteryTimeSpan.Count(); j++)
+				if (periodTimeSpan.TotalMinutes > 0)
 				{
-					totalBattery = totalBattery + cs.BatteryTimeSpan[j].TotalSeconds * j;
+					double totalBattery = 0;
+					for (int j = 0; j < cs.BatteryTimeSpan.Count(); j++)
+					{
+						totalBattery = totalBattery + cs.BatteryTimeSpan[j].TotalMinutes * j;
+					}
+					cs.AvgBattery = Math.Round(totalBattery * 100 / periodTimeSpan.TotalMinutes, 2);
 				}
-				cs.AvgBattery = 0;
-				if (totalTime > 0)
+				else
 				{
-					cs.AvgBattery = totalBattery / totalTime;
+					cs.AvgBattery = 0;
 				}
 
 				//time charging batteries : has a battery that is charging, only if close to 24hs...
 				TimeSpan[] BatteryMinus25 = cs.BatteryTimeSpan.Take(25).ToArray();
 				cs.BatteryMinus25Minutes = BatteryMinus25.Sum(r => r.TotalSeconds) / 60;
-
-				cs.AvgConnected = 60.00;
-				cs.AvgGPSConnected = 70.6;
-				cs.AvgRadio = 75.8;
-				cs.AvgBattery = 55;
 			}
 
 			//Base is most connected to
