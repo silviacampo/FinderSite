@@ -14,90 +14,100 @@
 			if (basesDisconnectedToMuch.Count > 0)
 			{
 				string[] names = basesDisconnectedToMuch.Select(b => b.Base.Name).ToArray();
-				<div class="alert alert-danger">
-					<strong>Danger!</strong> These bases are disconnected to much: @string.Join(",", names).
-				</div>
+		<div class="alert alert-danger alert-dismissible">
+				<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+				<strong>Danger!</strong> These bases are disconnected to much: @string.Join(",", names).
+			</div>
 			}
-		}
-
-		@{
-			var collarsDisconnectedToMuch = Model.CollarStats.Where(bs => bs.DisconnectedTimeSpan.TotalHours > 1).ToList();
-			if (collarsDisconnectedToMuch.Count > 0)
-			{
-				string[] names = collarsDisconnectedToMuch.Select(b => b.Collar.Name).ToArray();
-				<div class="alert alert-danger">
-					<strong>Danger!</strong> These collars are disconnected to much: @string.Join(",", names).
-				</div>
 			}
-		}
 
-		@{
-			var collarsGPSDisconnectedToMuch = Model.CollarStats.Where(bs => bs.GPSDisconnectedTimeSpan.TotalHours > 2).ToList();
-			if (collarsGPSDisconnectedToMuch.Count > 0)
-			{
-				string[] names = collarsGPSDisconnectedToMuch.Select(b => b.Collar.Name).ToArray();
-				<div class="alert alert-danger">
-					<strong>Danger!</strong> These collars are gps disconnected to much: @string.Join(",", names).
-				</div>
-			}
-		}
-
-		@{
-			var collarsBatteryLowToMuch = Model.CollarStats.Where(bs => bs.BatteryMinus25Minutes > (5*60)).ToList();
-			if (collarsBatteryLowToMuch.Count > 0)
-			{
-				string[] names = collarsBatteryLowToMuch.Select(b => b.Collar.Name).ToArray();
-				<div class="alert alert-danger">
-					<strong>Danger!</strong> These collars have battery too low: @string.Join(",", names).
-				</div>
-			}
-		}
-
-		@{
-			var basesChargingToMuch = Model.BaseStats.Where(bs => bs.BatteriesChargingMore75percent).ToList();
-			if (basesChargingToMuch.Count > 0)
-			{
-				string[] names = basesChargingToMuch.Select(b => b.Base.Name).ToArray();
-				<div class="alert alert-warning">
-					<strong>Warning!</strong> These bases are charging to much: @string.Join(",", names).
-				</div>
-			}
-		}
-
-		<div class="well well-sm">
-			Most Connected to Device: @Model.MostConnectedToDevice.AliasName
+			@{
+				var collarsDisconnectedToMuch = Model.CollarStats.Where(bs => bs.DisconnectedTimeSpan.TotalHours > 1).ToList();
+				if (collarsDisconnectedToMuch.Count > 0)
+				{
+					string[] names = collarsDisconnectedToMuch.Select(b => b.Collar.Name).ToArray();
+		<div class="alert alert-danger alert-dismissible">
+			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+			<strong>Danger!</strong> These collars are disconnected to much: @string.Join(",", names).
 		</div>
+				}
+			}
 
-		<div class="well well-sm">
-			Most Connected to Base: @Model.MostConnectedToBase.Name
+			@{
+				var collarsGPSDisconnectedToMuch = Model.CollarStats.Where(bs => bs.GPSDisconnectedTimeSpan.TotalHours > 2).ToList();
+				if (collarsGPSDisconnectedToMuch.Count > 0)
+				{
+					string[] names = collarsGPSDisconnectedToMuch.Select(b => b.Collar.Name).ToArray();
+		<div class="alert alert-danger alert-dismissible">
+			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+			<strong>Danger!</strong> These collars are gps disconnected to much: @string.Join(",", names).
 		</div>
+				}
+			}
 
-		<div class="btn-group" role="group" aria-label="..." style="float:right;">
-			<button class="btn btn-default active" id="btnHWWeek" data-period="W">last week</button>
-			<button class="btn btn-default" id="btnHWMonth" data-period="M">last month</button>
-			<button class="btn btn-default" id="btnHWSemester" data-period="S">last 6 months</button>
+			@{
+				var collarsBatteryLowToMuch = Model.CollarStats.Where(bs => bs.BatteryMinus25Minutes > (5 * 60)).ToList();
+				if (collarsBatteryLowToMuch.Count > 0)
+				{
+					string[] names = collarsBatteryLowToMuch.Select(b => b.Collar.Name).ToArray();
+		<div class="alert alert-danger alert-dismissible">
+			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+			<strong>Danger!</strong> These collars have battery too low: @string.Join(",", names).
 		</div>
+				}
+			}
 
-		<div id="HWStats" class="well well-lg" style="margin-top:10px;">
-			<partial name="_HWStatsPartial" model="@Model" />
+			@{
+				var basesChargingToMuch = Model.BaseStats.Where(bs => bs.BatteriesChargingMore75percent).ToList();
+				if (basesChargingToMuch.Count > 0)
+				{
+					string[] names = basesChargingToMuch.Select(b => b.Base.Name).ToArray();
+		<div class="alert alert-warning alert-dismissible">
+				<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+				<strong>Warning!</strong> These bases are charging to much: @string.Join(",", names).
+			</div>
+			}
+			}
+			@if (Model.User.Devices.Count(b => !b.Banned) > 1)
+			{
+				<div class="well well-sm">
+					<text>Most Connected to Device: @Model.MostConnectedToDevice.AliasName</text>
+				</div>
+			}
+			@if (Model.User.Bases.Count(b => !b.Deleted) > 1)
+			{
+				<div class="well well-sm">
+					<text>Most Connected to Base: @Model.MostConnectedToBase.Name</text>
+				</div>
+			}
+			<div class="btn-group" role="group" aria-label="..." style="float:right;">
+				<button class="btn btn-default active" id="btnHWWeek" data-period="W">last week</button>
+				<button class="btn btn-default" id="btnHWMonth" data-period="M">last month</button>
+				<button class="btn btn-default" id="btnHWSemester" data-period="S">last 6 months</button>
+			</div>
+
+			<div id="HWStats" class="well well-lg" style="margin-top:10px;">
+				<partial name="_HWStatsPartial" model="@Model" />
+			</div>
 		</div>
-	</div>
-<style>
-	.checklist-ul {
-		list-style-type: none;
-		padding: 0;
-	}
-	.checklist-ul li {
-		padding: 0 0 0 25px;
-		position: relative;
-		margin-bottom: 5px;
-	}
-	.checklist-ul li:before {
-		position: absolute;
-		left: 5px;
-		content: "\2713";
-		color: #666;
-	}
+	<style>
+		.checklist-ul {
+			list-style-type: none;
+			padding: 0;
+		}
+
+			.checklist-ul li {
+				padding: 0 0 0 25px;
+				position: relative;
+				margin-bottom: 5px;
+			}
+
+				.checklist-ul li:before {
+					position: absolute;
+					left: 5px;
+					content: "\2713";
+					color: #666;
+				}
 	</style>
 	<div class="col-md-3">
 		<h2>CheckList</h2>
@@ -116,5 +126,5 @@
 			<li>Please contact us if the issues persist. <a>Check here</a></li>
 		</ul>
 	</div>
-	</div>
+</div>
 
