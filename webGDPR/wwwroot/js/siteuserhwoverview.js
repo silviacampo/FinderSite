@@ -192,10 +192,17 @@ function initCollarMap() {
           item.addListener('click', function () {
             var gps = item.gps;
             var radio = item.radio;
+            var gpsOnOff;
+            if (gps == "False") {
+              gpsOnOff = "Off";
+            }
+            else {
+              gpsOnOff = "On";
+            }
             var html = '<div id="content">' +
               '<div id="siteNotice">' +
               '</div>' +
-              '<h4 id="firstHeading" class="firstHeading"> GPS:"' + gps + '" <br/> Radio:"' + radio + '</h4>' +
+              '<h5 id="firstHeading" class="firstHeading"> GPS: ' + gpsOnOff + ' <br/> Radio: ' + radio + '%</h5>' +
                 '</div>';
             // var html = "<b> GPS:" + gps + "</b> <br/> Radio:" + radio;
             infowindow.setContent(html);

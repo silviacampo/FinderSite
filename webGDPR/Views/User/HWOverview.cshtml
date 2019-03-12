@@ -82,10 +82,35 @@
 			<partial name="_HWStatsPartial" model="@Model" />
 		</div>
 	</div>
-
-		<div class="col-md-3">
-			<h2>Overview</h2>
-
-		</div>
+<style>
+	.checklist-ul {
+		list-style-type: none;
+		padding: 0;
+	}
+	.checklist-ul li {
+		padding: 0 0 0 25px;
+		position: relative;
+		margin-bottom: 5px;
+	}
+	.checklist-ul li:before {
+		position: absolute;
+		left: 5px;
+		content: "\2713";
+		color: #666;
+	}
+	</style>
+	<div class="col-md-3">
+		<h2>CheckList</h2>
+		<ul class="checklist-ul">
+			<li>Verify that our application is running on your devices or computers. <a>How to verify that?</a></li>
+			<li>Verify that your devices or computers connecting to us have internet access.</li>
+			<li>Keep your base closed to any of your mobile devices or plugin to any of your computers.</li>
+			<li>Keep your base plugin to power most of the time to avoid them consuming the battery.</li>
+			<li>Put your base in a place free of radio interferences, such as microwaves.</li>
+			<li>Change the collar battery when run out of charge.</li>
+			<li>Be sure to recharge the battery removed from the collar.</li>
+			<li>Check the bad service places marked in the map for reasons of interference, such as near big metalic or cement structures. If possible, block any access to these places.</li>
+		</ul>
+	</div>
 	</div>
 
