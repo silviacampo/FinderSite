@@ -90,7 +90,7 @@
             </h3>
             <table class="table" style="position:relative;top:0px;left:0px; min-width:100px;">
                 <tbody>
-                    @foreach (var item in Model.Bases)
+                    @foreach (var item in Model.Bases.Where(b=>!b.Deleted))
                 {
                     <tr>
                         <td>
@@ -190,13 +190,14 @@ else
             </h3>
             <table class="table" style="position:relative;top:0px;left:0px; min-width:100px;">
                 <tbody>
-                    @foreach (var item in Model.Collars)
-                {
+                    @foreach (var item in Model.Collars.Where(b => !b.Deleted))
+					{
                     <tr>
                         <td>
-                            <div style="position:relative;top:0px;left:0px; min-width:40px;">
-                                @Html.DisplayFor(modelItem => item.Name)
-                            </div>
+							<div style="position:relative;top:0px;left:0px; min-width:40px;">
+								@Html.DisplayFor(modelItem => item.Name)
+								<a asp-controller="Pet" asp-action="Stats" asp-petid="" class="badge badge-primary">more</a>
+							</div>
                         </td>
                         <td>
                             <div style="position:relative;top:0px;left:0px; min-width:20px;">
