@@ -165,20 +165,8 @@ function initCollarMap() {
           });
         });
 
-        var myArray = [];
-
-        for (var i = 0; i < markers.length; i += 2) {
-          myArray.push(markers.slice(i, 2));
-        }
-
         // Add a marker clusterer to manage the markers.
         var markerCluster = new MarkerClusterer(map, markers,
-          { imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m' });
-
-
-
-        // Add a marker clusterer to manage the markers.
-        var markerCluster1 = new MarkerClusterer(map, markers,
           { imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m' });
 
         //https://localhost:44392/images/home.png to scale to 30 x 30
@@ -199,18 +187,22 @@ function initCollarMap() {
 
         });
 
-        marker.addListener('click', function () {
-          var gps = markers[i].getAttribute("gps");
-          var radio = markers[i].getAttribute("radio");
-          var html = '<div id="content">' +
-            '<div id="siteNotice">' +
-            '</div>' +
-            '<h3 id="firstHeading" class="firstHeading"><b> GPS:" + gps + "</b> <br/> Radio:" + radio</h3>' +
-            '</div>';
-          // var html = "<b> GPS:" + gps + "</b> <br/> Radio:" + radio;
-          infowindow.setContent(html);
-          infowindow.open(map, marker);
+
+        markers.forEach(function (item) {
+          item.addListener('click', function () {
+            var gps = item.gps;
+            var radio = item.radio;
+            var html = '<div id="content">' +
+              '<div id="siteNotice">' +
+              '</div>' +
+              '<h4 id="firstHeading" class="firstHeading"> GPS:"' + gps + '" <br/> Radio:"' + radio + '</h4>' +
+                '</div>';
+            // var html = "<b> GPS:" + gps + "</b> <br/> Radio:" + radio;
+            infowindow.setContent(html);
+            infowindow.open(map, item);
+          });
         });
+
       }
     }
   }

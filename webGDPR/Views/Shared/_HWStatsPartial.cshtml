@@ -82,37 +82,41 @@
 		<i class="fa fa-paw fa-fw" aria-hidden="true"></i>
 	</h3>
 	<hr />
-	<div class="row">
-		<div class="col-md-2 col-sm-2" style="text-align: center; vertical-align:middle;">
-			@Model.CollarStats[0].Collar.Name
+	@foreach (CollarStats cs in Model.CollarStats)
+	{
+		<div class="row">
+			<div class="col-md-2 col-sm-2" style="text-align: center; vertical-align:middle;">
+				@cs.Collar.Name
+			</div>
 		</div>
-	</div>
-	<div class="row">
-		<div class="col-md-3 col-sm-3" style="text-align: center;">
-			<span class="chart" data-percent="@Model.CollarStats[0].AvgConnected" data-bar-color="rgb(201, 203, 207)" data-line-width="10" data-size="80">
-				<span class="percent">@Model.CollarStats[0].AvgConnected</span>
-			</span>
-			<span class="label label-default">Network Connected</span>
+		<div class="row">
+			<div class="col-md-3 col-sm-3" style="text-align: center;">
+				<span class="chart" data-percent="@cs.AvgConnected" data-bar-color="rgb(201, 203, 207)" data-line-width="10" data-size="80">
+					<span class="percent">@cs.AvgConnected</span>
+				</span>
+				<span class="label label-default">Network Connected</span>
+			</div>
+			<div class="col-md-3 col-sm-3" style="text-align: center;">
+				<span class="chart" data-percent="@cs.AvgGPSConnected" data-bar-color="rgb(201, 203, 207)" data-line-width="10" data-size="80">
+					<span class="percent">@cs.AvgGPSConnected</span>
+				</span>
+				<span class="label label-default">GPS Connected</span>
+			</div>
+			<div class="col-md-3 col-sm-3" style="text-align: center;">
+				<span class="chart" data-percent="@cs.AvgBattery" data-bar-color="rgb(201, 203, 207)" data-line-width="10" data-size="80">
+					<span class="percent">@cs.AvgBattery</span>
+				</span>
+				<span class="label label-default">Medium Battery Charge</span>
+			</div>
+			<div class="col-md-3 col-sm-3" style="text-align: center;">
+				<span class="chart" data-percent="@cs.AvgRadio" data-bar-color="rgb(201, 203, 207)" data-line-width="10" data-size="80">
+					<span class="percent">@cs.AvgRadio</span>
+				</span>
+				<span class="label label-default">Medium Radio Strenth</span>
+			</div>
 		</div>
-		<div class="col-md-3 col-sm-3" style="text-align: center;">
-			<span class="chart" data-percent="@Model.CollarStats[0].AvgGPSConnected" data-bar-color="rgb(201, 203, 207)" data-line-width="10" data-size="80">
-				<span class="percent">@Model.CollarStats[0].AvgGPSConnected</span>
-			</span>
-			<span class="label label-default">GPS Connected</span>
-		</div>
-		<div class="col-md-3 col-sm-3" style="text-align: center;">
-			<span class="chart" data-percent="@Model.CollarStats[0].AvgBattery" data-bar-color="rgb(201, 203, 207)" data-line-width="10" data-size="80">
-				<span class="percent">@Model.CollarStats[0].AvgBattery</span>
-			</span>
-			<span class="label label-default">Medium Battery Charge</span>
-		</div>
-		<div class="col-md-3 col-sm-3" style="text-align: center;">
-			<span class="chart" data-percent="@Model.CollarStats[0].AvgRadio" data-bar-color="rgb(201, 203, 207)" data-line-width="10" data-size="80">
-				<span class="percent">@Model.CollarStats[0].AvgRadio</span>
-			</span>
-			<span class="label label-default">Medium Radio Strenth</span>
-		</div>
-	</div>
+	}
+
 
 </div>
 @*<div class="col-lg-5 col-md-5 well well-lg">
@@ -139,7 +143,7 @@
 			var coordinates = [];
 			@foreach (webGDPR.ViewModels.PointServiceLevel p in Model.PointsServiceLevel) {
 			 	<text>
-					coordinates.push({ lat: @p.Latitude, lng: @p.Longitude, color: "red", gps: @p.GPS, radio: @p.Radio });
+					coordinates.push({ lat: @p.Latitude, lng: @p.Longitude, color: "red", gps: '@p.GPS', radio: @p.Radio });
 				</text>
 			}
 	</script>

@@ -251,7 +251,7 @@ namespace webGDPR.Controllers
 					{
 						totalRadio = totalRadio + bs.RadioTimeSpan[j].TotalMinutes * j;
 					}
-					bs.AvgRadio = Math.Round(totalRadio * 100 / periodTimeSpan.TotalMinutes,2);
+					bs.AvgRadio = Math.Round(totalRadio / periodTimeSpan.TotalMinutes,2);
 				}
 				else {
 					bs.AvgRadio = 0;
@@ -384,7 +384,7 @@ namespace webGDPR.Controllers
 					{
 						totalRadio = totalRadio + cs.RadioTimeSpan[j].TotalMinutes * j;
 					}
-					cs.AvgRadio = Math.Round(totalRadio * 100 / periodTimeSpan.TotalMinutes, 2);
+					cs.AvgRadio = Math.Round(totalRadio / periodTimeSpan.TotalMinutes, 2);
 				}
 				else
 				{
@@ -399,7 +399,7 @@ namespace webGDPR.Controllers
 					{
 						totalBattery = totalBattery + cs.BatteryTimeSpan[j].TotalMinutes * j;
 					}
-					cs.AvgBattery = Math.Round(totalBattery * 100 / periodTimeSpan.TotalMinutes, 2);
+					cs.AvgBattery = Math.Round(totalBattery / periodTimeSpan.TotalMinutes, 2);
 				}
 				else
 				{
