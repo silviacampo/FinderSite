@@ -57,6 +57,13 @@
 
         path.setMap(map);
 
+        var imgPaw = {
+          url: 'https://localhost:44392/images/82-dog-paw-iconsm.png',
+          size: new google.maps.Size(30, 30),
+          origin: new google.maps.Point(0, 0),
+          anchor: new google.maps.Point(0, 32)
+        };
+
         //Markers and MarkersCluster
         //https://medium.com/@letian1997/how-to-change-javascript-google-map-marker-color-8a72131d1207
         var markers = coordinates.map(function (location, i) {
@@ -73,9 +80,32 @@
         var markerCluster = new MarkerClusterer(map, markers,
           { imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m' });
 
+        var imgDog = {
+          url: 'https://localhost:44392/images/22214-dog-face-iconsm.png',
+          size: new google.maps.Size(30, 30),
+          origin: new google.maps.Point(0, 0),
+          anchor: new google.maps.Point(0, 32)
+        };
+
+        var imgCat = {
+          url: 'https://localhost:44392/images/cat-iconsm.png',
+          size: new google.maps.Size(30, 30),
+          origin: new google.maps.Point(0, 0),
+          anchor: new google.maps.Point(0, 32)
+        };
+
+        var imgPet;
+        if (type == "Cat") {
+          imgPet = imgCat;
+        }
+        else {
+          imgPet = imgDog;
+        }
+
         var marker = new google.maps.Marker({
           position: deviceLocation,
-          map: map
+          map: map,
+          icon: imgPet
         });
 
         marker.addListener('click', function () {
