@@ -1,1 +1,89 @@
-﻿
+﻿function initPetsMap() {
+  try {
+    if ($('.card-map').length > 0) {
+      var map1 = $('#pets-map');
+      if (map1.data('geoLat') && map1.data('geoLng')) {
+        var centerLocation = {
+          lat: map1.data('geoLat'),
+          lng: map1.data('geoLng')
+        };
+
+        var map = new google.maps.Map(document.getElementById('pets-map'), {
+          zoom: 15,
+          center: centerLocation,
+          mapTypeId: 'terrain'
+        });
+
+        var infowindow = new google.maps.InfoWindow({
+          });
+
+        var panorama = new google.maps.StreetViewPanorama(
+          document.getElementById('pano'), {
+            position: centerLocation,
+            pov: {
+              heading: 34,
+              pitch: 10
+            }
+          });
+        map.setStreetView(panorama);
+
+        var imgPet = {
+          url: 'https://test.whereisfinder.com/images/home.png',
+          size: new google.maps.Size(30, 30),
+          origin: new google.maps.Point(0, 0),
+          anchor: new google.maps.Point(0, 32)
+        }; 
+        //Markers and MarkersCluster
+        //https://medium.com/@letian1997/how-to-change-javascript-google-map-marker-color-8a72131d1207
+        var markers = coordinates.map(function (location, i) {
+          return new google.maps.Marker({
+            position: {
+              lat: location.lat,
+              lng: location.lng
+            },
+            //label: "test",
+            icon: imgPet,
+            name: location.name
+          });
+        });
+
+        // Add a marker clusterer to manage the markers.
+        var markerCluster = new MarkerClusterer(map, markers,
+          { imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m' });
+
+        var imghome = {
+          url: 'https://test.whereisfinder.com/images/home.png',
+          size: new google.maps.Size(30, 30),
+          origin: new google.maps.Point(0, 0),
+          anchor: new google.maps.Point(0, 32)
+        };
+
+        var marker = new google.maps.Marker({
+          position: centerLocation,
+          map: map,
+          icon: imghome
+
+        });
+
+        markers.forEach(function (item) {
+          item.addListener('click', function () {
+            var name = item.name;
+            var html = '<div id="content">' +
+              '<div id="siteNotice">' +
+              '</div>' +
+              '<h5 id="firstHeading" class="firstHeading">' + name + '</h5>' +
+              '</div>';
+            infowindow.setContent(html);
+            infowindow.open(map, item);
+          });
+        });
+      }
+    }
+  }
+  catch (err) {
+    console.log(err);
+  }
+
+}
+
+initPetsMap();

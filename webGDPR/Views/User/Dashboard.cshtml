@@ -196,7 +196,36 @@ else
                         <td>
 							<div style="position:relative;top:0px;left:0px; min-width:40px;">
 								@Html.DisplayFor(modelItem => item.Name)
-								<a asp-controller="Pet" asp-action="Stats" asp-petid="" class="badge badge-primary">more</a>
+								@{
+									Pet p = Model.Pets.FirstOrDefault(pet => pet.LastCollar != null && pet.LastCollar.CollarId == item.CollarId && !pet.Deleted);
+									if (p != null)
+									{
+										if (p.LastMode != null && p.LastMode.Type == ConfigModeTypes.Emergency && p.LastMode.IsActive)
+										{
+											<a class="btn btn-danger active" asp-controller="Pet" asp-action="EmergencyOff" asp-route-id="@p.PetId">Lost</a>
+										}
+										else
+										{
+											<a class="btn btn-default" asp-controller="Pet" asp-action="EmergencyOn" asp-route-id="@p.PetId">Lost</a>
+										}
+										<br />
+										<div class="btn-group">
+											<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+												... <span class="caret"></span>
+											</button>
+											<ul class="dropdown-menu">
+												<li><a asp-controller="Pet" asp-action="Edit" asp-route-id="@p.PetId" target="_blank">Edit</a></li>
+												<li><a asp-controller="Pet" asp-action="Delete" asp-route-id="@p.PetId" target="_blank">Delete</a></li>
+												<li role="separator" class="divider"></li>
+												<li><a asp-controller="Pet" asp-action="Track" asp-route-id="@p.PetId" target="_blank">Track</a></li>
+												<li><a asp-controller="Pet" asp-action="Stats" asp-route-id="@p.PetId" target="_blank">Activity</a></li>
+												<li><a asp-controller="Pet" asp-action="Page" asp-route-id="@p.PetId" target="_blank">Page</a></li>
+
+											</ul>
+										</div>
+
+									}
+								}
 							</div>
                         </td>
                         <td>
@@ -275,6 +304,22 @@ else
                 </tbody>
             </table>
         </div>
+		<div id="mapContainer" style="height:400px">
+			<script>
+			var coordinates = [];
+			@foreach (Pet p in Model.Pets) {
+				if (p.LastTrackingInfo != null)
+				{
+			 	<text>
+				coordinates.push({ lat: @p.LastTrackingInfo.Latitude, lng: @p.LastTrackingInfo.Longitude, name: "@p.Name" });
+				</text>
+				}
+			}
+			</script>
+			<div id="pets-map" class="card-text card-map" data-geo-lat="@Model.Latitude" , data-geo-lng="@Model.Longitude"></div>
+			<div id="pano"></div>
+		</div>
+
     </div>
     <div class="col-md-3">
         <h2>&nbsp;</h2>
