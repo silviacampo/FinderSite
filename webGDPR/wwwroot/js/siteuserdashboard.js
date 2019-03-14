@@ -60,7 +60,8 @@
             },
             //label: "test",
             icon: imgPet,
-            name: location.name
+            name: location.name,
+            time: location.time
           });
         });
 
@@ -85,10 +86,11 @@
         markers.forEach(function (item) {
           item.addListener('click', function () {
             var name = item.name;
+            var time = item.time;
             var html = '<div id="content">' +
               '<div id="siteNotice">' +
               '</div>' +
-              '<h5 id="firstHeading" class="firstHeading">' + name + '</h5>' +
+              '<h5 id="firstHeading" class="firstHeading"><b>' + name + '</b> at<br/>' + time + '</h5>' +
               '</div>';
             infowindow.setContent(html);
             infowindow.open(map, item);

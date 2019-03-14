@@ -103,11 +103,10 @@
 					{
 						<tr>
 							<td>
-								<div style="position:relative;top:0px;left:0px; min-width:40px;">
-									@Html.DisplayFor(modelItem => item.Name)
+								<div style="position:relative;top:0px;left:0px; min-width:40px;">								
 									<div class="btn-group">
-										<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-											<i class="fa fa-caret-down fa-fw" aria-hidden="true"></i>
+										<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="padding:3px 6px 3px 6px">
+											@Html.DisplayFor(modelItem => item.Name)<i class="fa fa-caret-down fa-fw" aria-hidden="true"></i>
 										</button>
 										<ul class="dropdown-menu">
 											<li><a asp-controller="Base" asp-action="Edit" asp-route-id="@item.BaseId" target="_blank">Edit</a></li>
@@ -121,6 +120,10 @@
 									@if (item.LastStatus != null && item.LastStatus.IsConnected)
 									{
 										<i class="fa fa-circle fa-fw" style="color:green;position:relative;top:7px;left:0px" aria-hidden="true"></i>
+										@if (item.LastStatus != null && item.LastStatus.DeviceConnectedTo != null)
+										{
+											@Html.DisplayFor(modelItem => item.LastStatus.DeviceConnectedTo.GetName)
+										}
 									}
 									else
 									{
@@ -128,12 +131,6 @@
 									}
 								</div>
 							</td>
-							@*<td>
-									@if (item.LastStatus != null && item.LastStatus.DeviceConnectedTo != null)
-									{
-										@Html.DisplayFor(modelItem => item.LastStatus.DeviceConnectedTo.GetName)
-									}
-								</td>*@
 							<td class="visible-md visible-lg visible-sm" valign="middle">
 								<div style="position:relative;top:0px;left:0px; min-width:20px;">
 									<i class="fa fa-plug fa-fw" style="color:gray;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
@@ -203,14 +200,11 @@
 				</tbody>
 			</table>
 			<hr />
-			<h3>
-				<i class="fa fa-paw fa-fw" aria-hidden="true"></i>
-			</h3>
 			<table class="table" style="position:relative;top:0px;left:0px; min-width:100px;">
 				<theader>
 					<tr>
 						<th>
-							<i class="fa fa-paw fa-fw" aria-hidden="true"></i> &nbsp; Collars
+							<i class="fa fa-paw fa-fw" aria-hidden="true"></i> &nbsp; Collars on Pets
 						</th>
 						<th class="small">Network Connected</th>
 						<th class="small visible-md visible-lg visible-sm">GPS Connected</th>
@@ -224,10 +218,9 @@
 						<tr>
 							<td>
 								<div style="position:relative;top:0px;left:0px; min-width:40px;">
-									@Html.DisplayFor(modelItem => item.Name)
 									<div class="btn-group">
-										<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-											<i class="fa fa-caret-down fa-fw" aria-hidden="true"></i>
+										<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="padding:3px 6px 3px 6px">
+											@Html.DisplayFor(modelItem => item.Name)<i class="fa fa-caret-down fa-fw" aria-hidden="true"></i>
 										</button>
 										<ul class="dropdown-menu">
 											<li><a asp-controller="Collar" asp-action="Edit" asp-route-id="@item.CollarId" target="_blank">Edit</a></li>
@@ -238,11 +231,11 @@
 										Pet p = Model.Pets.FirstOrDefault(pet => pet.LastCollar != null && pet.LastCollar.CollarId == item.CollarId && !pet.Deleted);
 										if (p != null)
 										{
-											<text><br/>On&nbsp;</text>
-											@Html.DisplayFor(modelItem => item.Name)
+											<text><br />On&nbsp;</text>
+											
 											<div class="btn-group">
-												<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-													<i class="fa fa-caret-down fa-fw" aria-hidden="true"></i>
+												<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="padding:3px 6px 3px 6px">
+													@Html.DisplayFor(modelItem => p.Name)<i class="fa fa-caret-down fa-fw" aria-hidden="true"></i>
 												</button>
 												<ul class="dropdown-menu">
 													<li><a asp-controller="Pet" asp-action="Edit" asp-route-id="@p.PetId" target="_blank">Edit</a></li>
@@ -254,15 +247,18 @@
 
 												</ul>
 											</div>
-											<br />
-											if (p.LastMode != null && p.LastMode.Type == ConfigModeTypes.Emergency && p.LastMode.IsActive)
-											{
-												<a class="btn btn-danger active" asp-controller="Pet" asp-action="EmergencyOff" asp-route-id="@p.PetId">Lost</a>
-											}
-											else
-											{
-												<a class="btn btn-default" asp-controller="Pet" asp-action="EmergencyOn" asp-route-id="@p.PetId">Lost</a>
-											}
+											
+											
+												@if (p.LastMode != null && p.LastMode.Type == ConfigModeTypes.Emergency && p.LastMode.IsActive)
+												{
+												<a class="btn btn-danger active small" asp-controller="Pet" asp-action="EmergencyOff" asp-route-id="@p.PetId" style="padding:3px 6px 3px 6px">Found</a>
+												}
+												else
+												{
+												<a class="btn btn-default" asp-controller="Pet" asp-action="EmergencyOn" asp-route-id="@p.PetId" style="padding:3px 6px 3px 6px">Lost</a>
+												}
+											
+											
 										}
 									}
 								</div>
@@ -272,6 +268,10 @@
 									@if (item.LastStatus != null && item.LastStatus.IsConnected)
 									{
 										<i class="fa fa-circle fa-fw" style="color:green;position:relative;top:7px;left:0px" aria-hidden="true"></i>
+										@if(item.LastStatus != null && item.LastStatus.BaseConnectedTo != null)
+										{
+											@Html.DisplayFor(modelItem => item.LastStatus.BaseConnectedTo.Name)
+										}
 									}
 									else
 									{
@@ -280,10 +280,7 @@
 								</div>
 							</td>
 							@*<td>
-						@if (item.BaseConnectedTo != null)
-						{
-							@Html.DisplayFor(modelItem => item.BaseConnectedTo.Name)
-						}
+						
 					</td>*@
 							<td class="visible-md visible-lg visible-sm" valign="middle">
 								<div style="position:relative;top:0px;left:0px; min-width:20px;">
@@ -350,7 +347,9 @@
 				if (p.LastTrackingInfo != null)
 				{
 			 	<text>
-				coordinates.push({ lat: @p.LastTrackingInfo.Latitude, lng: @p.LastTrackingInfo.Longitude, name: "@p.Name", type: "@p.Type" });
+				var strDate = new String('@p.LastTrackingInfo.CreationDate.ToString("MM/dd/yyyy hh:mm:ss tt") UTC');
+				var localTime = new Date(strDate);
+				coordinates.push({ lat: @p.LastTrackingInfo.Latitude, lng: @p.LastTrackingInfo.Longitude, name: "@p.Name", type: "@p.Type", time: localTime.toLocaleString() });
 				</text>
 				}
 			}
