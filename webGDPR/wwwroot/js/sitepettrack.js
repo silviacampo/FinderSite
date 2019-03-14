@@ -15,7 +15,7 @@
         });
 
         var infowindow = new google.maps.InfoWindow({
-          content: contentString
+          
         });
 
         var panorama = new google.maps.StreetViewPanorama(
@@ -68,11 +68,15 @@
         //https://medium.com/@letian1997/how-to-change-javascript-google-map-marker-color-8a72131d1207
         var markers = coordinates.map(function (location, i) {
           return new google.maps.Marker({
-            position: location,
+            position: {
+              lat: location.lat,
+              lng: location.lng
+            },
             label: i.toString(),
             icon: {
               url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
-            }
+            },
+            time: location.time
           });
         });
 
@@ -109,7 +113,21 @@
         });
 
         marker.addListener('click', function () {
+          infowindow.setContent(contentString);
           infowindow.open(map, marker);
+        });
+
+        markers.forEach(function (item) {
+          item.addListener('click', function () {
+            var time = item.time;
+            var html = '<div id="content">' +
+              '<div id="siteNotice">' +
+              '</div>' +
+              '<h5 id="firstHeading" class="firstHeading">at ' + time + '</h5>' +
+              '</div>';
+            infowindow.setContent(html);
+            infowindow.open(map, item);
+          });
         });
       }
     }
