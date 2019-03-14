@@ -227,40 +227,6 @@
 											<li><a asp-controller="Collar" asp-action="Delete" asp-route-id="@item.CollarId" target="_blank">Delete</a></li>
 										</ul>
 									</div>
-									@{
-										Pet p = Model.Pets.FirstOrDefault(pet => pet.LastCollar != null && pet.LastCollar.CollarId == item.CollarId && !pet.Deleted);
-										if (p != null)
-										{
-											<text><br />On&nbsp;</text>
-											
-											<div class="btn-group">
-												<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="padding:3px 6px 3px 6px">
-													@Html.DisplayFor(modelItem => p.Name)<i class="fa fa-caret-down fa-fw" aria-hidden="true"></i>
-												</button>
-												<ul class="dropdown-menu">
-													<li><a asp-controller="Pet" asp-action="Edit" asp-route-id="@p.PetId" target="_blank">Edit</a></li>
-													<li><a asp-controller="Pet" asp-action="Delete" asp-route-id="@p.PetId" target="_blank">Delete</a></li>
-													<li role="separator" class="divider"></li>
-													<li><a asp-controller="Pet" asp-action="Track" asp-route-id="@p.PetId" target="_blank">Track</a></li>
-													<li><a asp-controller="Pet" asp-action="Stats" asp-route-id="@p.PetId" target="_blank">Activity</a></li>
-													<li><a asp-controller="Pet" asp-action="Page" asp-route-id="@p.PetId" target="_blank">Page</a></li>
-
-												</ul>
-											</div>
-											
-											
-												@if (p.LastMode != null && p.LastMode.Type == ConfigModeTypes.Emergency && p.LastMode.IsActive)
-												{
-												<a class="btn btn-danger active small" asp-controller="Pet" asp-action="EmergencyOff" asp-route-id="@p.PetId" style="padding:3px 6px 3px 6px">Found</a>
-												}
-												else
-												{
-												<a class="btn btn-default" asp-controller="Pet" asp-action="EmergencyOn" asp-route-id="@p.PetId" style="padding:3px 6px 3px 6px">Lost</a>
-												}
-											
-											
-										}
-									}
 								</div>
 							</td>
 							<td>
@@ -268,7 +234,7 @@
 									@if (item.LastStatus != null && item.LastStatus.IsConnected)
 									{
 										<i class="fa fa-circle fa-fw" style="color:green;position:relative;top:7px;left:0px" aria-hidden="true"></i>
-										@if(item.LastStatus != null && item.LastStatus.BaseConnectedTo != null)
+										@if (item.LastStatus != null && item.LastStatus.BaseConnectedTo != null)
 										{
 											@Html.DisplayFor(modelItem => item.LastStatus.BaseConnectedTo.Name)
 										}
@@ -279,9 +245,6 @@
 									}
 								</div>
 							</td>
-							@*<td>
-						
-					</td>*@
 							<td class="visible-md visible-lg visible-sm" valign="middle">
 								<div style="position:relative;top:0px;left:0px; min-width:20px;">
 									<i class="fa fa-map-marker fa-fw" style="color:gray;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
@@ -336,6 +299,40 @@
 								</div>
 							</td>
 						</tr>
+						
+							Pet p = Model.Pets.FirstOrDefault(pet => pet.LastCollar != null && pet.LastCollar.CollarId == item.CollarId && !pet.Deleted);
+							if (p != null)
+							{
+								<tr>
+									<td>
+										On&nbsp;<div class="btn-group">
+											<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="padding:3px 6px 3px 6px">
+												@Html.DisplayFor(modelItem => p.Name)<i class="fa fa-caret-down fa-fw" aria-hidden="true"></i>
+											</button>
+											<ul class="dropdown-menu">
+												<li><a asp-controller="Pet" asp-action="Edit" asp-route-id="@p.PetId" target="_blank">Edit</a></li>
+												<li><a asp-controller="Pet" asp-action="Delete" asp-route-id="@p.PetId" target="_blank">Delete</a></li>
+												<li role="separator" class="divider"></li>
+												<li><a asp-controller="Pet" asp-action="Track" asp-route-id="@p.PetId" target="_blank">Track</a></li>
+												<li><a asp-controller="Pet" asp-action="Stats" asp-route-id="@p.PetId" target="_blank">Activity</a></li>
+												<li><a asp-controller="Pet" asp-action="Page" asp-route-id="@p.PetId" target="_blank">Page</a></li>
+
+											</ul>
+										</div>
+									</td>
+									<td colspan="4">
+										@if (p.LastMode != null && p.LastMode.Type == ConfigModeTypes.Emergency && p.LastMode.IsActive)
+										{
+											<a class="btn btn-danger active small" asp-controller="Pet" asp-action="EmergencyOff" asp-route-id="@p.PetId" style="width:100%; padding:3px 6px 3px 6px">Report Found</a>
+										}
+										else
+										{
+											<a class="btn btn-default" asp-controller="Pet" asp-action="EmergencyOn" asp-route-id="@p.PetId" style="width:100%; padding:3px 6px 3px 6px">Report Lost</a>
+										}
+									</td>
+
+								</tr>
+							}						
 					}
 				</tbody>
 			</table>
