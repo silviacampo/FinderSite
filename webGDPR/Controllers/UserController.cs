@@ -68,6 +68,9 @@ namespace webGDPR.Controllers
 		public async Task<IActionResult> Dashboard()
 		{
 			User user = await _context.User.Include(b => b.Bases).Include(c => c.Collars).Include(d => d.Devices).Include(d => d.Pets).ThenInclude(pe=>pe.LastMode).Include(d => d.Pets).ThenInclude(pe => pe.LastCollar).Include(d => d.Pets).ThenInclude(pe => pe.LastTrackingInfo).FirstOrDefaultAsync(u => u.OwnerID == _userManager.GetUserId(User));
+			List<CustomWebSocket> WebSockets = _wsFactory.All();
+			ViewData["WebSockets"] = WebSockets;
+
 			return View(user);
 		}
 
