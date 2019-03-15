@@ -41,10 +41,10 @@
         var path = new google.maps.Polyline({
           path: coordinates.concat([deviceLocation]),
           geodesic: true,
-          icons: [{
-            icon: lineSymbolCat,
-            offset: '100%'
-          },
+          icons: [//{
+          //  icon: lineSymbolCat,
+          //  offset: '100%'
+          //},
           {
             icon: lineSymbol,
             offset: '30%',
@@ -58,7 +58,7 @@
         path.setMap(map);
 
         var imgPaw = {
-          url: 'https://localhost:44392/images/82-dog-paw-iconsm.png',
+          url: domain + '/images/82-dog-paw-iconsm.png',
           size: new google.maps.Size(30, 30),
           origin: new google.maps.Point(0, 0),
           anchor: new google.maps.Point(0, 32)
@@ -72,7 +72,7 @@
             },
             label: i.toString(),
             icon: {
-              url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
+              url: domain + '/images/blue-dot.png'
             },
             time: location.time,
             title: 'at ' + location.time,
@@ -81,17 +81,17 @@
         });
 
         var imgDog = {
-          url: 'https://localhost:44392/images/22214-dog-face-iconsm.png',
+          url: domain + '/images/22214-dog-face-iconsm.png',
           size: new google.maps.Size(30, 30),
           origin: new google.maps.Point(0, 0),
-          anchor: new google.maps.Point(0, 32)
+          anchor: new google.maps.Point(5, 10)
         };
 
         var imgCat = {
-          url: 'https://localhost:44392/images/cat-iconsm.png',
+          url: domain + '/images/cat-iconsm.png',
           size: new google.maps.Size(30, 30),
           origin: new google.maps.Point(0, 0),
-          anchor: new google.maps.Point(0, 32)
+          anchor: new google.maps.Point(5, 10)
         };
 
         var imgPet;

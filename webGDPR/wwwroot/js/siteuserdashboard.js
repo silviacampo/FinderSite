@@ -29,14 +29,14 @@
 
         //http://www.iconarchive.com/search?q=paw
         var imgDog = {
-          url: 'https://localhost:44392/images/22214-dog-face-iconsm.png',
+          url: domain + '/images/22214-dog-face-iconsm.png',
           size: new google.maps.Size(30, 30),
           origin: new google.maps.Point(0, 0),
           anchor: new google.maps.Point(0, 32)
         };
 
         var imgCat = {
-          url: 'https://localhost:44392/images/cat-iconsm.png',
+          url: domain + '/images/cat-iconsm.png',
           size: new google.maps.Size(30, 30),
           origin: new google.maps.Point(0, 0),
           anchor: new google.maps.Point(0, 32)
@@ -70,7 +70,7 @@
           { imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m' });
 
         var imghome = {
-          url: 'https://test.whereisfinder.com/images/home.png',
+          url: domain + '/images/home.png',
           size: new google.maps.Size(30, 30),
           origin: new google.maps.Point(0, 0),
           anchor: new google.maps.Point(0, 32)

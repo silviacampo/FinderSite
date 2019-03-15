@@ -144,7 +144,7 @@ namespace webGDPR.Controllers
                 return NotFound();
             }
 
-            pet.TrackingInfos = await _context.PetTrackingInfo.Where(t => t.PetId == id).Take(10).ToListAsync();
+            pet.TrackingInfos = await _context.PetTrackingInfo.Where(t => t.PetId == id && t.PetTrackingInfoId != pet.LastTrackingInfoId).OrderByDescending(t=>t.CreationDate).Take(10).ToListAsync();
 
             return View(pet);
         }
