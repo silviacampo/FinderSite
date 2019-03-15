@@ -32,11 +32,11 @@
           path: google.maps.SymbolPath.FORWARD_OPEN_ARROW
         };
 
-        var lineSymbolCat = {
-          path: google.maps.SymbolPath.CIRCLE,
-          scale: 4,
-          strokeColor: '#FF0000'
-        };
+        //var lineSymbolCat = {
+        //  path: google.maps.SymbolPath.CIRCLE,
+        //  scale: 4,
+        //  strokeColor: '#FF0000'
+        //};
 
         var path = new google.maps.Polyline({
           path: coordinates.concat([deviceLocation]),
