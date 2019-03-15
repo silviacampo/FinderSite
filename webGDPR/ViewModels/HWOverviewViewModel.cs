@@ -10,25 +10,25 @@ namespace webGDPR.ViewModels
 	{
 		public User User { get; set; }
 
-		public double[] AvgDistance { get; set; }
-
-		public double AvgDistanceDay { get; set; }
-
-		public double[] MediumAvgDistance { get; set; }
-
-		public double MediumAvgDistanceDay { get; set; }
-
-		public List<Tuple<PetTrackingInfo, string>> PointVisited { get; internal set; }
-
 		public Device MostConnectedToDevice { get; set;}
 
 		public Base MostConnectedToBase { get; set; }
+
+		public List<DeviceStats> DeviceStats { get; set; }
 
 		public List<BaseStats> BaseStats { get; set; }
 
 		public List<CollarStats> CollarStats { get; set; }
 
 		public List<PointServiceLevel> PointsServiceLevel { get; set; }
+	}
+
+	public class DeviceStats
+	{
+		public Device Device { get; set; }
+		public TimeSpan ConnectedTimeSpan { get; set; }
+
+		public double AvgConnected { get; set; }
 	}
 
 	public class BaseStats

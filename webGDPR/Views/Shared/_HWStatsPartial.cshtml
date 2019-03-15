@@ -5,8 +5,8 @@
 	ViewData["Title"] = "_HWStats";
 }
 <script>
-	var names = JSON.parse('@Html.Raw(Json.Serialize(Model.BaseStats.Select(b => b.Base.Name).ToArray()))');
-	var disconnectedTimes = JSON.parse('@Html.Raw(Json.Serialize(Model.BaseStats.Select(b => b.DisconnectedTimeSpan.TotalMinutes).ToArray()))');
+	var names = JSON.parse('@Html.Raw(Json.Serialize(Model.DeviceStats.Select(b => b.Device.GetName).ToArray()))');
+	var deviceconnectedTimes = JSON.parse('@Html.Raw(Json.Serialize(Model.DeviceStats.Select(b => b.AvgConnected).ToArray()))');
 			var radios = JSON.parse('@Html.Raw(Json.Serialize(Model.BaseStats.Select(b => b.AvgRadio).ToArray()))');
 
 			var namesCollars = JSON.parse('@Html.Raw(Json.Serialize(Model.CollarStats.Select(b => b.Collar.Name).ToArray()))');
@@ -44,6 +44,11 @@
 			font-size: .8em;
 		}
 </style>
+<div class="well well-lg" style="background-color: white;">
+		<h5>Network Connected Time for Mobile Device or Computer</h5>
+		<canvas id="horizontalBar" height="80px"></canvas>
+</div>
+
 <div class="well well-lg" style="background-color: white;">
 	<h3>
 		<i class="fa fa-home fa-fw" aria-hidden="true"></i>

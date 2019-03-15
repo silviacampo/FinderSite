@@ -122,6 +122,13 @@ namespace webGDPR.Controllers
 			}
 			model.User = user;
 
+			model.DeviceStats = new List<DeviceStats>();
+			foreach (Device d in user.Devices)
+			{
+				if (!d.Banned)
+					model.DeviceStats.Add(new DeviceStats() { Device = d });
+			}
+
 			model.BaseStats = new List<BaseStats>();
 			foreach (Base b in user.Bases)
 			{
@@ -146,6 +153,38 @@ namespace webGDPR.Controllers
 			foreach (Base b in user.Bases)
 			{
 				SumConnectedToBaseTimeSpan.Add(new Tuple<string, TimeSpan>(b.BaseId, new TimeSpan(0)));
+			}
+
+			foreach (DeviceStats ds in model.DeviceStats)
+			{
+				List<DeviceLog> DeviceLog = _context.DeviceLog.Where(s => s.DeviceId == ds.Device.DeviceId && (s.Reason == "WebSocket Remove" || s.Reason == "WebSocket Add") && s.CreationDate > limitDateTime).OrderBy(s => s.CreationDate).ToList();
+
+				if (DeviceLog.Count() > 0)
+				{
+					periodTimeSpan = new TimeSpan(Convert.ToInt32((DeviceLog.Last().CreationDate - DeviceLog.First().CreationDate).TotalDays), 0, 0, 0);
+				}
+				else
+				{
+					periodTimeSpan = new TimeSpan(0);
+				}
+
+				ds.ConnectedTimeSpan = new TimeSpan(0);
+
+				for (int i = 0; i < DeviceLog.Count - 1; i++)
+				{
+					TimeSpan x = DeviceLog[i + 1].CreationDate - DeviceLog[i].CreationDate;
+					if (DeviceLog[i].Reason == "WebSocket Add") {
+						ds.ConnectedTimeSpan = ds.ConnectedTimeSpan.Add(x);
+					}
+				}
+				if (periodTimeSpan.TotalMinutes > 0)
+				{
+					ds.AvgConnected = Math.Round(ds.ConnectedTimeSpan.TotalMinutes * 100 / periodTimeSpan.TotalMinutes, 2);
+				}
+				else
+				{
+					ds.AvgConnected = 0;
+				}
 			}
 
 			foreach (BaseStats bs in model.BaseStats)
