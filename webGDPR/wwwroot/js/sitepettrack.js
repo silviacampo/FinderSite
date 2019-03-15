@@ -64,8 +64,6 @@
           anchor: new google.maps.Point(0, 32)
         };
 
-        //Markers and MarkersCluster
-        //https://medium.com/@letian1997/how-to-change-javascript-google-map-marker-color-8a72131d1207
         var markers = coordinates.map(function (location, i) {
           return new google.maps.Marker({
             position: {
@@ -76,13 +74,11 @@
             icon: {
               url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
             },
-            time: location.time
+            time: location.time,
+            title: 'at ' + location.time,
+            map: map
           });
         });
-
-        // Add a marker clusterer to manage the markers.
-        var markerCluster = new MarkerClusterer(map, markers,
-          { imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m' });
 
         var imgDog = {
           url: 'https://localhost:44392/images/22214-dog-face-iconsm.png',
@@ -109,11 +105,12 @@
         var marker = new google.maps.Marker({
           position: deviceLocation,
           map: map,
+          title: contentString,
           icon: imgPet
         });
 
         marker.addListener('click', function () {
-          infowindow.setContent(contentString);
+          infowindow.setContent(contentHtmlString);
           infowindow.open(map, marker);
         });
 
@@ -127,7 +124,7 @@
               '</div>';
             infowindow.setContent(html);
             infowindow.open(map, item);
-          });
+          });          
         });
       }
     }

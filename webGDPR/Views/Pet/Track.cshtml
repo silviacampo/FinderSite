@@ -8,7 +8,8 @@
 		var strDate = new String('@Model.LastTrackingInfo.CreationDate.ToString("MM/dd/yyyy hh:mm:ss tt") UTC');
 		var localTime = new Date(strDate);
 		var localTimeStr = localTime.toLocaleString();
-		var contentString = '<div id="content">' +
+		var contentString = '@Model.Name at' + localTime.toLocaleString();
+		var contentHtmlString = '<div id="content">' +
 				'<div id="siteNotice">' +
 				'</div>' +
 			'<h5 id="firstHeading" class="firstHeading"><b>@Model.Name</b> at <br/> ' + localTime.toLocaleString() + '</h5>' +
