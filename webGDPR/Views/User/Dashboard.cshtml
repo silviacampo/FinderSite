@@ -410,8 +410,9 @@
 
 	<div class="col-md-3">
 		<h2>&nbsp;</h2>
-		<div id="mapContainer" style="height:400px">
-			<script>
+		<div class="well well-lg">
+			<div id="mapContainer" style="height:400px">
+				<script>
 			var coordinates = [];
 			@foreach (Pet p in Model.Pets) {
 				if (p.LastTrackingInfo != null)
@@ -423,20 +424,22 @@
 				</text>
 				}
 			}
-			</script>
-			<div id="pets-map" class="card-text card-map" data-geo-lat="@Model.Latitude" , data-geo-lng="@Model.Longitude"></div>
-			<div id="panoDashboard"></div>
+				</script>
+				<div id="pets-map" class="card-text card-map" data-geo-lat="@Model.Latitude" , data-geo-lng="@Model.Longitude"></div>
+				<div id="panoDashboard"></div>
+			</div>
 		</div>
+		<ul style="clear:both;">
+			<li><a href="https://go.microsoft.com/fwlink/?LinkId=518008">Your pet has been going farther latelly/ moving less or more...</a></li>
+			<li><a href="https://go.microsoft.com/fwlink/?LinkId=699320">Fundamentals of ASP.NET Core such as Startup and middleware.</a></li>
+			<li><a href="https://go.microsoft.com/fwlink/?LinkId=398602">Working with Data</a></li>
+			<li><a href="https://go.microsoft.com/fwlink/?LinkId=398603">Security</a></li>
+			<li><a href="https://go.microsoft.com/fwlink/?LinkID=699321">Client side development</a></li>
+			<li><a href="https://go.microsoft.com/fwlink/?LinkID=699322">Develop on different platforms</a></li>
+			<li><a href="https://go.microsoft.com/fwlink/?LinkID=699323">Read more on the documentation site</a></li>
+		</ul>
 	</div>
-	
-	<ul>
-		<li><a href="https://go.microsoft.com/fwlink/?LinkId=518008">Your pet has been going farther latelly/ moving less or more...</a></li>
-		<li><a href="https://go.microsoft.com/fwlink/?LinkId=699320">Fundamentals of ASP.NET Core such as Startup and middleware.</a></li>
-		<li><a href="https://go.microsoft.com/fwlink/?LinkId=398602">Working with Data</a></li>
-		<li><a href="https://go.microsoft.com/fwlink/?LinkId=398603">Security</a></li>
-		<li><a href="https://go.microsoft.com/fwlink/?LinkID=699321">Client side development</a></li>
-		<li><a href="https://go.microsoft.com/fwlink/?LinkID=699322">Develop on different platforms</a></li>
-		<li><a href="https://go.microsoft.com/fwlink/?LinkID=699323">Read more on the documentation site</a></li>
-	</ul>
+
+
 </div>
 
