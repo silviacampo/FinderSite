@@ -321,6 +321,45 @@ namespace webGDPR.Controllers
             }
 
             model.Collars = collarsItems;
+
+			List<SelectListItem> typesItems = new List<SelectListItem>
+			{
+				new SelectListItem { Value = "CAT", Text = "Cat" },
+				new SelectListItem { Value = "DOG", Text = "Dog" }
+			};
+
+			model.Types = typesItems;
+
+			//public IEnumerable<SelectListItem> Breedings { get; set; }
+
+			List<SelectListItem> genderItems = new List<SelectListItem>
+			{
+				new SelectListItem { Value = "F", Text = "Female" },
+				new SelectListItem { Value = "M", Text = "Male" }
+			};
+
+			model.Genders = genderItems;
+
+			List<SelectListItem> ageItems = new List<SelectListItem>
+			{
+				new SelectListItem { Value = "Y", Text = "Years" },
+				new SelectListItem { Value = "M", Text = "Months" },
+				new SelectListItem { Value = "W", Text = "Weeks" },
+				new SelectListItem { Value = "D", Text = "Days" }
+			};
+
+			model.AgeUnits = ageItems;
+
+
+		List<SelectListItem> weightItems = new List<SelectListItem>
+			{
+				new SelectListItem { Value = "K", Text = "Kilo" },
+				new SelectListItem { Value = "P", Text = "Pound" },
+				new SelectListItem { Value = "G", Text = "Grame" }
+			};
+
+		model.WeightUnits = weightItems;
+
             return View(model);
         }
 
