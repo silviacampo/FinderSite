@@ -15,6 +15,7 @@ namespace webGDPR.Models
 		public string Color { get; set; }
 		public DateTime Birthdate { get; set; }
 		public string Age { get; set; }
+		public string Gender { get; set; }
 		public string Weigth { get; set; }
 		public string HealthComments { get; set; }
 
