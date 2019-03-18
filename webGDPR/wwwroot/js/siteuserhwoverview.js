@@ -7,8 +7,8 @@
         "label": "Hours connected per day",
         "data": deviceconnectedTimes,
         "fill": false,
-        "backgroundColor": "rgba(201, 203, 207, 0.5)",
-        "borderColor": "rgb(201, 203, 207)",
+        backgroundColor: devicesconnectedbackground,
+        borderColor: devicesconnectedborder,
         "borderWidth": 2
       }]
     },
