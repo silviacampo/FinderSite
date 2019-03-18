@@ -394,7 +394,7 @@
 									}
 									else
 									{
-										<a class="btn btn-default" asp-controller="Pet" asp-action="EmergencyOn" asp-route-id="@p.PetId" style="width:100%; padding:3px 6px 3px 6px">Report Lost</a>
+										<button class="btn btn-danger" asp-controller="Pet" asp-action="EmergencyOn" asp-route-id="@p.PetId" style="width:100%; padding:3px 6px 3px 6px" data-toggle="modal" data-target="#petLostModal">Report Lost</button>
 									}
 								</td>
 
@@ -403,6 +403,28 @@
 					}
 				</tbody>
 			</table>
+			<!-- The Modal -->
+			<div class="modal fade" id="petLostModal">
+				<div class="modal-dialog modal-l">
+					<div class="modal-content">
+						<!-- Modal Header -->
+						<div class="modal-header">
+							<h4 class="modal-title">Report a lost pet</h4>
+							<button type="button" class="close" data-dismiss="modal">&times;</button>
+						</div>
+						<!-- Modal body -->
+						<div class="modal-body">
+							Are you sure?
+						</div>
+						<!-- Modal footer -->
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+							<button type="button" class="btn btn-secondary" data-dismiss="modal">Confirm</button>
+						</div>
+
+					</div>
+				</div>
+			</div>
 		</div>
 
 
