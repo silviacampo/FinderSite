@@ -4,7 +4,7 @@
     "data": {
       "labels": names,
       "datasets": [{
-        "label": "Percentage Time connected",
+        "label": "Hours connected per day",
         "data": deviceconnectedTimes,
         "fill": false,
         "backgroundColor": "rgba(201, 203, 207, 0.5)",
@@ -16,7 +16,7 @@
       "scales": {
         "xAxes": [{
           "ticks": {
-            beginAtZero: true, max: 100, min: 0
+            beginAtZero: true, max: 24, min: 0
           }
         }]
       }

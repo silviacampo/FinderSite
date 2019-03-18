@@ -18,7 +18,7 @@
           });
 
         var panorama = new google.maps.StreetViewPanorama(
-          document.getElementById('pano'), {
+          document.getElementById('panoDashboard'), {
             position: centerLocation,
             pov: {
               heading: 34,

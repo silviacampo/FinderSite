@@ -28,6 +28,16 @@ namespace webGDPR.Models
 			}
 		}
 
+		public string GetPlatform
+		{
+			get
+			{
+				if (Platform == "UWP" || Platform == "WPF") {
+					return "Windows";
+				}
+				return Platform;
+			}
+		}
 
 	}
 }

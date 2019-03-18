@@ -11,6 +11,8 @@
 	<div class="col-md-3">
 		<h2>Issues</h2>
 		No device is connected - chequear las websocket activas
+
+
 		<ul>
 			@if (Model.MissingSubscription)
 			{
@@ -80,12 +82,28 @@
 				</li>
 			}
 		</ul>
+		<h2>Actions</h2>
+
+		<ul>
+			<li><a asp-area="" asp-controller="User" asp-action="PickLocation"><i class="fa fa-location-arrow fa-fw" aria-hidden="true"></i>&nbsp; Update your Location</a></li>
+			<li><a asp-area="" asp-controller="Device" asp-action="DownloadApp"><i class="fa fa-download fa-fw" aria-hidden="true"></i>&nbsp; Download mobile and desktop application</a></li>
+			<li><a asp-area="" asp-controller="Order" asp-action="Create"><i class="fa fa-cart-plus fa-fw" aria-hidden="true"></i>&nbsp; Buy another base or collar</a></li>
+			<li><a asp-area="" asp-controller="Base" asp-action="Create"><i class="fa fa-home fa-fw" aria-hidden="true"></i>&nbsp; Add a base</a></li>
+			<li><a asp-area="" asp-controller="Collar" asp-action="Create"><i class="fa fa-map-marker fa-fw" aria-hidden="true"></i>&nbsp; Add a collar</a></li>
+			<li>
+				<a asp-area="" asp-controller="Pet" asp-action="Create"><i class="fa fa-paw fa-fw" aria-hidden="true"></i>&nbsp;Add a Pet</a>
+				@if (Model.Pets.Count() == 0)
+				{<b>You haven't create any pet....</b>}
+			</li>
+			<li><a href="https://go.microsoft.com/fwlink/?LinkID=398609">Check devices connection with your account</a></li>
+		</ul>
+
 	</div>
 
-	<div class="col-md-4">
+	<div class="col-md-6">
 		<h2>Overview</h2>
-		<div class="well well-lg" style="position:relative;top:0px;left:0px; min-width:100px;">
-			<table class="table" style="position:relative;top:0px;left:0px; min-width:100px;">
+		<div class="well well-lg" style="position:relative;top:0px;left:0px; min-width:200px;">
+			<table class="table" style="position:relative;top:0px;left:0px; min-width:120px;">
 				<theader>
 					<tr>
 						<th>
@@ -100,275 +118,298 @@
 						List<webGDPR.Infrastructure.CustomWebSockets.CustomWebSocket> WebSockets = (List<webGDPR.Infrastructure.CustomWebSockets.CustomWebSocket>)ViewData["WebSockets"];
 						foreach (Device d in Model.Devices)
 						{
-					<tr> <td>@d.GetName</td>
-						 <td>
-						 	@if (WebSockets.Exists(w => w.DeviceId == d.DeviceId))
-						 	{
-						 	<i class="fa fa-circle fa-fw" style="color:green;position:relative;top:7px;left:0px" aria-hidden="true"></i>
-						 	}
-						 	else
-						 	{
-						 	<i class="fa fa-circle fa-fw" style="color:red;position:relative;top:7px;left:0px" aria-hidden="true"></i>
-						 	}
-						 </td>
-					</tr>
+							<tr>
+								<td>
+									<div style="position:relative;top:0px;left:0px; min-width:40px;">
+										<div class="btn-group">
+											<a class="dropdown-link" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="padding:3px 6px 3px 6px">
+												@d.GetPlatform @d.GetName<i class="fa fa-caret-down fa-fw" aria-hidden="true"></i>
+											</a>
+											<ul class="dropdown-menu">
+												<li><a asp-controller="Device" asp-action="Edit" asp-route-id="@d.DeviceId" target="_blank">Edit</a></li>
+												<li><a asp-controller="Device" asp-action="Delete" asp-route-id="@d.DeviceId" target="_blank">Delete</a></li>
+											</ul>
+										</div>
+									</div>
+								</td>
+								<td>
+									@if (WebSockets.Exists(w => w.DeviceId == d.DeviceId))
+									{
+										<i class="fa fa-circle fa-fw" style="color:green;position:relative;top:7px;left:0px" aria-hidden="true"></i>
+									}
+									else
+									{
+										<i class="fa fa-circle fa-fw" style="color:red;position:relative;top:7px;left:0px" aria-hidden="true"></i>
+									}
+								</td>
+							</tr>
 						}
 
 					}
 				</tbody>
-			</table>				
+			</table>
+		</div>
+		<div class="well well-lg" style="position:relative;top:0px;left:0px; min-width:200px;">
 
-				<table class="table" style="position:relative;top:0px;left:0px; min-width:100px;">
-					<theader>
+			<table class="table" style="position:relative;top:0px;left:0px; min-width:100px;">
+				<theader>
+					<tr>
+						<th>
+							<i class="fa fa-home fa-fw" aria-hidden="true"></i> &nbsp; Bases
+						</th>
+						<th class="small">Network Connected</th>
+						<th class="small visible-md visible-lg visible-sm">Plug in </th>
+						<th class="small visible-md visible-lg visible-sm">Charging battery</th>
+						<th class="small visible-md visible-lg visible-sm">Radio Strength</th>
+					</tr>
+				</theader>
+				<tbody>
+					@foreach (var item in Model.Bases.Where(b => !b.Deleted))
+					{
 						<tr>
-							<th>
-								<i class="fa fa-home fa-fw" aria-hidden="true"></i> &nbsp; Bases
-							</th>
-							<th class="small">Network Connected</th>
-							<th class="small visible-md visible-lg visible-sm">Plug in </th>
-							<th class="small visible-md visible-lg visible-sm">Charging battery</th>
-							<th class="small visible-md visible-lg visible-sm">Radio Strength</th>
-						</tr>
-					</theader>
-					<tbody>
-						@foreach (var item in Model.Bases.Where(b => !b.Deleted))
-						{
-							<tr>
-								<td>
-									<div style="position:relative;top:0px;left:0px; min-width:40px;">
-										<div class="btn-group">
-											<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="padding:3px 6px 3px 6px">
-												@Html.DisplayFor(modelItem => item.Name)<i class="fa fa-caret-down fa-fw" aria-hidden="true"></i>
-											</button>
-											<ul class="dropdown-menu">
-												<li><a asp-controller="Base" asp-action="Edit" asp-route-id="@item.BaseId" target="_blank">Edit</a></li>
-												<li><a asp-controller="Base" asp-action="Delete" asp-route-id="@item.BaseId" target="_blank">Delete</a></li>
-											</ul>
-										</div>
+							<td>
+								<div style="position:relative;top:0px;left:0px; min-width:110px;">
+									<div class="btn-group">
+										<a class="dropdown-link" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="padding:3px 6px 3px 6px">
+											@Html.DisplayFor(modelItem => item.Name)<i class="fa fa-caret-down fa-fw" aria-hidden="true"></i>
+										</a>
+										<ul class="dropdown-menu">
+											<li><a asp-controller="Base" asp-action="Edit" asp-route-id="@item.BaseId" target="_blank">Edit</a></li>
+											<li><a asp-controller="Base" asp-action="Delete" asp-route-id="@item.BaseId" target="_blank">Delete</a></li>
+										</ul>
 									</div>
-								</td>
-								<td>
-									<div style="position:relative;top:0px;left:0px; min-width:20px;">
-										@if (item.LastStatus != null && item.LastStatus.IsConnected)
+								</div>
+							</td>
+							<td>
+								<div style="position:relative;top:0px;left:0px; min-width:20px;">
+									@if (item.LastStatus != null && item.LastStatus.IsConnected)
+									{
+										<i class="fa fa-circle fa-fw" style="color:green;position:relative;top:7px;left:0px" aria-hidden="true"></i>
+										@if (item.LastStatus != null && item.LastStatus.DeviceConnectedTo != null)
 										{
-											<i class="fa fa-circle fa-fw" style="color:green;position:relative;top:7px;left:0px" aria-hidden="true"></i>
-											@if (item.LastStatus != null && item.LastStatus.DeviceConnectedTo != null)
-											{
-												@Html.DisplayFor(modelItem => item.LastStatus.DeviceConnectedTo.GetName)
-											}
+											@Html.DisplayFor(modelItem => item.LastStatus.DeviceConnectedTo.GetName)
 										}
-										else
-										{
-											<i class="fa fa-circle fa-fw" style="color:red;position:relative;top:7px;left:0px" aria-hidden="true"></i>
-										}
-									</div>
-								</td>
-								<td class="visible-md visible-lg visible-sm" valign="middle">
-									<div style="position:relative;top:0px;left:0px; min-width:20px;">
-										<i class="fa fa-plug fa-fw" style="color:gray;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
-										@if (!(item.LastStatus != null && item.LastStatus.IsPlugged))
-										{
-											<i style="color:black; font-weight:bold; font-size:x-large;padding-top:0px;padding-bottom:0px;position:absolute;top:0px;left:6px">\</i>
-										}
-									</div>
+									}
+									else
+									{
+										<i class="fa fa-circle fa-fw" style="color:red;position:relative;top:7px;left:0px" aria-hidden="true"></i>
+									}
+								</div>
+							</td>
+							<td class="visible-md visible-lg visible-sm" valign="middle">
+								<div style="position:relative;top:0px;left:0px; min-width:20px;">
+									<i class="fa fa-plug fa-fw" style="color:gray;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
+									@if (!(item.LastStatus != null && item.LastStatus.IsPlugged))
+									{
+										<i style="color:black; font-weight:bold; font-size:x-large;padding-top:0px;padding-bottom:0px;position:absolute;top:0px;left:6px">\</i>
+									}
+								</div>
 
-								</td>
-								<td class="visible-md visible-lg visible-sm">
-									<div style="position:relative;top:0px;left:0px; min-width:20px;">
-										@if (item.LastStatus != null)
-										{
-											if (item.LastStatus.Battery < 25)
-											{
-												<i class="fa fa-battery-empty fa-fw" style="color:lightblue;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
-											}
-											else if (item.LastStatus.Battery < 50)
-											{
-												<i class="fa fa-battery-quarter fa-fw" style="color:lightblue;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
-											}
-											else if (item.LastStatus.Battery < 75)
-											{
-												<i class="fa fa-battery-half fa-fw" style="color:lightblue;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
-											}
-											else if (item.LastStatus.Battery < 100)
-											{
-												<i class="fa fa-battery-three-quarters fa-fw" style="color:lightblue;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
-											}
-											else
-											{
-												<i class="fa fa-battery-full fa-fw" style="color:lightblue;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
-											}
-										}
-										else
+							</td>
+							<td class="visible-md visible-lg visible-sm">
+								<div style="position:relative;top:0px;left:0px; min-width:20px;">
+									@if (item.LastStatus != null)
+									{
+										if (item.LastStatus.Battery < 25)
 										{
 											<i class="fa fa-battery-empty fa-fw" style="color:lightblue;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
 										}
-										@if (!(item.LastStatus != null && item.LastStatus.HasBattery))
+										else if (item.LastStatus.Battery < 50)
 										{
-											<i style="color:black; font-weight:bold; font-size:x-large;position:absolute;top:0px;left:4px">\</i>
+											<i class="fa fa-battery-quarter fa-fw" style="color:lightblue;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
 										}
-										@if (item.LastStatus != null && item.LastStatus.IsCharging)
+										else if (item.LastStatus.Battery < 75)
 										{
-											<i class="fa fa-bolt fa-fw" style="color:black;position:absolute;top:10px;left:0px">\</i>
+											<i class="fa fa-battery-half fa-fw" style="color:lightblue;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
 										}
-									</div>
-
-								</td>
-								<td class="visible-md visible-lg visible-sm">
-									<div style="position:relative;top:0px;left:0px; min-width:20px;">
-										<i class="fa fa-signal fa-fw" style="color:gray;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
-										@if (item.LastStatus != null)
+										else if (item.LastStatus.Battery < 100)
 										{
-											<i style="color:black;font-weight:bold;font-size:small;position:absolute;top:5px;left:6px">item.LastStatus.RadioPercentage</i>
+											<i class="fa fa-battery-three-quarters fa-fw" style="color:lightblue;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
 										}
 										else
 										{
-											<i style="color:black;font-weight:bold;font-size:small;position:absolute;top:5px;left:6px">0%</i>
+											<i class="fa fa-battery-full fa-fw" style="color:lightblue;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
 										}
-									</div>
+									}
+									else
+									{
+										<i class="fa fa-battery-empty fa-fw" style="color:lightblue;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
+									}
+									@if (!(item.LastStatus != null && item.LastStatus.HasBattery))
+									{
+										<i style="color:black; font-weight:bold; font-size:x-large;position:absolute;top:0px;left:4px">\</i>
+									}
+									@if (item.LastStatus != null && item.LastStatus.IsCharging)
+									{
+										<i class="fa fa-bolt fa-fw" style="color:black;position:absolute;top:10px;left:0px">\</i>
+									}
+								</div>
 
-								</td>
-							</tr>
-						}
-					</tbody>
-				</table>
-				<hr />
-				<table class="table" style="position:relative;top:0px;left:0px; min-width:100px;">
-					<theader>
-						<tr>
-							<th>
-								<i class="fa fa-paw fa-fw" aria-hidden="true"></i> &nbsp; Collars on Pets
-							</th>
-							<th class="small">Network Connected</th>
-							<th class="small visible-md visible-lg visible-sm">GPS Connected</th>
-							<th class="small visible-md visible-lg visible-sm">Battery Charge</th>
-							<th class="small visible-md visible-lg visible-sm">Radio Strength</th>
+							</td>
+							<td class="visible-md visible-lg visible-sm">
+								<div style="position:relative;top:0px;left:0px; min-width:20px;">
+									<i class="fa fa-signal fa-fw" style="color:gray;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
+									@if (item.LastStatus != null)
+									{
+										<i style="color:black;font-weight:bold;font-size:small;position:absolute;top:5px;left:6px">item.LastStatus.RadioPercentage</i>
+									}
+									else
+									{
+										<i style="color:black;font-weight:bold;font-size:small;position:absolute;top:5px;left:6px">0%</i>
+									}
+								</div>
+
+							</td>
 						</tr>
-					</theader>
-					<tbody>
-						@foreach (var item in Model.Collars.Where(b => !b.Deleted))
-						{
-							<tr>
-								<td>
-									<div style="position:relative;top:0px;left:0px; min-width:40px;">
-										<div class="btn-group">
-											<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="padding:3px 6px 3px 6px">
-												@Html.DisplayFor(modelItem => item.Name)<i class="fa fa-caret-down fa-fw" aria-hidden="true"></i>
-											</button>
-											<ul class="dropdown-menu">
-												<li><a asp-controller="Collar" asp-action="Edit" asp-route-id="@item.CollarId" target="_blank">Edit</a></li>
-												<li><a asp-controller="Collar" asp-action="Delete" asp-route-id="@item.CollarId" target="_blank">Delete</a></li>
-											</ul>
-										</div>
+					}
+				</tbody>
+			</table>
+		</div>
+		<div class="well well-lg" style="position:relative;top:0px;left:0px; min-width:200px;">
+			<table class="table" style="position:relative;top:0px;left:0px; min-width:120px;">
+				<theader>
+					<tr>
+						<th>
+							<i class="fa fa-paw fa-fw" aria-hidden="true"></i> &nbsp; Collars on Pets
+						</th>
+						<th class="small">Network Connected</th>
+						<th class="small visible-md visible-lg visible-sm">GPS Connected</th>
+						<th class="small visible-md visible-lg visible-sm">Battery Charge</th>
+						<th class="small visible-md visible-lg visible-sm">Radio Strength</th>
+					</tr>
+				</theader>
+				<tbody>
+					@foreach (var item in Model.Collars.Where(b => !b.Deleted))
+					{
+						<tr>
+							<td>
+								<div style="position:relative;top:0px;left:0px; min-width:60px;">
+									<div class="btn-group">
+										<a class="dropdown-link" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="padding:3px 6px 3px 6px">
+
+											@Html.DisplayFor(modelItem => item.Name)<i class="fa fa-caret-down fa-fw" aria-hidden="true"></i>
+										</a>
+										<ul class="dropdown-menu">
+											<li><a asp-controller="Collar" asp-action="Edit" asp-route-id="@item.CollarId" target="_blank">Edit</a></li>
+											<li><a asp-controller="Collar" asp-action="Delete" asp-route-id="@item.CollarId" target="_blank">Delete</a></li>
+										</ul>
 									</div>
-								</td>
-								<td>
-									<div style="position:relative;top:0px;left:0px; min-width:20px;">
-										@if (item.LastStatus != null && item.LastStatus.IsConnected)
+								</div>
+							</td>
+							<td>
+								<div style="position:relative;top:0px;left:0px; min-width:20px;">
+									@if (item.LastStatus != null && item.LastStatus.IsConnected)
+									{
+										<i class="fa fa-circle fa-fw" style="color:green;position:relative;top:7px;left:0px" aria-hidden="true"></i>
+										@if (item.LastStatus != null && item.LastStatus.BaseConnectedTo != null)
 										{
-											<i class="fa fa-circle fa-fw" style="color:green;position:relative;top:7px;left:0px" aria-hidden="true"></i>
-											@if (item.LastStatus != null && item.LastStatus.BaseConnectedTo != null)
-											{
-												@Html.DisplayFor(modelItem => item.LastStatus.BaseConnectedTo.Name)
-											}
+											@Html.DisplayFor(modelItem => item.LastStatus.BaseConnectedTo.Name)
 										}
-										else
-										{
-											<i class="fa fa-circle fa-fw" style="color:red;position:relative;top:7px;left:0px" aria-hidden="true"></i>
-										}
-									</div>
-								</td>
-								<td class="visible-md visible-lg visible-sm" valign="middle">
-									<div style="position:relative;top:0px;left:0px; min-width:20px;">
-										<i class="fa fa-map-marker fa-fw" style="color:gray;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
-										@if (!(item.LastStatus != null && item.LastStatus.IsGPSConnected))
-										{
-											<i style="color:black; font-weight:bold; font-size:x-large;padding-top:0px;padding-bottom:0px;position:absolute;top:0px;left:6px">\</i>
-										}
-									</div>
-								</td>
-								<td class="visible-md visible-lg visible-sm">
-									<div style="position:relative;top:0px;left:0px; min-width:20px;">
-										@if (item.LastStatus != null)
-										{
-											if (item.LastStatus.Battery < 25)
-											{
-												<i class="fa fa-battery-empty fa-fw" style="color:lightblue;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
-											}
-											else if (item.LastStatus.Battery < 50)
-											{
-												<i class="fa fa-battery-quarter fa-fw" style="color:lightblue;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
-											}
-											else if (item.LastStatus.Battery < 75)
-											{
-												<i class="fa fa-battery-half fa-fw" style="color:lightblue;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
-											}
-											else if (item.LastStatus.Battery < 100)
-											{
-												<i class="fa fa-battery-three-quarters fa-fw" style="color:lightblue;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
-											}
-											else
-											{
-												<i class="fa fa-battery-full fa-fw" style="color:lightblue;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
-											}
-										}
-										else
+									}
+									else
+									{
+										<i class="fa fa-circle fa-fw" style="color:red;position:relative;top:7px;left:0px" aria-hidden="true"></i>
+									}
+								</div>
+							</td>
+							<td class="visible-md visible-lg visible-sm" valign="middle">
+								<div style="position:relative;top:0px;left:0px; min-width:20px;">
+									<i class="fa fa-map-marker fa-fw" style="color:gray;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
+									@if (!(item.LastStatus != null && item.LastStatus.IsGPSConnected))
+									{
+										<i style="color:black; font-weight:bold; font-size:x-large;padding-top:0px;padding-bottom:0px;position:absolute;top:0px;left:6px">\</i>
+									}
+								</div>
+							</td>
+							<td class="visible-md visible-lg visible-sm">
+								<div style="position:relative;top:0px;left:0px; min-width:20px;">
+									@if (item.LastStatus != null)
+									{
+										if (item.LastStatus.Battery < 25)
 										{
 											<i class="fa fa-battery-empty fa-fw" style="color:lightblue;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
 										}
-									</div>
-								</td>
-								<td class="visible-md visible-lg visible-sm">
-									<div style="position:relative;top:0px;left:0px; min-width:20px;">
-										<i class="fa fa-signal fa-fw" style="color:gray;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
-										@if (item.LastStatus != null)
+										else if (item.LastStatus.Battery < 50)
 										{
-											<i style="color:black;font-weight:bold;font-size:small;position:absolute;top:5px;left:6px">item.LastStatus.RadioPercentage</i>
+											<i class="fa fa-battery-quarter fa-fw" style="color:lightblue;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
+										}
+										else if (item.LastStatus.Battery < 75)
+										{
+											<i class="fa fa-battery-half fa-fw" style="color:lightblue;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
+										}
+										else if (item.LastStatus.Battery < 100)
+										{
+											<i class="fa fa-battery-three-quarters fa-fw" style="color:lightblue;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
 										}
 										else
 										{
-											<i style="color:black;font-weight:bold;font-size:small;position:absolute;top:5px;left:6px">0%</i>
+											<i class="fa fa-battery-full fa-fw" style="color:lightblue;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
 										}
+									}
+									else
+									{
+										<i class="fa fa-battery-empty fa-fw" style="color:lightblue;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
+									}
+								</div>
+							</td>
+							<td class="visible-md visible-lg visible-sm">
+								<div style="position:relative;top:0px;left:0px; min-width:20px;">
+									<i class="fa fa-signal fa-fw" style="color:gray;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
+									@if (item.LastStatus != null)
+									{
+										<i style="color:black;font-weight:bold;font-size:small;position:absolute;top:5px;left:6px">item.LastStatus.RadioPercentage</i>
+									}
+									else
+									{
+										<i style="color:black;font-weight:bold;font-size:small;position:absolute;top:5px;left:6px">0%</i>
+									}
+								</div>
+							</td>
+						</tr>
+
+						Pet p = Model.Pets.FirstOrDefault(pet => pet.LastCollar != null && pet.LastCollar.CollarId == item.CollarId && !pet.Deleted);
+						if (p != null)
+						{
+							<tr>
+								<td>
+									on&nbsp;<div class="btn-group">
+										<a class="dropdown-link" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="padding:3px 6px 3px 6px">
+											@Html.DisplayFor(modelItem => p.Name)<i class="fa fa-caret-down fa-fw" aria-hidden="true"></i>
+										</a>
+										<ul class="dropdown-menu">
+											<li><a asp-controller="Pet" asp-action="Edit" asp-route-id="@p.PetId" target="_blank">Edit</a></li>
+											<li><a asp-controller="Pet" asp-action="Delete" asp-route-id="@p.PetId" target="_blank">Delete</a></li>
+											<li role="separator" class="divider"></li>
+											<li><a asp-controller="Pet" asp-action="Track" asp-route-id="@p.PetId" target="_blank">Track</a></li>
+											<li><a asp-controller="Pet" asp-action="Stats" asp-route-id="@p.PetId" target="_blank">Activity</a></li>
+											<li><a asp-controller="Pet" asp-action="Page" asp-route-id="@p.PetId" target="_blank">Page</a></li>
+
+										</ul>
 									</div>
 								</td>
+								<td colspan="4">
+									@if (p.LastMode != null && p.LastMode.Type == ConfigModeTypes.Emergency && p.LastMode.IsActive)
+									{
+										<a class="btn btn-danger active small" asp-controller="Pet" asp-action="EmergencyOff" asp-route-id="@p.PetId" style="width:100%; padding:3px 6px 3px 6px">Report Found</a>
+									}
+									else
+									{
+										<a class="btn btn-default" asp-controller="Pet" asp-action="EmergencyOn" asp-route-id="@p.PetId" style="width:100%; padding:3px 6px 3px 6px">Report Lost</a>
+									}
+								</td>
+
 							</tr>
-
-							Pet p = Model.Pets.FirstOrDefault(pet => pet.LastCollar != null && pet.LastCollar.CollarId == item.CollarId && !pet.Deleted);
-							if (p != null)
-							{
-								<tr>
-									<td>
-										On&nbsp;<div class="btn-group">
-											<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="padding:3px 6px 3px 6px">
-												@Html.DisplayFor(modelItem => p.Name)<i class="fa fa-caret-down fa-fw" aria-hidden="true"></i>
-											</button>
-											<ul class="dropdown-menu">
-												<li><a asp-controller="Pet" asp-action="Edit" asp-route-id="@p.PetId" target="_blank">Edit</a></li>
-												<li><a asp-controller="Pet" asp-action="Delete" asp-route-id="@p.PetId" target="_blank">Delete</a></li>
-												<li role="separator" class="divider"></li>
-												<li><a asp-controller="Pet" asp-action="Track" asp-route-id="@p.PetId" target="_blank">Track</a></li>
-												<li><a asp-controller="Pet" asp-action="Stats" asp-route-id="@p.PetId" target="_blank">Activity</a></li>
-												<li><a asp-controller="Pet" asp-action="Page" asp-route-id="@p.PetId" target="_blank">Page</a></li>
-
-											</ul>
-										</div>
-									</td>
-									<td colspan="4">
-										@if (p.LastMode != null && p.LastMode.Type == ConfigModeTypes.Emergency && p.LastMode.IsActive)
-										{
-											<a class="btn btn-danger active small" asp-controller="Pet" asp-action="EmergencyOff" asp-route-id="@p.PetId" style="width:100%; padding:3px 6px 3px 6px">Report Found</a>
-										}
-										else
-										{
-											<a class="btn btn-default" asp-controller="Pet" asp-action="EmergencyOn" asp-route-id="@p.PetId" style="width:100%; padding:3px 6px 3px 6px">Report Lost</a>
-										}
-									</td>
-
-								</tr>
-							}
 						}
-					</tbody>
-				</table>
-</div>
+					}
+				</tbody>
+			</table>
+		</div>
+
+
+	</div>
+
+	<div class="col-md-3">
+		<h2>&nbsp;</h2>
 		<div id="mapContainer" style="height:400px">
 			<script>
 			var coordinates = [];
@@ -384,38 +425,18 @@
 			}
 			</script>
 			<div id="pets-map" class="card-text card-map" data-geo-lat="@Model.Latitude" , data-geo-lng="@Model.Longitude"></div>
-			<div id="pano"></div>
+			<div id="panoDashboard"></div>
 		</div>
-
 	</div>
-	<div class="col-md-3">
-		<h2>&nbsp;</h2>
-		<ul>
-			<li><a href="https://go.microsoft.com/fwlink/?LinkId=518008">Your pet has been going farther latelly/ moving less or more...</a></li>
-			<li><a href="https://go.microsoft.com/fwlink/?LinkId=699320">Fundamentals of ASP.NET Core such as Startup and middleware.</a></li>
-			<li><a href="https://go.microsoft.com/fwlink/?LinkId=398602">Working with Data</a></li>
-			<li><a href="https://go.microsoft.com/fwlink/?LinkId=398603">Security</a></li>
-			<li><a href="https://go.microsoft.com/fwlink/?LinkID=699321">Client side development</a></li>
-			<li><a href="https://go.microsoft.com/fwlink/?LinkID=699322">Develop on different platforms</a></li>
-			<li><a href="https://go.microsoft.com/fwlink/?LinkID=699323">Read more on the documentation site</a></li>
-		</ul>
-	</div>
-	<div class="col-md-2">
-		<h2>Actions</h2>
-
-		<ul>
-			<li><a asp-area="" asp-controller="User" asp-action="PickLocation"><i class="fa fa-location-arrow fa-fw" aria-hidden="true"></i>&nbsp; Pick Location</a></li>
-			<li><a asp-area="" asp-controller="Device" asp-action="DownloadApp"><i class="fa fa-download fa-fw" aria-hidden="true"></i>&nbsp; Download App</a></li>
-			<li><a asp-area="" asp-controller="Order" asp-action="Create"><i class="fa fa-cart-plus fa-fw" aria-hidden="true"></i>&nbsp; Buy another base or collar</a></li>
-			<li><a asp-area="" asp-controller="Base" asp-action="Create"><i class="fa fa-home fa-fw" aria-hidden="true"></i>&nbsp; Add a base</a></li>
-			<li><a asp-area="" asp-controller="Collar" asp-action="Create"><i class="fa fa-map-marker fa-fw" aria-hidden="true"></i>&nbsp; Add a collar</a></li>
-			<li>
-				<a asp-area="" asp-controller="Pet" asp-action="Create"><i class="fa fa-paw fa-fw" aria-hidden="true"></i>&nbsp;Add a Pet</a>
-				@if (Model.Pets.Count() == 0)
-				{<b>You haven't create any pet....</b>}
-			</li>
-			<li><a href="https://go.microsoft.com/fwlink/?LinkID=398609">Check devices connection with your account</a></li>
-		</ul>
-	</div>
+	
+	<ul>
+		<li><a href="https://go.microsoft.com/fwlink/?LinkId=518008">Your pet has been going farther latelly/ moving less or more...</a></li>
+		<li><a href="https://go.microsoft.com/fwlink/?LinkId=699320">Fundamentals of ASP.NET Core such as Startup and middleware.</a></li>
+		<li><a href="https://go.microsoft.com/fwlink/?LinkId=398602">Working with Data</a></li>
+		<li><a href="https://go.microsoft.com/fwlink/?LinkId=398603">Security</a></li>
+		<li><a href="https://go.microsoft.com/fwlink/?LinkID=699321">Client side development</a></li>
+		<li><a href="https://go.microsoft.com/fwlink/?LinkID=699322">Develop on different platforms</a></li>
+		<li><a href="https://go.microsoft.com/fwlink/?LinkID=699323">Read more on the documentation site</a></li>
+	</ul>
 </div>
 

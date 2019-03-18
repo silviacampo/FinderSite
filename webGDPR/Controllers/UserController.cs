@@ -182,7 +182,7 @@ namespace webGDPR.Controllers
 				}
 				if (periodTimeSpan.TotalMinutes > 0)
 				{
-					ds.AvgConnected = Math.Round(ds.ConnectedTimeSpan.TotalMinutes * 100 / periodTimeSpan.TotalMinutes, 2);
+					ds.AvgConnected = Math.Round(ds.ConnectedTimeSpan.TotalHours * 24 / periodTimeSpan.TotalHours, 2);
 				}
 				else
 				{

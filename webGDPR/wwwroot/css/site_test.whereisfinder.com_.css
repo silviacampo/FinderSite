@@ -51,6 +51,15 @@ body {
 	top: -40%;
 }
 
+#panoDashboard {
+	float: left;
+	height: 40%;
+	width: 60%;
+	max-height: 300px;
+	max-width: 300px;
+	top: -40%;
+}
+
 .range {
 	position: relative;
 	width: 360px;
@@ -170,3 +179,13 @@ body {
 	.range-labels .active.selected::before {
 		display: none;
 	}
+
+.dropdown-link {
+	color: black !important;
+	text-decoration: none !important;
+}
+
+tr, td {
+	border-bottom: 0px solid #ddd !important;
+	border-top: 0px solid #ddd !important;
+}
