@@ -126,8 +126,8 @@
 												@d.GetPlatform @d.GetName<i class="fa fa-caret-down fa-fw" aria-hidden="true"></i>
 											</a>
 											<ul class="dropdown-menu">
-												<li><a asp-controller="Device" asp-action="Edit" asp-route-id="@d.DeviceId" target="_blank">Edit</a></li>
-												<li><a asp-controller="Device" asp-action="Delete" asp-route-id="@d.DeviceId" target="_blank">Delete</a></li>
+												<li><a asp-controller="Device" asp-action="Edit" asp-route-id="@d.DeviceId" target="_blank"><i class="fa fa-edit fa-fw" aria-hidden="true"></i></a></li>
+												<li><a asp-controller="Device" asp-action="Delete" asp-route-id="@d.DeviceId" target="_blank"><i class="fa fa-trash fa-fw" aria-hidden="true"></i></a></li>
 											</ul>
 										</div>
 									</div>
@@ -174,8 +174,8 @@
 											@Html.DisplayFor(modelItem => item.Name)<i class="fa fa-caret-down fa-fw" aria-hidden="true"></i>
 										</a>
 										<ul class="dropdown-menu">
-											<li><a asp-controller="Base" asp-action="Edit" asp-route-id="@item.BaseId" target="_blank">Edit</a></li>
-											<li><a asp-controller="Base" asp-action="Delete" asp-route-id="@item.BaseId" target="_blank">Delete</a></li>
+											<li><a asp-controller="Base" asp-action="Edit" asp-route-id="@item.BaseId" target="_blank"><i class="fa fa-edit fa-fw" aria-hidden="true"></i></a></li>
+											<li><a asp-controller="Base" asp-action="Delete" asp-route-id="@item.BaseId" target="_blank"><i class="fa fa-trash fa-fw" aria-hidden="true"></i></a></li>
 										</ul>
 									</div>
 								</div>
@@ -290,8 +290,8 @@
 											@Html.DisplayFor(modelItem => item.Name)<i class="fa fa-caret-down fa-fw" aria-hidden="true"></i>
 										</a>
 										<ul class="dropdown-menu">
-											<li><a asp-controller="Collar" asp-action="Edit" asp-route-id="@item.CollarId" target="_blank">Edit</a></li>
-											<li><a asp-controller="Collar" asp-action="Delete" asp-route-id="@item.CollarId" target="_blank">Delete</a></li>
+											<li><a asp-controller="Collar" asp-action="Edit" asp-route-id="@item.CollarId" target="_blank"><i class="fa fa-edit fa-fw" aria-hidden="true"></i></a></li>
+											<li><a asp-controller="Collar" asp-action="Delete" asp-route-id="@item.CollarId" target="_blank"><i class="fa fa-trash fa-fw" aria-hidden="true"></i></a></li>
 										</ul>
 									</div>
 								</div>
@@ -377,17 +377,19 @@
 											@Html.DisplayFor(modelItem => p.Name)<i class="fa fa-caret-down fa-fw" aria-hidden="true"></i>
 										</a>
 										<ul class="dropdown-menu">
-											<li><a asp-controller="Pet" asp-action="Edit" asp-route-id="@p.PetId" target="_blank">Edit</a></li>
-											<li><a asp-controller="Pet" asp-action="Delete" asp-route-id="@p.PetId" target="_blank">Delete</a></li>
-											<li role="separator" class="divider"></li>
-											<li><a asp-controller="Pet" asp-action="Track" asp-route-id="@p.PetId" target="_blank">Track</a></li>
-											<li><a asp-controller="Pet" asp-action="Stats" asp-route-id="@p.PetId" target="_blank">Activity</a></li>
-											<li><a asp-controller="Pet" asp-action="Page" asp-route-id="@p.PetId" target="_blank">Page</a></li>
+											<li><a asp-controller="Pet" asp-action="Edit" asp-route-id="@p.PetId" target="_blank"><i class="fa fa-edit fa-fw" aria-hidden="true"></i></a></li>
+											<li><a asp-controller="Pet" asp-action="Delete" asp-route-id="@p.PetId" target="_blank"><i class="fa fa-trash fa-fw" aria-hidden="true"></i></a></li>
+											@*<li role="separator" class="divider"></li>*@										
+											@*<li><a asp-controller="Pet" asp-action="Page" asp-route-id="@p.PetId" target="_blank">Page</a></li>*@
 
 										</ul>
 									</div>
 								</td>
-								<td colspan="4">
+								<td>
+									<a class="btn btn-default" asp-controller="Pet" asp-action="Track" asp-route-id="@p.PetId" target="_blank" style="width:100%; padding:3px 6px 3px 6px">Track</a>
+								</td>
+								<td><a class="btn btn-default" asp-controller="Pet" asp-action="Stats" asp-route-id="@p.PetId" target="_blank" style="width:100%; padding:3px 6px 3px 6px">Activity</a></td>
+								<td colspan="2">
 									@if (p.LastMode != null && p.LastMode.Type == ConfigModeTypes.Emergency && p.LastMode.IsActive)
 									{
 										<button class="btn btn-default reportFound" data-id="@p.PetId" data-name="@p.Name" style="width:100%; padding:3px 6px 3px 6px">Report Found</button>

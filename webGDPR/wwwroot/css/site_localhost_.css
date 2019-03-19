@@ -191,4 +191,8 @@ tr, td {
 	border-top: 0px solid #ddd !important;
 }
 
+.dropdown-menu {
+	min-width: unset;
+}
+
 	
