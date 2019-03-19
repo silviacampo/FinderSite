@@ -104,5 +104,49 @@
   }
 
 }
+$(function () {
+  $(".openReportLostDialog").click(function () {
+    $("#petLostModalConfirmBtn").attr('data-petId',$(this).data('id'));
+    $("#petName").html($(this).data('name'));
+    $("#petLostModal").modal("show");
+  });
+
+  $("#petLostModalConfirmBtn").click(function () {
+    $.ajax({
+      url: '/pet/EmergencyOn',
+      type: 'GET',
+      data: {
+        'id': $(this).attr('data-petId')
+      },
+      contentType: 'application/json; charset=utf-8',
+      success: function (data) {
+        $(".openReportLostDialog").hide();
+        $(this).siblings("#petFoundBtn").show();
+        $("#petLostModal").modal("hide");
+      },
+      error: function () {
+        alert("error");
+      }
+    });   
+  });
+
+  $(".reportFound").click(function () {
+    $.ajax({
+      url: '/pet/EmergencyOff',
+      type: 'GET',
+      data: {
+        'id': $(this).data('id')
+      },
+      contentType: 'application/json; charset=utf-8',
+      success: function (data) {
+        $(this).hide();
+        $(this).siblings(".openReportLostDialog").show();
+      },
+      error: function () {
+        alert("error");
+      }
+    });
+  });
+});
 
 initPetsMap();

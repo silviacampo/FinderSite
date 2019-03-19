@@ -390,11 +390,11 @@
 								<td colspan="4">
 									@if (p.LastMode != null && p.LastMode.Type == ConfigModeTypes.Emergency && p.LastMode.IsActive)
 									{
-										<a class="btn btn-danger active small" asp-controller="Pet" asp-action="EmergencyOff" asp-route-id="@p.PetId" style="width:100%; padding:3px 6px 3px 6px">Report Found</a>
+										<button class="btn btn-default reportFound" data-id="@p.PetId" data-name="@p.Name" style="width:100%; padding:3px 6px 3px 6px">Report Found</button>
 									}
 									else
 									{
-										<button class="btn btn-danger" asp-controller="Pet" asp-action="EmergencyOn" asp-route-id="@p.PetId" style="width:100%; padding:3px 6px 3px 6px" data-toggle="modal" data-target="#petLostModal">Report Lost</button>
+										<button class="btn btn-danger openReportLostDialog" data-id="@p.PetId" data-name="@p.Name" style="width:100%; padding:3px 6px 3px 6px">Report Lost</button>
 									}
 								</td>
 
@@ -403,6 +403,9 @@
 					}
 				</tbody>
 			</table>
+			<script>
+
+			</script>
 			<!-- The Modal -->
 			<div class="modal fade" id="petLostModal">
 				<div class="modal-dialog modal-l">
@@ -414,12 +417,13 @@
 						</div>
 						<!-- Modal body -->
 						<div class="modal-body">
-							Are you sure?
+							Are you sure <span id="petName"></span> is lost?
+							<input type="hidden" name="petId" id="petId" value="" />
 						</div>
 						<!-- Modal footer -->
 						<div class="modal-footer">
 							<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-							<button type="button" class="btn btn-secondary" data-dismiss="modal">Confirm</button>
+							<button type="button" id="petLostModalConfirmBtn" class="btn btn-secondary" data-dismiss="modal">Confirm</button>
 						</div>
 
 					</div>
