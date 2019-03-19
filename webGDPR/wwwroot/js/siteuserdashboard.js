@@ -112,16 +112,17 @@ $(function () {
   });
 
   $("#petLostModalConfirmBtn").click(function () {
+    var id = $(this).attr('data-petId');
     $.ajax({
       url: '/pet/EmergencyOn',
       type: 'GET',
       data: {
-        'id': $(this).attr('data-petId')
+        'id': id
       },
       contentType: 'application/json; charset=utf-8',
       success: function (data) {
-        $(".openReportLostDialog").hide();
-        $(this).siblings("#petFoundBtn").show();
+        $(".openReportLostDialog[data-id='"+id+"']").hide();
+        $(".openReportLostDialog[data-id='"+id+"']").siblings(".reportFound").show();
         $("#petLostModal").modal("hide");
       },
       error: function () {
@@ -131,16 +132,17 @@ $(function () {
   });
 
   $(".reportFound").click(function () {
+    var caller = $(this);
     $.ajax({
       url: '/pet/EmergencyOff',
       type: 'GET',
       data: {
-        'id': $(this).data('id')
+        'id': caller.data('id')
       },
       contentType: 'application/json; charset=utf-8',
       success: function (data) {
-        $(this).hide();
-        $(this).siblings(".openReportLostDialog").show();
+        caller.hide();
+        caller.siblings(".openReportLostDialog").show();
       },
       error: function () {
         alert("error");

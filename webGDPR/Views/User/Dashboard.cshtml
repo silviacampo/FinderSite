@@ -391,9 +391,11 @@
 									@if (p.LastMode != null && p.LastMode.Type == ConfigModeTypes.Emergency && p.LastMode.IsActive)
 									{
 										<button class="btn btn-default reportFound" data-id="@p.PetId" data-name="@p.Name" style="width:100%; padding:3px 6px 3px 6px">Report Found</button>
+										<button class="btn btn-danger openReportLostDialog" data-id="@p.PetId" data-name="@p.Name" style="width:100%; padding:3px 6px 3px 6px; display:none">Report Lost</button>
 									}
 									else
 									{
+										<button class="btn btn-default reportFound" data-id="@p.PetId" data-name="@p.Name" style="width:100%; padding:3px 6px 3px 6px; display:none;">Report Found</button>
 										<button class="btn btn-danger openReportLostDialog" data-id="@p.PetId" data-name="@p.Name" style="width:100%; padding:3px 6px 3px 6px">Report Lost</button>
 									}
 								</td>
