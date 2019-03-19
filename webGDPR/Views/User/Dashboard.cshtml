@@ -397,10 +397,10 @@
 										</ul>
 									</div>
 								</td>
-								<td>
+								<td class="visible-md visible-lg visible-sm">
 									<a class="btn btn-default" asp-controller="Pet" asp-action="Track" asp-route-id="@p.PetId" target="_blank" style="width:100%; padding:3px 6px 3px 6px">Track</a>
 								</td>
-								<td><a class="btn btn-default" asp-controller="Pet" asp-action="Stats" asp-route-id="@p.PetId" target="_blank" style="width:100%; padding:3px 6px 3px 6px">Activity</a></td>
+								<td class="visible-md visible-lg visible-sm"><a class="btn btn-default" asp-controller="Pet" asp-action="Stats" asp-route-id="@p.PetId" target="_blank" style="width:100%; padding:3px 6px 3px 6px">Activity</a></td>
 								<td colspan="2">
 									@if (p.LastMode != null && p.LastMode.Type == ConfigModeTypes.Emergency && p.LastMode.IsActive)
 									{
