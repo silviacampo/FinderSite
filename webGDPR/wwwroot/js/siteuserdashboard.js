@@ -149,6 +149,52 @@ $(function () {
       }
     });
   });
+
+  $(".openBanDialog").click(function () {
+    $("#banModalConfirmBtn").attr('data-deviceId', $(this).data('id'));
+    $("#banName").html($(this).data('name'));
+    $("#banModal").modal("show");
+  });
+
+  $("#banModalConfirmBtn").click(function () {
+    var id = $(this).attr('data-deviceId');
+    $.ajax({
+      url: '/device/BanOn',
+      type: 'GET',
+      data: {
+        'id': id
+      },
+      contentType: 'application/json; charset=utf-8',
+      success: function (data) {
+        $(".openBanDialog[data-id='" + id + "']").hide();
+        $(".openBanDialog[data-id='" + id + "']").siblings(".unBan").show();
+        $("#banModal").modal("hide");
+      },
+      error: function () {
+        alert("error");
+      }
+    });
+  });
+
+  $(".unBan").click(function () {
+    var caller = $(this);
+    $.ajax({
+      url: '/device/BanOff',
+      type: 'GET',
+      data: {
+        'id': caller.data('id')
+      },
+      contentType: 'application/json; charset=utf-8',
+      success: function (data) {
+        caller.hide();
+        caller.siblings(".openBanDialog").show();
+      },
+      error: function () {
+        alert("error");
+      }
+    });
+  });
+
 });
 
 initPetsMap();

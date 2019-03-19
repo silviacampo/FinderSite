@@ -103,6 +103,50 @@ namespace webGDPR.Controllers
 			return View();
 		}
 
+		public async Task<IActionResult> BanOn(string id)
+		{
+			bool result = await SetBanAsync(true, id);
+			if (!result)
+			{
+				return NotFound();
+			}
+			return Ok();
+		}
+
+		public async Task<IActionResult> BanOff(string id)
+		{
+			bool result = await SetBanAsync(false, id);
+			if (!result)
+			{
+				return NotFound();
+			}
+			return Ok();
+		}
+
+		private async Task<bool> SetBanAsync(bool activate, string id)
+		{
+			Device device = await _context.Device.FirstAsync(c => c.DeviceId == id);
+			if (device == null)
+			{
+				return false;
+			}
+			else
+			{
+				device.Banned = activate;
+				_context.Update(device);
+				await _context.SaveChangesAsync();
+
+				CustomWebSocket ws = _wsFactory.ClientByDeviceId(device.DeviceId);
+					if (ws != null)
+					{
+						await _webSocketMessageHandler.SendDeviceBannedMessage(ws, device.Banned); //yes or not
+					}				
+				return true;
+			}
+		}
+
+
+
 		// GET: Device/Details/5
 		public async Task<IActionResult> Details(string id)
         {

@@ -109,8 +109,8 @@
 						<th>
 							<i class="fa fa-mobile-phone fa-fw" aria-hidden="true"></i> &nbsp; Mobile Devices or Computers running the application
 						</th>
-						<th class="small">Network Connected</th>
 						<th class="small"> </th>
+						<th class="small">Network Connected</th>
 					</tr>
 				</theader>
 				<tbody>
@@ -118,31 +118,43 @@
 						List<webGDPR.Infrastructure.CustomWebSockets.CustomWebSocket> WebSockets = (List<webGDPR.Infrastructure.CustomWebSockets.CustomWebSocket>)ViewData["WebSockets"];
 						foreach (Device d in Model.Devices)
 						{
-							<tr>
-								<td>
-									<div style="position:relative;top:0px;left:0px; min-width:40px;">
-										<div class="btn-group">
-											<a class="dropdown-link" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="padding:3px 6px 3px 6px">
-												@d.GetPlatform @d.GetName<i class="fa fa-caret-down fa-fw" aria-hidden="true"></i>
-											</a>
-											<ul class="dropdown-menu">
-												<li><a asp-controller="Device" asp-action="Edit" asp-route-id="@d.DeviceId" target="_blank"><i class="fa fa-edit fa-fw" aria-hidden="true"></i></a></li>
-												<li><a asp-controller="Device" asp-action="Delete" asp-route-id="@d.DeviceId" target="_blank"><i class="fa fa-trash fa-fw" aria-hidden="true"></i></a></li>
-											</ul>
-										</div>
-									</div>
-								</td>
-								<td>
-									@if (WebSockets.Exists(w => w.DeviceId == d.DeviceId))
-									{
-										<i class="fa fa-circle fa-fw" style="color:green;position:relative;top:7px;left:0px" aria-hidden="true"></i>
-									}
-									else
-									{
-										<i class="fa fa-circle fa-fw" style="color:red;position:relative;top:7px;left:0px" aria-hidden="true"></i>
-									}
-								</td>
-							</tr>
+					<tr>
+						<td>
+							<div style="position:relative;top:0px;left:0px; min-width:40px;">
+								<div class="btn-group">
+									<a class="dropdown-link" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="padding:3px 6px 3px 6px">
+										@d.GetPlatform @d.GetName<i class="fa fa-caret-down fa-fw" aria-hidden="true"></i>
+									</a>
+									<ul class="dropdown-menu">
+										<li><a asp-controller="Device" asp-action="Edit" asp-route-id="@d.DeviceId" target="_blank"><i class="fa fa-edit fa-fw" aria-hidden="true"></i></a></li>
+										<li><a asp-controller="Device" asp-action="Delete" asp-route-id="@d.DeviceId" target="_blank"><i class="fa fa-trash fa-fw" aria-hidden="true"></i></a></li>
+									</ul>
+								</div>
+							</div>
+						</td>
+						<td>
+							@if (d.Banned)
+							{
+								<button class="btn btn-default unBan" data-id="@d.DeviceId" data-name="@d.GetName" style="width:100%; padding:3px 6px 3px 6px">Autorize</button>
+								<button class="btn btn-danger openBanDialog" data-id="@d.DeviceId" data-name="@d.GetName" style="width:100%; padding:3px 6px 3px 6px; display:none">Unauthorize</button>
+							}
+							else
+							{
+								<button class="btn btn-default unBan" data-id="@d.DeviceId" data-name="@d.GetName" style="width:100%; padding:3px 6px 3px 6px; display:none">Autorize</button>
+								<button class="btn btn-danger openBanDialog" data-id="@d.DeviceId" data-name="@d.GetName" style="width:100%; padding:3px 6px 3px 6px; ">Unauthorize</button>
+							}
+						</td>
+						<td>
+							@if (WebSockets.Exists(w => w.DeviceId == d.DeviceId))
+							{
+								<i class="fa fa-circle fa-fw" style="color:green;position:relative;top:7px;left:0px" aria-hidden="true"></i>
+							}
+							else
+							{
+								<i class="fa fa-circle fa-fw" style="color:red;position:relative;top:7px;left:0px" aria-hidden="true"></i>
+							}
+						</td>
+					</tr>
 						}
 
 					}
@@ -379,7 +391,7 @@
 										<ul class="dropdown-menu">
 											<li><a asp-controller="Pet" asp-action="Edit" asp-route-id="@p.PetId" target="_blank"><i class="fa fa-edit fa-fw" aria-hidden="true"></i></a></li>
 											<li><a asp-controller="Pet" asp-action="Delete" asp-route-id="@p.PetId" target="_blank"><i class="fa fa-trash fa-fw" aria-hidden="true"></i></a></li>
-											@*<li role="separator" class="divider"></li>*@										
+											@*<li role="separator" class="divider"></li>*@
 											@*<li><a asp-controller="Pet" asp-action="Page" asp-route-id="@p.PetId" target="_blank">Page</a></li>*@
 
 										</ul>
@@ -407,10 +419,8 @@
 					}
 				</tbody>
 			</table>
-			<script>
 
-			</script>
-			<!-- The Modal -->
+			<!-- The Modals -->
 			<div class="modal fade" id="petLostModal">
 				<div class="modal-dialog modal-l">
 					<div class="modal-content">
@@ -433,6 +443,28 @@
 					</div>
 				</div>
 			</div>
+
+			<div class="modal fade" id="banModal">
+				<div class="modal-dialog modal-l">
+					<div class="modal-content">
+						<!-- Modal Header -->
+						<div class="modal-header">
+							<h4 class="modal-title">Unauthorize a device</h4>
+							<button type="button" class="close" data-dismiss="modal">&times;</button>
+						</div>
+						<!-- Modal body -->
+						<div class="modal-body">
+							Are you sure <span id="banName"></span> should stop connecting to our network?
+						</div>
+						<!-- Modal footer -->
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+							<button type="button" id="banModalConfirmBtn" class="btn btn-secondary" data-dismiss="modal">Confirm</button>
+						</div>
+					</div>
+				</div>
+			</div>
+
 		</div>
 
 
