@@ -149,7 +149,7 @@
 								<a class="unBan" data-id="@d.DeviceId" data-name="@d.GetName" title="Authorize to connect" style="display:none;"><i class="fa fa-check-circle fa-fw" aria-hidden="true"></i></a>
 								<a class="openBanDialog" data-id="@d.DeviceId" data-name="@d.GetName" title="Do no authorize to connect"><i class="fa fa-ban fa-fw" aria-hidden="true"></i></a>
 							}
-							<a class="openDeleteDeviceDialog" data-id="@d.DeviceId" title="Delete"><i class="fa fa-trash fa-fw" aria-hidden="true"></i></a>
+							<a class="openDeleteDeviceDialog" data-id="@d.DeviceId" data-device="@Newtonsoft.Json.JsonConvert.SerializeObject(d)" title="Delete"><i class="fa fa-trash fa-fw" aria-hidden="true"></i></a>
 						</td>
 					</tr>
 						}

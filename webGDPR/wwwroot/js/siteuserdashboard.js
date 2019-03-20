@@ -198,8 +198,16 @@ $(function () {
   //Delete device
 
   $(".openDeleteDeviceDialog").click(function () {
-    $("#deleteDeviceModalConfirmBtn").attr('data-deviceId', $(this).data('id'));
-   // $("#banName").html($(this).data('name'));
+    
+    var device = JSON.parse($(this).attr('data-device'));
+    $("#deleteDeviceModalConfirmBtn").attr('data-deviceId', device.DeviceId);
+    $("#deviceType").html(device.Type);
+    $("#devicePlatform").html(device.Platform);
+    $("#deviceName").html(device.Name);
+    $("#deviceModel").html(device.Model);
+    $("#deviceManufacturer").html(device.Manufacturer);
+    $("#deviceOSVersion").html(device.OSVersion);
+    $("#deviceAliasName").html(device.AliasName);    
     $("#deleteDeviceModal").modal("show");
   });
 
