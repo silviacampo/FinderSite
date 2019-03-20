@@ -105,6 +105,8 @@
 
 }
 $(function () {
+  //Lost pet
+
   $(".openReportLostDialog").click(function () {
     $("#petLostModalConfirmBtn").attr('data-petId',$(this).data('id'));
     $("#petName").html($(this).data('name'));
@@ -149,6 +151,8 @@ $(function () {
       }
     });
   });
+
+  //Ban device
 
   $(".openBanDialog").click(function () {
     $("#banModalConfirmBtn").attr('data-deviceId', $(this).data('id'));
@@ -195,6 +199,32 @@ $(function () {
     });
   });
 
+  //Delete device
+
+  $(".openDeleteDeviceDialog").click(function () {
+    $("#deleteDeviceModalConfirmBtn").attr('data-deviceId', $(this).data('id'));
+   // $("#banName").html($(this).data('name'));
+    $("#deleteDeviceModal").modal("show");
+  });
+
+  $("#deleteDeviceModalConfirmBtn").click(function () {
+    var id = $(this).attr('data-deviceId');
+    $.ajax({
+      url: '/device/Delete',
+      type: 'GET',
+      data: {
+        'id': id
+      },
+      contentType: 'application/json; charset=utf-8',
+      success: function (data) {
+        $(".openDeleteDeviceDialog[data-id='" + id + "']").parent().hide();
+        $("#deleteDeviceModal").modal("hide");
+      },
+      error: function () {
+        alert("error");
+      }
+    });
+  });
 });
 
 initPetsMap();

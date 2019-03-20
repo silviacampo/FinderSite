@@ -112,51 +112,46 @@
 						<th>
 							<i class="fa fa-mobile-phone fa-fw" aria-hidden="true"></i> &nbsp; Mobile Devices or Computers running the application
 						</th>
-						<th class="small"> </th>
 						<th class="small">Network Connected</th>
+						<th class="small" style="min-width:80px;">Actions</th>
 					</tr>
 				</theader>
 				<tbody>
 					@{
 						foreach (Device d in Model.Devices)
 						{
-							<tr>
-								<td>
-									<div style="position:relative;top:0px;left:0px; min-width:40px;">
-										<div class="btn-group">
-											<a class="dropdown-link" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="padding:3px 6px 3px 6px">
-												@d.GetPlatform @d.GetName<i class="fa fa-caret-down fa-fw" aria-hidden="true"></i>
-											</a>
-											<ul class="dropdown-menu">
-												<li><a asp-controller="Device" asp-action="Edit" asp-route-id="@d.DeviceId" target="_blank"><i class="fa fa-edit fa-fw" aria-hidden="true"></i></a></li>
-												<li><a asp-controller="Device" asp-action="Delete" asp-route-id="@d.DeviceId" target="_blank"><i class="fa fa-trash fa-fw" aria-hidden="true"></i></a></li>
-											</ul>
-										</div>
-									</div>
-								</td>
-								<td>
-									@if (d.Banned)
-									{
-										<button class="btn btn-default unBan" data-id="@d.DeviceId" data-name="@d.GetName" style="width:100%; padding:3px 6px 3px 6px" title="Authorize to connect"><i class="fa fa-check-circle fa-fw" aria-hidden="true" ></i></button>
-										<button class="btn btn-default openBanDialog" data-id="@d.DeviceId" data-name="@d.GetName" style="width:100%; padding:3px 6px 3px 6px; display:none" title="Do no authorize to connect"><i class="fa fa-ban fa-fw" aria-hidden="true"></i></button>
-									}
-									else
-									{
-										<button class="btn btn-default unBan" data-id="@d.DeviceId" data-name="@d.GetName" style="width:100%; padding:3px 6px 3px 6px; display:none" title="Authorize to connect"><i class="fa fa-check-circle fa-fw" aria-hidden="true"></i></button>
-										<button class="btn btn-default openBanDialog" data-id="@d.DeviceId" data-name="@d.GetName" style="width:100%; padding:3px 6px 3px 6px;" title="Do no authorize to connect"><i class="fa fa-ban fa-fw" aria-hidden="true"></i></button>
-									}
-								</td>
-								<td>
-									@if (WebSockets.Exists(w => w.DeviceId == d.DeviceId))
-									{
-										<i class="fa fa-circle fa-fw" style="color:green;position:relative;top:7px;left:0px" aria-hidden="true"></i>
-									}
-									else
-									{
-										<i class="fa fa-circle fa-fw" style="color:red;position:relative;top:7px;left:0px" aria-hidden="true"></i>
-									}
-								</td>
-							</tr>
+					<tr>
+						<td>
+							<div style="position:relative;top:0px;left:0px; min-width:40px;">
+								@d.GetPlatform @d.GetName
+							</div>
+						</td>
+
+						<td>
+							@if (WebSockets.Exists(w => w.DeviceId == d.DeviceId))
+							{
+								<i class="fa fa-circle fa-fw" style="color:green;position:relative;top:7px;left:0px" aria-hidden="true"></i>
+							}
+							else
+							{
+								<i class="fa fa-circle fa-fw" style="color:red;position:relative;top:7px;left:0px" aria-hidden="true"></i>
+							}
+						</td>
+						<td>
+							<a asp-controller="Device" asp-action="Edit" asp-route-id="@d.DeviceId" title="Edit" target="_blank"><i class="fa fa-edit fa-fw" aria-hidden="true"></i></a>
+							@if (d.Banned)
+							{
+								<a class="unBan" data-id="@d.DeviceId" data-name="@d.GetName" title="Authorize to connect"><i class="fa fa-check-circle fa-fw" aria-hidden="true"></i></a>
+								<a class="openBanDialog" data-id="@d.DeviceId" data-name="@d.GetName" title="Do no authorize to connect" style="display:none;"><i class="fa fa-ban fa-fw" aria-hidden="true"></i></a>
+							}
+							else
+							{
+								<a class="unBan" data-id="@d.DeviceId" data-name="@d.GetName" title="Authorize to connect" style="display:none;"><i class="fa fa-check-circle fa-fw" aria-hidden="true"></i></a>
+								<a class="openBanDialog" data-id="@d.DeviceId" data-name="@d.GetName" title="Do no authorize to connect"><i class="fa fa-ban fa-fw" aria-hidden="true"></i></a>
+							}
+							<a class="openDeleteDeviceDialog" data-id="@d.DeviceId" title="Delete"><i class="fa fa-trash fa-fw" aria-hidden="true"></i></a>
+						</td>
+					</tr>
 						}
 
 					}
@@ -460,7 +455,7 @@
 		<div class="modal-content">
 			<!-- Modal Header -->
 			<div class="modal-header">
-				<h4 class="modal-title">Report a lost pet</h4>
+				<h4 class="modal-title" style="display: inline;">Report a lost pet</h4>
 				<button type="button" class="close" data-dismiss="modal">&times;</button>
 			</div>
 			<!-- Modal body -->
@@ -483,7 +478,7 @@
 		<div class="modal-content">
 			<!-- Modal Header -->
 			<div class="modal-header">
-				<h4 class="modal-title">Unauthorize a device</h4>
+				<h4 class="modal-title" style="display: inline;">Unauthorize a device</h4>
 				<button type="button" class="close" data-dismiss="modal">&times;</button>
 			</div>
 			<!-- Modal body -->
@@ -494,6 +489,71 @@
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
 				<button type="button" id="banModalConfirmBtn" class="btn btn-secondary" data-dismiss="modal">Confirm</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="deleteDeviceModal">
+	<div class="modal-dialog modal-l">
+		<div class="modal-content">
+			<!-- Modal Header -->
+			<div class="modal-header">
+				<h4 class="modal-title" style="display: inline;">Delete a mobile device or computer</h4>
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+			</div>
+			<!-- Modal body -->
+			<div class="modal-body">
+				Are you sure you want to delete this mobile device or computer?
+				<dl class="dl-horizontal">
+					<dt>
+						@Html.DisplayNameFor(model => model.Devices[0].Type)
+					</dt>
+					<dd>
+						<span id="deviceType"></span>
+					</dd>
+					<dt>
+						@Html.DisplayNameFor(model => model.Devices[0].Platform)
+					</dt>
+					<dd>
+						<span id="devicePlatform"></span>
+					</dd>
+					<dt>
+						@Html.DisplayNameFor(model => model.Devices[0].Name)
+					</dt>
+					<dd>
+						<span id="deviceName"></span>
+					</dd>
+					<dt>
+						@Html.DisplayNameFor(model => model.Devices[0].Model)
+					</dt>
+					<dd>
+						<span id="deviceModel"></span>
+					</dd>
+					<dt>
+						@Html.DisplayNameFor(model => model.Devices[0].Manufacturer)
+					</dt>
+					<dd>
+						<span id="deviceManufacturer"></span>
+					</dd>
+					<dt>
+						@Html.DisplayNameFor(model => model.Devices[0].OSVersion)
+					</dt>
+					<dd>
+						<span id="deviceOSVersion"></span>
+					</dd>
+					<dt>
+						@Html.DisplayNameFor(model => model.Devices[0].AliasName)
+					</dt>
+					<dd>
+						<span id="deviceAliasName"></span>
+					</dd>
+				</dl>
+			</div>
+			<!-- Modal footer -->
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+				<button type="button" id="deleteDeviceModalConfirmBtn" class="btn btn-secondary" data-dismiss="modal">Confirm</button>
 			</div>
 		</div>
 	</div>
