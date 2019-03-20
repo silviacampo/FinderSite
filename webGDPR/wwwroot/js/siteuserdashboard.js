@@ -117,11 +117,10 @@ $(function () {
     var id = $(this).attr('data-petId');
     $.ajax({
       url: '/pet/EmergencyOn',
-      type: 'GET',
+      type: 'POST',
       data: {
         'id': id
       },
-      contentType: 'application/json; charset=utf-8',
       success: function (data) {
         $(".openReportLostDialog[data-id='"+id+"']").hide();
         $(".openReportLostDialog[data-id='"+id+"']").siblings(".reportFound").show();
@@ -137,11 +136,10 @@ $(function () {
     var caller = $(this);
     $.ajax({
       url: '/pet/EmergencyOff',
-      type: 'GET',
+      type: 'POST',
       data: {
         'id': caller.data('id')
       },
-      contentType: 'application/json; charset=utf-8',
       success: function (data) {
         caller.hide();
         caller.siblings(".openReportLostDialog").show();
@@ -168,7 +166,6 @@ $(function () {
       data: {
         'id': id
       },
-      //contentType: 'application/json; charset=utf-8',
       success: function (data) {
         $(".openBanDialog[data-id='" + id + "']").hide();
         $(".openBanDialog[data-id='" + id + "']").siblings(".unBan").show();
@@ -188,7 +185,6 @@ $(function () {
       data: {
         'id': caller.data('id')
       },
-     // contentType: 'application/json; charset=utf-8',
       success: function (data) {
         caller.hide();
         caller.siblings(".openBanDialog").show();
@@ -211,11 +207,10 @@ $(function () {
     var id = $(this).attr('data-deviceId');
     $.ajax({
       url: '/device/Delete',
-      type: 'GET',
+      type: 'POST',
       data: {
         'id': id
       },
-      contentType: 'application/json; charset=utf-8',
       success: function (data) {
         $(".openDeleteDeviceDialog[data-id='" + id + "']").parent().hide();
         $("#deleteDeviceModal").modal("hide");

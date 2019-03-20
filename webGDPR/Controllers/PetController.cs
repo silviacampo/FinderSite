@@ -602,7 +602,8 @@ namespace webGDPR.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        public async Task<IActionResult> EmergencyOn(string id)
+		[HttpPost]
+		public async Task<IActionResult> EmergencyOn([FromForm]string id)
         {
             bool result = await SetModeAsync(ConfigModeTypes.Emergency, true, id);
             if (!result)
@@ -612,7 +613,8 @@ namespace webGDPR.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        public async Task<IActionResult> EmergencyOff(string id)
+		[HttpPost]
+		public async Task<IActionResult> EmergencyOff([FromForm]string id)
         {
             bool result = await SetModeAsync(ConfigModeTypes.Emergency, false, id);
             if (!result)
