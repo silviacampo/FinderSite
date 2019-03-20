@@ -164,11 +164,11 @@ $(function () {
     var id = $(this).attr('data-deviceId');
     $.ajax({
       url: '/device/BanOn',
-      type: 'GET',
+      type: 'POST',
       data: {
         'id': id
       },
-      contentType: 'application/json; charset=utf-8',
+      //contentType: 'application/json; charset=utf-8',
       success: function (data) {
         $(".openBanDialog[data-id='" + id + "']").hide();
         $(".openBanDialog[data-id='" + id + "']").siblings(".unBan").show();
@@ -184,11 +184,11 @@ $(function () {
     var caller = $(this);
     $.ajax({
       url: '/device/BanOff',
-      type: 'GET',
+      type: 'POST',
       data: {
         'id': caller.data('id')
       },
-      contentType: 'application/json; charset=utf-8',
+     // contentType: 'application/json; charset=utf-8',
       success: function (data) {
         caller.hide();
         caller.siblings(".openBanDialog").show();

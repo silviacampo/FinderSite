@@ -103,7 +103,9 @@ namespace webGDPR.Controllers
 			return View();
 		}
 
-		public async Task<IActionResult> BanOn(string id)
+		//https://stackoverflow.com/questions/44538772/asp-net-core-form-post-results-in-a-http-415-unsupported-media-type-response
+		[HttpPost]
+		public async Task<IActionResult> BanOn([FromForm]string id)
 		{
 			bool result = await SetBanAsync(true, id);
 			if (!result)
@@ -113,7 +115,8 @@ namespace webGDPR.Controllers
 			return Ok();
 		}
 
-		public async Task<IActionResult> BanOff(string id)
+		[HttpPost]
+		public async Task<IActionResult> BanOff([FromForm]string id)
 		{
 			bool result = await SetBanAsync(false, id);
 			if (!result)
