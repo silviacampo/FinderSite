@@ -10,10 +10,16 @@
 <div class="row">
 	<div class="col-md-3">
 		<h2>Issues</h2>
-		No device is connected - chequear las websocket activas
-
-
 		<ul>
+			@{
+				List<webGDPR.Infrastructure.CustomWebSockets.CustomWebSocket> WebSockets = (List<webGDPR.Infrastructure.CustomWebSockets.CustomWebSocket>)ViewData["WebSockets"];
+				if (WebSockets.Count <= 0) {
+			<li>
+				<b>No Device is connected</b>
+			</li>
+				}
+			}
+
 			@if (Model.MissingSubscription)
 			{
 				<li>
@@ -83,7 +89,6 @@
 			}
 		</ul>
 		<h2>Actions</h2>
-
 		<ul>
 			<li><a asp-area="" asp-controller="User" asp-action="PickLocation"><i class="fa fa-location-arrow fa-fw" aria-hidden="true"></i>&nbsp; Update your Location</a></li>
 			<li><a asp-area="" asp-controller="Device" asp-action="DownloadApp"><i class="fa fa-download fa-fw" aria-hidden="true"></i>&nbsp; Download mobile and desktop application</a></li>
@@ -97,9 +102,7 @@
 			</li>
 			<li><a href="https://go.microsoft.com/fwlink/?LinkID=398609">Check devices connection with your account</a></li>
 		</ul>
-
 	</div>
-
 	<div class="col-md-6">
 		<h2>Overview</h2>
 		<div class="well well-lg" style="position:relative;top:0px;left:0px; min-width:200px;">
@@ -115,46 +118,45 @@
 				</theader>
 				<tbody>
 					@{
-						List<webGDPR.Infrastructure.CustomWebSockets.CustomWebSocket> WebSockets = (List<webGDPR.Infrastructure.CustomWebSockets.CustomWebSocket>)ViewData["WebSockets"];
 						foreach (Device d in Model.Devices)
 						{
-					<tr>
-						<td>
-							<div style="position:relative;top:0px;left:0px; min-width:40px;">
-								<div class="btn-group">
-									<a class="dropdown-link" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="padding:3px 6px 3px 6px">
-										@d.GetPlatform @d.GetName<i class="fa fa-caret-down fa-fw" aria-hidden="true"></i>
-									</a>
-									<ul class="dropdown-menu">
-										<li><a asp-controller="Device" asp-action="Edit" asp-route-id="@d.DeviceId" target="_blank"><i class="fa fa-edit fa-fw" aria-hidden="true"></i></a></li>
-										<li><a asp-controller="Device" asp-action="Delete" asp-route-id="@d.DeviceId" target="_blank"><i class="fa fa-trash fa-fw" aria-hidden="true"></i></a></li>
-									</ul>
-								</div>
-							</div>
-						</td>
-						<td>
-							@if (d.Banned)
-							{
-								<button class="btn btn-default unBan" data-id="@d.DeviceId" data-name="@d.GetName" style="width:100%; padding:3px 6px 3px 6px">Autorize</button>
-								<button class="btn btn-danger openBanDialog" data-id="@d.DeviceId" data-name="@d.GetName" style="width:100%; padding:3px 6px 3px 6px; display:none">Unauthorize</button>
-							}
-							else
-							{
-								<button class="btn btn-default unBan" data-id="@d.DeviceId" data-name="@d.GetName" style="width:100%; padding:3px 6px 3px 6px; display:none">Autorize</button>
-								<button class="btn btn-danger openBanDialog" data-id="@d.DeviceId" data-name="@d.GetName" style="width:100%; padding:3px 6px 3px 6px; ">Unauthorize</button>
-							}
-						</td>
-						<td>
-							@if (WebSockets.Exists(w => w.DeviceId == d.DeviceId))
-							{
-								<i class="fa fa-circle fa-fw" style="color:green;position:relative;top:7px;left:0px" aria-hidden="true"></i>
-							}
-							else
-							{
-								<i class="fa fa-circle fa-fw" style="color:red;position:relative;top:7px;left:0px" aria-hidden="true"></i>
-							}
-						</td>
-					</tr>
+							<tr>
+								<td>
+									<div style="position:relative;top:0px;left:0px; min-width:40px;">
+										<div class="btn-group">
+											<a class="dropdown-link" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="padding:3px 6px 3px 6px">
+												@d.GetPlatform @d.GetName<i class="fa fa-caret-down fa-fw" aria-hidden="true"></i>
+											</a>
+											<ul class="dropdown-menu">
+												<li><a asp-controller="Device" asp-action="Edit" asp-route-id="@d.DeviceId" target="_blank"><i class="fa fa-edit fa-fw" aria-hidden="true"></i></a></li>
+												<li><a asp-controller="Device" asp-action="Delete" asp-route-id="@d.DeviceId" target="_blank"><i class="fa fa-trash fa-fw" aria-hidden="true"></i></a></li>
+											</ul>
+										</div>
+									</div>
+								</td>
+								<td>
+									@if (d.Banned)
+									{
+										<button class="btn btn-default unBan" data-id="@d.DeviceId" data-name="@d.GetName" style="width:100%; padding:3px 6px 3px 6px" title="Authorize to connect"><i class="fa fa-check-circle fa-fw" aria-hidden="true" ></i></button>
+										<button class="btn btn-default openBanDialog" data-id="@d.DeviceId" data-name="@d.GetName" style="width:100%; padding:3px 6px 3px 6px; display:none" title="Do no authorize to connect"><i class="fa fa-ban fa-fw" aria-hidden="true"></i></button>
+									}
+									else
+									{
+										<button class="btn btn-default unBan" data-id="@d.DeviceId" data-name="@d.GetName" style="width:100%; padding:3px 6px 3px 6px; display:none" title="Authorize to connect"><i class="fa fa-check-circle fa-fw" aria-hidden="true"></i></button>
+										<button class="btn btn-default openBanDialog" data-id="@d.DeviceId" data-name="@d.GetName" style="width:100%; padding:3px 6px 3px 6px;" title="Do no authorize to connect"><i class="fa fa-ban fa-fw" aria-hidden="true"></i></button>
+									}
+								</td>
+								<td>
+									@if (WebSockets.Exists(w => w.DeviceId == d.DeviceId))
+									{
+										<i class="fa fa-circle fa-fw" style="color:green;position:relative;top:7px;left:0px" aria-hidden="true"></i>
+									}
+									else
+									{
+										<i class="fa fa-circle fa-fw" style="color:red;position:relative;top:7px;left:0px" aria-hidden="true"></i>
+									}
+								</td>
+							</tr>
 						}
 
 					}
@@ -162,7 +164,6 @@
 			</table>
 		</div>
 		<div class="well well-lg" style="position:relative;top:0px;left:0px; min-width:200px;">
-
 			<table class="table" style="position:relative;top:0px;left:0px; min-width:100px;">
 				<theader>
 					<tr>
@@ -398,9 +399,9 @@
 									</div>
 								</td>
 								<td class="visible-md visible-lg visible-sm">
-									<a class="btn btn-default" asp-controller="Pet" asp-action="Track" asp-route-id="@p.PetId" target="_blank" style="width:100%; padding:3px 6px 3px 6px">Track</a>
+									<a class="btn btn-default" asp-controller="Pet" asp-action="Track" asp-route-id="@p.PetId" target="_blank" style="width:100%; padding:3px 6px 3px 6px" title="Check your pet's last locations"><i class="fa fa-map-marker fa-fw" aria-hidden="true"></i></a>
 								</td>
-								<td class="visible-md visible-lg visible-sm"><a class="btn btn-default" asp-controller="Pet" asp-action="Stats" asp-route-id="@p.PetId" target="_blank" style="width:100%; padding:3px 6px 3px 6px">Activity</a></td>
+								<td class="visible-md visible-lg visible-sm"><a class="btn btn-default" asp-controller="Pet" asp-action="Stats" asp-route-id="@p.PetId" target="_blank" style="width:100%; padding:3px 6px 3px 6px" title="Monitor your pet's activity"><i class="fa fa-heartbeat fa-fw" aria-hidden="true"></i></a></td>
 								<td colspan="2">
 									@if (p.LastMode != null && p.LastMode.Type == ConfigModeTypes.Emergency && p.LastMode.IsActive)
 									{
@@ -419,57 +420,8 @@
 					}
 				</tbody>
 			</table>
-
-			<!-- The Modals -->
-			<div class="modal fade" id="petLostModal">
-				<div class="modal-dialog modal-l">
-					<div class="modal-content">
-						<!-- Modal Header -->
-						<div class="modal-header">
-							<h4 class="modal-title">Report a lost pet</h4>
-							<button type="button" class="close" data-dismiss="modal">&times;</button>
-						</div>
-						<!-- Modal body -->
-						<div class="modal-body">
-							Are you sure <span id="petName"></span> is lost?
-							<input type="hidden" name="petId" id="petId" value="" />
-						</div>
-						<!-- Modal footer -->
-						<div class="modal-footer">
-							<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-							<button type="button" id="petLostModalConfirmBtn" class="btn btn-secondary" data-dismiss="modal">Confirm</button>
-						</div>
-
-					</div>
-				</div>
-			</div>
-
-			<div class="modal fade" id="banModal">
-				<div class="modal-dialog modal-l">
-					<div class="modal-content">
-						<!-- Modal Header -->
-						<div class="modal-header">
-							<h4 class="modal-title">Unauthorize a device</h4>
-							<button type="button" class="close" data-dismiss="modal">&times;</button>
-						</div>
-						<!-- Modal body -->
-						<div class="modal-body">
-							Are you sure <span id="banName"></span> should stop connecting to our network?
-						</div>
-						<!-- Modal footer -->
-						<div class="modal-footer">
-							<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-							<button type="button" id="banModalConfirmBtn" class="btn btn-secondary" data-dismiss="modal">Confirm</button>
-						</div>
-					</div>
-				</div>
-			</div>
-
 		</div>
-
-
 	</div>
-
 	<div class="col-md-3">
 		<h2>&nbsp;</h2>
 		<div class="well well-lg">
@@ -501,7 +453,49 @@
 			<li><a href="https://go.microsoft.com/fwlink/?LinkID=699323">Read more on the documentation site</a></li>
 		</ul>
 	</div>
+</div>
+<!-- The Modals -->
+<div class="modal fade" id="petLostModal">
+	<div class="modal-dialog modal-l">
+		<div class="modal-content">
+			<!-- Modal Header -->
+			<div class="modal-header">
+				<h4 class="modal-title">Report a lost pet</h4>
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+			</div>
+			<!-- Modal body -->
+			<div class="modal-body">
+				Are you sure <span id="petName"></span> is lost?
+				<input type="hidden" name="petId" id="petId" value="" />
+			</div>
+			<!-- Modal footer -->
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+				<button type="button" id="petLostModalConfirmBtn" class="btn btn-secondary" data-dismiss="modal">Confirm</button>
+			</div>
 
+		</div>
+	</div>
+</div>
 
+<div class="modal fade" id="banModal">
+	<div class="modal-dialog modal-l">
+		<div class="modal-content">
+			<!-- Modal Header -->
+			<div class="modal-header">
+				<h4 class="modal-title">Unauthorize a device</h4>
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+			</div>
+			<!-- Modal body -->
+			<div class="modal-body">
+				Are you sure <span id="banName"></span> should stop connecting to our network?
+			</div>
+			<!-- Modal footer -->
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+				<button type="button" id="banModalConfirmBtn" class="btn btn-secondary" data-dismiss="modal">Confirm</button>
+			</div>
+		</div>
+	</div>
 </div>
 
