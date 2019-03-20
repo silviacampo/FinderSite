@@ -273,12 +273,18 @@ namespace webGDPR.Controllers
         // POST: Device/Delete/5
         [HttpPost, ActionName("Delete")]
         //[ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
+        public async Task<IActionResult> DeleteConfirmed([FromForm]string id)
         {
             var device = await _context.Device.FindAsync(id);
             _context.Device.Remove(device);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+			try
+			{
+				await _context.SaveChangesAsync();
+			}
+			catch (Exception ex) {
+				var test = ex.Message;
+			}
+			return RedirectToAction(nameof(Index));
         }
 
         private bool DeviceExists(string id)
