@@ -58,6 +58,7 @@ namespace webGDPR.Infrastructure
 				.ForMember(dest => dest.BaseNumber, opts => opts.MapFrom(src => src.Item1.BaseNumber))
 				.ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.Item1.Name))
 				.ForMember(dest => dest.Description, opts => opts.MapFrom(src => src.Item1.Description))
+				.ForMember(dest => dest.Deleted, opts => opts.MapFrom(src => src.Item1.Deleted))
 				.ForMember(dest => dest.UserId, opts => opts.MapFrom(src => src.Item1.UserId))
 				.ForMember(dest => dest.IsConnected, opts => opts.MapFrom(src => src.Item2.IsConnected))
 				.ForMember(dest => dest.ConnectedTo, opts => opts.MapFrom(src => src.Item2.ConnectedTo))
@@ -72,6 +73,7 @@ namespace webGDPR.Infrastructure
 				.ForMember(dest => dest.UserId, opts => opts.MapFrom(src => src.UserId))
 				.ForMember(dest => dest.BaseNumber, opts => opts.MapFrom(src => src.BaseNumber))
 				.ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.Name))
+				.ForMember(dest => dest.Deleted, opts => opts.MapFrom(src => src.Deleted))
 				.ForMember(dest => dest.Description, opts => opts.MapFrom(src => src.Description));
 
 			CreateMap<BaseViewModel, webGDPR.Models.Base>().ReverseMap();

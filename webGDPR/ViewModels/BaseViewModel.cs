@@ -39,6 +39,8 @@ namespace webGDPR.ViewModels
 
 		public string Description { get; set; }
 
+		public bool Deleted { get; set; }
+
 		public string UserId { get; set; }
 
 		public PaginatedList<BaseStatus> BaseStatus { get; internal set; }

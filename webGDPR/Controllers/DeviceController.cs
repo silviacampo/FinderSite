@@ -276,7 +276,7 @@ namespace webGDPR.Controllers
         public async Task<IActionResult> DeleteConfirmed([FromForm]string id)
         {
             var device = await _context.Device.FindAsync(id);
-            _context.Device.Remove(device);
+            //_context.Device.Remove(device);
 			//Soft delete
 			device.Deleted = true;
 			_context.Device.Update(device);

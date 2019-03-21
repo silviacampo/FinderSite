@@ -42,7 +42,7 @@ namespace webGDPR.Controllers
 			List<BaseViewModel> model = new List<BaseViewModel>();
 			string UserId = _context.User.FirstOrDefault(u => u.OwnerID == _userManager.GetUserId(User)).UserID;
 
-			List<Base> bases = await _context.Base.AsNoTracking().Where(b => b.UserId == UserId && !b.Deleted).Include(b => b.LastStatus).ThenInclude(c=>c.DeviceConnectedTo).ToListAsync();
+			List<Base> bases = await _context.Base.AsNoTracking().Where(b => b.UserId == UserId).Include(b => b.LastStatus).ThenInclude(c=>c.DeviceConnectedTo).ToListAsync();
 			foreach (var b in bases)
 			{
 				BaseViewModel mb = _mapper.Map<BaseViewModel>(new Tuple<Base, BaseStatus>(b, b.LastStatus));
@@ -215,8 +215,8 @@ namespace webGDPR.Controllers
 
         // POST: Base/Delete/5
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
+        //[ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed([FromForm]string id)
         {
             var @base = await _context.Base.FindAsync(id);
             //_context.Base.Remove(@base);

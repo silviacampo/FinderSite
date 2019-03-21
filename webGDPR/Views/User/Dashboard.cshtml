@@ -177,15 +177,7 @@
 						<tr>
 							<td>
 								<div style="position:relative;top:0px;left:0px; min-width:110px;">
-									<div class="btn-group">
-										<a class="dropdown-link" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="padding:3px 6px 3px 6px">
-											@Html.DisplayFor(modelItem => item.Name)<i class="fa fa-caret-down fa-fw" aria-hidden="true"></i>
-										</a>
-										<ul class="dropdown-menu">
-											<li><a asp-controller="Base" asp-action="Edit" asp-route-id="@item.BaseId" target="_blank"><i class="fa fa-edit fa-fw" aria-hidden="true"></i></a></li>
-											<li><a asp-controller="Base" asp-action="Delete" asp-route-id="@item.BaseId" target="_blank"><i class="fa fa-trash fa-fw" aria-hidden="true"></i></a></li>
-										</ul>
-									</div>
+									@Html.DisplayFor(modelItem => item.Name)
 								</div>
 							</td>
 							<td>
