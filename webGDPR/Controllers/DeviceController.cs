@@ -277,13 +277,10 @@ namespace webGDPR.Controllers
         {
             var device = await _context.Device.FindAsync(id);
             _context.Device.Remove(device);
-			try
-			{
-				await _context.SaveChangesAsync();
-			}
-			catch (Exception ex) {
-				var test = ex.Message;
-			}
+			//Soft delete
+			device.Deleted = true;
+			_context.Device.Update(device);
+			await _context.SaveChangesAsync();
 			return RedirectToAction(nameof(Index));
         }
 

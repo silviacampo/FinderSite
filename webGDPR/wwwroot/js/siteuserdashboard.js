@@ -228,6 +228,40 @@ $(function () {
       }
     });
   });
+
+  //Delete base
+
+  $(".openDeleteBaseDialog").click(function () {
+
+    var base = JSON.parse($(this).attr('data-base'));
+    $("#deleteBaseModalConfirmBtn").attr('data-baseId', base.BaseId);
+    $("#baseHWId").html(base.HWId);
+    $("#baseName").html(base.Name);
+    if (base.LastStatus != null) {
+      $("#connectedToDT").attr('style', 'display:block;');
+      $("#connectedToDD").attr('style', 'display:block;');
+      $("#connectedToDD").html(base.LastStatus.DeviceConnectedTo.GetName);
+    }
+    $("#deleteBaseModal").modal("show");
+  });
+
+  $("#deleteBaseModalConfirmBtn").click(function () {
+    var id = $(this).attr('data-baseId');
+    $.ajax({
+      url: '/base/Delete',
+      type: 'POST',
+      data: {
+        'id': id
+      },
+      success: function (data) {
+        $(".openDeleteBaseDialog[data-id='" + id + "']").parent().parent().hide();
+        $("#deleteBaseModal").modal("hide");
+      },
+      error: function () {
+        alert("error");
+      }
+    });
+  });
 });
 
 initPetsMap();

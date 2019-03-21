@@ -39,5 +39,6 @@ namespace webGDPR.Models
 			}
 		}
 
+		public bool Deleted { get; internal set; }
 	}
 }
