@@ -45,7 +45,7 @@
 				</li>
 			}
 
-			@if (Model.Pets.Any(b => b.LastMode != null && b.LastMode.Type == ConfigModeTypes.Emergency))
+			@if (Model.Pets.Any(b => b.LastMode != null && b.LastMode.Type == ConfigModeTypes.Emergency && b.LastMode.IsActive))
 			{
 				<li>
 					<b>Pet lost</b>
@@ -90,17 +90,16 @@
 		</ul>
 		<h2>Actions</h2>
 		<ul>
-			<li><a asp-area="" asp-controller="User" asp-action="PickLocation"><i class="fa fa-location-arrow fa-fw" aria-hidden="true"></i>&nbsp; Update your Location</a></li>
-			<li><a asp-area="" asp-controller="Device" asp-action="DownloadApp"><i class="fa fa-download fa-fw" aria-hidden="true"></i>&nbsp; Download mobile and desktop application</a></li>
-			<li><a asp-area="" asp-controller="Order" asp-action="Create"><i class="fa fa-cart-plus fa-fw" aria-hidden="true"></i>&nbsp; Buy another base or collar</a></li>
-			<li><a asp-area="" asp-controller="Base" asp-action="Create"><i class="fa fa-home fa-fw" aria-hidden="true"></i>&nbsp; Add a base</a></li>
-			<li><a asp-area="" asp-controller="Collar" asp-action="Create"><i class="fa fa-map-marker fa-fw" aria-hidden="true"></i>&nbsp; Add a collar</a></li>
+			<li><a asp-area="" asp-controller="User" asp-action="PickLocation" target="_blank"><i class="fa fa-location-arrow fa-fw" aria-hidden="true"></i>&nbsp; Update your Location</a></li>
+			<li><a asp-area="" asp-controller="Device" asp-action="DownloadApp" target="_blank"><i class="fa fa-download fa-fw" aria-hidden="true"></i>&nbsp; Download mobile and desktop application</a></li>
+			<li><a asp-area="" asp-controller="Order" asp-action="Create" target="_blank"><i class="fa fa-cart-plus fa-fw" aria-hidden="true"></i>&nbsp; Buy another base or collar</a></li>
+			<li><a asp-area="" asp-controller="Base" asp-action="Create" target="_blank"><i class="fa fa-home fa-fw" aria-hidden="true"></i>&nbsp; Add a base</a></li>
+			<li><a asp-area="" asp-controller="Collar" asp-action="Create" target="_blank"><i class="fa fa-map-marker fa-fw" aria-hidden="true"></i>&nbsp; Add a collar</a></li>
 			<li>
-				<a asp-area="" asp-controller="Pet" asp-action="Create"><i class="fa fa-paw fa-fw" aria-hidden="true"></i>&nbsp;Add a Pet</a>
+				<a asp-area="" asp-controller="Pet" asp-action="Create" target="_blank"><i class="fa fa-paw fa-fw" aria-hidden="true"></i>&nbsp;Add a Pet</a>
 				@if (Model.Pets.Count() == 0)
 				{<b>You haven't create any pet....</b>}
-			</li>
-			<li><a href="https://go.microsoft.com/fwlink/?LinkID=398609">Check devices connection with your account</a></li>
+			</li>			
 		</ul>
 	</div>
 	<div class="col-md-6">
@@ -110,7 +109,7 @@
 				<theader>
 					<tr>
 						<th>
-							<i class="fa fa-mobile-phone fa-fw" aria-hidden="true"></i> &nbsp; Mobile Devices or Computers running the application
+							<i class="fa fa-mobile-phone fa-fw" aria-hidden="true"></i> &nbsp; Mobile devices or computers running the application
 						</th>
 						<th class="small">Network Connected</th>
 						<th class="small" style="min-width:80px;">Actions</th>

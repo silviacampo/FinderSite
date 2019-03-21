@@ -220,7 +220,7 @@ $(function () {
         'id': id
       },
       success: function (data) {
-        $(".openDeleteDeviceDialog[data-id='" + id + "']").parent().hide();
+          $(".openDeleteDeviceDialog[data-id='" + id + "']").parent().parent().hide();
         $("#deleteDeviceModal").modal("hide");
       },
       error: function () {
