@@ -262,6 +262,40 @@ $(function () {
       }
     });
   });
+
+  //Delete collar
+
+  $(".openDeleteCollarDialog").click(function () {
+
+    var collar = JSON.parse($(this).attr('data-collar'));
+    $("#deleteCollarModalConfirmBtn").attr('data-collarId', collar.BaseId);
+    $("#collarHWId").html(collar.HWId);
+    $("#collarName").html(collar.Name);
+    if (collar.LastStatus != null) {
+      $("#connectedToDT").attr('style', 'display:block;');
+      $("#connectedToDD").attr('style', 'display:block;');
+      $("#connectedToDD").html(collar.LastStatus.BaseConnectedTo.Name);
+    }
+    $("#deleteCollarModal").modal("show");
+  });
+
+  $("#deleteCollarModalConfirmBtn").click(function () {
+    var id = $(this).attr('data-collarId');
+    $.ajax({
+      url: '/collar/Delete',
+      type: 'POST',
+      data: {
+        'id': id
+      },
+      success: function (data) {
+        $(".openDeleteCollarDialog[data-id='" + id + "']").parent().parent().hide();
+        $("#deleteCollarModal").modal("hide");
+      },
+      error: function () {
+        alert("error");
+      }
+    });
+  });
 });
 
 initPetsMap();
