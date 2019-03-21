@@ -8,8 +8,8 @@
 {
 	<form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post" id="logoutForm" class="navbar-right">
 		<ul class="nav navbar-nav">
-			<li><a asp-area="" asp-controller="User" asp-action="Dashboard"><i class="fa fa-tachometer fa-fw" aria-hidden="true"></i>&nbsp; @*Dashboard*@</a></li>
-			<li><a asp-area="" asp-controller="User" asp-action="HWOverview"><i class="fa fa-gears fa-fw" aria-hidden="true"></i>&nbsp; @*Trackers Overview*@</a></li>
+			<li><a asp-area="" asp-controller="User" asp-action="Dashboard"><i class="fa fa-tachometer-alt fa-fw" aria-hidden="true"></i>&nbsp; @*Dashboard*@</a></li>
+			<li><a asp-area="" asp-controller="User" asp-action="HWOverview"><i class="fa fa-chart-line fa-fw" aria-hidden="true"></i>&nbsp; @*Trackers Overview*@</a></li>
 			@if (!((await UserManager.GetUserAsync(User)).MissingSubscription))
 			{
 				<li><a asp-area="" asp-controller="User" asp-action="PickLocation"><i class="fa fa-location-arrow fa-fw" aria-hidden="true"></i>&nbsp; @*Pick Location*@</a></li>
@@ -17,7 +17,7 @@
 				<li><a asp-area="" asp-controller="Pet" asp-action="Index"><i class="fa fa-paw fa-fw" aria-hidden="true"></i>&nbsp; @*Pets*@</a></li>
 				<li><a asp-area="" asp-controller="Collar" asp-action="Index"><i class="fa fa-map-marker fa-fw" aria-hidden="true"></i>&nbsp; @*Collars*@</a></li>
 				<li><a asp-area="" asp-controller="Base" asp-action="Index"><i class="fa fa-home fa-fw" aria-hidden="true"></i>&nbsp; @*Bases*@</a></li>
-				<li><a asp-area="" asp-controller="Device" asp-action="Index"><i class="fa fa-mobile-phone fa-fw" aria-hidden="true"></i>&nbsp; @*Devices*@</a></li>
+				<li><a asp-area="" asp-controller="Device" asp-action="Index"><i class="fa fa-mobile-alt fa-fw" aria-hidden="true"></i>&nbsp; @*Devices*@</a></li>
 			}
 		</ul>
 		<ul class="nav navbar-nav">
