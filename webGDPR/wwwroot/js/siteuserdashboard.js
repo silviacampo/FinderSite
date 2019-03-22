@@ -294,6 +294,7 @@ $(function () {
         'id': id
       },
       success: function (data) {
+        $(".openDeleteCollarDialog[data-id='" + id + "']").parent().parent().addClass("missing");
         $(".openDeleteCollarDialog[data-id='" + id + "']").parent().parent().html('<td><span style="color:red">Missing Collar</span></td>');
         $("#deleteCollarModal").modal("hide");
       },
@@ -302,6 +303,50 @@ $(function () {
       }
     });
   });
+
+  //Delete pet
+
+  $(".openDeletePetDialog").click(function () {
+
+    var pet = JSON.parse($(this).attr('data-pet'));
+    var collar = $(this).attr('data-collar');
+    $("#deletePetModalConfirmBtn").attr('data-petId', pet.PetId);
+    $("#petName").html(pet.Name);
+    $("#petType").html(pet.Type);
+    $("#petBreeding").html(pet.Breeding);
+    $("#petColor").html(pet.Color);
+    $("#petBirthdate").html(pet.Birthdate);
+    $("#petGender").html(pet.Gender);
+    $("#petWeight").html(pet.Weigth);
+    $("#petHealthComments").html(pet.HealthComments);
+    if (collar != "") {
+      $("#collarNameDT").attr('style', 'display:block;');
+      $("#collarNameDD").attr('style', 'display:block;');
+      $("#collarPet").html(collar);
+    }
+    $("#deletePetModal").modal("show");
+  });
+
+  $("#deletePetModalConfirmBtn").click(function () {
+    var id = $(this).attr('data-petId');
+    $.ajax({
+      url: '/pet/Delete',
+      type: 'POST',
+      data: {
+        'id': id
+      },
+      success: function (data) {
+        $(".openDeletePetDialog[data-id='" + id + "']").parent().parent().addClass("missing");
+        $(".openDeletePetDialog[data-id='" + id + "']").parent().parent().html('<td><span style="color:red">Missing Pet</span></td>');
+        $("#deletePetModal").modal("hide");
+      },
+      error: function () {
+        alert("error");
+      }
+    });
+  });
+
+
 });
 
 initPetsMap();
