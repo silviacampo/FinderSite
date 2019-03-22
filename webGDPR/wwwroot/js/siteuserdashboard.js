@@ -242,6 +242,11 @@ $(function () {
       $("#connectedToDD").attr('style', 'display:block;');
       $("#connectedToDD").html(base.LastStatus.DeviceConnectedTo.GetName);
     }
+    else {
+      $("#connectedToDT").attr('style', 'display:none;');
+      $("#connectedToDD").attr('style', 'display:none;');
+      $("#connectedToDD").html("");
+    }
     $("#deleteBaseModal").modal("show");
   });
 
@@ -277,10 +282,20 @@ $(function () {
       $("#connectedToDD").attr('style', 'display:block;');
       $("#connectedToDD").html(collar.LastStatus.BaseConnectedTo.Name);
     }
+    else {
+      $("#connectedToDT").attr('style', 'display:none;');
+      $("#connectedToDD").attr('style', 'display:none;');
+      $("#connectedToDD").html("");
+    }
     if (pet != "") {
       $("#petNameDT").attr('style', 'display:block;');
       $("#petNameDD").attr('style', 'display:block;');
       $("#petNameDD").html(pet);
+    }
+    else {
+      $("#petNameDT").attr('style', 'display:none;');
+      $("#petNameDD").attr('style', 'display:none;');
+      $("#petNameDD").html("");
     }
     $("#deleteCollarModal").modal("show");
   });
@@ -311,7 +326,7 @@ $(function () {
     var pet = JSON.parse($(this).attr('data-pet'));
     var collar = $(this).attr('data-collar');
     $("#deletePetModalConfirmBtn").attr('data-petId', pet.PetId);
-    $("#petName").html(pet.Name);
+    $("#petName1").html(pet.Name);
     $("#petType").html(pet.Type);
     $("#petBreeding").html(pet.Breeding);
     $("#petColor").html(pet.Color);
@@ -322,7 +337,12 @@ $(function () {
     if (collar != "") {
       $("#collarNameDT").attr('style', 'display:block;');
       $("#collarNameDD").attr('style', 'display:block;');
-      $("#collarPet").html(collar);
+      $("#collarNameDD").html(collar);
+    }
+    else {
+      $("#collarNameDT").attr('style', 'display:none;');
+      $("#collarNameDD").attr('style', 'display:none;');
+      $("#collarNameDD").html("");
     }
     $("#deletePetModal").modal("show");
   });

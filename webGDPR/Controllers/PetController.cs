@@ -579,11 +579,12 @@ namespace webGDPR.Controllers
             //soft delete
             pet.Deleted = true;
             _context.Update(pet);
-
-            var petCollar = _context.PetCollar.FirstOrDefault(c => c.PetCollarId == pet.LastCollarId);
-            petCollar.IsActive = false;
-            petCollar.EndDate = DateTime.Now;
-            _context.Update(petCollar);
+			if (pet.LastCollarId != null) {
+				var petCollar = _context.PetCollar.FirstOrDefault(c => c.PetCollarId == pet.LastCollarId);
+				petCollar.IsActive = false;
+				petCollar.EndDate = DateTime.Now;
+				_context.Update(petCollar);
+			}
 
             await _context.SaveChangesAsync();
 
