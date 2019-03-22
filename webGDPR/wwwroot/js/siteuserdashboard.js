@@ -268,13 +268,19 @@ $(function () {
   $(".openDeleteCollarDialog").click(function () {
 
     var collar = JSON.parse($(this).attr('data-collar'));
-    $("#deleteCollarModalConfirmBtn").attr('data-collarId', collar.BaseId);
+    var pet = $(this).attr('data-pet');
+    $("#deleteCollarModalConfirmBtn").attr('data-collarId', collar.CollarId);
     $("#collarHWId").html(collar.HWId);
     $("#collarName").html(collar.Name);
     if (collar.LastStatus != null) {
       $("#connectedToDT").attr('style', 'display:block;');
       $("#connectedToDD").attr('style', 'display:block;');
       $("#connectedToDD").html(collar.LastStatus.BaseConnectedTo.Name);
+    }
+    if (pet != "") {
+      $("#petNameDT").attr('style', 'display:block;');
+      $("#petNameDD").attr('style', 'display:block;');
+      $("#petNameDD").html(pet);
     }
     $("#deleteCollarModal").modal("show");
   });
@@ -288,7 +294,7 @@ $(function () {
         'id': id
       },
       success: function (data) {
-        $(".openDeleteCollarDialog[data-id='" + id + "']").parent().parent().hide();
+        $(".openDeleteCollarDialog[data-id='" + id + "']").parent().parent().html('<td><span style="color:red">Missing Collar</span></td>');
         $("#deleteCollarModal").modal("hide");
       },
       error: function () {

@@ -571,8 +571,8 @@ namespace webGDPR.Controllers
 
         // POST: Pet/Delete/5
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
+        //[ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed([FromForm]string id)
         {
             var pet = await _context.Pet.FindAsync(id);
             //_context.Pet.Remove(pet);
