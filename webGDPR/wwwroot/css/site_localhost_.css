@@ -201,7 +201,7 @@ tr, td {
 
 .timelineContainer {
 	background-color: #474e5d;
-	
+	padding:10px 0px;
 }
 
 /* The actual timeline (the vertical ruler) */
@@ -225,7 +225,7 @@ tr, td {
 
 /* Container around content */
 .timelineitemcontainer {
-	padding: 10px 40px;
+	padding: 5px 40px;
 	position: relative;
 	background-color: inherit;
 	width: 50%;
@@ -290,7 +290,7 @@ tr, td {
 
 /* The actual content */
 .content {
-	padding: 20px 30px;
+	padding: 8px 10px;
 	background-color: white;
 	position: relative;
 	border-radius: 6px;
