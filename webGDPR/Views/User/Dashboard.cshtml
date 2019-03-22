@@ -10,7 +10,7 @@
 <div class="row">
 	<div class="col-md-3">
 		<h2>Issues</h2>
-		<ul>
+		<ul class="errorlist-ul">
 			@{
 				List<webGDPR.Infrastructure.CustomWebSockets.CustomWebSocket> WebSockets = (List<webGDPR.Infrastructure.CustomWebSockets.CustomWebSocket>)ViewData["WebSockets"];
 				if (WebSockets.Count <= 0) {
@@ -89,14 +89,14 @@
 			}
 		</ul>
 		<h2>Actions</h2>
-		<ul>
+		<ul class="actionlist-ul">
 			<li><a asp-area="" asp-controller="User" asp-action="PickLocation" target="_blank"><i class="fa fa-location-arrow fa-fw" aria-hidden="true"></i>&nbsp; Update your Location</a></li>
 			<li><a asp-area="" asp-controller="Device" asp-action="DownloadApp" target="_blank"><i class="fa fa-download fa-fw" aria-hidden="true"></i>&nbsp; Download mobile and desktop application</a></li>
 			<li><a asp-area="" asp-controller="Order" asp-action="Create" target="_blank"><i class="fa fa-cart-plus fa-fw" aria-hidden="true"></i>&nbsp; Buy another base or collar</a></li>
 			<li><a asp-area="" asp-controller="Base" asp-action="Create" target="_blank"><i class="fa fa-home fa-fw" aria-hidden="true"></i>&nbsp; Add a base</a></li>
 			<li><a asp-area="" asp-controller="Collar" asp-action="Create" target="_blank"><i class="fa fa-medal fa-fw" aria-hidden="true"></i>&nbsp; Add a collar</a></li>
 			<li>
-				<a asp-area="" asp-controller="Pet" asp-action="Create" target="_blank"><i class="fa fa-paw fa-fw" aria-hidden="true"></i>&nbsp;Add a Pet</a>
+				<a asp-area="" asp-controller="Pet" asp-action="Create" target="_blank"><i class="fa fa-paw fa-fw" aria-hidden="true"></i>&nbsp; Add a Pet</a>
 				@if (Model.Pets.Count() == 0)
 				{<b>You haven't create any pet....</b>}
 			</li>			
@@ -465,7 +465,7 @@
 				<div id="panoDashboard"></div>
 			</div>
 		</div>
-		<ul style="clear:both;">
+		<ul class="remarkslist-ul" style="clear:both;">
 			<li><a href="https://go.microsoft.com/fwlink/?LinkId=518008">Your pet has been going farther latelly/ moving less or more...</a></li>
 			<li><a href="https://go.microsoft.com/fwlink/?LinkId=699320">Fundamentals of ASP.NET Core such as Startup and middleware.</a></li>
 			<li><a href="https://go.microsoft.com/fwlink/?LinkId=398602">Working with Data</a></li>

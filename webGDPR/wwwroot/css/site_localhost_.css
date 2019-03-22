@@ -57,7 +57,7 @@ body {
 	width: 70%;
 	max-height: 300px;
 	max-width: 300px;
-	top: -40%;
+	margin-top: -40%;
 }
 
 .range {
@@ -324,5 +324,66 @@ tr, td {
 		left: 0%;
 	}
 }
+/*Checklist*/
+.checklist-ul {
+	list-style-type: none;
+	padding: 0;
+}
 
-	
+.checklist-ul li {
+	padding: 0 0 0 25px;
+	position: relative;
+	margin-bottom: 5px;
+}
+
+	.checklist-ul li:before {
+		position: absolute;
+		left: 5px;
+		content: "\2713";
+		color: #666;
+	}
+
+/*Errorlist*/
+.errorlist-ul {
+	list-style-type: none;
+	padding: 0;
+}
+
+	.errorlist-ul li {
+		padding: 0 0 0 25px;
+		position: relative;
+		margin-bottom: 5px;
+	}
+
+		.errorlist-ul li:before {
+			position: absolute;
+			left: 5px;
+			content: "\2717";
+			color: #666;
+		}
+
+/*Actionlist*/
+.actionlist-ul {
+	list-style-type: none;
+	padding: 0;
+}
+
+/*Remarkslist*/
+.remarkslist-ul {
+	list-style-type: none;
+	padding: 0;
+}
+
+	.remarkslist-ul li {
+		padding: 0 0 0 25px;
+		position: relative;
+		margin-bottom: 5px;
+	}
+
+		.remarkslist-ul li:before {
+			position: absolute;
+			left: 5px;
+			content: "\2710";
+			color: #666;
+		}
+
