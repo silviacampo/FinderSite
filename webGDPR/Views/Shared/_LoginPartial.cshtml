@@ -10,6 +10,7 @@
 		<ul class="nav navbar-nav">
 			<li><a asp-area="" asp-controller="User" asp-action="Dashboard"><i class="fa fa-tachometer-alt fa-fw" aria-hidden="true"></i>&nbsp; @*Dashboard*@</a></li>
 			<li><a asp-area="" asp-controller="User" asp-action="HWOverview"><i class="fa fa-chart-line fa-fw" aria-hidden="true"></i>&nbsp; @*Trackers Overview*@</a></li>
+			<li><a asp-area="" asp-controller="User" asp-action="ConnectionTimeline"><i class="fa fa-clock fa-fw" aria-hidden="true"></i>&nbsp; @*Connections Timeline*@</a></li>
 			@if (!((await UserManager.GetUserAsync(User)).MissingSubscription))
 			{
 				<li><a asp-area="" asp-controller="User" asp-action="PickLocation"><i class="fa fa-location-arrow fa-fw" aria-hidden="true"></i>&nbsp; @*Pick Location*@</a></li>

@@ -75,6 +75,13 @@ namespace webGDPR.Controllers
 		}
 
 		[Authorize]
+		public async Task<IActionResult> ConnectionTimeline() {
+			User user = await _context.User.Include(b => b.Bases).ThenInclude(b => b.LastStatus).ThenInclude(c => c.DeviceConnectedTo).Include(c => c.Collars).ThenInclude(b => b.LastStatus).ThenInclude(c => c.BaseConnectedTo).Include(d => d.Devices).Include(d => d.Pets).ThenInclude(pe => pe.LastMode).Include(d => d.Pets).ThenInclude(pe => pe.LastCollar).Include(d => d.Pets).ThenInclude(pe => pe.LastTrackingInfo).FirstOrDefaultAsync(u => u.OwnerID == _userManager.GetUserId(User));
+
+			return View(user);
+		}
+
+		[Authorize]
 		public async Task<IActionResult> HWOverview()
 		{
 			HWOverviewViewModel model = new HWOverviewViewModel();

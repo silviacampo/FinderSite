@@ -311,6 +311,7 @@ $(function () {
       success: function (data) {
         $(".openDeleteCollarDialog[data-id='" + id + "']").parent().parent().addClass("missing");
         $(".openDeleteCollarDialog[data-id='" + id + "']").parent().parent().html('<td><span style="color:red">Missing Collar</span></td>');
+        //missing hide both missing
         $("#deleteCollarModal").modal("hide");
       },
       error: function () {
@@ -358,6 +359,7 @@ $(function () {
       success: function (data) {
         $(".openDeletePetDialog[data-id='" + id + "']").parent().parent().addClass("missing");
         $(".openDeletePetDialog[data-id='" + id + "']").parent().parent().html('<td><span style="color:red">Missing Pet</span></td>');
+        //missing hide both missing
         $("#deletePetModal").modal("hide");
       },
       error: function () {
