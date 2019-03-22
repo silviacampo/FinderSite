@@ -59,7 +59,8 @@ body {
     width: 70%;
     max-height: 300px;
     max-width: 300px;
-    top: -40%;
+    position: absolute;
+    bottom: 0px;
 }
 
 .range {
@@ -191,3 +192,199 @@ tr, td {
     border-bottom: 0px solid #ddd !important;
     border-top: 0px solid #ddd !important;
 }
+
+.dropdown-menu {
+    min-width: unset;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+.timelineContainer {
+    background-color: #ddd;
+    padding: 10px 0px;
+}
+
+/* The actual timeline (the vertical ruler) */
+.timeline {
+    position: relative;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+    /* The actual timeline (the vertical ruler) */
+    .timeline::after {
+        content: '';
+        position: absolute;
+        width: 6px;
+        background-color: white;
+        top: 0;
+        bottom: 0;
+        left: 50%;
+        margin-left: -3px;
+    }
+
+/* Container around content */
+.timelineitemcontainer {
+    padding: 5px 40px;
+    position: relative;
+    background-color: inherit;
+    width: 50%;
+}
+
+    /* The circles on the timeline */
+    .timelineitemcontainer::after {
+        content: '';
+        position: absolute;
+        width: 25px;
+        height: 25px;
+        right: -17px;
+        background-color: white;
+        border: 4px solid rgb(75, 192, 192);
+        top: 15px;
+        border-radius: 50%;
+        z-index: 1;
+    }
+
+/* Place the timelineitemcontainer to the left */
+.left {
+    left: 0;
+}
+
+/* Place the timelineitemcontainer to the right */
+.right {
+    left: 50%;
+}
+
+/* Add arrows to the left timelineitemcontainer (pointing right) */
+.left::before {
+    content: " ";
+    height: 0;
+    position: absolute;
+    top: 22px;
+    width: 0;
+    z-index: 1;
+    right: 30px;
+    border: medium solid white;
+    border-width: 10px 0 10px 10px;
+    border-color: transparent transparent transparent white;
+}
+
+/* Add arrows to the right timelineitemcontainer (pointing left) */
+.right::before {
+    content: " ";
+    height: 0;
+    position: absolute;
+    top: 22px;
+    width: 0;
+    z-index: 1;
+    left: 30px;
+    border: medium solid white;
+    border-width: 10px 10px 10px 0;
+    border-color: transparent white transparent transparent;
+}
+
+/* Fix the circle for containers on the right side */
+.right::after {
+    left: -16px;
+}
+
+/* The actual content */
+.content {
+    padding: 8px 10px;
+    background-color: white;
+    position: relative;
+    border-radius: 6px;
+}
+
+/* Media queries - Responsive timeline on screens less than 600px wide */
+@media screen and (max-width: 600px) {
+    /* Place the timelime to the left */
+    .timeline::after {
+        left: 31px;
+    }
+    /* Full-width containers */
+    .timelineitemcontainer {
+        width: 100%;
+        padding-left: 70px;
+        padding-right: 25px;
+    }
+        /* Make sure that all arrows are pointing leftwards */
+        .timelineitemcontainer::before {
+            left: 60px;
+            border: medium solid white;
+            border-width: 10px 10px 10px 0;
+            border-color: transparent white transparent transparent;
+        }
+    /* Make sure all circles are at the same spot */
+    .left::after, .right::after {
+        left: 15px;
+    }
+    /* Make all right containers behave like the left ones */
+    .right {
+        left: 0%;
+    }
+}
+/*Checklist*/
+.checklist-ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+    .checklist-ul li {
+        padding: 0 0 0 25px;
+        position: relative;
+        margin-bottom: 5px;
+    }
+
+        .checklist-ul li:before {
+            position: absolute;
+            left: 5px;
+            content: "\2713";
+            color: #666;
+        }
+
+/*Errorlist*/
+.errorlist-ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+    .errorlist-ul li {
+        padding: 0 0 0 25px;
+        position: relative;
+        margin-bottom: 5px;
+    }
+
+        .errorlist-ul li:before {
+            position: absolute;
+            left: 5px;
+            content: "\2717";
+            color: #666;
+        }
+
+/*Actionlist*/
+.actionlist-ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+/*Remarkslist*/
+.remarkslist-ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+    .remarkslist-ul li {
+        padding: 0 0 0 25px;
+        position: relative;
+        margin-bottom: 5px;
+    }
+
+        .remarkslist-ul li:before {
+            position: absolute;
+            left: 5px;
+            content: "\2710";
+            color: #666;
+        }
