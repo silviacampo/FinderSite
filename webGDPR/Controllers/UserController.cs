@@ -79,7 +79,7 @@ namespace webGDPR.Controllers
 			List<Infrastructure.TimelineItem> list = new List<Infrastructure.TimelineItem>();
 			User user = await _context.User.Include(b => b.Bases).ThenInclude(b => b.LastStatus).ThenInclude(c => c.DeviceConnectedTo).Include(c => c.Collars).ThenInclude(b => b.LastStatus).ThenInclude(c => c.BaseConnectedTo).Include(d => d.Devices).Include(d => d.Pets).ThenInclude(pe => pe.LastMode).Include(d => d.Pets).ThenInclude(pe => pe.LastCollar).Include(d => d.Pets).ThenInclude(pe => pe.LastTrackingInfo).FirstOrDefaultAsync(u => u.OwnerID == _userManager.GetUserId(User));
 			List<string> devicesID = user.Devices.Select(l=>l.DeviceId).ToList();
-			List<DeviceLog> logs = await _context.DeviceLog.Where(l=> devicesID.Contains(l.DeviceId)).OrderByDescending(l=>l.CreationDate).ToListAsync();
+			List<DeviceLog> logs = await _context.DeviceLog.Where(l=> l.CreationDate > DateTime.Now.AddMonths(-1) && devicesID.Contains(l.DeviceId)).OrderByDescending(l=>l.CreationDate).ToListAsync();
 			foreach (var log in logs) {
 				list.Add(new Infrastructure.TimelineItem() {
 					ItemDate = log.CreationDate,
