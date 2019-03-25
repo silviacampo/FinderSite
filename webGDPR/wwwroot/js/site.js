@@ -85,7 +85,24 @@ $(document).ready(function () {
     });
   }
 
+  $("#moreBtn").click(function () {
+    var page = $(this).attr('data-page');
+    $(this).attr('data-page', parseInt(page) + 1);
+    $.ajax({
+      url: '/User/ConnectionTimelineMore/',
+      type: 'GET',
+      data: { page: page},
+      contentType: 'application/json; charset=utf-8',
+      success: function (data) {
+        for (var i = 0, l = data.length; i < l; i++) {
 
+        }
+      },
+      error: function () {
+        alert("error");
+      }
+    });
+  });
 
 });
 

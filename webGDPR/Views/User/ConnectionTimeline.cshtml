@@ -6,8 +6,19 @@
 <h2>
 	<i class="fa fa-clock fa-fw" aria-hidden="true"></i>&nbsp; @ViewData["Title"]
 </h2>
+<style>
+	.collapsiblecontent {
+		padding: 0 18px;
+		max-height: 0;
+		overflow: hidden;
+		transition: max-height 0.2s ease-out;
+		background-color: #f1f1f1;
+	}
 
-<div class="well well-lg timelineContainer">
+</style>
+
+<button class="collapsible">Open Collapsible</button>
+<div class="well well-lg timelineContainer  collapsiblecontent">
 	<div class="timeline">
 		@{
 			foreach (var log in Model)
@@ -17,8 +28,8 @@
 						<h5 style="display: inline;">
 							<script type="text/javascript">
 							  var strDate = new String('@log.ItemDate.ToString("MM/dd/yyyy hh:mm:ss tt") UTC');
-							  var localTime = new Date(strDate);
-							  document.write(localTime.toLocaleString());
+			var localTime = new Date(strDate);
+			document.write(localTime.toLocaleString());
 							</script>
 						</h5>
 						<p style="display: inline;float:right;">@log.ItemLeftTitle</p>
@@ -29,4 +40,5 @@
 			}
 		}
 	</div>
-	</div>
+</div>
+<button class="btn btn-default" id="moreBtn" data-page="1" style="width:100%;">More</button>
