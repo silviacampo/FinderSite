@@ -14,7 +14,13 @@
 			{
 				<div class="timelineitemcontainer @log.Orientation.ToString()">
 					<div class="content">
-						<h5 style="display: inline;">@log.ItemDate</h5>
+						<h5 style="display: inline;">
+							<script type="text/javascript">
+							  var strDate = new String('@log.ItemDate.ToString("MM/dd/yyyy hh:mm:ss tt") UTC');
+							  var localTime = new Date(strDate);
+							  document.write(localTime.toLocaleString());
+							</script>
+						</h5>
 						<p style="display: inline;float:right;">@log.ItemLeftTitle</p>
 						<p style="clear: both;">@log.ItemMessage <i class="fa fa-plus-circle fa-fw" aria-hidden="true" title="@log.ItemMore"></i></p>
 						
