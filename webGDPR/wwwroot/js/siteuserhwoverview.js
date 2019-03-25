@@ -218,7 +218,9 @@ function initCollarMap() {
   }
 }
 
-initDeviceChart();
+if (typeof names !== 'undefined') {
+  initDeviceChart();
+}
 //initCollarCharts();
 initCollarMap();
 
