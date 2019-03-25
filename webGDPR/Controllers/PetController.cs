@@ -137,15 +137,11 @@ namespace webGDPR.Controllers
             {
                 return NotFound();
             }
-            var pet = await _context.Pet.Include(b => b.LastTrackingInfo)
-                .FirstOrDefaultAsync(m => m.PetId == id && !m.Deleted);
+            var pet = await GetPetTrackAsync(id);
             if (pet == null)
             {
                 return NotFound();
             }
-
-            pet.TrackingInfos = await _context.PetTrackingInfo.Where(t => t.PetId == id && t.PetTrackingInfoId != pet.LastTrackingInfoId).OrderByDescending(t=>t.CreationDate).Take(10).ToListAsync();
-
             return View(pet);
         }
 
@@ -162,16 +158,11 @@ namespace webGDPR.Controllers
                     var petCollar = await _context.PetCollar.FirstOrDefaultAsync(m => m.IsActive && m.CollarId == collar.CollarId);
                     if (petCollar != null)
                     {
-                        var pet = await _context.Pet.Include(b => b.LastTrackingInfo).FirstOrDefaultAsync(m => m.PetId == petCollar.PetId);
-                        if (pet == null)
-                        {
-                            return NotFound();
-                        }
-                        if (pet.LastTrackingInfo == null)
-                        {
-                            return NotFound(); //create a custom page to show that this pet is not tracking any information
-                        }
-                        pet.TrackingInfos = await _context.PetTrackingInfo.Where(t => t.PetId == petCollar.PetId).Take(10).ToListAsync();
+						var pet = await GetPetTrackAsync(petCollar.PetId);
+						if (pet == null)
+						{
+							return NotFound();
+						}
 						if (!string.IsNullOrEmpty(host)) {
 							ViewData["Host"] = host;
 								}
@@ -200,17 +191,11 @@ namespace webGDPR.Controllers
 						var petCollar = await _context.PetCollar.FirstOrDefaultAsync(m => m.IsActive && m.CollarId == collar.CollarId);
 						if (petCollar != null)
 						{
-							var pet = await _context.Pet.Include(b => b.LastTrackingInfo).FirstOrDefaultAsync(m => m.PetId == petCollar.PetId);
+							var pet = await GetPetTrackAsync(petCollar.PetId);
 							if (pet == null)
 							{
 								return NotFound();
 							}
-							if (pet.LastTrackingInfo == null)
-							{
-								return NotFound(); //create a custom page to show that this pet is not tracking any information
-							}
-							pet.TrackingInfos = await _context.PetTrackingInfo.Where(t => t.PetId == petCollar.PetId).Take(10).ToListAsync();
-
 							return View(pet);
 						}
 						return NotFound();
@@ -219,6 +204,14 @@ namespace webGDPR.Controllers
 				}
 			}
 			return NotFound();
+		}
+
+		private async Task<Pet> GetPetTrackAsync(string petId) {
+			var pet = await _context.Pet.Include(b => b.LastTrackingInfo).FirstOrDefaultAsync(m => m.PetId == petId && !m.Deleted);
+			if (pet != null) {
+				pet.TrackingInfos = await _context.PetTrackingInfo.Where(t => t.PetId == pet.PetId && t.PetTrackingInfoId != pet.LastTrackingInfoId).OrderByDescending(t => t.CreationDate).Take(10).ToListAsync();
+			}
+			return pet;
 		}
 
 		// GET: Pet/Stats/5

@@ -40,19 +40,22 @@
 <body style="padding:0px;">
 	<div id="mapContainer" style="height:100%">
 		<script>
-			var contentString = '<div id="content">' +
+		var strDate = new String('@Model.LastTrackingInfo.CreationDate.ToString("MM/dd/yyyy hh:mm:ss tt") UTC');
+		var localTime = new Date(strDate);
+		var localTimeStr = localTime.toLocaleString();
+		var contentString = '@Model.Name at' + localTime.toLocaleString();
+		var contentHtmlString = '<div id="content">' +
 				'<div id="siteNotice">' +
 				'</div>' +
-				'<h3 id="firstHeading" class="firstHeading">@Model.Name</h3>' +
-				@*'<div id="bodyContent">' +
-				'<p>@Model.Description</p>' +
-				'</div>' +*@
+			'<h5 id="firstHeading" class="firstHeading"><b>@Model.Name</b> at <br/> ' + localTime.toLocaleString() + '</h5>' +
 				'</div>';
-
+		var type = '@Model.Type';
 			var coordinates = [];
 			@foreach (PetTrackingInfo p in Model.TrackingInfos) {
 			 	<text>
-					coordinates.push({ lat: @p.Latitude, lng: @p.Longitude });
+					strDate = new String('@p.CreationDate.ToString("MM/dd/yyyy hh:mm:ss tt") UTC');
+					localTime = new Date(strDate);
+					coordinates.push({ lat: @p.Latitude, lng: @p.Longitude, time: localTime.toLocaleString() });
 				</text>
 			 }
 		</script>
