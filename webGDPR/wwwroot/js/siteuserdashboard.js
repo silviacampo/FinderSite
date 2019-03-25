@@ -237,7 +237,7 @@ $(function () {
     $("#deleteBaseModalConfirmBtn").attr('data-baseId', base.BaseId);
     $("#baseHWId").html(base.HWId);
     $("#baseName").html(base.Name);
-    if (base.LastStatus != null) {
+    if (base.LastStatus != null && base.LastStatus.DeviceConnectedTo != null) {
       $("#connectedToDT").attr('style', 'display:block;');
       $("#connectedToDD").attr('style', 'display:block;');
       $("#connectedToDD").html(base.LastStatus.DeviceConnectedTo.GetName);
