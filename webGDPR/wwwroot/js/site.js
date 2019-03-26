@@ -102,11 +102,7 @@ $(document).ready(function () {
           var newDate = new Date(localTimeStr);
           if (oldDate.getFullYear() != newDate.getFullYear() || oldDate.getMonth() != newDate.getMonth() || oldDate.getDate() != newDate.getDate()) {
             oldDate = newDate;
-            var mm = newDate.getMonth() + 1;
-            var dd = newDate.getDate();
-            var yyyy = newDate.getFullYear();
-            var date = mm + '/' + dd + '/' + yyyy;
-            $(".timeline:last").append('<button class="collapsible">' + date + '</button>');
+            $(".timeline:last").append('<div class="collapsible">' + localTime.toLocaleDateString() + '</div>');
           }
           var orientationClass = "";
           if (data[i].orientation == 0) {
@@ -115,7 +111,7 @@ $(document).ready(function () {
           else {
             orientationClass = "right";
           }
-          $(".timeline:last").append('<div class="timelineitemcontainer ' + orientationClass + '"><div class="content"><h5 style="display:inline;">' + localTimeStr + '</script></h5><p style="display: inline;float:right;">' + data[i].itemLeftTitle + '</p><p style="clear: both;">' + data[i].itemMessage + '<i class="fa fa-plus-circle fa-fw" aria-hidden="true" title="' + data[i].itemMore + '"></i></p></div></div>');
+          $(".timeline:last").append('<div class="timelineitemcontainer ' + orientationClass + '"><div class="content"><h5 style="display:inline;">' + localTime.toLocaleTimeString() + '</script></h5><p style="display: inline;float:right;">' + data[i].itemLeftTitle + '</p><p style="clear: both;">' + data[i].itemMessage + '<i class="fa fa-plus-circle fa-fw" aria-hidden="true" title="' + data[i].itemMore + '"></i></p></div></div>');
         }
         $("#loader").hide();
         $('.overlay').hide();
