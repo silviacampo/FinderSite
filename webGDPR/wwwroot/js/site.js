@@ -86,6 +86,8 @@ $(document).ready(function () {
   }
 
   $("#moreBtn").click(function () {
+    $("#loader").show();
+    $('.overlay').show();
     var page = $(this).attr('data-page');
     $(this).attr('data-page', parseInt(page) + 1);
     $.ajax({
@@ -115,6 +117,8 @@ $(document).ready(function () {
           }
           $(".timeline:last").append('<div class="timelineitemcontainer ' + orientationClass + '"><div class="content"><h5 style="display:inline;">' + localTimeStr + '</script></h5><p style="display: inline;float:right;">' + data[i].itemLeftTitle + '</p><p style="clear: both;">' + data[i].itemMessage + '<i class="fa fa-plus-circle fa-fw" aria-hidden="true" title="' + data[i].itemMore + '"></i></p></div></div>');
         }
+        $("#loader").hide();
+        $('.overlay').hide();
       },
       error: function () {
         alert("error");

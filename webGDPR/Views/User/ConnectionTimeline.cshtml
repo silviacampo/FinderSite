@@ -2,7 +2,8 @@
 @{
 	ViewData["Title"] = "Connections Timeline";
 }
-
+<div class="overlay" style="position: absolute; top:0px;bottom:-500px;left:0px;right:0px;"></div>
+<div id="loader"></div>
 <h2>
 	<i class="fa fa-clock fa-fw" aria-hidden="true"></i>&nbsp; @ViewData["Title"]
 </h2>
@@ -16,7 +17,7 @@
 	}
 </style>
 
-<div class="well well-lg timelineContainer">
+<div class="well well-lg timelineContainer style-1">
 	<div class="timeline">
 		@{
 			<script>
