@@ -97,6 +97,15 @@ $(document).ready(function () {
         for (var i = 0, l = data.length; i < l; i++) {
           var localTime = new Date(data[i].itemDate);
           localTimeStr = localTime.toLocaleString();
+          var newDate = new Date(localTimeStr);
+          if (oldDate.getFullYear() != newDate.getFullYear() || oldDate.getMonth() != newDate.getMonth() || oldDate.getDate() != newDate.getDate()) {
+            oldDate = newDate;
+            var mm = newDate.getMonth() + 1;
+            var dd = newDate.getDate();
+            var yyyy = newDate.getFullYear();
+            var date = mm + '/' + dd + '/' + yyyy;
+            $(".timeline:last").append('<button class="collapsible">' + date + '</button>');
+          }
           var orientationClass = "";
           if (data[i].orientation == 0) {
             orientationClass = "left";
