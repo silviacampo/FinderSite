@@ -14,27 +14,30 @@
 		transition: max-height 0.2s ease-out;
 		background-color: #f1f1f1;
 	}
-
 </style>
 
 <button class="collapsible">Open Collapsible</button>
-<div class="well well-lg timelineContainer  collapsiblecontent">
+<div class="well well-lg timelineContainer  collapsiblecontent1">
 	<div class="timeline">
 		@{
+			<script>
+				var oldDate = new Date(1, 1, 1); // 01/01/0001
+			</script>
 			foreach (var log in Model)
 			{
+				<script type="text/javascript">
+			var strDate = new String('@log.ItemDate.ToString("MM/dd/yyyy hh:mm:ss tt") UTC');
+			var localTime = new Date(strDate);
+			localTimeStr = localTime.toLocaleString();
+				</script>
 				<div class="timelineitemcontainer @log.Orientation.ToString()">
 					<div class="content">
 						<h5 style="display: inline;">
-							<script type="text/javascript">
-							  var strDate = new String('@log.ItemDate.ToString("MM/dd/yyyy hh:mm:ss tt") UTC');
-			var localTime = new Date(strDate);
-			document.write(localTime.toLocaleString());
-							</script>
+							<script type="text/javascript">document.write(localTimeStr);</script>
 						</h5>
 						<p style="display: inline;float:right;">@log.ItemLeftTitle</p>
 						<p style="clear: both;">@log.ItemMessage <i class="fa fa-plus-circle fa-fw" aria-hidden="true" title="@log.ItemMore"></i></p>
-						
+
 					</div>
 				</div>
 			}

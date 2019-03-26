@@ -95,7 +95,16 @@ $(document).ready(function () {
       contentType: 'application/json; charset=utf-8',
       success: function (data) {
         for (var i = 0, l = data.length; i < l; i++) {
-
+          var localTime = new Date(data[i].itemDate);
+          localTimeStr = localTime.toLocaleString();
+          var orientationClass = "";
+          if (data[i].orientation == 0) {
+            orientationClass = "left";
+          }
+          else {
+            orientationClass = "right";
+          }
+          $(".timeline").append('<div class="timelineitemcontainer ' + orientationClass + '"><div class="content"><h5 style="display:inline;">' + localTimeStr + '</script></h5><p style="display: inline;float:right;">' + data[i].itemLeftTitle + '</p><p style="clear: both;">' + data[i].itemMessage + '<i class="fa fa-plus-circle fa-fw" aria-hidden="true" title="' + data[i].itemMore + '"></i></p></div></div>');
         }
       },
       error: function () {
