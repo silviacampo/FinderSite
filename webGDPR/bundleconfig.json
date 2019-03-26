@@ -19,7 +19,8 @@
 		"wwwroot/js/sitepetstats.js",
 		"wwwroot/js/sitepettrack.js",
 		"wwwroot/js/siteuserdashboard.js",
-		"wwwroot/js/siteuserhwoverview.js"
+		"wwwroot/js/siteuserhwoverview.js",
+		"wwwroot/js/siteuserconnectiontimeline.js"
 	]
   }
 ]
