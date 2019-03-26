@@ -104,7 +104,7 @@ $(document).ready(function () {
           else {
             orientationClass = "right";
           }
-          $(".timeline").append('<div class="timelineitemcontainer ' + orientationClass + '"><div class="content"><h5 style="display:inline;">' + localTimeStr + '</script></h5><p style="display: inline;float:right;">' + data[i].itemLeftTitle + '</p><p style="clear: both;">' + data[i].itemMessage + '<i class="fa fa-plus-circle fa-fw" aria-hidden="true" title="' + data[i].itemMore + '"></i></p></div></div>');
+          $(".timeline:last").append('<div class="timelineitemcontainer ' + orientationClass + '"><div class="content"><h5 style="display:inline;">' + localTimeStr + '</script></h5><p style="display: inline;float:right;">' + data[i].itemLeftTitle + '</p><p style="clear: both;">' + data[i].itemMessage + '<i class="fa fa-plus-circle fa-fw" aria-hidden="true" title="' + data[i].itemMore + '"></i></p></div></div>');
         }
       },
       error: function () {
