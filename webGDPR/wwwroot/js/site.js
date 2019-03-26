@@ -70,21 +70,6 @@ $(document).ready(function () {
 
     });
 
-  var coll = document.getElementsByClassName("collapsible");
-  var i;
-
-  for (i = 0; i < coll.length; i++) {
-    coll[i].addEventListener("click", function () {
-      this.classList.toggle("collapsibleactive");
-      var content = this.nextElementSibling;
-      if (content.style.maxHeight) {
-        content.style.maxHeight = null;
-      } else {
-        content.style.maxHeight = content.scrollHeight + "px";
-      }
-    });
-  }
-
   $("#moreBtn").click(function () {
     $("#loader").show();
     $('.overlay').show();
@@ -102,7 +87,7 @@ $(document).ready(function () {
           var newDate = new Date(localTimeStr);
           if (oldDate.getFullYear() != newDate.getFullYear() || oldDate.getMonth() != newDate.getMonth() || oldDate.getDate() != newDate.getDate()) {
             oldDate = newDate;
-            $(".timeline:last").append('<div class="collapsible">' + localTime.toLocaleDateString() + '</div>');
+            $(".timeline:last").append('<div class="dateSeparator">' + localTime.toLocaleDateString() + '</div>');
           }
           var orientationClass = "";
           if (data[i].orientation == 0) {

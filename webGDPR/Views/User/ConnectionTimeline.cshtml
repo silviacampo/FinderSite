@@ -32,7 +32,7 @@
 					var newDate = new Date(localTimeStr);
 					if (oldDate.getFullYear() != newDate.getFullYear() || oldDate.getMonth() != newDate.getMonth() || oldDate.getDate() != newDate.getDate()) {
 						oldDate = newDate;
-						document.write('<div class="collapsible">' + localTime.toLocaleDateString() + '</div>');
+						document.write('<div class="dateSeparator">' + localTime.toLocaleDateString() + '</div>');
 					}
 				</script>
 				<div class="timelineitemcontainer @log.Orientation.ToString()">
