@@ -104,6 +104,8 @@ namespace webGDPR.Controllers
 		}
 
 		//https://stackoverflow.com/questions/44538772/asp-net-core-form-post-results-in-a-http-415-unsupported-media-type-response
+		//this could be a case for patch:
+		//https://www.codeproject.com/Articles/1282080/Accepting-Partial-Resources-with-Newtonsoft-Json
 		[HttpPost]
 		public async Task<IActionResult> BanOn([FromForm]string id)
 		{

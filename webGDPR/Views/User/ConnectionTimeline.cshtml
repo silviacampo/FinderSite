@@ -28,7 +28,16 @@
 				<script type="text/javascript">
 			var strDate = new String('@log.ItemDate.ToString("MM/dd/yyyy hh:mm:ss tt") UTC');
 			var localTime = new Date(strDate);
-			localTimeStr = localTime.toLocaleString();
+					localTimeStr = localTime.toLocaleString();
+					var newDate = new Date(localTimeStr);
+					if (oldDate.getFullYear() != newDate.getFullYear() || oldDate.getMonth() != newDate.getMonth() || oldDate.getDate() != newDate.getDate()) {
+						oldDate = newDate;
+						var mm = newDate.getMonth() + 1;
+						var dd = newDate.getDate();
+						var yyyy = newDate.getFullYear();
+						var date = mm + '/' + dd + '/' + yyyy;
+						document.write('<button class="collapsible">' + date + '</button>');
+					}
 				</script>
 				<div class="timelineitemcontainer @log.Orientation.ToString()">
 					<div class="content">
