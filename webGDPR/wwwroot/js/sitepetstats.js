@@ -230,6 +230,8 @@ function initActivityMap() {
 initActivityMap();
 
 $('#btnWeek, #btnMonth, #btnSemester').click(function () {
+  $("#loader").show();
+  $('.overlay').show();
   if ($(this).id != 'btnWeek') {
     $('#btnWeek').removeClass('active');
   }
@@ -244,6 +246,9 @@ $('#btnWeek, #btnMonth, #btnSemester').click(function () {
       $('#activityStats').html(data);
       initActivityChart();
       initActivityMap();
+
+      $("#loader").hide();
+      $('.overlay').hide();
     },
     error: function () {
       alert("error");

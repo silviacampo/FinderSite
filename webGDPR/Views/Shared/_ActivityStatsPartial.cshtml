@@ -5,6 +5,8 @@
 <script>
 	var petActivity = JSON.parse('@Html.Raw(Json.Serialize(Model.AvgDistance))');
 </script>
+<div class="overlay" style="position: absolute; width:100%;height:100%;margin-left:-23px;margin-right:23px;margin-top:-23px;margin-bottom:23px;"></div>
+<div id="loader"></div>
 @Model.Name has been walking about @String.Format("{0:0.000}", Model.AvgDistanceDay) km/day
 <hr>
 <div class="well well-lg">
