@@ -127,14 +127,16 @@
 						</td>
 
 						<td>
-							@if (WebSockets.Exists(w => w.DeviceId == d.DeviceId))
-							{
-								<i class="fa fa-circle fa-fw" style="color:green;position:relative;top:7px;left:0px" aria-hidden="true"></i>
-							}
-							else
-							{
-								<i class="fa fa-circle fa-fw" style="color:red;position:relative;top:7px;left:0px" aria-hidden="true"></i>
-							}
+							<a asp-controller="Device" asp-action="ConnectionTimeline" asp-route-id="@d.DeviceId" title="View Connections Timeline" target="_blank">
+								@if (WebSockets.Exists(w => w.DeviceId == d.DeviceId))
+								{
+									<i class="fa fa-circle fa-fw" style="color:green;position:relative;top:7px;left:0px" aria-hidden="true"></i>
+								}
+								else
+								{
+									<i class="fa fa-circle fa-fw" style="color:red;position:relative;top:7px;left:0px" aria-hidden="true"></i>
+								}
+							</a>
 						</td>
 						<td>
 							<a asp-controller="Device" asp-action="Edit" asp-route-id="@d.DeviceId" title="Edit" target="_blank"><i class="fa fa-edit fa-fw" aria-hidden="true"></i></a>

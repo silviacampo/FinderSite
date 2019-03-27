@@ -17,6 +17,7 @@ using webGDPR.Data;
 using webGDPR.Infrastructure;
 using webGDPR.Infrastructure.CustomWebSockets;
 using webGDPR.Models;
+using webGDPR.ViewModels;
 
 namespace webGDPR.Controllers
 {
@@ -150,7 +151,39 @@ namespace webGDPR.Controllers
 			}
 		}
 
+		[Authorize]
+		public async Task<IActionResult> ConnectionTimeline(string id)
+		{
+			DeviceConnectionTimelineViewModel model = new DeviceConnectionTimelineViewModel();
+			model.Device = _context.Device.Find(id);
+			model.Logs = await GetConnectionTimelineAsync(id, 0);
+			return View(model);
+		}
 
+		[Authorize]
+		public async Task<IActionResult> ConnectionTimelineMore(string id, int page)
+		{
+			List<TimelineItem> list = await GetConnectionTimelineAsync(id, page);
+			return new JsonResult(list);
+		}
+
+		private const int connectionTimelinePageSize = 10;
+		private async Task<List<TimelineItem>> GetConnectionTimelineAsync(string id, int page) {
+			List<TimelineItem> list = new List<TimelineItem>();
+			List<DeviceLog> logs = await _context.DeviceLog.Include(l => l.Device).Where(l => l.DeviceId == id && l.Reason.Contains("WebSocket")).OrderByDescending(l => l.CreationDate).Skip(page * connectionTimelinePageSize).Take(connectionTimelinePageSize).ToListAsync();
+			foreach (var log in logs)
+			{
+				list.Add(new TimelineItem()
+				{
+					ItemDate = log.CreationDate,
+					ItemLeftTitle = log.Device.GetName,
+					ItemMessage = log.Reason,
+					ItemMore = log.Message,
+					Orientation = (log.Reason.Contains("Add") ? TimelineItemOrientation.left : TimelineItemOrientation.right)
+				});
+			}
+			return list;
+		}
 
 		// GET: Device/Details/5
 		public async Task<IActionResult> Details(string id)

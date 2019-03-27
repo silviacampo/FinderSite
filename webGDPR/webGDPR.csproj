@@ -82,6 +82,9 @@
     <Content Update="Pages\Shared\Register.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
+    <Content Update="Views\Device\ConnectionTimeline.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
     <Content Update="Views\Home\CreateAccountWizard.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
