@@ -99,8 +99,79 @@ namespace webGDPR.Controllers
 			return View(model);
         }
 
-        // GET: Base/Create
-        public IActionResult Create()
+		[Authorize]
+		public async Task<IActionResult> ConnectionTimeline(string id, string parameter)
+		{
+			if (id == null)
+			{
+				return NotFound();
+			}
+
+			var @base = await _context.Base.Include(b => b.LastStatus).ThenInclude(c => c.DeviceConnectedTo).FirstOrDefaultAsync(m => m.BaseId == id && !m.Deleted);
+			if (@base == null)
+			{
+				return NotFound();
+			}
+
+			BaseConnectionTimelineViewModel model = new BaseConnectionTimelineViewModel
+			{
+				Base = @base,
+				Parameter = parameter,
+				Logs = await GetConnectionTimelineAsync(id, 0, parameter)
+			};
+			return View(model);
+		}
+
+		[Authorize]
+		public async Task<IActionResult> ConnectionTimelineMore(string id, int page, string parameter)
+		{
+			List<TimelineItem> list = await GetConnectionTimelineAsync(id, page, parameter);
+			return new JsonResult(list);
+		}
+
+		private const int connectionTimelinePageSize = 10;
+		private async Task<List<TimelineItem>> GetConnectionTimelineAsync(string id, int page, string parameter)
+		{
+			List<TimelineItem> list = new List<TimelineItem>();
+			List<BaseStatus> logs = await _context.BaseStatus.Include(l => l.DeviceConnectedTo).Where(s => s.BaseId == id).OrderByDescending(l => l.CreationDate).Skip(page * connectionTimelinePageSize).Take(connectionTimelinePageSize).ToListAsync();
+			foreach (var log in logs)
+			{
+				string itemMessage = string.Empty;
+				string itemMore = Newtonsoft.Json.JsonConvert.SerializeObject(log);
+				TimelineItemOrientation itemOrientation =TimelineItemOrientation.left;
+				if (parameter == "IsConnected") {
+					if (log.IsConnected == true)
+					{
+						itemMessage = "Connected";
+					}
+					else
+					{
+						itemMessage = "Disconnected";
+					}
+					if (log.IsConnected == true)
+					{
+						itemOrientation = TimelineItemOrientation.left;
+					}
+					else
+					{
+						itemOrientation = TimelineItemOrientation.right;
+					}
+				}
+
+				list.Add(new TimelineItem()
+				{
+					ItemDate = log.CreationDate,
+					ItemLeftTitle = log.DeviceConnectedTo.GetName,
+					ItemMessage = itemMessage,
+					ItemMore = itemMore,
+					Orientation = itemOrientation
+				});
+			}
+			return list;
+		}
+
+		// GET: Base/Create
+		public IActionResult Create()
         {
             return View();
         }

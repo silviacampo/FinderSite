@@ -1,0 +1,42 @@
+﻿@model webGDPR.ViewModels.BaseConnectionTimelineViewModel
+@{
+	ViewData["Title"] = Model.Base.Name + " Connections Timeline";
+}
+<div class="overlay" style="position: absolute; top:0px;bottom:-500px;left:0px;right:0px;"></div>
+<div id="loader"></div>
+<h2>
+	<i class="fa fa-clock fa-fw" aria-hidden="true"></i>&nbsp; @ViewData["Title"]
+</h2>
+<div class="well well-lg timelineContainer style-1">
+	<div class="timeline">
+		@{
+			<script>
+				var oldDate = new Date(1, 1, 1); // 01/01/0001
+			</script>
+			foreach (var log in Model.Logs)
+			{
+				<script type="text/javascript">
+			var strDate = new String('@log.ItemDate.ToString("MM/dd/yyyy hh:mm:ss tt") UTC');
+			var localTime = new Date(strDate);
+					localTimeStr = localTime.toLocaleString();
+					var newDate = new Date(localTimeStr);
+					if (oldDate.getFullYear() != newDate.getFullYear() || oldDate.getMonth() != newDate.getMonth() || oldDate.getDate() != newDate.getDate()) {
+						oldDate = newDate;
+						document.write('<div class="dateSeparator">' + localTime.toLocaleDateString() + '</div>');
+					}
+				</script>
+				<div class="timelineitemcontainer @log.Orientation.ToString()">
+					<div class="content">
+						<h5 style="display: inline;">
+							<script type="text/javascript">document.write(localTime.toLocaleTimeString());</script>
+						</h5>
+						<p style="display: inline;float:right;">@log.ItemLeftTitle</p>
+						<p style="clear: both;">@log.ItemMessage <i class="fa fa-plus-circle fa-fw" aria-hidden="true" title="@log.ItemMore"></i></p>
+
+					</div>
+				</div>
+			}
+		}
+	</div>
+</div>
+<button class="btn btn-default" id="baseConnectionMoreBtn" data-id="@Model.Base.BaseId" data-page="1" data-parameter="@Model.Parameter" style="width:100%;">More</button>

@@ -13,10 +13,11 @@
 		<ul class="errorlist-ul">
 			@{
 				List<webGDPR.Infrastructure.CustomWebSockets.CustomWebSocket> WebSockets = (List<webGDPR.Infrastructure.CustomWebSockets.CustomWebSocket>)ViewData["WebSockets"];
-				if (WebSockets.Count <= 0) {
-			<li>
-				<b>No Device is connected</b>
-			</li>
+				if (WebSockets.Count <= 0)
+				{
+					<li>
+						<b>No Device is connected</b>
+					</li>
 				}
 			}
 
@@ -99,7 +100,7 @@
 				<a asp-area="" asp-controller="Pet" asp-action="Create" target="_blank"><i class="fa fa-paw fa-fw" aria-hidden="true"></i>&nbsp; Add a Pet</a>
 				@if (Model.Pets.Count() == 0)
 				{<b>You haven't create any pet....</b>}
-			</li>			
+			</li>
 		</ul>
 	</div>
 	<div class="col-md-6">
@@ -119,40 +120,40 @@
 					@{
 						foreach (Device d in Model.Devices)
 						{
-					<tr>
-						<td>
-							<div style="position:relative;top:0px;left:0px; min-width:40px;">
-								@d.GetPlatform @d.GetName
-							</div>
-						</td>
+							<tr>
+								<td>
+									<div style="position:relative;top:0px;left:0px; min-width:40px;">
+										@d.GetPlatform @d.GetName
+									</div>
+								</td>
 
-						<td>
-							<a asp-controller="Device" asp-action="ConnectionTimeline" asp-route-id="@d.DeviceId" title="View Connections Timeline" target="_blank">
-								@if (WebSockets.Exists(w => w.DeviceId == d.DeviceId))
-								{
-									<i class="fa fa-circle fa-fw" style="color:green;position:relative;top:7px;left:0px" aria-hidden="true"></i>
-								}
-								else
-								{
-									<i class="fa fa-circle fa-fw" style="color:red;position:relative;top:7px;left:0px" aria-hidden="true"></i>
-								}
-							</a>
-						</td>
-						<td>
-							<a asp-controller="Device" asp-action="Edit" asp-route-id="@d.DeviceId" title="Edit" target="_blank"><i class="fa fa-edit fa-fw" aria-hidden="true"></i></a>
-							@if (d.Banned)
-							{
-								<a class="unBan" data-id="@d.DeviceId" data-name="@d.GetName" title="Authorize to connect"><i class="fa fa-check-circle fa-fw" aria-hidden="true"></i></a>
-								<a class="openBanDialog" data-id="@d.DeviceId" data-name="@d.GetName" title="Do no authorize to connect" style="display:none;"><i class="fa fa-ban fa-fw" aria-hidden="true"></i></a>
-							}
-							else
-							{
-								<a class="unBan" data-id="@d.DeviceId" data-name="@d.GetName" title="Authorize to connect" style="display:none;"><i class="fa fa-check-circle fa-fw" aria-hidden="true"></i></a>
-								<a class="openBanDialog" data-id="@d.DeviceId" data-name="@d.GetName" title="Do no authorize to connect"><i class="fa fa-ban fa-fw" aria-hidden="true"></i></a>
-							}
-							<a class="openDeleteDeviceDialog" data-id="@d.DeviceId" data-device="@Newtonsoft.Json.JsonConvert.SerializeObject(d)" title="Delete"><i class="fa fa-trash fa-fw" aria-hidden="true"></i></a>
-						</td>
-					</tr>
+								<td>
+									<a asp-controller="Device" asp-action="ConnectionTimeline" asp-route-id="@d.DeviceId" title="View Connections Timeline" target="_blank">
+										@if (WebSockets.Exists(w => w.DeviceId == d.DeviceId))
+										{
+											<i class="fa fa-circle fa-fw" style="color:green;position:relative;top:7px;left:0px" aria-hidden="true"></i>
+										}
+										else
+										{
+											<i class="fa fa-circle fa-fw" style="color:red;position:relative;top:7px;left:0px" aria-hidden="true"></i>
+										}
+									</a>
+								</td>
+								<td>
+									<a asp-controller="Device" asp-action="Edit" asp-route-id="@d.DeviceId" title="Edit" target="_blank"><i class="fa fa-edit fa-fw" aria-hidden="true"></i></a>
+									@if (d.Banned)
+									{
+										<a class="unBan" data-id="@d.DeviceId" data-name="@d.GetName" title="Authorize to connect"><i class="fa fa-check-circle fa-fw" aria-hidden="true"></i></a>
+										<a class="openBanDialog" data-id="@d.DeviceId" data-name="@d.GetName" title="Do no authorize to connect" style="display:none;"><i class="fa fa-ban fa-fw" aria-hidden="true"></i></a>
+									}
+									else
+									{
+										<a class="unBan" data-id="@d.DeviceId" data-name="@d.GetName" title="Authorize to connect" style="display:none;"><i class="fa fa-check-circle fa-fw" aria-hidden="true"></i></a>
+										<a class="openBanDialog" data-id="@d.DeviceId" data-name="@d.GetName" title="Do no authorize to connect"><i class="fa fa-ban fa-fw" aria-hidden="true"></i></a>
+									}
+									<a class="openDeleteDeviceDialog" data-id="@d.DeviceId" data-device="@Newtonsoft.Json.JsonConvert.SerializeObject(d)" title="Delete"><i class="fa fa-trash fa-fw" aria-hidden="true"></i></a>
+								</td>
+							</tr>
 						}
 
 					}
@@ -184,18 +185,20 @@
 							</td>
 							<td>
 								<div style="position:relative;top:0px;left:0px; min-width:20px;">
-									@if (item.LastStatus != null && item.LastStatus.IsConnected)
-									{
-										<i class="fa fa-circle fa-fw" style="color:green;position:relative;top:7px;left:0px" aria-hidden="true"></i>
-										@if (item.LastStatus != null && item.LastStatus.DeviceConnectedTo != null)
+									<a asp-controller="Base" asp-action="ConnectionTimeline" asp-route-id="@item.BaseId" asp-route-parameter="IsConnected" title="View Connections Timeline" target="_blank">
+										@if (item.LastStatus != null && item.LastStatus.IsConnected)
 										{
-											@Html.DisplayFor(modelItem => item.LastStatus.DeviceConnectedTo.GetName)
+											<i class="fa fa-circle fa-fw" style="color:green;position:relative;top:7px;left:0px" aria-hidden="true"></i>
+											@if (item.LastStatus != null && item.LastStatus.DeviceConnectedTo != null)
+											{
+												@Html.DisplayFor(modelItem => item.LastStatus.DeviceConnectedTo.GetName)
+											}
 										}
-									}
-									else
-									{
-										<i class="fa fa-circle fa-fw" style="color:red;position:relative;top:7px;left:0px" aria-hidden="true"></i>
-									}
+										else
+										{
+											<i class="fa fa-circle fa-fw" style="color:red;position:relative;top:7px;left:0px" aria-hidden="true"></i>
+										}
+									</a>
 								</div>
 							</td>
 							<td class="visible-md visible-lg visible-sm" valign="middle">
@@ -371,31 +374,31 @@
 						</tr>
 						if (p != null)
 						{
-						<tr>
-							<td>
-								on&nbsp; @Html.DisplayFor(modelItem => p.Name)
-							</td>
-							<td class="visible-md visible-lg visible-sm">
-								<a class="btn btn-default" asp-controller="Pet" asp-action="Track" asp-route-id="@p.PetId" target="_blank" style="width:100%; padding:3px 6px 3px 6px" title="Check your pet's last locations"><i class="fa fa-route fa-fw" aria-hidden="true"></i></a>
-							</td>
-							<td class="visible-md visible-lg visible-sm"><a class="btn btn-default" asp-controller="Pet" asp-action="Stats" asp-route-id="@p.PetId" target="_blank" style="width:100%; padding:3px 6px 3px 6px" title="Monitor your pet's activity"><i class="fa fa-heartbeat fa-fw" aria-hidden="true"></i></a></td>
-							<td colspan="2">
-								@if (p.LastMode != null && p.LastMode.Type == ConfigModeTypes.Emergency && p.LastMode.IsActive)
-								{
-									<button class="btn btn-default reportFound" data-id="@p.PetId" data-name="@p.Name" style="width:100%; padding:3px 6px 3px 6px">Report Found</button>
-									<button class="btn btn-danger openReportLostDialog" data-id="@p.PetId" data-name="@p.Name" style="width:100%; padding:3px 6px 3px 6px; display:none">Report Lost</button>
-								}
-								else
-								{
-									<button class="btn btn-default reportFound" data-id="@p.PetId" data-name="@p.Name" style="width:100%; padding:3px 6px 3px 6px; display:none;">Report Found</button>
-									<button class="btn btn-danger openReportLostDialog" data-id="@p.PetId" data-name="@p.Name" style="width:100%; padding:3px 6px 3px 6px">Report Lost</button>
-								}
-							</td>
-							<td>
-								<a asp-controller="Pet" asp-action="Edit" asp-route-id="@p.PetId" target="_blank"><i class="fa fa-edit fa-fw" aria-hidden="true"></i></a>
-								<a class="openDeletePetDialog" data-id="@p.PetId" data-pet="@Newtonsoft.Json.JsonConvert.SerializeObject(p, Newtonsoft.Json.Formatting.None, new Newtonsoft.Json.JsonSerializerSettings { PreserveReferencesHandling = Newtonsoft.Json.PreserveReferencesHandling.Objects})" data-collar="@item.Name" title="Delete"><i class="fa fa-trash fa-fw" aria-hidden="true"></i></a>
-							</td>
-						</tr>
+							<tr>
+								<td>
+									on&nbsp; @Html.DisplayFor(modelItem => p.Name)
+								</td>
+								<td class="visible-md visible-lg visible-sm">
+									<a class="btn btn-default" asp-controller="Pet" asp-action="Track" asp-route-id="@p.PetId" target="_blank" style="width:100%; padding:3px 6px 3px 6px" title="Check your pet's last locations"><i class="fa fa-route fa-fw" aria-hidden="true"></i></a>
+								</td>
+								<td class="visible-md visible-lg visible-sm"><a class="btn btn-default" asp-controller="Pet" asp-action="Stats" asp-route-id="@p.PetId" target="_blank" style="width:100%; padding:3px 6px 3px 6px" title="Monitor your pet's activity"><i class="fa fa-heartbeat fa-fw" aria-hidden="true"></i></a></td>
+								<td colspan="2">
+									@if (p.LastMode != null && p.LastMode.Type == ConfigModeTypes.Emergency && p.LastMode.IsActive)
+									{
+										<button class="btn btn-default reportFound" data-id="@p.PetId" data-name="@p.Name" style="width:100%; padding:3px 6px 3px 6px">Report Found</button>
+										<button class="btn btn-danger openReportLostDialog" data-id="@p.PetId" data-name="@p.Name" style="width:100%; padding:3px 6px 3px 6px; display:none">Report Lost</button>
+									}
+									else
+									{
+										<button class="btn btn-default reportFound" data-id="@p.PetId" data-name="@p.Name" style="width:100%; padding:3px 6px 3px 6px; display:none;">Report Found</button>
+										<button class="btn btn-danger openReportLostDialog" data-id="@p.PetId" data-name="@p.Name" style="width:100%; padding:3px 6px 3px 6px">Report Lost</button>
+									}
+								</td>
+								<td>
+									<a asp-controller="Pet" asp-action="Edit" asp-route-id="@p.PetId" target="_blank"><i class="fa fa-edit fa-fw" aria-hidden="true"></i></a>
+									<a class="openDeletePetDialog" data-id="@p.PetId" data-pet="@Newtonsoft.Json.JsonConvert.SerializeObject(p, Newtonsoft.Json.Formatting.None, new Newtonsoft.Json.JsonSerializerSettings { PreserveReferencesHandling = Newtonsoft.Json.PreserveReferencesHandling.Objects})" data-collar="@item.Name" title="Delete"><i class="fa fa-trash fa-fw" aria-hidden="true"></i></a>
+								</td>
+							</tr>
 						}
 						else
 						{
@@ -464,7 +467,7 @@
 			}
 				</script>
 				<div id="pets-map" class="card-text card-map" data-geo-lat="@Model.Latitude" data-geo-lng="@Model.Longitude"></div>
-				<div id="panoDashboard" ></div>
+				<div id="panoDashboard"></div>
 			</div>
 		</div>
 		<ul class="remarkslist-ul" style="clear:both;">
@@ -735,7 +738,7 @@
 					</dt>
 					<dd>
 						<span id="petHealthComments"></span>
-					</dd>					
+					</dd>
 					<dt id="collarNameDT" style="display:none;">
 						Collar
 					</dt>
