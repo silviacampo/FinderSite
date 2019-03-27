@@ -156,8 +156,56 @@ namespace webGDPR.Controllers
 					{
 						itemOrientation = TimelineItemOrientation.right;
 					}
-				}
+				} else if (parameter == "IsPlugged")
+				{
+					if (log.IsPlugged == true)
+					{
+						itemMessage = "Plugged";
+					}
+					else
+					{
+						itemMessage = "Unplugged";
+					}
+					if (log.IsPlugged == true)
+					{
+						itemOrientation = TimelineItemOrientation.left;
+					}
+					else
+					{
+						itemOrientation = TimelineItemOrientation.right;
+					}
+				} else if (parameter == "Radio")
+				{
+					itemMessage = "Radio: " + log.RadioPercentage;
 
+					if (log.Radio < 40)
+					{
+						itemOrientation = TimelineItemOrientation.left;
+					}
+					else
+					{
+						itemOrientation = TimelineItemOrientation.right;
+					}
+				}
+				else if (parameter == "Battery")
+				{
+					itemMessage = "Battery: " + log.Battery.ToString() + "%";
+					if (log.HasBattery) {
+						itemMessage += " - Has a battery";
+					}
+					if (log.IsCharging)
+					{
+						itemMessage += " - Is charging a battery";
+					}
+					if (log.Battery < 25)
+					{
+						itemOrientation = TimelineItemOrientation.left;
+					}
+					else
+					{
+						itemOrientation = TimelineItemOrientation.right;
+					}
+				}
 				list.Add(new TimelineItem()
 				{
 					ItemDate = log.CreationDate,
