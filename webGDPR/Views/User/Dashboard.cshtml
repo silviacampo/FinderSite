@@ -118,7 +118,7 @@
 				</theader>
 				<tbody>
 					@{
-						foreach (Device d in Model.Devices)
+						foreach (Device d in Model.Devices.Where(b => !b.Deleted))
 						{
 							<tr>
 								<td>

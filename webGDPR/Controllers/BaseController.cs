@@ -209,7 +209,7 @@ namespace webGDPR.Controllers
 				list.Add(new TimelineItem()
 				{
 					ItemDate = log.CreationDate,
-					ItemLeftTitle = log.DeviceConnectedTo.GetName,
+					ItemLeftTitle = log.DeviceConnectedTo?.GetName,
 					ItemMessage = itemMessage,
 					ItemMore = itemMore,
 					Orientation = itemOrientation
