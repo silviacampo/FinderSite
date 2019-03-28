@@ -1,91 +1,94 @@
 @model EditPetViewModel
 
 @{
-	ViewData["Title"] = "Create pet";
+	ViewData["Title"] = "Add a pet";
 }
-
-<h4>@ViewData["Title"]</h4>
-<hr />
 <div class="row">
-	<form asp-action="Create" enctype="multipart/form-data">
-		<div class="col-md-4">
-			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
-			<div class="form-group">
-				<label asp-for="Name" class="control-label"></label>
-				<input asp-for="Name" class="form-control" />
-				<span asp-validation-for="Name" class="text-danger"></span>
-			</div>
-			<div class="form-group">
-				<label asp-for="Type" class="control-label"></label>
-				<input asp-for="Type" class="form-control" />
-				<span asp-validation-for="Type" class="text-danger"></span>
-			</div>
-			<div class="form-group">
-				<label asp-for="Breeding" class="control-label"></label>
-				<input asp-for="Breeding" class="form-control" />
-				<span asp-validation-for="Breeding" class="text-danger"></span>
-			</div>
-			<div class="form-group">
-				<label asp-for="Color" class="control-label"></label>
-				<input asp-for="Color" class="form-control" />
-				<span asp-validation-for="Color" class="text-danger"></span>
-			</div>
-			<div class="form-group">
-				<label asp-for="Age" class="control-label"></label>
-				<input asp-for="Age" class="form-control" />
-				<span asp-validation-for="Age" class="text-danger"></span>
-			</div>
-			<div class="form-group">
-				<label asp-for="HealthComments" class="control-label"></label>
-				<input asp-for="HealthComments" class="form-control" />
-				<span asp-validation-for="HealthComments" class="text-danger"></span>
-			</div>
-			<div class="form-group">
-				<label asp-for="DefaultMode" class="control-label"></label>
-				<div class="range">
-					<input asp-for="DefaultMode" type="range" min="2" max="6" step="1" value="3">
+	<fieldset class="myfieldset">
+		<h4><i class="fa fa-paw fa-fw" aria-hidden="true"></i>&nbsp;@ViewData["Title"]</h4>
+		<hr />
+		<form asp-action="Create" enctype="multipart/form-data">
+			<div class="col-md-4">
+				<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+				<div class="form-group">
+					<label asp-for="Name" class="control-label"></label>
+					<input asp-for="Name" class="form-control" />
+					<span asp-validation-for="Name" class="text-danger"></span>
 				</div>
-				<ul class="range-labels">
-					<li>Young</li>
-					<li>Active</li>
-					<li class="active selected">Regular</li>
-					<li>Lazy</li>
-					<li>Mature</li>
-				</ul>
-				<span asp-validation-for="DefaultMode" class="text-danger"></span>
-			</div>
-			@*<div class="form-group">
+				<div class="form-group">
+					<label asp-for="Type" class="control-label"></label>
+					<input asp-for="Type" class="form-control" />
+					<span asp-validation-for="Type" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+					<label asp-for="Breeding" class="control-label"></label>
+					<input asp-for="Breeding" class="form-control" />
+					<span asp-validation-for="Breeding" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+					<label asp-for="Color" class="control-label"></label>
+					<input asp-for="Color" class="form-control" />
+					<span asp-validation-for="Color" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+					<label asp-for="Age" class="control-label"></label>
+					<input asp-for="Age" class="form-control" />
+					<span asp-validation-for="Age" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+					<label asp-for="HealthComments" class="control-label"></label>
+					<input asp-for="HealthComments" class="form-control" />
+					<span asp-validation-for="HealthComments" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+					<label asp-for="DefaultMode" class="control-label"></label>
+					<div class="range">
+						<input asp-for="DefaultMode" type="range" min="2" max="6" step="1" value="3">
+					</div>
+					<ul class="range-labels">
+						<li>Young</li>
+						<li>Active</li>
+						<li class="active selected">Regular</li>
+						<li>Lazy</li>
+						<li>Mature</li>
+					</ul>
+					<span asp-validation-for="DefaultMode" class="text-danger"></span>
+				</div>
+				@*<div class="form-group">
 					<label asp-for="UserId" class="control-label"></label>
 					<input asp-for="UserId" class="form-control" />
 					<span asp-validation-for="UserId" class="text-danger"></span>
 				</div>*@
-			<div class="form-group">
-				<input type="submit" value="Create" class="btn btn-default" />
+				<div class="form-group">
+					<input type="submit" value="Create" class="btn btn-default" />
+				</div>
+
 			</div>
 
-		</div>
+			<div class="col-md-4">
+				<div class="form-group">
+					<label asp-for="CollarId" class="control-label"></label>
+					<select asp-for="CollarId" asp-items="Model.Collars" class="form-control"></select>
+					<span asp-validation-for="CollarId" class="text-danger"></span>
+					or <a asp-controller="Collar" asp-action="Create" target="_blank">Create New</a>
+				</div>
+				<div class="form-group">
+					<label asp-for="ImageFileName" class="control-label"></label>
+					<input type="file" multiple="multiple" name="imagesFiles" asp-for="ImageFileName" class="form-control" />
+					<span asp-validation-for="ImageFileName" class="text-danger"></span>
+					<input type="button" value="Add" class="btn btn-default" />
+				</div>
+				<div class="form-group">
+					<label asp-for="PageFileName" class="control-label"></label>
+					<textarea id="FullDescription" class="form-control" name="pageContent" rows="200"></textarea>
+					<span asp-validation-for="PageFileName" class="text-danger"></span>
+				</div>
+			</div>
+		</form>
+	</fieldset>
 
-		<div class="col-md-4">
-			<div class="form-group">
-				<label asp-for="CollarId" class="control-label"></label>
-				<select asp-for="CollarId" asp-items="Model.Collars" class="form-control"></select>
-				<span asp-validation-for="CollarId" class="text-danger"></span>
-				or <a asp-controller="Collar" asp-action="Create" target="_blank">Create New</a>
-			</div>
-			<div class="form-group">
-				<label asp-for="ImageFileName" class="control-label"></label>
-				<input type="file" multiple="multiple" name="imagesFiles" asp-for="ImageFileName" class="form-control" />
-				<span asp-validation-for="ImageFileName" class="text-danger"></span>
-				<input type="button" value="Add" class="btn btn-default" />
-			</div>
-			<div class="form-group">
-				<label asp-for="PageFileName" class="control-label"></label>
-				<textarea id="FullDescription" class="form-control" name="pageContent" rows="200"></textarea>
-				<span asp-validation-for="PageFileName" class="text-danger"></span>
-			</div>
-		</div>
-	</form>
 </div>
-<div>
+
+@*<div>
 	<a asp-action="Index">Back to List</a>
-</div>
+</div>*@

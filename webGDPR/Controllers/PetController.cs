@@ -402,8 +402,8 @@ namespace webGDPR.Controllers
 
                 await SetModeAsync(pet.DefaultMode, true, p.PetId);
 
-                return RedirectToAction(nameof(Index));
-            }
+				return RedirectToAction(nameof(UserController.Dashboard), "User");
+			}
             return View(pet);
         }
 
@@ -539,8 +539,8 @@ namespace webGDPR.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
-            }
+				return RedirectToAction(nameof(UserController.Dashboard), "User");
+			}
             return View(pet);
         }
 

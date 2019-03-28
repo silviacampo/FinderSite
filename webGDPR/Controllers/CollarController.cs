@@ -295,8 +295,8 @@ namespace webGDPR.Controllers
 				Infrastructure.CustomWebSockets.Messages.Collar co = _mapper.Map<Infrastructure.CustomWebSockets.Messages.Collar>(c);
 				co.IsLost = isLost;
 				await _webSocketMessageHandler.SendCollarAsync(co, _userManager.GetUserName(User), _wsFactory);
-				return RedirectToAction(nameof(Index));
-            }
+				return RedirectToAction(nameof(UserController.Dashboard), "User");
+			}
             return View(collar);
         }
 
@@ -407,8 +407,8 @@ namespace webGDPR.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
-            }
+				return RedirectToAction(nameof(UserController.Dashboard), "User");
+			}
             return View(collar);
         }
 

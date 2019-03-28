@@ -246,8 +246,8 @@ namespace webGDPR.Controllers
 				//send message to connected devices
 				Infrastructure.CustomWebSockets.Messages.Base ba = _mapper.Map<Infrastructure.CustomWebSockets.Messages.Base>(@base);
 				await _webSocketMessageHandler.SendBaseAsync(ba, _userManager.GetUserName(User), _wsFactory);
-                return RedirectToAction(nameof(Index));
-            }
+				return RedirectToAction(nameof(UserController.Dashboard), "User");
+			}
             return View(@base);
         }
 
@@ -303,8 +303,8 @@ namespace webGDPR.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
-            }
+				return RedirectToAction(nameof(UserController.Dashboard), "User");
+			}
             return View(@base);
         }
 

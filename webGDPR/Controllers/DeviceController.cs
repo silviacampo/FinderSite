@@ -282,8 +282,8 @@ namespace webGDPR.Controllers
 						throw;
 					}
 				}
-                return RedirectToAction(nameof(Index));
-            }
+				return RedirectToAction(nameof(UserController.Dashboard), "User");
+			}
             return View(device);
         }
 

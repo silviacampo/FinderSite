@@ -1,13 +1,12 @@
 @model webGDPR.ViewModels.EditCollarViewModel
 
 @{
-	ViewData["Title"] = "Edit collar";
+	ViewData["Title"] = "Edit a collar";
 }
-
-<h4>@ViewData["Title"]</h4>
-<hr />
 <div class="row">
 	<div class="col-md-4">
+		<h4><i class="fa fa-medal fa-fw" aria-hidden="true"></i>&nbsp;@ViewData["Title"]</h4>
+		<hr />
 		<form asp-action="Edit">
 			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
 			<input type="hidden" asp-for="CollarId" />
@@ -22,34 +21,34 @@
 				<span asp-validation-for="Name" class="text-danger"></span>
 			</div>
 			@*<div class="form-group">
-					<div class="checkbox">
-						<label>
-							<input asp-for="IsConnected" /> @Html.DisplayNameFor(model => model.IsConnected)
-						</label>
-					</div>
+				<div class="checkbox">
+					<label>
+						<input asp-for="IsConnected" /> @Html.DisplayNameFor(model => model.IsConnected)
+					</label>
 				</div>
-				<div class="form-group">
-					<div class="checkbox">
-						<label>
-							<input asp-for="IsGPSConnected" /> @Html.DisplayNameFor(model => model.IsGPSConnected)
-						</label>
-					</div>
-				</div>
-				<div class="form-group">
-					<label asp-for="Battery" class="control-label"></label>
-					<input asp-for="Battery" class="form-control" />
-					<span asp-validation-for="Battery" class="text-danger"></span>
-				</div>
-				<div class="form-group">
-					<label asp-for="Radio" class="control-label"></label>
-					<input asp-for="Radio" class="form-control" />
-					<span asp-validation-for="Radio" class="text-danger"></span>
-				</div>*@
+			</div>
 			<div class="form-group">
+				<div class="checkbox">
+					<label>
+						<input asp-for="IsGPSConnected" /> @Html.DisplayNameFor(model => model.IsGPSConnected)
+					</label>
+				</div>
+			</div>
+			<div class="form-group">
+				<label asp-for="Battery" class="control-label"></label>
+				<input asp-for="Battery" class="form-control" />
+				<span asp-validation-for="Battery" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="Radio" class="control-label"></label>
+				<input asp-for="Radio" class="form-control" />
+				<span asp-validation-for="Radio" class="text-danger"></span>
+			</div>*@
+			@*<div class="form-group">
 				<label asp-for="Description" class="control-label"></label>
 				<input asp-for="Description" class="form-control" />
 				<span asp-validation-for="Description" class="text-danger"></span>
-			</div>
+			</div>*@
 			<div class="form-group">
 				<label asp-for="PetId" class="control-label"></label>
 				<select asp-for="PetId" asp-items="Model.Pets" class="form-control"></select>
@@ -57,10 +56,10 @@
 				or <a asp-controller="Pet" asp-action="Create" target="_blank">Create New</a>
 			</div>
 			@*<div class="form-group">
-					<label asp-for="UserId" class="control-label"></label>
-					<input asp-for="UserId" class="form-control" />
-					<span asp-validation-for="UserId" class="text-danger"></span>
-				</div>*@
+				<label asp-for="UserId" class="control-label"></label>
+				<input asp-for="UserId" class="form-control" />
+				<span asp-validation-for="UserId" class="text-danger"></span>
+			</div>*@
 			<div class="form-group">
 				<input type="submit" value="Save" class="btn btn-default" />
 			</div>
@@ -68,6 +67,6 @@
 	</div>
 </div>
 
-<div>
+@*<div>
 	<a asp-action="Index">Back to List</a>
-</div>
+</div>*@
