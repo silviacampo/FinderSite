@@ -22,7 +22,8 @@
 		"wwwroot/js/siteuserhwoverview.js",
 		"wwwroot/js/siteuserconnectiontimeline.js",
 		"wwwroot/js/sitedeviceconnectiontimeline.js",
-		"wwwroot/js/sitebaseconnectiontimeline.js"
+		"wwwroot/js/sitebaseconnectiontimeline.js",
+		"wwwroot/js/sitecollartimeline.js"
 	]
   }
 ]
