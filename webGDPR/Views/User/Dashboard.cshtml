@@ -185,7 +185,7 @@
 							</td>
 							<td>
 								<div style="position:relative;top:0px;left:0px; min-width:20px;">
-									<a asp-controller="Base" asp-action="ConnectionTimeline" asp-route-id="@item.BaseId" asp-route-parameter="IsConnected" title="View Connections Timeline" target="_blank">
+									<a asp-controller="Base" asp-action="Timeline" asp-route-id="@item.BaseId" asp-route-parameter="IsConnected" title="View Connections Timeline" target="_blank">
 										@if (item.LastStatus != null && item.LastStatus.IsConnected)
 										{
 											<i class="fa fa-circle fa-fw" style="color:green;position:relative;top:7px;left:0px" aria-hidden="true"></i>
@@ -203,7 +203,7 @@
 							</td>
 							<td class="visible-md visible-lg visible-sm" valign="middle">
 								<div style="position:relative;top:0px;left:0px; min-width:20px;">
-									<a asp-controller="Base" asp-action="ConnectionTimeline" asp-route-id="@item.BaseId" asp-route-parameter="IsPlugged" title="View Plug In Timeline" target="_blank">
+									<a asp-controller="Base" asp-action="Timeline" asp-route-id="@item.BaseId" asp-route-parameter="IsPlugged" title="View Plug In Timeline" target="_blank">
 										<i class="fa fa-plug fa-fw" style="color:gray;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
 										@if (!(item.LastStatus != null && item.LastStatus.IsPlugged))
 										{
@@ -214,7 +214,7 @@
 							</td>
 							<td class="visible-md visible-lg visible-sm">
 								<div style="position:relative;top:0px;left:0px; min-width:20px;">
-									<a asp-controller="Base" asp-action="ConnectionTimeline" asp-route-id="@item.BaseId" asp-route-parameter="Battery" title="View Battery Charging Timeline" target="_blank">
+									<a asp-controller="Base" asp-action="Timeline" asp-route-id="@item.BaseId" asp-route-parameter="Battery" title="View Battery Charging Timeline" target="_blank">
 										@if (item.LastStatus != null)
 										{
 											if (item.LastStatus.Battery < 25)
@@ -255,7 +255,7 @@
 							</td>
 							<td class="visible-md visible-lg visible-sm">
 								<div style="position:relative;top:0px;left:0px; min-width:20px;">
-									<a asp-controller="Base" asp-action="ConnectionTimeline" asp-route-id="@item.BaseId" asp-route-parameter="Radio" title="View Radio Strength Timeline" target="_blank">
+									<a asp-controller="Base" asp-action="Timeline" asp-route-id="@item.BaseId" asp-route-parameter="Radio" title="View Radio Strength Timeline" target="_blank">
 										<i class="fa fa-signal fa-fw" style="color:gray;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
 										@if (item.LastStatus != null)
 										{

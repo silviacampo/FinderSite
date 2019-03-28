@@ -1,4 +1,4 @@
-﻿$("#baseConnectionMoreBtn").click(function () {
+﻿$("#baseTimelineMoreBtn").click(function () {
   $("#loader").show();
   $('.overlay').show();
   var page = $(this).attr('data-page');
@@ -6,7 +6,7 @@
   var parameter = $(this).attr('data-parameter');
   $(this).attr('data-page', parseInt(page) + 1);
   $.ajax({
-    url: '/Base/ConnectionTimelineMore/',
+    url: '/Base/TimelineMore/',
     type: 'GET',
     data: { page: page, id: id, parameter: parameter },
     contentType: 'application/json; charset=utf-8',

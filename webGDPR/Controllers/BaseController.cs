@@ -100,7 +100,7 @@ namespace webGDPR.Controllers
         }
 
 		[Authorize]
-		public async Task<IActionResult> ConnectionTimeline(string id, string parameter)
+		public async Task<IActionResult> Timeline(string id, string parameter)
 		{
 			if (id == null)
 			{
@@ -123,7 +123,7 @@ namespace webGDPR.Controllers
 		}
 
 		[Authorize]
-		public async Task<IActionResult> ConnectionTimelineMore(string id, int page, string parameter)
+		public async Task<IActionResult> TimelineMore(string id, int page, string parameter)
 		{
 			List<TimelineItem> list = await GetConnectionTimelineAsync(id, page, parameter);
 			return new JsonResult(list);

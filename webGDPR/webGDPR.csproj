@@ -82,7 +82,7 @@
     <Content Update="Pages\Shared\Register.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
-    <Content Update="Views\Base\ConnectionTimeline.cshtml">
+    <Content Update="Views\Base\Timeline.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
     <Content Update="Views\Collar\Timeline.cshtml">
