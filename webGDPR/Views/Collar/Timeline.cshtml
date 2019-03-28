@@ -1,20 +1,20 @@
-﻿@model webGDPR.ViewModels.BaseTimelineViewModel
+﻿@model webGDPR.ViewModels.CollarTimelineViewModel
 @{
 	if (Model.Parameter == "IsConnected")
 	{
-		ViewData["Title"] = Model.Base.Name + "'s Connection Timeline";
+		ViewData["Title"] = Model.Collar.Name + "'s Connection Timeline";
 	}
-	else if (Model.Parameter == "IsPlugged")
+	else if (Model.Parameter == "IsGPSConnected")
 	{
-		ViewData["Title"] = Model.Base.Name + "'s Plug in Timeline";
+		ViewData["Title"] = Model.Collar.Name + "'s GPS Connection Timeline";
 	}
 	else if (Model.Parameter == "Radio")
 	{
-		ViewData["Title"] = Model.Base.Name + "'s Radio Strength Timeline";
+		ViewData["Title"] = Model.Collar.Name + "'s Radio Strength Timeline";
 	}
 	else if (Model.Parameter == "Battery")
 	{
-		ViewData["Title"] = Model.Base.Name + "'s Battery Charging Timeline";
+		ViewData["Title"] = Model.Collar.Name + "'s Battery Charge Timeline";
 	}
 
 }
@@ -55,4 +55,4 @@
 		}
 	</div>
 </div>
-<button class="btn btn-default" id="baseConnectionMoreBtn" data-id="@Model.Base.BaseId" data-page="1" data-parameter="@Model.Parameter" style="width:100%;">More</button>
+<button class="btn btn-default" id="collarTimelineMoreBtn" data-id="@Model.Collar.CollarId" data-page="1" data-parameter="@Model.Parameter" style="width:100%;">More</button>

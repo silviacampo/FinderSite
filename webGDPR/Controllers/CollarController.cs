@@ -99,8 +99,123 @@ namespace webGDPR.Controllers
 			return View(model);
 		}
 
-        // GET: Collar/Create
-        public async Task<IActionResult> Create()
+		[Authorize]
+		public async Task<IActionResult> Timeline(string id, string parameter)
+		{
+			if (id == null)
+			{
+				return NotFound();
+			}
+			var collar = await _context.Collar.Include(b => b.LastStatus).ThenInclude(c => c.BaseConnectedTo).FirstOrDefaultAsync(m => m.CollarId == id && !m.Deleted);
+			if (collar == null)
+			{
+				return NotFound();
+			}
+
+			CollarTimelineViewModel model = new CollarTimelineViewModel
+			{
+				Collar = collar,
+				Parameter = parameter,
+				Logs = await GetTimelineAsync(id, 0, parameter)
+			};
+			return View(model);
+		}
+
+		[Authorize]
+		public async Task<IActionResult> TimelineMore(string id, int page, string parameter)
+		{
+			List<TimelineItem> list = await GetTimelineAsync(id, page, parameter);
+			return new JsonResult(list);
+		}
+
+		private const int timelinePageSize = 10;
+		private async Task<List<TimelineItem>> GetTimelineAsync(string id, int page, string parameter)
+		{
+			List<TimelineItem> list = new List<TimelineItem>();
+			List<CollarStatus> logs = await _context.CollarStatus.Include(l => l.BaseConnectedTo).Where(s => s.CollarId == id).OrderByDescending(l => l.CreationDate).Skip(page * timelinePageSize).Take(timelinePageSize).ToListAsync();
+			foreach (var log in logs)
+			{
+				string itemMessage = string.Empty;
+				string itemMore = Newtonsoft.Json.JsonConvert.SerializeObject(log);
+				TimelineItemOrientation itemOrientation = TimelineItemOrientation.left;
+				if (parameter == "IsConnected")
+				{
+					if (log.IsConnected == true)
+					{
+						itemMessage = "Connected";
+					}
+					else
+					{
+						itemMessage = "Disconnected";
+					}
+					if (log.IsConnected == true)
+					{
+						itemOrientation = TimelineItemOrientation.left;
+					}
+					else
+					{
+						itemOrientation = TimelineItemOrientation.right;
+					}
+				}
+				else if (parameter == "IsGPSConnected")
+				{
+					if (log.IsGPSConnected == true)
+					{
+						itemMessage = "GPS Connected";
+					}
+					else
+					{
+						itemMessage = "GPS Disconnected";
+					}
+					if (log.IsGPSConnected == true)
+					{
+						itemOrientation = TimelineItemOrientation.left;
+					}
+					else
+					{
+						itemOrientation = TimelineItemOrientation.right;
+					}
+				}
+				else if (parameter == "Radio")
+				{
+					itemMessage = "Radio: " + log.RadioPercentage;
+
+					if (log.Radio < 40)
+					{
+						itemOrientation = TimelineItemOrientation.left;
+					}
+					else
+					{
+						itemOrientation = TimelineItemOrientation.right;
+					}
+				}
+				else if (parameter == "Battery")
+				{
+					itemMessage = "Battery: " + log.Battery.ToString() + "%";
+					if (log.Battery < 25)
+					{
+						itemOrientation = TimelineItemOrientation.left;
+					}
+					else
+					{
+						itemOrientation = TimelineItemOrientation.right;
+					}
+				}
+				list.Add(new TimelineItem()
+				{
+					ItemDate = log.CreationDate,
+					ItemLeftTitle = log.BaseConnectedTo?.Name,
+					ItemMessage = itemMessage,
+					ItemMore = itemMore,
+					Orientation = itemOrientation
+				});
+			}
+			return list;
+		}
+
+
+		// GET: Collar/Create
+		public async Task<IActionResult> Create()
         {
 			string UserId = _context.User.FirstOrDefault(u => u.OwnerID == _userManager.GetUserId(User)).UserID;
 			List<string> petCollars = await _context.PetCollar.Where(p => p.IsActive && p.CollarId != null).Select(c => c.PetId).ToListAsync();

@@ -85,6 +85,9 @@
     <Content Update="Views\Base\ConnectionTimeline.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
+    <Content Update="Views\Collar\Timeline.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
     <Content Update="Views\Device\ConnectionTimeline.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>

@@ -113,7 +113,7 @@ namespace webGDPR.Controllers
 				return NotFound();
 			}
 
-			BaseConnectionTimelineViewModel model = new BaseConnectionTimelineViewModel
+			BaseTimelineViewModel model = new BaseTimelineViewModel
 			{
 				Base = @base,
 				Parameter = parameter,

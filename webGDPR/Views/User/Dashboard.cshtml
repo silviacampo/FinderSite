@@ -203,7 +203,7 @@
 							</td>
 							<td class="visible-md visible-lg visible-sm" valign="middle">
 								<div style="position:relative;top:0px;left:0px; min-width:20px;">
-									<a asp-controller="Base" asp-action="ConnectionTimeline" asp-route-id="@item.BaseId" asp-route-parameter="IsPlugged" title="View Connections Timeline" target="_blank">
+									<a asp-controller="Base" asp-action="ConnectionTimeline" asp-route-id="@item.BaseId" asp-route-parameter="IsPlugged" title="View Plug In Timeline" target="_blank">
 										<i class="fa fa-plug fa-fw" style="color:gray;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
 										@if (!(item.LastStatus != null && item.LastStatus.IsPlugged))
 										{
@@ -214,7 +214,7 @@
 							</td>
 							<td class="visible-md visible-lg visible-sm">
 								<div style="position:relative;top:0px;left:0px; min-width:20px;">
-									<a asp-controller="Base" asp-action="ConnectionTimeline" asp-route-id="@item.BaseId" asp-route-parameter="Battery" title="View Connections Timeline" target="_blank">
+									<a asp-controller="Base" asp-action="ConnectionTimeline" asp-route-id="@item.BaseId" asp-route-parameter="Battery" title="View Battery Charging Timeline" target="_blank">
 										@if (item.LastStatus != null)
 										{
 											if (item.LastStatus.Battery < 25)
@@ -255,7 +255,7 @@
 							</td>
 							<td class="visible-md visible-lg visible-sm">
 								<div style="position:relative;top:0px;left:0px; min-width:20px;">
-									<a asp-controller="Base" asp-action="ConnectionTimeline" asp-route-id="@item.BaseId" asp-route-parameter="Radio" title="View Connections Timeline" target="_blank">
+									<a asp-controller="Base" asp-action="ConnectionTimeline" asp-route-id="@item.BaseId" asp-route-parameter="Radio" title="View Radio Strength Timeline" target="_blank">
 										<i class="fa fa-signal fa-fw" style="color:gray;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
 										@if (item.LastStatus != null)
 										{
@@ -303,71 +303,78 @@
 							</td>
 							<td>
 								<div style="position:relative;top:0px;left:0px; min-width:20px;">
-									@if (item.LastStatus != null && item.LastStatus.IsConnected)
-									{
-										<i class="fa fa-circle fa-fw" style="color:green;position:relative;top:7px;left:0px" aria-hidden="true"></i>
-										@if (item.LastStatus != null && item.LastStatus.BaseConnectedTo != null)
+									<a asp-controller="Collar" asp-action="Timeline" asp-route-id="@item.CollarId" asp-route-parameter="IsConnected" title="View Connections Timeline" target="_blank">
+										@if (item.LastStatus != null && item.LastStatus.IsConnected)
 										{
-											@Html.DisplayFor(modelItem => item.LastStatus.BaseConnectedTo.Name)
+											<i class="fa fa-circle fa-fw" style="color:green;position:relative;top:7px;left:0px" aria-hidden="true"></i>
+											@if (item.LastStatus != null && item.LastStatus.BaseConnectedTo != null)
+											{
+												@Html.DisplayFor(modelItem => item.LastStatus.BaseConnectedTo.Name)
+											}
 										}
-									}
-									else
-									{
-										<i class="fa fa-circle fa-fw" style="color:red;position:relative;top:7px;left:0px" aria-hidden="true"></i>
-									}
+										else
+										{
+											<i class="fa fa-circle fa-fw" style="color:red;position:relative;top:7px;left:0px" aria-hidden="true"></i>
+										}
+										</a>
 								</div>
 							</td>
 							<td class="visible-md visible-lg visible-sm" valign="middle">
 								<div style="position:relative;top:0px;left:0px; min-width:20px;">
-									<i class="fa fa-map-marker fa-fw" style="color:gray;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
-									@if (!(item.LastStatus != null && item.LastStatus.IsGPSConnected))
-									{
-										<i style="color:black; font-weight:bold; font-size:x-large;padding-top:0px;padding-bottom:0px;position:absolute;top:0px;left:6px">\</i>
-									}
+									<a asp-controller="Collar" asp-action="Timeline" asp-route-id="@item.CollarId" asp-route-parameter="IsGPSConnected" title="View GPS Connections Timeline" target="_blank">
+										<i class="fa fa-map-marker fa-fw" style="color:gray;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
+										@if (!(item.LastStatus != null && item.LastStatus.IsGPSConnected))
+										{
+											<i style="color:black; font-weight:bold; font-size:x-large;padding-top:0px;padding-bottom:0px;position:absolute;top:0px;left:6px">\</i>
+										}
+										</a>
 								</div>
 							</td>
 							<td class="visible-md visible-lg visible-sm">
 								<div style="position:relative;top:0px;left:0px; min-width:20px;">
-									@if (item.LastStatus != null)
-									{
-										if (item.LastStatus.Battery < 25)
+									<a asp-controller="Collar" asp-action="Timeline" asp-route-id="@item.CollarId" asp-route-parameter="Battery" title="View Battery Charge Timeline" target="_blank">
+										@if (item.LastStatus != null)
 										{
-											<i class="fa fa-battery-empty fa-fw" style="color:lightblue;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
-										}
-										else if (item.LastStatus.Battery < 50)
-										{
-											<i class="fa fa-battery-quarter fa-fw" style="color:lightblue;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
-										}
-										else if (item.LastStatus.Battery < 75)
-										{
-											<i class="fa fa-battery-half fa-fw" style="color:lightblue;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
-										}
-										else if (item.LastStatus.Battery < 100)
-										{
-											<i class="fa fa-battery-three-quarters fa-fw" style="color:lightblue;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
+											if (item.LastStatus.Battery < 25)
+											{
+												<i class="fa fa-battery-empty fa-fw" style="color:lightblue;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
+											}
+											else if (item.LastStatus.Battery < 50)
+											{
+												<i class="fa fa-battery-quarter fa-fw" style="color:lightblue;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
+											}
+											else if (item.LastStatus.Battery < 75)
+											{
+												<i class="fa fa-battery-half fa-fw" style="color:lightblue;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
+											}
+											else if (item.LastStatus.Battery < 100)
+											{
+												<i class="fa fa-battery-three-quarters fa-fw" style="color:lightblue;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
+											}
+											else
+											{
+												<i class="fa fa-battery-full fa-fw" style="color:lightblue;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
+											}
 										}
 										else
 										{
-											<i class="fa fa-battery-full fa-fw" style="color:lightblue;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
-										}
-									}
-									else
-									{
-										<i class="fa fa-battery-empty fa-fw" style="color:lightblue;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
-									}
+											<i class="fa fa-battery-empty fa-fw" style="color:lightblue;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
+										}</a>
 								</div>
 							</td>
 							<td class="visible-md visible-lg visible-sm">
 								<div style="position:relative;top:0px;left:0px; min-width:20px;">
-									<i class="fa fa-signal fa-fw" style="color:gray;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
-									@if (item.LastStatus != null)
-									{
-										<i style="color:black;font-weight:bold;font-size:small;position:absolute;top:5px;left:6px">@item.LastStatus.RadioPercentage</i>
-									}
-									else
-									{
-										<i style="color:black;font-weight:bold;font-size:small;position:absolute;top:5px;left:6px">0%</i>
-									}
+									<a asp-controller="Collar" asp-action="Timeline" asp-route-id="@item.CollarId" asp-route-parameter="Radio" title="View Radio Strength Timeline" target="_blank">
+										<i class="fa fa-signal fa-fw" style="color:gray;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
+										@if (item.LastStatus != null)
+										{
+											<i style="color:black;font-weight:bold;font-size:small;position:absolute;top:5px;left:6px">@item.LastStatus.RadioPercentage</i>
+										}
+										else
+										{
+											<i style="color:black;font-weight:bold;font-size:small;position:absolute;top:5px;left:6px">0%</i>
+										}
+										</a>
 								</div>
 							</td>
 							<td>

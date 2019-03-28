@@ -3,7 +3,7 @@ using webGDPR.Models;
 
 namespace webGDPR.ViewModels
 {
-	public class BaseConnectionTimelineViewModel
+	public class BaseTimelineViewModel
 	{
 		public List<Infrastructure.TimelineItem> Logs { get; set; }
 		public Base Base { get; set; }
