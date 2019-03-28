@@ -1,6 +1,22 @@
 ﻿@model webGDPR.ViewModels.BaseConnectionTimelineViewModel
 @{
-	ViewData["Title"] = Model.Base.Name + " Connections Timeline";
+	if (Model.Parameter == "IsConnected")
+	{
+		ViewData["Title"] = Model.Base.Name + "'s Connection Timeline";
+	}
+	else if (Model.Parameter == "IsPlugged")
+	{
+		ViewData["Title"] = Model.Base.Name + "'s Plug in Timeline";
+	}
+	else if (Model.Parameter == "Radio")
+	{
+		ViewData["Title"] = Model.Base.Name + "'s Radio Strength Timeline";
+	}
+	else if (Model.Parameter == "Battery")
+	{
+		ViewData["Title"] = Model.Base.Name + "'s Battery Charging Timeline";
+	}
+
 }
 <div class="overlay" style="position: absolute; top:0px;bottom:-500px;left:0px;right:0px;"></div>
 <div id="loader"></div>
