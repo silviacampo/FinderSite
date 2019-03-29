@@ -7,7 +7,10 @@ namespace webGDPR.Models
 {
 	public class EditPetViewModel: Pet
     {
+		[DisplayName("Choose photos of your pet in case it's lost")]
 		public string ImageFileName { get; set; }
+
+		[DisplayName("Edit a page with information about your pet, can include photos previously uploaded.")]
 		public string PageFileName { get; set; }
 
 		[DisplayName("Choose the collar that will use the pet")] 
