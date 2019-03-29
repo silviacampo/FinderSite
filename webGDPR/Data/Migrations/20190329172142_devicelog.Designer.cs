@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using webGDPR.Data;
 
 namespace webGDPR.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190329172142_devicelog")]
+    partial class devicelog
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -375,7 +377,8 @@ namespace webGDPR.Data.Migrations
 
                     b.Property<DateTime>("CreationDate");
 
-                    b.Property<string>("DeviceId");
+                    b.Property<string>("DeviceId")
+                        .IsRequired();
 
                     b.Property<string>("Message");
 
@@ -846,7 +849,8 @@ namespace webGDPR.Data.Migrations
                 {
                     b.HasOne("webGDPR.Models.Device", "Device")
                         .WithMany()
-                        .HasForeignKey("DeviceId");
+                        .HasForeignKey("DeviceId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("webGDPR.Models.Invoice", b =>

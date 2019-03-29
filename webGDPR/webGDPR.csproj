@@ -14,6 +14,10 @@
     <Compile Remove="Data\Migrations\20180727175701_user1.Designer.cs" />
     <Compile Remove="Data\Migrations\20190217224715_productInit.cs" />
     <Compile Remove="Data\Migrations\20190217224715_productInit.Designer.cs" />
+    <Compile Remove="Data\Migrations\20190329164936_petCorrection.cs" />
+    <Compile Remove="Data\Migrations\20190329164936_petCorrection.Designer.cs" />
+    <Compile Remove="Data\Migrations\20190329170818_petCorrection.cs" />
+    <Compile Remove="Data\Migrations\20190329170818_petCorrection.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

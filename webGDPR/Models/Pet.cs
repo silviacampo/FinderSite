@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace webGDPR.Models
@@ -9,14 +10,21 @@ namespace webGDPR.Models
 		public const string InitialName = "Pet 1";
 
 		public string PetId { get; set; }
+
+		[DisplayName("Pet Name (Used in our web site and application)")]
 		public string Name { get; set; }
 		public string Type { get; set; }
 		public string Breeding { get; set; }
 		public string Color { get; set; }
 		public DateTime Birthdate { get; set; }
 		public string Age { get; set; }
+		[DisplayName(" ")]
+		public string AgeUnit { get; set; }
 		public string Gender { get; set; }
 		public string Weigth { get; set; }
+		[DisplayName(" ")]
+		public string WeigthUnit { get; set; }
+		[DisplayName("Pet Health Comments ")]
 		public string HealthComments { get; set; }
 
 		public string LastCollarId { get; set; }
