@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using webGDPR.Models;
 
@@ -14,8 +16,10 @@ namespace webGDPR.Models
 		public string BaseId { get; set; }
 		public byte BaseNumber { get; set; } //id by client
 
+		[DisplayName("Base Code (ie FB654321)")]
 		public string HWId { get; set; }
 
+		[DisplayName("Displayed Name (Used in our web site and application)")]
 		public string Name { get; set; }
 		public string Text { get; set; }
 		public string Description { get; set; }

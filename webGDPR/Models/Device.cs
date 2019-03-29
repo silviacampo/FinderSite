@@ -15,7 +15,7 @@ namespace webGDPR.Models
 		[DisplayName("OS Version")]
 		public string OSVersion { get; set; }
 
-		[DisplayName("Displayed Name (Optional, used in our site and application replacing the Device Name)")]
+		[DisplayName("Displayed Name (Optional, used in our web site and application replacing the Device Name)")]
 		public string AliasName { get; set; }
 		public bool Banned { get; set; }
 		public bool IsLogging { get; set; }
