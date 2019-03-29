@@ -4,106 +4,116 @@
 	ViewData["Title"] = "Add a pet";
 }
 <div class="row">
-	<fieldset class="myfieldset">
-		<h4><i class="fa fa-paw fa-fw" aria-hidden="true"></i>&nbsp;@ViewData["Title"]</h4>
-		<hr />
-		<form asp-action="Create" enctype="multipart/form-data">
-			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
-			<div class="form-row">
-				<div class="col-md-6">
-					<label asp-for="Name" class="control-label"></label>
-					<input asp-for="Name" class="form-control" />
-					<span asp-validation-for="Name" class="text-danger"></span>
-				</div>
-				<div class="col-md-6">
-					<label asp-for="CollarId" class="control-label"></label>
-					<select asp-for="CollarId" asp-items="Model.Collars" class="form-control"></select>
-					<span asp-validation-for="CollarId" class="text-danger"></span>
-					or <a asp-controller="Collar" asp-action="Create" target="_blank">Create New</a>
-				</div>
-			</div>
-			<div class="form-row">
-				<div class="col-md-2">
-					<label asp-for="Type" class="control-label"></label>
-					<select asp-for="Type" asp-items="Model.Types" class="form-control"></select>
-					<span asp-validation-for="Type" class="text-danger"></span>
-				</div>
-				<div class="col-md-6">
-					<label asp-for="Breeding" class="control-label"></label>
-					<input asp-for="Breeding" class="form-control" />
-					<span asp-validation-for="Breeding" class="text-danger"></span>
-				</div>
-				<div class="col-md-4">
-					<label asp-for="Color" class="control-label"></label>
-					<input asp-for="Color" class="form-control" />
-					<span asp-validation-for="Color" class="text-danger"></span>
-				</div>
-			</div>
-			<div class="form-row">
-				<div class="col-md-3">
-					<label asp-for="Birthdate" class="control-label"></label>
-					<input asp-for="Birthdate" type="date" class="form-control" />
-					<span asp-validation-for="Birthdate" class="text-danger"></span>
-				</div>
-				<div class="col-md-1">
-					or
-				</div>
-				<div class="col-md-2">
-					<label asp-for="Age" class="control-label"></label>
-					<input asp-for="Age" class="form-control" />
-					<span asp-validation-for="Age" class="text-danger"></span>
-				</div>
-				<div class="col-md-2">
-					<label asp-for="AgeUnit" class="control-label"></label>
-					<select asp-for="AgeUnit" asp-items="Model.AgeUnits" class="form-control"></select>
-					<span asp-validation-for="AgeUnit" class="text-danger"></span>
-				</div>
-				<div class="col-md-4">
-					<label asp-for="Gender" class="control-label"></label>
-					<select asp-for="Gender" asp-items="Model.Genders" class="form-control"></select>
-					<span asp-validation-for="Gender" class="text-danger"></span>
-				</div>
-			</div>
-			<div class="form-row">	
-				<div class="col-md-2">
-					<label asp-for="Weigth" class="control-label"></label>
-					<input asp-for="Weigth" class="form-control" />
-					<span asp-validation-for="Weigth" class="text-danger"></span>
-				</div>
-				<div class="col-md-2">
-					<label asp-for="WeigthUnit" class="control-label"></label>
-					<select asp-for="Weigth" asp-items="Model.WeightUnits" class="form-control"></select>
-					<span asp-validation-for="WeigthUnit" class="text-danger"></span>
-				</div>
-				<div class="col-md-8">
-					<label asp-for="DefaultMode" class="control-label"></label>
-					<div class="range">
-						<input asp-for="DefaultMode" type="range" min="2" max="6" step="1" value="3">
+	<div class="col-md-6">
+		<fieldset class="myfieldset">
+			<h4><i class="fa fa-paw fa-fw" aria-hidden="true"></i>&nbsp;@ViewData["Title"]</h4>
+			<hr />
+			<form asp-action="Create" enctype="multipart/form-data">
+				<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+				<div class="form-row">
+					<div class="col-md-12">
+						<label asp-for="Name" class="control-label"></label>
+						<input asp-for="Name" class="form-control" />
+						<span asp-validation-for="Name" class="text-danger"></span>
 					</div>
-					<ul class="range-labels">
-						<li>Young</li>
-						<li>Active</li>
-						<li class="active selected">Regular</li>
-						<li>Lazy</li>
-						<li>Mature</li>
-					</ul>
-					<span asp-validation-for="DefaultMode" class="text-danger"></span>
 				</div>
-			</div>
-			<div class="form-row">
-				<div class="col-md-12">
-					<label asp-for="HealthComments" class="control-label"></label>
-					<textarea asp-for="HealthComments" class="form-control"> </textarea>
-					<span asp-validation-for="HealthComments" class="text-danger"></span>
+				<div class="form-row">
+					<div class="col-md-12">
+						<label asp-for="CollarId" class="control-label"></label>
+						<select asp-for="CollarId" asp-items="Model.Collars" class="form-control"></select>
+						<span asp-validation-for="CollarId" class="text-danger"></span>
+						or <a asp-controller="Collar" asp-action="Create" target="_blank">Create New</a>
+					</div>
 				</div>
-			</div>
+				<div class="form-row">
+					<div class="col-md-4">
+						<label asp-for="Type" class="control-label"></label>
+						<select asp-for="Type" asp-items="Model.Types" class="form-control"></select>
+						<span asp-validation-for="Type" class="text-danger"></span>
+					</div>
+					<div class="col-md-8">
+						<label asp-for="Breeding" class="control-label"></label>
+						<input asp-for="Breeding" class="form-control" />
+						<span asp-validation-for="Breeding" class="text-danger"></span>
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="col-md-5">
+						<label asp-for="Birthdate" class="control-label"></label>
+						<input asp-for="Birthdate" type="date" class="form-control" />
+						<span asp-validation-for="Birthdate" class="text-danger"></span>
+					</div>
+					<div class="col-md-1">
+						or
+					</div>
+					<div class="col-md-3">
+						<label asp-for="Age" class="control-label"></label>
+						<input asp-for="Age" class="form-control" />
+						<span asp-validation-for="Age" class="text-danger"></span>
+					</div>
+					<div class="col-md-3">
+						<label asp-for="AgeUnit" class="control-label"></label>
+						<select asp-for="AgeUnit" asp-items="Model.AgeUnits" class="form-control"></select>
+						<span asp-validation-for="AgeUnit" class="text-danger"></span>
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="col-md-6">
+						<label asp-for="Gender" class="control-label"></label>
+						<select asp-for="Gender" asp-items="Model.Genders" class="form-control"></select>
+						<span asp-validation-for="Gender" class="text-danger"></span>
+					</div>
+					<div class="col-md-6">
+						<label asp-for="Color" class="control-label"></label>
+						<input asp-for="Color" class="form-control" />
+						<span asp-validation-for="Color" class="text-danger"></span>
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="col-md-3">
+						<label asp-for="Weigth" class="control-label"></label>
+						<input asp-for="Weigth" class="form-control" />
+						<span asp-validation-for="Weigth" class="text-danger"></span>
+					</div>
+					<div class="col-md-3">
+						<label asp-for="WeigthUnit" class="control-label"></label>
+						<select asp-for="WeigthUnit" asp-items="Model.WeightUnits" class="form-control"></select>
+						<span asp-validation-for="WeigthUnit" class="text-danger"></span>
+					</div>
+					<div class="col-md-6">
 
-			@*<div class="form-group">
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="col-md-12">
+						<label asp-for="DefaultMode" class="control-label"></label>
+						<div class="range">
+							<input asp-for="DefaultMode" type="range" min="2" max="6" step="1" value="3">
+						</div>
+						<ul class="range-labels">
+							<li>Young</li>
+							<li>Active</li>
+							<li class="active selected">Regular</li>
+							<li>Lazy</li>
+							<li>Mature</li>
+						</ul>
+						<span asp-validation-for="DefaultMode" class="text-danger"></span>
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="col-md-12">
+						<label asp-for="HealthComments" class="control-label"></label>
+						<textarea asp-for="HealthComments" class="form-control"> </textarea>
+						<span asp-validation-for="HealthComments" class="text-danger"></span>
+					</div>
+				</div>
+
+				@*<div class="form-group">
 			<label asp-for="UserId" class="control-label"></label>
 			<input asp-for="UserId" class="form-control" />
 			<span asp-validation-for="UserId" class="text-danger"></span>
 		</div>*@
-			@*<div class="form-group">
+				@*<div class="form-group">
 			<label asp-for="ImageFileName" class="control-label"></label>
 			<input type="file" multiple="multiple" name="imagesFiles" asp-for="ImageFileName" class="form-control" />
 			<span asp-validation-for="ImageFileName" class="text-danger"></span>
@@ -114,14 +124,16 @@
 			<textarea id="FullDescription" class="form-control" name="pageContent" rows="200"></textarea>
 			<span asp-validation-for="PageFileName" class="text-danger"></span>
 		</div>*@
-
-			<div class="form-group">
-					<input type="submit" value="Create" class="btn btn-default" />
-			</div>
-		</form>
-	</fieldset>
+				<div class="form-row">
+					<div class="col-md-12">
+						<input type="submit" value="Create" class="btn btn-default" />
+					</div></div>
+					
+			</form>
+		</fieldset>
+	</div>
 </div>
 
-@*<div>
-	<a asp-action="Index">Back to List</a>
-</div>*@
+	@*<div>
+			<a asp-action="Index">Back to List</a>
+	</div>*@

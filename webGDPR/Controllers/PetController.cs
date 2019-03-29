@@ -359,7 +359,7 @@ namespace webGDPR.Controllers
         // POST: Pet/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("PetId,Name,Type,Breeding,Color,Age,HealthComments,CollarId,DefaultMode")] EditPetViewModel pet, IList<IFormFile> imagesFiles, string pageContent)
+        public async Task<IActionResult> Create([Bind("PetId,Name,Type,Breeding,Color,Age,AgeUnit,Birthdate,Weigth,WeigthUnit,Gender,HealthComments,CollarId,DefaultMode")] EditPetViewModel pet, IList<IFormFile> imagesFiles, string pageContent)
         {
             if (ModelState.IsValid)
             {

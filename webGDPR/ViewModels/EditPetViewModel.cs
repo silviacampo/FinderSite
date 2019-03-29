@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace webGDPR.Models
@@ -9,6 +10,7 @@ namespace webGDPR.Models
 		public string ImageFileName { get; set; }
 		public string PageFileName { get; set; }
 
+		[DisplayName("Choose the collar that will use the pet")] 
 		public string CollarId { get; set; }
 
 		public IEnumerable<SelectListItem> Collars { get; set; }

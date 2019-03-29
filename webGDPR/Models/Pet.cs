@@ -14,7 +14,9 @@ namespace webGDPR.Models
 		[DisplayName("Pet Name (Used in our web site and application)")]
 		public string Name { get; set; }
 		public string Type { get; set; }
+		[DisplayName("Breeding (if applicable)")]
 		public string Breeding { get; set; }
+		[DisplayName("Color/Pattern (if applicable ie: white, black, tabby, calico)")]
 		public string Color { get; set; }
 		public DateTime Birthdate { get; set; }
 		public string Age { get; set; }
@@ -42,6 +44,7 @@ namespace webGDPR.Models
 		[ForeignKey("LastModeId")]
 		public PetMode LastMode { get; set; }
 
+		[DisplayName("Level of Activity")]
 		public ConfigModeTypes DefaultMode { get; set; } //int matching the enum PetModeTypes 2 a 6
 
 		public bool Deleted { get; set; }
