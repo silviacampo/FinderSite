@@ -16,9 +16,11 @@ namespace webGDPR.Models
 		public string BaseId { get; set; }
 		public byte BaseNumber { get; set; } //id by client
 
+		[Required(ErrorMessage ="Please enter the Base Code")]
 		[DisplayName("Base Code (ie FB654321)")]
 		public string HWId { get; set; }
 
+		[Required(ErrorMessage ="Please enter the Displayed Name")]
 		[DisplayName("Displayed Name (Used in our web site and application)")]
 		public string Name { get; set; }
 		public string Text { get; set; }

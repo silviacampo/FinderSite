@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace webGDPR.Models
@@ -11,21 +12,31 @@ namespace webGDPR.Models
 
 		public string PetId { get; set; }
 
+		[Required(ErrorMessage ="Please enter the Pet Name")]
 		[DisplayName("Pet Name (Used in our web site and application)")]
 		public string Name { get; set; }
+
+		[Required]
 		public string Type { get; set; }
+
 		[DisplayName("Breeding (if applicable)")]
 		public string Breeding { get; set; }
+
 		[DisplayName("Color/Pattern (if applicable ie: white, black, tabby, calico)")]
 		public string Color { get; set; }
+
 		public DateTime Birthdate { get; set; }
 		public string Age { get; set; }
 		[DisplayName(" ")]
 		public string AgeUnit { get; set; }
+
+		[Required]
 		public string Gender { get; set; }
+
 		public string Weigth { get; set; }
 		[DisplayName(" ")]
 		public string WeigthUnit { get; set; }
+
 		[DisplayName("Pet Health Comments ")]
 		public string HealthComments { get; set; }
 
@@ -44,6 +55,7 @@ namespace webGDPR.Models
 		[ForeignKey("LastModeId")]
 		public PetMode LastMode { get; set; }
 
+		[Required]
 		[DisplayName("Level of Activity")]
 		public ConfigModeTypes DefaultMode { get; set; } //int matching the enum PetModeTypes 2 a 6
 

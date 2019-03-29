@@ -14,10 +14,14 @@ namespace webGDPR.Models
 
 		public string CollarId { get; set; }
 
+		[Required(ErrorMessage ="Please enter the Collar Code")]
 		[DisplayName("Collar Code (ie FC123456)")]
 		public string HWId { get; set; }
+
+		[Required(ErrorMessage ="Please enter a Displayed Name")]
 		[DisplayName("Displayed Name (Used in our web site and application)")]
 		public string Name { get; set; }
+
 		public byte CollarNumber { get; set; }
 		public byte BaseNumber { get; set; }
 

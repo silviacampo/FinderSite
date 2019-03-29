@@ -295,25 +295,21 @@ namespace webGDPR.Controllers
 			return View(model);
 		}
 
-		// GET: Pet/Create
-		public async Task<IActionResult> Create()
-        {
-            string UserId = _context.User.FirstOrDefault(u => u.OwnerID == _userManager.GetUserId(User)).UserID;
-            List<string> petCollars = await _context.PetCollar.Where(p => p.IsActive).Select(c => c.CollarId).ToListAsync();
-            List<Collar> collars = await _context.Collar.AsNoTracking().Where(b => b.UserId == UserId && !b.Deleted && !petCollars.Contains(b.CollarId)).ToListAsync();
+		private async Task InitSelectsAsync(EditPetViewModel model) {
+			string UserId = _context.User.FirstOrDefault(u => u.OwnerID == _userManager.GetUserId(User)).UserID;
+			List<string> petCollars = await _context.PetCollar.Where(p => p.IsActive).Select(c => c.CollarId).ToListAsync();
+			List<Collar> collars = await _context.Collar.AsNoTracking().Where(b => b.UserId == UserId && !b.Deleted && !petCollars.Contains(b.CollarId)).ToListAsync();
+			List<SelectListItem> collarsItems = new List<SelectListItem>();
+			foreach (Collar c in collars)
+			{
+				collarsItems.Add(new SelectListItem
+				{
+					Value = c.CollarId,
+					Text = c.Name
+				});
+			}
 
-            EditPetViewModel model = new EditPetViewModel();
-            List<SelectListItem> collarsItems = new List<SelectListItem>();
-            foreach (Collar c in collars)
-            {
-                collarsItems.Add(new SelectListItem
-                {
-                    Value = c.CollarId,
-                    Text = c.Name
-                });
-            }
-
-            model.Collars = collarsItems;
+			model.Collars = collarsItems;
 
 			List<SelectListItem> typesItems = new List<SelectListItem>
 			{
@@ -344,16 +340,22 @@ namespace webGDPR.Controllers
 			model.AgeUnits = ageItems;
 
 
-		List<SelectListItem> weightItems = new List<SelectListItem>
+			List<SelectListItem> weightItems = new List<SelectListItem>
 			{
 				new SelectListItem { Value = "K", Text = "Kilo" },
 				new SelectListItem { Value = "P", Text = "Pound" },
 				new SelectListItem { Value = "G", Text = "Grame" }
 			};
 
-		model.WeightUnits = weightItems;
+			model.WeightUnits = weightItems;
+		}
 
-            return View(model);
+		// GET: Pet/Create
+		public async Task<IActionResult> Create()
+        {
+            EditPetViewModel model = new EditPetViewModel();
+			await InitSelectsAsync(model);
+			return View(model);
         }
 
         // POST: Pet/Create
@@ -404,7 +406,8 @@ namespace webGDPR.Controllers
 
 				return RedirectToAction(nameof(UserController.Dashboard), "User");
 			}
-            return View(pet);
+			await InitSelectsAsync(pet);
+			return View(pet);
         }
 
         // GET: Pet/Edit/5
@@ -421,65 +424,14 @@ namespace webGDPR.Controllers
                 return NotFound();
             }
 
-            string UserId = _context.User.FirstOrDefault(u => u.OwnerID == _userManager.GetUserId(User)).UserID;
-            List<string> petCollars = await _context.PetCollar.Where(p => p.IsActive && p.PetId != pet.PetId).Select(c => c.CollarId).ToListAsync();
-            List<Collar> collars = await _context.Collar.AsNoTracking().Where(b => b.UserId == UserId && !b.Deleted && !petCollars.Contains(b.CollarId)).ToListAsync();
-
             EditPetViewModel model = new EditPetViewModel();
             model = _mapper.Map<EditPetViewModel>(pet);
             if (pet.LastCollarId != null)
             {
                 model.CollarId = _context.PetCollar.FirstOrDefault(c => c.PetCollarId == pet.LastCollarId).CollarId;
             }
-            List<SelectListItem> collarsItems = new List<SelectListItem>();
-            foreach (Collar c in collars)
-            {
-                collarsItems.Add(new SelectListItem
-                {
-                    Value = c.CollarId,
-                    Text = c.Name
-                });
-            }
 
-            model.Collars = collarsItems;
-
-			List<SelectListItem> typesItems = new List<SelectListItem>
-			{
-				new SelectListItem { Value = "CAT", Text = "Cat" },
-				new SelectListItem { Value = "DOG", Text = "Dog" }
-			};
-
-			model.Types = typesItems;
-
-			//public IEnumerable<SelectListItem> Breedings { get; set; }
-
-			List<SelectListItem> genderItems = new List<SelectListItem>
-			{
-				new SelectListItem { Value = "F", Text = "Female" },
-				new SelectListItem { Value = "M", Text = "Male" }
-			};
-
-			model.Genders = genderItems;
-
-			List<SelectListItem> ageItems = new List<SelectListItem>
-			{
-				new SelectListItem { Value = "Y", Text = "Years" },
-				new SelectListItem { Value = "M", Text = "Months" },
-				new SelectListItem { Value = "W", Text = "Weeks" },
-				new SelectListItem { Value = "D", Text = "Days" }
-			};
-
-			model.AgeUnits = ageItems;
-
-
-			List<SelectListItem> weightItems = new List<SelectListItem>
-			{
-				new SelectListItem { Value = "K", Text = "Kilo" },
-				new SelectListItem { Value = "P", Text = "Pound" },
-				new SelectListItem { Value = "G", Text = "Grame" }
-			};
-
-			model.WeightUnits = weightItems;
+			await InitSelectsAsync(model);
 
 			try
             {
@@ -583,7 +535,8 @@ namespace webGDPR.Controllers
                 }
 				return RedirectToAction(nameof(UserController.Dashboard), "User");
 			}
-            return View(pet);
+			await InitSelectsAsync(pet);
+			return View(pet);
         }
 
         // GET: Pet/Delete/5
