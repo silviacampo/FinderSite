@@ -443,7 +443,45 @@ namespace webGDPR.Controllers
 
             model.Collars = collarsItems;
 
-            try
+			List<SelectListItem> typesItems = new List<SelectListItem>
+			{
+				new SelectListItem { Value = "CAT", Text = "Cat" },
+				new SelectListItem { Value = "DOG", Text = "Dog" }
+			};
+
+			model.Types = typesItems;
+
+			//public IEnumerable<SelectListItem> Breedings { get; set; }
+
+			List<SelectListItem> genderItems = new List<SelectListItem>
+			{
+				new SelectListItem { Value = "F", Text = "Female" },
+				new SelectListItem { Value = "M", Text = "Male" }
+			};
+
+			model.Genders = genderItems;
+
+			List<SelectListItem> ageItems = new List<SelectListItem>
+			{
+				new SelectListItem { Value = "Y", Text = "Years" },
+				new SelectListItem { Value = "M", Text = "Months" },
+				new SelectListItem { Value = "W", Text = "Weeks" },
+				new SelectListItem { Value = "D", Text = "Days" }
+			};
+
+			model.AgeUnits = ageItems;
+
+
+			List<SelectListItem> weightItems = new List<SelectListItem>
+			{
+				new SelectListItem { Value = "K", Text = "Kilo" },
+				new SelectListItem { Value = "P", Text = "Pound" },
+				new SelectListItem { Value = "G", Text = "Grame" }
+			};
+
+			model.WeightUnits = weightItems;
+
+			try
             {
                 Tuple<string, List<string>> files = await ReadFiles(pet);
                 ViewData["pageContent"] = files.Item1;
@@ -456,7 +494,7 @@ namespace webGDPR.Controllers
         // POST: Pet/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("PetId,Name,Type,Breeding,Color,Age,HealthComments,CollarId,DefaultMode")] EditPetViewModel pet, IList<IFormFile> imagesFiles, string pageContent)
+        public async Task<IActionResult> Edit(string id, [Bind("PetId,Name,Type,Breeding,Color,Age,AgeUnit,Birthdate,Weigth,WeigthUnit,Gender,HealthComments,CollarId,DefaultMode")] EditPetViewModel pet, IList<IFormFile> imagesFiles, string pageContent)
         {
             if (id != pet.PetId)
             {
@@ -471,8 +509,12 @@ namespace webGDPR.Controllers
                     p.UserId = _context.User.FirstOrDefault(u => u.OwnerID == _userManager.GetUserId(User)).UserID;
 
                     Pet currentPet = _context.Pet.AsNoTracking().Include(m => m.LastCollar).Include(m => m.LastMode).FirstOrDefault(g => g.PetId == pet.PetId);
-                    PetCollar currentCollar = _context.PetCollar.FirstOrDefault(c => c.PetCollarId == currentPet.LastCollar.PetCollarId);
-                    p.LastCollarId = currentPet.LastCollarId;
+					PetCollar currentCollar = null;
+					if (currentPet.LastCollar != null)
+					{
+						currentCollar= _context.PetCollar.FirstOrDefault(c => c.PetCollarId == currentPet.LastCollar.PetCollarId);
+					}
+					p.LastCollarId = currentPet.LastCollarId;
                     p.LastTrackingInfoId = currentPet.LastTrackingInfoId;
 
                     bool isLost = false;
