@@ -360,7 +360,8 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 								OSVersion = d.OSVersion,
 								Platform = d.Platform,
 								Type = d.Type,
-								UserId = d.UserId
+								UserId = d.UserId,
+								IsLogging = true
 							};
 							dbContext.Add(device);
 							await dbContext.SaveChangesAsync();

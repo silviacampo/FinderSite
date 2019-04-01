@@ -71,21 +71,31 @@
 			<td>
 				@Html.DisplayFor(modelItem => item.OSVersion)
 			</td>
-			<th>
+			<td>
 				@Html.DisplayFor(modelItem => item.AliasName)
-			</th>
-			<th>
+			</td>
+			<td>
 				@Html.DisplayFor(modelItem => item.Banned)
-			</th>
-			<th>
+			</td>
+			<td>
 				@Html.DisplayFor(modelItem => item.IsLogging)
-			</th>
-			<th>
+			</td>
+			<td>
 				@Html.DisplayFor(modelItem => item.Deleted)
-			</th>
+			</td>
 			@*<td>
 			@Html.DisplayFor(modelItem => item.UserId)
 		</td>*@
+			<td>
+				@if (item.IsLogging)
+				{
+					<a class="btn btn-default" asp-action="LoggingOff" asp-route-id="@item.DeviceId">Stop logging</a>
+				}
+				else
+				{
+					<a class="btn btn-default" asp-action="LoggingOn" asp-route-id="@item.DeviceId">Start logging</a>
+				}
+			</td>
 			<td>
 				<a asp-action="Edit" asp-route-id="@item.DeviceId">Edit</a> |
 				<a asp-action="Details" asp-route-id="@item.DeviceId">Details</a> |

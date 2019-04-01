@@ -287,8 +287,45 @@ namespace webGDPR.Controllers
             return View(device);
         }
 
-        // GET: Device/Delete/5
-        public async Task<IActionResult> Delete(string id)
+		public async Task<IActionResult> LoggingOn(string id)
+		{
+			bool result = await LoggingAsync(true, id);
+			if (!result)
+			{
+				return NotFound();
+			}
+			return RedirectToAction(nameof(Index));
+		}
+
+		public async Task<IActionResult> LoggingOff(string id)
+		{
+			bool result = await LoggingAsync(false, id);
+			if (!result)
+			{
+				return NotFound();
+			}
+			return RedirectToAction(nameof(Index));
+		}
+
+		private async Task<bool> LoggingAsync(bool v, string id)
+		{
+			Device device = _context.Device.FirstOrDefault(p => p.DeviceId == id);
+			if (device == null)
+			{
+				return false;
+			}
+			else
+			{
+				device.IsLogging = v;
+				_context.Update(device);
+				await _context.SaveChangesAsync();
+				return true;
+			}
+		}
+
+
+		// GET: Device/Delete/5
+		public async Task<IActionResult> Delete(string id)
         {
             if (id == null)
             {
