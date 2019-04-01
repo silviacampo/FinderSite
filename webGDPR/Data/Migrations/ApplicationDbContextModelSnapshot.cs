@@ -14,7 +14,7 @@ namespace webGDPR.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.1.4-rtm-31024")
+                .HasAnnotation("ProductVersion", "2.1.2-rtm-30932")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -217,11 +217,13 @@ namespace webGDPR.Data.Migrations
 
                     b.Property<string>("Description");
 
-                    b.Property<string>("HWId");
+                    b.Property<string>("HWId")
+                        .IsRequired();
 
                     b.Property<string>("LastStatusId");
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .IsRequired();
 
                     b.Property<string>("Text");
 
@@ -285,11 +287,13 @@ namespace webGDPR.Data.Migrations
 
                     b.Property<string>("Description");
 
-                    b.Property<string>("HWId");
+                    b.Property<string>("HWId")
+                        .IsRequired();
 
                     b.Property<string>("LastStatusId");
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .IsRequired();
 
                     b.Property<string>("UserId");
 
@@ -487,7 +491,8 @@ namespace webGDPR.Data.Migrations
 
                     b.Property<string>("LastTrackingInfoId");
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .IsRequired();
 
                     b.Property<string>("Type");
 

@@ -18,6 +18,16 @@
     <Compile Remove="Data\Migrations\20190329164936_petCorrection.Designer.cs" />
     <Compile Remove="Data\Migrations\20190329170818_petCorrection.cs" />
     <Compile Remove="Data\Migrations\20190329170818_petCorrection.Designer.cs" />
+    <Compile Remove="Data\Migrations\20190329172142_devicelog.cs" />
+    <Compile Remove="Data\Migrations\20190329172142_devicelog.Designer.cs" />
+    <Compile Remove="Data\Migrations\20190329172504_test.cs" />
+    <Compile Remove="Data\Migrations\20190329172504_test.Designer.cs" />
+    <Compile Remove="Data\Migrations\20190330000847_problem.cs" />
+    <Compile Remove="Data\Migrations\20190330000847_problem.Designer.cs" />
+    <Compile Remove="Data\Migrations\20190330002729_petfields.cs" />
+    <Compile Remove="Data\Migrations\20190330002729_petfields.Designer.cs" />
+    <Compile Remove="Data\Migrations\20190330002958_petfields.cs" />
+    <Compile Remove="Data\Migrations\20190330002958_petfields.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

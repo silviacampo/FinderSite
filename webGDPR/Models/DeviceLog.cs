@@ -9,7 +9,7 @@ namespace webGDPR.Models
 		public string DeviceLogId { get; set; }
 		public string DeviceId { get; set; }
 
-		[ForeignKey("DeviceId")]
+		//[ForeignKey("DeviceId")]
 		public Device Device { get; set; }
 
 		public DateTime CreationDate { get; set; }
