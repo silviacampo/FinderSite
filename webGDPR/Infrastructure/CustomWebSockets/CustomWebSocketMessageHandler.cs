@@ -341,7 +341,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 					{
 						#region DeviceInfoMessage
 						Messages.Device d = JsonConvert.DeserializeObject<Messages.Device>(message.Text);
-						d.UserId = UserId;
+						d.UserId = UserId;						
 						Device device = dbContext.Device.FirstOrDefault(c => c.UserId == d.UserId && c.Type == d.Type && c.Platform == d.Platform && c.Manufacturer == d.Manufacturer && c.Model == d.Model && c.Name == d.Name);
 						if (device != null)
 						{
@@ -351,6 +351,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 						}
 						else
 						{
+							log.Debug($" New device (diff user, type, platform, manufacturer, model or name): { message.Text}");
 							device = new Device
 							{
 								Manufacturer = d.Manufacturer,
