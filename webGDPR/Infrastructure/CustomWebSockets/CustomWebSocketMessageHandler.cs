@@ -531,6 +531,8 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 			{
 				if (uws.CredentialsChecked)
 					await uws.WebSocket.SendAsync(new ArraySegment<byte>(buffer, 0, buffer.Length), WebSocketMessageType.Text, true, CancellationToken.None);
+				else
+					log.Debug($"Missing Credentials: {uws.DeviceId} - Message: {strMsg} ");
 			}
 		}
 
