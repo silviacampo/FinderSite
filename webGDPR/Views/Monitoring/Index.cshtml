@@ -14,6 +14,7 @@
 					<th scope="col">Username</th>
 					<th scope="col">Guid</th>
 					<th scope="col">DeviceId</th>
+					<th scope="col">Device Name</th>
 					<th scope="col">IP</th>
 					<th scope="col">State</th>
 					<th scope="col">CreationDate</th>
@@ -26,6 +27,11 @@
 						<td>@ws.Username</td>
 						<td>@ws.Guid</td>
 						<td>@ws.DeviceId</td>
+						<td>@{
+							if (!string.IsNullOrEmpty(ws.DeviceId)) {
+								<text>@Model.Devices.FirstOrDefault(d => d.DeviceId == ws.DeviceId)?.GetName</text>
+							}
+							}</td>
 						<td>@ws.IP</td>
 						<td>@ws.WebSocket.State</td>
 						<td>

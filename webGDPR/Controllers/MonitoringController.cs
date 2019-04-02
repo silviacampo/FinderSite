@@ -52,7 +52,8 @@ namespace webGDPR.Controllers
 		{
 			MonitoringViewModel vm = new MonitoringViewModel
 			{
-				WebSockets = _wsFactory.All()
+				WebSockets = _wsFactory.All(),
+				Devices = _context.Device.ToList()
 			};
 			if (searchString != null)
 			{

@@ -11,6 +11,7 @@ namespace webGDPR.ViewModels
 	public class MonitoringViewModel
 	{
 		public List<CustomWebSocket> WebSockets { get; set; }
+		public List<Device> Devices { get; set; }
 		public PaginatedList<DeviceLog> DeviceLogs { get; internal set; }
 
 		public string CurrentFilter { get; set; }
