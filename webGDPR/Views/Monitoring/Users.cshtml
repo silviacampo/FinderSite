@@ -3,18 +3,17 @@
 	ViewData["Title"] = "Monitoring Page";
 }
 <h2>
-	<i class="fa fa-heartbeat fa-fw" aria-hidden="true"></i>&nbsp; Monitoring
+	<i class="fa fa-users fa-fw" aria-hidden="true"></i>&nbsp; Users
 </h2>
 <div class="row">
 	<div class="col-md-12">
-		<h2>Users</h2>
-		<form asp-action="Index" method="get">
+		<form asp-action="Users" method="get">
 			<div class="form-actions no-color">
 				<p>
 					Find:
 					<input type="text" name="SearchString" value="@Model.CurrentFilter" />
 					<input type="submit" value="Search" class="btn btn-default" /> |
-					<a asp-action="Index">Back to full List</a>
+					<a asp-action="Users">Back to full List</a>
 				</p>
 			</div>
 		</form>

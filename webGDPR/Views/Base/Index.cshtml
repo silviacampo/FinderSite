@@ -51,9 +51,9 @@
 			<th class="visible-md visible-lg">
 				@Html.DisplayNameFor(model => model.Deleted)
 			</th>
-			@*<th>
+			<th>
 			@Html.DisplayNameFor(model => model.UserId)
-		</th>*@
+		</th>
 
 			<th></th>
 		</tr>
@@ -104,9 +104,9 @@
 			<td class="visible-md visible-lg">
 				@Html.DisplayFor(modelItem => item.Deleted)
 			</td>
-			@*<td>
+			<td>
 			@Html.DisplayFor(modelItem => item.UserId)
-		</td>*@
+		</td>
 			<td>
 				<a asp-action="Edit" asp-route-id="@item.BaseId">Edit</a> |
 				<a asp-action="Details" asp-route-id="@item.BaseId">Details</a> |

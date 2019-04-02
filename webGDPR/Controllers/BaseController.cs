@@ -40,9 +40,9 @@ namespace webGDPR.Controllers
         public async Task<IActionResult> Index()
         {
 			List<BaseViewModel> model = new List<BaseViewModel>();
-			string UserId = _context.User.FirstOrDefault(u => u.OwnerID == _userManager.GetUserId(User)).UserID;
+			//string UserId = _context.User.FirstOrDefault(u => u.OwnerID == _userManager.GetUserId(User)).UserID;
 
-			List<Base> bases = await _context.Base.AsNoTracking().Where(b => b.UserId == UserId).Include(b => b.LastStatus).ThenInclude(c=>c.DeviceConnectedTo).ToListAsync();
+			List<Base> bases = await _context.Base.AsNoTracking().Include(b => b.LastStatus).ThenInclude(c=>c.DeviceConnectedTo).OrderBy(b => b.UserId).ToListAsync();
 			foreach (var b in bases)
 			{
 				BaseViewModel mb = _mapper.Map<BaseViewModel>(new Tuple<Base, BaseStatus>(b, b.LastStatus));

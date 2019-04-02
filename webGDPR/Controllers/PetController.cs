@@ -49,7 +49,7 @@ namespace webGDPR.Controllers
             List<PetViewModel> model = new List<PetViewModel>();
             string UserId = _context.User.FirstOrDefault(u => u.OwnerID == _userManager.GetUserId(User)).UserID;
 
-            List<Pet> pets = await _context.Pet.AsNoTracking().Where(b => b.UserId == UserId && !b.Deleted).Include(c => c.LastTrackingInfo).Include(m => m.LastMode).Include(b => b.LastCollar).ThenInclude(c => c.Collar).ToListAsync();
+            List<Pet> pets = await _context.Pet.AsNoTracking().Include(c => c.LastTrackingInfo).Include(m => m.LastMode).Include(b => b.LastCollar).ThenInclude(c => c.Collar).OrderBy(p=>p.UserId).ToListAsync();
             foreach (var c in pets)
             {
                 PetViewModel cvm = _mapper.Map<PetViewModel>(new Tuple<Pet, PetTrackingInfo>(c, c.LastTrackingInfo));
