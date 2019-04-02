@@ -42,9 +42,9 @@ namespace webGDPR.Controllers
         // GET: Device
         public async Task<IActionResult> Index()
         {
-			string UserId = _context.User.FirstOrDefault(u => u.OwnerID == _userManager.GetUserId(User)).UserID;
+			//string UserId = _context.User.FirstOrDefault(u => u.OwnerID == _userManager.GetUserId(User)).UserID;
 
-			List<Device> devices = await _context.Device.AsNoTracking().Where(b => b.UserId == UserId).ToListAsync();
+			List<Device> devices = await _context.Device.AsNoTracking().OrderBy(d=>d.UserId).ToListAsync(); //.Where(b => b.UserId == UserId)
 			return View(devices);
         }
 
