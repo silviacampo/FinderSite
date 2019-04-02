@@ -342,7 +342,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 						#region DeviceInfoMessage
 						Messages.Device d = JsonConvert.DeserializeObject<Messages.Device>(message.Text);
 						d.UserId = UserId;						
-						Device device = dbContext.Device.FirstOrDefault(c => c.UserId == d.UserId && c.Type == d.Type && c.Platform == d.Platform && c.Manufacturer == d.Manufacturer && c.Model == d.Model && c.Name == d.Name);
+						Device device = dbContext.Device.FirstOrDefault(c => c.UserId == d.UserId && (c.Type == d.Type || (string.IsNullOrEmpty(c.Type) && string.IsNullOrEmpty(d.Type))) && (c.Platform == d.Platform || (string.IsNullOrEmpty(c.Platform) && string.IsNullOrEmpty(d.Platform))) && (c.Manufacturer == d.Manufacturer || (string.IsNullOrEmpty(c.Manufacturer) && string.IsNullOrEmpty(d.Manufacturer))) && (c.Model == d.Model || (string.IsNullOrEmpty(c.Model) && string.IsNullOrEmpty(d.Model))) && (c.Name == d.Name || (string.IsNullOrEmpty(c.Name)&& string.IsNullOrEmpty(d.Name))));
 						if (device != null)
 						{
 							device.OSVersion = d.OSVersion;
