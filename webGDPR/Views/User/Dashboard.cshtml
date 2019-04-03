@@ -11,6 +11,13 @@
 	<div class="col-md-3">
 		<h2>Issues</h2>
 		<ul class="errorlist-ul">
+			@if (Model.MissingSubscription)
+			{
+				<li>
+					<b><a style="color:orangered;" asp-action="FixMissingSubscription">Missing Subscription</a></b>
+				</li>
+			}
+
 			@{
 				List<webGDPR.Infrastructure.CustomWebSockets.CustomWebSocket> WebSockets = (List<webGDPR.Infrastructure.CustomWebSockets.CustomWebSocket>)ViewData["WebSockets"];
 				if (WebSockets.Count <= 0)
@@ -21,12 +28,7 @@
 				}
 			}
 
-			@if (Model.MissingSubscription)
-			{
-				<li>
-					<b><a asp-action="FixMissingSubscription">Missing Subscription</a></b>
-				</li>
-			}
+
 			@if (Model.Bases.Count() + @Model.Collars.Count() == 0)
 			{
 				<li>
@@ -89,8 +91,8 @@
 				</li>
 			}
 		</ul>
-		<h2>Actions</h2>
-		<ul class="actionlist-ul">
+		<h2 style="display:@(Model.MissingSubscription?"none": "block");">Actions</h2>
+		<ul class="actionlist-ul" style="display:@(Model.MissingSubscription?"none": "block");">
 			<li><a asp-area="" asp-controller="User" asp-action="PickLocation" target="_blank"><i class="fa fa-location-arrow fa-fw" aria-hidden="true"></i>&nbsp; Update your Location</a></li>
 			<li><a asp-area="" asp-controller="Device" asp-action="DownloadApp" target="_blank"><i class="fa fa-download fa-fw" aria-hidden="true"></i>&nbsp; Download mobile and desktop application</a></li>
 			<li><a asp-area="" asp-controller="Order" asp-action="Create" target="_blank"><i class="fa fa-cart-plus fa-fw" aria-hidden="true"></i>&nbsp; Buy another base or collar</a></li>
@@ -103,7 +105,7 @@
 			</li>
 		</ul>
 	</div>
-	<div class="col-md-6">
+	<div class="col-md-6" style="display:@(Model.MissingSubscription?"none": "block");">
 		<h2>Overview</h2>
 		<div class="well well-lg" style="position:relative;top:0px;left:0px; min-width:200px;">
 			<table class="table" style="position:relative;top:0px;left:0px; min-width:120px;">
@@ -459,7 +461,7 @@
 			</table>
 		</div>
 	</div>
-	<div class="col-md-3">
+	<div class="col-md-3" style="display:@(Model.MissingSubscription?"none": "block");">
 		<h2>&nbsp;</h2>
 		<div class="well well-lg">
 			<div id="mapContainer" style="height:400px;position: relative;">
