@@ -386,31 +386,40 @@
 						</tr>
 						if (p != null)
 						{
-							<tr>
-								<td>
-									on&nbsp; @Html.DisplayFor(modelItem => p.Name)
+						<tr>
+							<td>
+								on&nbsp; @Html.DisplayFor(modelItem => p.Name)
+							</td>
+
+							<td class="visible-md visible-lg visible-sm">
+								@if (p.LastTrackingInfo != null && (p.LastTrackingInfo.Latitude != default(double) || p.LastTrackingInfo.Longitude != default(double)))
+								{
+									<a class="btn btn-default" asp-controller="Pet" asp-action="Stats" asp-route-id="@p.PetId" target="_blank" style="width:100%; padding:3px 6px 3px 6px" title="Monitor your pet's activity"><i class="fa fa-heartbeat fa-fw" aria-hidden="true"></i></a>
+								}
 								</td>
-								<td class="visible-md visible-lg visible-sm">
+							<td class="visible-md visible-lg visible-sm">
+									@if (p.LastTrackingInfo != null && (p.LastTrackingInfo.Latitude != default(double) || p.LastTrackingInfo.Longitude != default(double)))
+								{
 									<a class="btn btn-default" asp-controller="Pet" asp-action="Track" asp-route-id="@p.PetId" target="_blank" style="width:100%; padding:3px 6px 3px 6px" title="Check your pet's last locations"><i class="fa fa-route fa-fw" aria-hidden="true"></i></a>
-								</td>
-								<td class="visible-md visible-lg visible-sm"><a class="btn btn-default" asp-controller="Pet" asp-action="Stats" asp-route-id="@p.PetId" target="_blank" style="width:100%; padding:3px 6px 3px 6px" title="Monitor your pet's activity"><i class="fa fa-heartbeat fa-fw" aria-hidden="true"></i></a></td>
-								<td colspan="2">
-									@if (p.LastMode != null && p.LastMode.Type == ConfigModeTypes.Emergency && p.LastMode.IsActive)
-									{
-										<button class="btn btn-default reportFound" data-id="@p.PetId" data-name="@p.Name" style="width:100%; padding:3px 6px 3px 6px">Report Found</button>
-										<button class="btn btn-danger openReportLostDialog" data-id="@p.PetId" data-name="@p.Name" style="width:100%; padding:3px 6px 3px 6px; display:none">Report Lost</button>
-									}
-									else
-									{
-										<button class="btn btn-default reportFound" data-id="@p.PetId" data-name="@p.Name" style="width:100%; padding:3px 6px 3px 6px; display:none;">Report Found</button>
-										<button class="btn btn-danger openReportLostDialog" data-id="@p.PetId" data-name="@p.Name" style="width:100%; padding:3px 6px 3px 6px">Report Lost</button>
-									}
-								</td>
-								<td>
-									<a asp-controller="Pet" asp-action="Edit" asp-route-id="@p.PetId" target="_blank"><i class="fa fa-edit fa-fw" aria-hidden="true"></i></a>
-									<a class="openDeletePetDialog" data-id="@p.PetId" data-pet="@Newtonsoft.Json.JsonConvert.SerializeObject(p, Newtonsoft.Json.Formatting.None, new Newtonsoft.Json.JsonSerializerSettings { PreserveReferencesHandling = Newtonsoft.Json.PreserveReferencesHandling.Objects})" data-collar="@item.Name" title="Delete"><i class="fa fa-trash fa-fw" aria-hidden="true"></i></a>
-								</td>
-							</tr>
+								}
+							</td>
+							<td colspan="2">
+								@if (p.LastMode != null && p.LastMode.Type == ConfigModeTypes.Emergency && p.LastMode.IsActive)
+								{
+									<button class="btn btn-default reportFound" data-id="@p.PetId" data-name="@p.Name" style="width:100%; padding:3px 6px 3px 6px">Report Found</button>
+									<button class="btn btn-danger openReportLostDialog" data-id="@p.PetId" data-name="@p.Name" style="width:100%; padding:3px 6px 3px 6px; display:none">Report Lost</button>
+								}
+								else
+								{
+									<button class="btn btn-default reportFound" data-id="@p.PetId" data-name="@p.Name" style="width:100%; padding:3px 6px 3px 6px; display:none;">Report Found</button>
+									<button class="btn btn-danger openReportLostDialog" data-id="@p.PetId" data-name="@p.Name" style="width:100%; padding:3px 6px 3px 6px">Report Lost</button>
+								}
+							</td>
+							<td>
+								<a asp-controller="Pet" asp-action="Edit" asp-route-id="@p.PetId" target="_blank"><i class="fa fa-edit fa-fw" aria-hidden="true"></i></a>
+								<a class="openDeletePetDialog" data-id="@p.PetId" data-pet="@Newtonsoft.Json.JsonConvert.SerializeObject(p, Newtonsoft.Json.Formatting.None, new Newtonsoft.Json.JsonSerializerSettings { PreserveReferencesHandling = Newtonsoft.Json.PreserveReferencesHandling.Objects})" data-collar="@item.Name" title="Delete"><i class="fa fa-trash fa-fw" aria-hidden="true"></i></a>
+							</td>
+						</tr>
 						}
 						else
 						{
@@ -434,10 +443,19 @@
 								<td>
 									on&nbsp; @Html.DisplayFor(modelItem => item.Name)
 								</td>
+
 								<td class="visible-md visible-lg visible-sm">
+									@if (item.LastTrackingInfo != null && (item.LastTrackingInfo.Latitude != default(double) || item.LastTrackingInfo.Longitude != default(double)))
+									{
+										<a class="btn btn-default" asp-controller="Pet" asp-action="Stats" asp-route-id="@item.PetId" target="_blank" style="width:100%; padding:3px 6px 3px 6px" title="Monitor your pet's activity"><i class="fa fa-heartbeat fa-fw" aria-hidden="true"></i></a>
+									}
+									</td>
+								<td class="visible-md visible-lg visible-sm">
+								@if (item.LastTrackingInfo != null && (item.LastTrackingInfo.Latitude != default(double) || item.LastTrackingInfo.Longitude != default(double)))
+								{
 									<a class="btn btn-default" asp-controller="Pet" asp-action="Track" asp-route-id="@item.PetId" target="_blank" style="width:100%; padding:3px 6px 3px 6px" title="Check your pet's last locations"><i class="fa fa-route fa-fw" aria-hidden="true"></i></a>
-								</td>
-								<td class="visible-md visible-lg visible-sm"><a class="btn btn-default" asp-controller="Pet" asp-action="Stats" asp-route-id="@item.PetId" target="_blank" style="width:100%; padding:3px 6px 3px 6px" title="Monitor your pet's activity"><i class="fa fa-heartbeat fa-fw" aria-hidden="true"></i></a></td>
+								}
+							</td>
 								<td colspan="2">
 									@if (item.LastMode != null && item.LastMode.Type == ConfigModeTypes.Emergency && item.LastMode.IsActive)
 									{
