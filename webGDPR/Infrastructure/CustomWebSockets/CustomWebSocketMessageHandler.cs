@@ -261,12 +261,13 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 							var newStatus = new BaseStatus
 							{
 								BaseId = b.BaseId,
-								ConnectedTo = userWebSocket.DeviceId,
 								IsConnected = bs.IsConnected,
-								IsCharging = bs.IsCharging,
+								ConnectedTo = userWebSocket.DeviceId,
 								IsPlugged = bs.IsPlugged,
+								IsCharging = bs.IsCharging,								
 								Battery = bs.Battery,
 								HasBattery = bs.HasBattery,
+								Radio = bs.Radio,
 								UserId = b.UserId,
 								CreationDate = message.MessagDateTime, //TODO: or now?
 								IsActive = true
@@ -311,13 +312,13 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 							{
 								CollarId = collar.CollarId,
 								IsConnected = cs.IsConnected,
+								ConnectedTo = b.BaseId,
 								IsGPSConnected = cs.IsGPSConnected,
 								Battery = cs.Battery,
-								Radio = cs.Radio,
-								ConnectedTo = b.BaseId,
+								Radio = cs.Radio,								
 								UserId = collar.UserId,
 								CreationDate = message.MessagDateTime, //TODO: or now?
-								IsActive = true
+								IsActive = true 
 							};
 							dbContext.Add(newStatus);
 
