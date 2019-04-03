@@ -309,9 +309,14 @@ $(function () {
         'id': id
       },
       success: function (data) {
-        $(".openDeleteCollarDialog[data-id='" + id + "']").parent().parent().addClass("missing");
-        $(".openDeleteCollarDialog[data-id='" + id + "']").parent().parent().html('<td><span style="color:red">Missing Collar</span></td>');
-        //missing hide both missing
+        var currentrow = $(".openDeleteCollarDialog[data-id='" + id + "']").parent().parent();
+        currentrow.addClass("missing");        
+        currentrow.html('<td><span style="color:red">Missing Collar</span></td>');
+       if (currentrow.next().hasClass("missing")) {
+          currentrow.hide();
+          currentrow.next().hide();
+        } 
+
         $("#deleteCollarModal").modal("hide");
       },
       error: function () {
@@ -357,9 +362,13 @@ $(function () {
         'id': id
       },
       success: function (data) {
-        $(".openDeletePetDialog[data-id='" + id + "']").parent().parent().addClass("missing");
-        $(".openDeletePetDialog[data-id='" + id + "']").parent().parent().html('<td><span style="color:red">Missing Pet</span></td>');
-        //missing hide both missing
+        var currentrow = $(".openDeletePetDialog[data-id='" + id + "']").parent().parent();
+        currentrow.addClass("missing");
+        currentrow.html('<td><span style="color:red">Missing Pet</span></td>');
+        if (currentrow.prev().hasClass("missing")) {
+          currentrow.hide();
+          currentrow.prev().hide();
+        }        
         $("#deletePetModal").modal("hide");
       },
       error: function () {

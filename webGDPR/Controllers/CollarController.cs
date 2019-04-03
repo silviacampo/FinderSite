@@ -446,12 +446,15 @@ namespace webGDPR.Controllers
 			collar.Deleted = true;
 			_context.Update(collar);
 			var petCollar = _context.PetCollar.FirstOrDefault(c => c.CollarId == id && c.IsActive);
-			petCollar.IsActive = false;
-			petCollar.EndDate = DateTime.Now;
-			_context.Update(petCollar);
-			var pet = _context.Pet.FirstOrDefault(c => c.PetId == petCollar.PetId);
-			pet.LastCollarId = null;
-			_context.Update(pet);
+			if (petCollar != null)
+			{
+				petCollar.IsActive = false;
+				petCollar.EndDate = DateTime.Now;
+				_context.Update(petCollar);
+				var pet = _context.Pet.FirstOrDefault(c => c.PetId == petCollar.PetId);
+				pet.LastCollarId = null;
+				_context.Update(pet);
+			}
 			await _context.SaveChangesAsync();
 			//send message to connected devices
 			await _webSocketMessageHandler.SendDeletedCollarAsync(collar.CollarNumber, _userManager.GetUserName(User), _wsFactory);
