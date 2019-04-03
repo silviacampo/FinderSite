@@ -213,10 +213,10 @@ namespace webGDPR.Controllers
 			return list;
 		}
 
-		private async Task InitSelectsAsync(EditCollarViewModel model)
+		private async Task InitSelectsAsync(EditCollarViewModel model, string id)
 		{
 			string UserId = _context.User.FirstOrDefault(u => u.OwnerID == _userManager.GetUserId(User)).UserID;
-			List<string> petCollars = await _context.PetCollar.Where(p => p.IsActive && p.CollarId != null).Select(c => c.PetId).ToListAsync();
+			List<string> petCollars = await _context.PetCollar.Where(p => p.IsActive && p.CollarId != id).Select(c => c.PetId).ToListAsync();
 			List<Pet> pets = await _context.Pet.AsNoTracking().Where(b => b.UserId == UserId && !b.Deleted && !petCollars.Contains(b.PetId)).ToListAsync();
 			List<SelectListItem> petsItems = new List<SelectListItem>();
 			foreach (Pet c in pets)
@@ -236,7 +236,7 @@ namespace webGDPR.Controllers
         {
 			EditCollarViewModel model = new EditCollarViewModel();
 
-			await InitSelectsAsync(model);
+			await InitSelectsAsync(model, null);
 			return View(model);
 		}
 
@@ -301,7 +301,7 @@ namespace webGDPR.Controllers
 				await _webSocketMessageHandler.SendCollarAsync(co, _userManager.GetUserName(User), _wsFactory);
 				return RedirectToAction(nameof(UserController.Dashboard), "User");
 			}
-			await InitSelectsAsync(collar);
+			await InitSelectsAsync(collar, null);
 			return View(collar);
         }
 
@@ -323,7 +323,7 @@ namespace webGDPR.Controllers
 			model = _mapper.Map<EditCollarViewModel>(collar);
 			model.PetId = _context.PetCollar.FirstOrDefault(f => f.IsActive && f.CollarId == collar.CollarId).PetId;
 
-			await InitSelectsAsync(model);
+			await InitSelectsAsync(model, id);
 			return View(model);
         }
 
@@ -402,7 +402,7 @@ namespace webGDPR.Controllers
 				return RedirectToAction(nameof(UserController.Dashboard), "User");
 			}
 
-			await InitSelectsAsync(collar);
+			await InitSelectsAsync(collar, id);
 			return View(collar);
         }
 
