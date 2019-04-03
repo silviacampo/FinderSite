@@ -213,15 +213,11 @@ namespace webGDPR.Controllers
 			return list;
 		}
 
-
-		// GET: Collar/Create
-		public async Task<IActionResult> Create()
-        {
+		private async Task InitSelectsAsync(EditCollarViewModel model)
+		{
 			string UserId = _context.User.FirstOrDefault(u => u.OwnerID == _userManager.GetUserId(User)).UserID;
 			List<string> petCollars = await _context.PetCollar.Where(p => p.IsActive && p.CollarId != null).Select(c => c.PetId).ToListAsync();
 			List<Pet> pets = await _context.Pet.AsNoTracking().Where(b => b.UserId == UserId && !b.Deleted && !petCollars.Contains(b.PetId)).ToListAsync();
-
-			EditCollarViewModel model = new EditCollarViewModel();
 			List<SelectListItem> petsItems = new List<SelectListItem>();
 			foreach (Pet c in pets)
 			{
@@ -233,13 +229,21 @@ namespace webGDPR.Controllers
 			}
 
 			model.Pets = petsItems;
+		}
+
+		// GET: Collar/Create
+		public async Task<IActionResult> Create()
+        {
+			EditCollarViewModel model = new EditCollarViewModel();
+
+			await InitSelectsAsync(model);
 			return View(model);
 		}
 
-        // POST: Collar/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+		// POST: Collar/Create
+		// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+		// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+		[HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("CollarId,HWId,Name,Description,PetId")] EditCollarViewModel collar)
         {
@@ -297,7 +301,8 @@ namespace webGDPR.Controllers
 				await _webSocketMessageHandler.SendCollarAsync(co, _userManager.GetUserName(User), _wsFactory);
 				return RedirectToAction(nameof(UserController.Dashboard), "User");
 			}
-            return View(collar);
+			await InitSelectsAsync(collar);
+			return View(collar);
         }
 
         // GET: Collar/Edit/5
@@ -314,24 +319,11 @@ namespace webGDPR.Controllers
                 return NotFound();
             }
 
-			string UserId = _context.User.FirstOrDefault(u => u.OwnerID == _userManager.GetUserId(User)).UserID;
-			List<string> petCollars = await _context.PetCollar.Where(p => p.IsActive && p.CollarId != collar.CollarId).Select(c => c.PetId).ToListAsync();
-			List<Pet> pets = await _context.Pet.AsNoTracking().Where(b => b.UserId == UserId && !b.Deleted && !petCollars.Contains(b.PetId)).ToListAsync();
-
 			EditCollarViewModel model = new EditCollarViewModel();
 			model = _mapper.Map<EditCollarViewModel>(collar);
 			model.PetId = _context.PetCollar.FirstOrDefault(f => f.IsActive && f.CollarId == collar.CollarId).PetId;
-			List<SelectListItem> petsItems = new List<SelectListItem>();
-			foreach (Pet c in pets)
-			{
-				petsItems.Add(new SelectListItem
-				{
-					Value = c.PetId,
-					Text = c.Name
-				});
-			}
 
-			model.Pets = petsItems;
+			await InitSelectsAsync(model);
 			return View(model);
         }
 
@@ -409,7 +401,9 @@ namespace webGDPR.Controllers
                 }
 				return RedirectToAction(nameof(UserController.Dashboard), "User");
 			}
-            return View(collar);
+
+			await InitSelectsAsync(collar);
+			return View(collar);
         }
 
         // GET: Collar/Delete/5
