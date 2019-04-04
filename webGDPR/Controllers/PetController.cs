@@ -469,9 +469,9 @@ namespace webGDPR.Controllers
 						else
 						{
 							PetCollar foundPetCollar = _context.PetCollar.AsNoTracking().FirstOrDefault(f => f.PetCollarId == found.LastCollarId && f.IsActive);
-							if (foundPetCollar.CollarId != pet.CollarId) {
+							if (foundPetCollar.CollarId != p.LastCollarId) {
 								RemoveCollar(found.LastCollarId);
-								AddCollar(p, pet.CollarId);
+								AddCollar(p, p.LastCollarId);
 							}
 						}							
 					}
