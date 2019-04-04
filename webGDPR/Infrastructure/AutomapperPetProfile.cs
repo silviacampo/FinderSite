@@ -54,6 +54,12 @@ namespace webGDPR.Infrastructure
 	.ForMember(dest => dest.Type, opts => opts.MapFrom(src => src.Type))
 	.ForMember(dest => dest.Color, opts => opts.MapFrom(src => src.Color))
 	.ForMember(dest => dest.HealthComments, opts => opts.MapFrom(src => src.HealthComments))
+	.ForMember(dest => dest.LastCollarId, opts => opts.MapFrom(src =>src.CollarId))
+	.ForMember(dest => dest.AgeUnit, opts => opts.MapFrom(src => src.AgeUnit))
+	.ForMember(dest => dest.Birthdate, opts => opts.MapFrom(src => src.Birthdate))
+	.ForMember(dest => dest.Weigth, opts => opts.MapFrom(src => src.Weigth))
+	.ForMember(dest => dest.WeigthUnit, opts => opts.MapFrom(src => src.WeigthUnit))
+	.ForMember(dest => dest.Gender, opts => opts.MapFrom(src => src.Gender))
 	.ForMember(dest => dest.DefaultMode, opts => opts.MapFrom(src => src.DefaultMode));
 
 			CreateMap<Models.EditPetViewModel, Models.Pet>().ReverseMap();

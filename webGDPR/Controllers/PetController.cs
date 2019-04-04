@@ -447,6 +447,7 @@ namespace webGDPR.Controllers
                 try
                 {
                     Pet p = _mapper.Map<Pet>(pet);
+					p.LastCollarId = pet.CollarId;
 					var found = await _context.Pet.AsNoTracking().Include(m => m.LastMode).FirstOrDefaultAsync(f => f.PetId == id && !f.Deleted);
 					p.UserId = found.UserId;
 					p.LastTrackingInfoId = found.LastTrackingInfoId;
