@@ -216,7 +216,9 @@ namespace webGDPR.Controllers
 		private async Task InitSelectsAsync(EditCollarViewModel model, string id)
 		{
 			string UserId = _context.User.FirstOrDefault(u => u.OwnerID == _userManager.GetUserId(User)).UserID;
+			//the pets with an active collar that is not the current collar
 			List<string> petCollars = await _context.PetCollar.Where(p => p.IsActive && p.CollarId != id).Select(c => c.PetId).ToListAsync();
+			//pets belonging to this user not deleted and not in the previous list
 			List<Pet> pets = await _context.Pet.AsNoTracking().Where(b => b.UserId == UserId && !b.Deleted && !petCollars.Contains(b.PetId)).ToListAsync();
 			List<SelectListItem> petsItems = new List<SelectListItem>();
 			foreach (Pet c in pets)
@@ -272,24 +274,10 @@ namespace webGDPR.Controllers
 				bool isLost = false;
 				if (collar.PetId != null)
 				{
-					PetCollar pc = new PetCollar
-					{
-						PetId = collar.PetId,
-						CollarId = c.CollarId,
-						StartDate = DateTime.Now,
-						CreationDate = DateTime.Now,
-						IsActive = true,
-						UserId = c.UserId
-					};
-					_context.Add(pc);
-
-					var pet = await _context.Pet.Include(m => m.LastMode)
-					.FirstOrDefaultAsync(m => m.PetId == collar.PetId && !m.Deleted);
-					pet.LastCollarId = pc.PetCollarId;
-					_context.Update(pet);
-
+					AddPet(c, collar.PetId);
 					await _context.SaveChangesAsync();
 
+					Pet pet = _context.Pet.Include(m => m.LastMode).FirstOrDefault(g => g.PetId == collar.PetId);
 					if (pet.LastMode != null && pet.LastMode.Type == ConfigModeTypes.Emergency && pet.LastMode.IsActive)
 					{
 						isLost = true;
@@ -321,8 +309,12 @@ namespace webGDPR.Controllers
 
 			EditCollarViewModel model = new EditCollarViewModel();
 			model = _mapper.Map<EditCollarViewModel>(collar);
-			model.PetId = _context.PetCollar.FirstOrDefault(f => f.IsActive && f.CollarId == collar.CollarId).PetId;
 
+			var pc = _context.PetCollar.FirstOrDefault(f => f.IsActive && f.CollarId == collar.CollarId);
+			if (pc != null)
+			{
+				model.PetId = pc.PetId;
+			}
 			await InitSelectsAsync(model, id);
 			return View(model);
         }
@@ -350,33 +342,13 @@ namespace webGDPR.Controllers
 					c.BaseNumber = found.BaseNumber;
 					_context.Update(c);
 					await _context.SaveChangesAsync();
-
-					PetCollar currentpet = _context.PetCollar.FirstOrDefault(f => f.CollarId == c.CollarId && f.IsActive);
 					bool isLost = false;
-					if (collar.PetId != currentpet.PetId)
-					{
-						currentpet.IsActive = false;
-
-						PetCollar pc = new PetCollar
-						{
-							PetId = collar.PetId,
-							CollarId = c.CollarId,
-							StartDate = DateTime.Now,
-							CreationDate = DateTime.Now,
-							IsActive = true,
-							UserId = c.UserId
-						};
-						_context.Add(pc);
-
-						Pet cpet = _context.Pet.FirstOrDefault(g => g.PetId == currentpet.PetId);
-						cpet.LastCollarId = null;
-						_context.Update(cpet);
-
-						Pet pet = _context.Pet.Include(m => m.LastMode).FirstOrDefault(g => g.PetId == collar.PetId);
-						pet.LastCollarId = pc.PetCollarId;
-						_context.Update(pet);
-
+					PetCollar foundPetCollar = _context.PetCollar.FirstOrDefault(f => f.CollarId == c.CollarId && f.IsActive);
+					if (collar.PetId != foundPetCollar.PetId) {
+						RemovePet(id);
+						AddPet(found, collar.PetId);
 						await _context.SaveChangesAsync();
+						Pet pet = _context.Pet.Include(m => m.LastMode).FirstOrDefault(g => g.PetId == collar.PetId);
 
 						if (pet.LastMode != null && pet.LastMode.Type == ConfigModeTypes.Emergency && pet.LastMode.IsActive)
 						{
@@ -429,16 +401,23 @@ namespace webGDPR.Controllers
 			return View(model);
 		}
 
-        // POST: Collar/Delete/5
-        [HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed([FromForm]string id)
-        {
-            var collar = await _context.Collar.FindAsync(id);
-			//_context.Collar.Remove(collar);
-			//soft delete
-			collar.Deleted = true;
-			_context.Update(collar);
+		private void AddPet(Collar collar, string petId) {
+			PetCollar pc = new PetCollar
+			{
+				PetId = petId,
+				CollarId = collar.CollarId,
+				StartDate = DateTime.Now,
+				CreationDate = DateTime.Now,
+				IsActive = true,
+				UserId = collar.UserId
+			};
+			_context.Add(pc);
+			Pet pet = _context.Pet.FirstOrDefault(g => g.PetId == petId);
+			pet.LastCollarId = pc.PetCollarId;
+			_context.Update(pet);
+		}
+
+		private void RemovePet(string id) {
 			var petCollar = _context.PetCollar.FirstOrDefault(c => c.CollarId == id && c.IsActive);
 			if (petCollar != null)
 			{
@@ -449,6 +428,20 @@ namespace webGDPR.Controllers
 				pet.LastCollarId = null;
 				_context.Update(pet);
 			}
+		}
+
+        // POST: Collar/Delete/5
+        [HttpPost, ActionName("Delete")]
+        //[ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed([FromForm]string id)
+        {
+            var collar = await _context.Collar.FindAsync(id);
+			//_context.Collar.Remove(collar);
+			//soft delete
+			collar.Deleted = true;
+			_context.Update(collar);
+			RemovePet(id);
+
 			await _context.SaveChangesAsync();
 			//send message to connected devices
 			await _webSocketMessageHandler.SendDeletedCollarAsync(collar.CollarNumber, _userManager.GetUserName(User), _wsFactory);
