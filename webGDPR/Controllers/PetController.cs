@@ -447,11 +447,12 @@ namespace webGDPR.Controllers
                 try
                 {
                     Pet p = _mapper.Map<Pet>(pet);
-					p.LastCollarId = pet.CollarId;
+					
 					var found = await _context.Pet.AsNoTracking().Include(m => m.LastMode).FirstOrDefaultAsync(f => f.PetId == id && !f.Deleted);
 					p.UserId = found.UserId;
 					p.LastTrackingInfoId = found.LastTrackingInfoId;
 					p.LastModeId = found.LastModeId;
+					p.LastCollarId = found.LastCollarId;
 
 					if (string.IsNullOrEmpty(found.LastCollarId))
 					{
@@ -468,10 +469,10 @@ namespace webGDPR.Controllers
 						}
 						else
 						{
-							PetCollar foundPetCollar = _context.PetCollar.AsNoTracking().FirstOrDefault(f => f.PetCollarId == found.LastCollarId && f.IsActive);
-							if (foundPetCollar.CollarId != p.LastCollarId) {
+							PetCollar foundPetCollar = _context.PetCollar.AsNoTracking().FirstOrDefault(f => f.CollarId == pet.CollarId && f.IsActive);
+							if (foundPetCollar == null || foundPetCollar.PetCollarId != p.LastCollarId) {
 								RemoveCollar(found.LastCollarId);
-								AddCollar(p, p.LastCollarId);
+								AddCollar(p, pet.CollarId);
 							}
 						}							
 					}
