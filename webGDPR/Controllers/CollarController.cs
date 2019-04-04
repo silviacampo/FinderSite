@@ -342,22 +342,44 @@ namespace webGDPR.Controllers
 					c.BaseNumber = found.BaseNumber;
 					_context.Update(c);
 					await _context.SaveChangesAsync();
-					bool isLost = false;
-					PetCollar foundPetCollar = _context.PetCollar.FirstOrDefault(f => f.CollarId == c.CollarId && f.IsActive);
-					if (collar.PetId != foundPetCollar.PetId) {
-						RemovePet(id);
-						AddPet(found, collar.PetId);
-						await _context.SaveChangesAsync();
-						Pet pet = _context.Pet.Include(m => m.LastMode).FirstOrDefault(g => g.PetId == collar.PetId);
 
-						if (pet.LastMode != null && pet.LastMode.Type == ConfigModeTypes.Emergency && pet.LastMode.IsActive)
+					PetCollar foundPetCollar = _context.PetCollar.FirstOrDefault(f => f.CollarId == c.CollarId && f.IsActive);
+					if (foundPetCollar != null)
+					{
+						if (string.IsNullOrEmpty(collar.PetId)) {
+							RemovePet(id);
+							await _context.SaveChangesAsync();
+						}
+						else 	if (collar.PetId != foundPetCollar.PetId)
 						{
-							isLost = true;
+							RemovePet(id);
+							AddPet(found, collar.PetId);
+							await _context.SaveChangesAsync();
+						}
+					}
+					else if (foundPetCollar == null) {
+						if (!string.IsNullOrEmpty(collar.PetId)) {
+							AddPet(found, collar.PetId);
+							await _context.SaveChangesAsync();
 						}
 					}
 					//send message to connected devices
 					Infrastructure.CustomWebSockets.Messages.CollarCore cc = _mapper.Map<Infrastructure.CustomWebSockets.Messages.CollarCore>(c);
-					cc.IsLost = isLost;
+					if (!string.IsNullOrEmpty(collar.PetId))
+					{
+						Pet pet = _context.Pet.Include(m => m.LastMode).FirstOrDefault(g => g.PetId == collar.PetId);
+						if (pet.LastMode != null && pet.LastMode.Type == ConfigModeTypes.Emergency && pet.LastMode.IsActive)
+						{
+							cc.IsLost = true;
+						}
+						else
+						{
+							cc.IsLost = false;
+						}
+					}
+					else {
+						cc.IsLost = false;
+					}
 					await _webSocketMessageHandler.SendCollarCoreAsync(cc, _userManager.GetUserName(User), _wsFactory);
 				}
 				catch (DbUpdateConcurrencyException)
