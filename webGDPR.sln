@@ -10,6 +10,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		aspnet-webGDPR-7F1CE4F2-FB4F-4BF6-AED4-088E89D28C3C.bak = aspnet-webGDPR-7F1CE4F2-FB4F-4BF6-AED4-088E89D28C3C.bak
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MSTestUnitTest", "MSTestUnitTest\MSTestUnitTest.csproj", "{680B077D-FA89-40C7-AC35-58815584DC89}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -20,6 +22,10 @@ Global
 		{EDA69850-415B-45F3-B225-69CFCFBC82EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EDA69850-415B-45F3-B225-69CFCFBC82EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EDA69850-415B-45F3-B225-69CFCFBC82EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{680B077D-FA89-40C7-AC35-58815584DC89}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{680B077D-FA89-40C7-AC35-58815584DC89}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{680B077D-FA89-40C7-AC35-58815584DC89}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{680B077D-FA89-40C7-AC35-58815584DC89}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
