@@ -1,6 +1,9 @@
 ﻿@model webGDPR.ViewModels.HWOverviewViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
 @{
-	ViewData["Title"] = "Trackers Overview";
+	ViewData["Title"] = Localizer["Performance Overview"];
 }
 
 <h2>
@@ -15,97 +18,97 @@
 			{
 				string[] names = basesDisconnectedToMuch.Select(b => b.Base.Name).ToArray();
 		<div class="alert alert-danger alert-dismissible">
-				<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-				<strong>Danger!</strong> These bases are disconnected to much: @string.Join(",", names).
-			</div>
+			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+			<strong>@Localizer["Danger!"]</strong> @Localizer["These bases are disconnected to much:"] @string.Join(",", names).
+		</div>
 			}
-			}
+		}
 
-			@{
-				var collarsDisconnectedToMuch = Model.CollarStats.Where(bs => bs.DisconnectedTimeSpan.TotalHours > 1).ToList();
-				if (collarsDisconnectedToMuch.Count > 0)
-				{
-					string[] names = collarsDisconnectedToMuch.Select(b => b.Collar.Name).ToArray();
+		@{
+			var collarsDisconnectedToMuch = Model.CollarStats.Where(bs => bs.DisconnectedTimeSpan.TotalHours > 1).ToList();
+			if (collarsDisconnectedToMuch.Count > 0)
+			{
+				string[] names = collarsDisconnectedToMuch.Select(b => b.Collar.Name).ToArray();
 		<div class="alert alert-danger alert-dismissible">
 			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-			<strong>Danger!</strong> These collars are disconnected to much: @string.Join(",", names).
+			<strong>@Localizer["Danger!"]</strong> @Localizer["These collars are disconnected to much:"] @string.Join(",", names).
 		</div>
-				}
 			}
+		}
 
-			@{
-				var collarsGPSDisconnectedToMuch = Model.CollarStats.Where(bs => bs.GPSDisconnectedTimeSpan.TotalHours > 2).ToList();
-				if (collarsGPSDisconnectedToMuch.Count > 0)
-				{
-					string[] names = collarsGPSDisconnectedToMuch.Select(b => b.Collar.Name).ToArray();
+		@{
+			var collarsGPSDisconnectedToMuch = Model.CollarStats.Where(bs => bs.GPSDisconnectedTimeSpan.TotalHours > 2).ToList();
+			if (collarsGPSDisconnectedToMuch.Count > 0)
+			{
+				string[] names = collarsGPSDisconnectedToMuch.Select(b => b.Collar.Name).ToArray();
 		<div class="alert alert-danger alert-dismissible">
 			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-			<strong>Danger!</strong> These collars are gps disconnected to much: @string.Join(",", names).
+			<strong>@Localizer["Danger!"]</strong> @Localizer["These collars do not have GPS to much:"] @string.Join(",", names).
 		</div>
-				}
 			}
+		}
 
-			@{
-				var collarsBatteryLowToMuch = Model.CollarStats.Where(bs => bs.BatteryMinus25Minutes > (5 * 60)).ToList();
-				if (collarsBatteryLowToMuch.Count > 0)
-				{
-					string[] names = collarsBatteryLowToMuch.Select(b => b.Collar.Name).ToArray();
+		@{
+			var collarsBatteryLowToMuch = Model.CollarStats.Where(bs => bs.BatteryMinus25Minutes > (5 * 60)).ToList();
+			if (collarsBatteryLowToMuch.Count > 0)
+			{
+				string[] names = collarsBatteryLowToMuch.Select(b => b.Collar.Name).ToArray();
 		<div class="alert alert-danger alert-dismissible">
 			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-			<strong>Danger!</strong> These collars have battery too low: @string.Join(",", names).
+			<strong>@Localizer["Danger!"]</strong> @Localizer["These collars have battery too low:"] @string.Join(",", names).
 		</div>
-				}
 			}
+		}
 
-			@{
-				var basesChargingToMuch = Model.BaseStats.Where(bs => bs.BatteriesChargingMore75percent).ToList();
-				if (basesChargingToMuch.Count > 0)
-				{
-					string[] names = basesChargingToMuch.Select(b => b.Base.Name).ToArray();
+		@{
+			var basesChargingToMuch = Model.BaseStats.Where(bs => bs.BatteriesChargingMore75percent).ToList();
+			if (basesChargingToMuch.Count > 0)
+			{
+				string[] names = basesChargingToMuch.Select(b => b.Base.Name).ToArray();
 		<div class="alert alert-warning alert-dismissible">
-				<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-				<strong>Warning!</strong> These bases are charging to much: @string.Join(",", names).
-			</div>
-			}
-			}
-			@if (Model.User.Devices.Count(b => !b.Banned) > 1)
-			{
-				<div class="well well-sm">
-					<text>Most Connected to Device: @Model.MostConnectedToDevice.AliasName</text>
-				</div>
-			}
-			@if (Model.User.Bases.Count(b => !b.Deleted) > 1)
-			{
-				<div class="well well-sm">
-					<text>Most Connected to Base: @Model.MostConnectedToBase.Name</text>
-				</div>
-			}
-			<div class="btn-group" role="group" aria-label="..." style="float:right;">
-				<button class="btn btn-default active" id="btnHWWeek" data-period="W">last week</button>
-				<button class="btn btn-default" id="btnHWMonth" data-period="M">last month</button>
-				<button class="btn btn-default" id="btnHWSemester" data-period="S">last 6 months</button>
-			</div>
-
-			<div id="HWStats" class="well well-lg" style="margin-top:10px;">
-				<partial name="_HWStatsPartial" model="@Model" />
-			</div>
+			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+			<strong>@Localizer["Warning!"]</strong> @Localizer["These bases are charging to much:"] @string.Join(",", names).
 		</div>
+			}
+		}
+		@if (Model.User.Devices.Count(b => !b.Banned) > 1)
+		{
+			<div class="well well-sm">
+				<text>@Localizer["Most Connected to Device:"] @Model.MostConnectedToDevice.AliasName</text>
+			</div>
+		}
+		@if (Model.User.Bases.Count(b => !b.Deleted) > 1)
+		{
+			<div class="well well-sm">
+				<text>@Localizer["Most Connected to Base:"] @Model.MostConnectedToBase.Name</text>
+			</div>
+		}
+		<div class="btn-group" role="group" aria-label="..." style="float:right;">
+			<button class="btn btn-default active" id="btnHWWeek" data-period="W">@Localizer["last week"]</button>
+			<button class="btn btn-default" id="btnHWMonth" data-period="M">@Localizer["last month"]</button>
+			<button class="btn btn-default" id="btnHWSemester" data-period="S">@Localizer["last 6 months"]</button>
+		</div>
+
+		<div id="HWStats" class="well well-lg" style="margin-top:10px;">
+			<partial name="_HWStatsPartial" model="@Model" />
+		</div>
+	</div>
 
 	<div class="col-md-3">
-		<h2>CheckList</h2>
+		<h2>@Localizer["CheckList"]</h2>
 		<ul class="checklist-ul">
-			<li>Verify that our application is running on your devices or computers. <a>How to verify that?</a></li>
-			<li>Verify that your devices or computers connecting to us have internet access.</li>
-			<li>Keep your base closed to any of your mobile devices or plugin to any of your computers.</li>
-			<li>Keep your base plugin to power most of the time to avoid them consuming the battery.</li>
-			<li>Put your base in a place free of radio interferences, such as microwaves.</li>
-			<li>Validate your base is connecting properly: our application show the current connection status and other key status of the base. If the base is not connected, try reseting any of your devices BLE service. <a>How to reset BLE?</a> </li>
-			<li>Change the collar battery when run out of charge.</li>
-			<li>Be sure to recharge the battery removed from the collar.</li>
-			<li>Validate your collar is working properly: Poor radio signal (less than 50%) or GPS connection issues should be reflect as more points in the Bad Service Places map.</li>
-			<li>Validate your collar is connecting properly: our application show the current connection status and other key status of the collar. If the collar is not connected, try reseting the base. <a>How to reset the base?</a></li>
-			<li>Check the Bad Service Places marked in the map for reasons of interference, such as near big metalic or cement structures. If possible, block any access to these places.</li>
-			<li>Please contact us if the issues persist. <a>Check here</a></li>
+			<li>@Localizer["Verify that our application is running on your devices or computers."] <a>@Localizer["How to verify that?"]</a></li>
+			<li>@Localizer["Verify that your devices or computers connecting to us have internet access."]</li>
+			<li>@Localizer["Keep your base closed to any of your mobile devices or plugin to any of your computers."]</li>
+			<li>@Localizer["Keep your base plugin to power most of the time to avoid them consuming the battery."]</li>
+			<li>@Localizer["Put your base in a place free of radio interferences, such as microwaves."]</li>
+			<li>@Localizer["Validate your base is connecting properly: our application show the current connection status and other key status of the base. If the base is not connected, try reseting any of your devices BLE service."] <a>@Localizer["How to reset BLE?"]</a> </li>
+			<li>@Localizer["Change the collar battery when run out of charge."]</li>
+			<li>@Localizer["Be sure to recharge the battery removed from the collar."]</li>
+			<li>@Localizer["Validate your collar is working properly: Poor radio signal (less than 50%) or GPS connection issues should be reflect as more points in the Bad Service Places map."]</li>
+			<li>@Localizer["Validate your collar is connecting properly: our application show the current connection status and other key status of the collar. If the collar is not connected, try reseting the base. <a>How to reset the base?"]</a></li>
+			<li>@Localizer["Check the Bad Service Places marked in the map for reasons of interference, such as near big metalic or cement structures. If possible, block any access to these places."]</li>
+			<li>@Localizer["Please contact us if the issues persist."] <a>@Localizer["Check here"]</a></li>
 		</ul>
 	</div>
 </div>
