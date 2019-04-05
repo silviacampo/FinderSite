@@ -62,13 +62,60 @@
 		@RenderBody()
 		<hr />
 		<footer>
-			<ul class="nav navbar-nav" style="columns: 5;-webkit-columns: 5;-moz-columns: 5;list-style: none;">
-				<li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
-				<li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
-				<li><a asp-area="" asp-controller="Home" asp-action="TermsAndConditions">Terms and Conditions</a></li>
-				<li><a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy Policy</a></li>
-			</ul>
-			<p>&copy; 2018 - webGDPR</p>
+			<div class="container text-md-left">
+				<div class="row">
+					<div class="col-md-3 mx-auto">
+						<h5 class="font-weight-bold text-uppercase mt-3 mb-4">Company Info</h5>
+						<ul class="list-unstyled">
+							<li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
+							<li><a asp-area="" asp-controller="Home" asp-action="TermsAndConditions">Terms and Conditions</a></li>
+							<li><a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy Policy</a></li>
+							<li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
+						</ul>
+					</div>
+					<div class="col-md-3 mx-auto">
+						<h5 class="font-weight-bold text-uppercase mt-3 mb-4">Documentation</h5>
+
+						<ul class="list-unstyled">
+							<li>
+								<a href="#!">Link 1</a>
+							</li>
+							<li>
+								<a href="#!">Link 2</a>
+							</li>
+							<li>
+								<a href="#!">Link 3</a>
+							</li>
+							<li>
+								<a href="#!">Link 4</a>
+							</li>
+						</ul>
+					</div>
+					<div class="col-md-3 mx-auto">
+						<h5 class="font-weight-bold text-uppercase mt-3 mb-4">other information</h5>
+
+						<ul class="list-unstyled">
+							<li>
+								<a href="#!">Link 1</a>
+							</li>
+							<li>
+								<a href="#!">Link 2</a>
+							</li>
+							<li>
+								<a href="#!">Link 3</a>
+							</li>
+							<li>
+								<a href="#!">Link 4</a>
+							</li>
+						</ul>
+					</div>
+					<div class="col-md-3 mx-auto">
+						<h5 class="text-uppercase font-weight-bold">Footer text 2</h5>
+						<p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Optio deserunt fuga perferendis modi earum commodi aperiam temporibus quod nulla.</p>
+					</div>
+				</div>
+			</div>
+			<p>&copy; 2019 - webGDPR</p>
 		</footer>
 	</div>
 
