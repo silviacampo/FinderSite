@@ -1,9 +1,12 @@
 ﻿@model webGDPR.ViewModels.MonitoringViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
 @{
-	ViewData["Title"] = "Monitoring Page";
+	ViewData["Title"] = Localizer["Monitoring"];
 }
 <h2>
-	<i class="fa fa-heartbeat fa-fw" aria-hidden="true"></i>&nbsp; Monitoring
+	<i class="fa fa-heartbeat fa-fw" aria-hidden="true"></i>&nbsp; @ViewData["Title"]
 </h2>
 <div class="row">
 	<div class="col-md-12">
@@ -27,22 +30,25 @@
 						<td>@ws.Username</td>
 						<td>@ws.Guid</td>
 						<td>@ws.DeviceId</td>
-						<td>@{
-							if (!string.IsNullOrEmpty(ws.DeviceId)) {
-								<text>@Model.Devices.FirstOrDefault(d => d.DeviceId == ws.DeviceId)?.GetName</text>
-							}
-							}</td>
-						<td>@ws.IP</td>
-						<td>@ws.WebSocket.State</td>
 						<td>
-							<script type="text/javascript">
+							@{
+								if (!string.IsNullOrEmpty(ws.DeviceId))
+								{
+									<text>@Model.Devices.FirstOrDefault(d => d.DeviceId == ws.DeviceId)?.GetName</text>
+								}
+						}
+					</td>
+					<td>@ws.IP</td>
+					<td>@ws.WebSocket.State</td>
+					<td>
+						<script type="text/javascript">
 							  var strDate = new String('@ws.CreationDate.ToString("MM/dd/yyyy hh:mm:ss tt") UTC');
 							  var localTime = new Date(strDate);
 							  document.write(localTime.toLocaleString());
-							</script>
-						</td>
-					</tr>
-				}
+						</script>
+					</td>
+				</tr>
+			}
 			</tbody>
 		</table>
 	</div>
@@ -69,25 +75,25 @@
 			</thead>
 			<tbody>
 				@foreach (webGDPR.Models.DeviceLog dl in Model.DeviceLogs)
-			{
-				<tr>
-					<td>@dl.DeviceId</td>
-					<td>
-						<script type="text/javascript">
+				{
+					<tr>
+						<td>@dl.DeviceId</td>
+						<td>
+							<script type="text/javascript">
   var strDate = new String('@dl.CreationDate.ToString("MM/dd/yyyy hh:mm:ss tt") UTC');
   var localTime = new Date(strDate);
   document.write(localTime.toLocaleString());
-</script>
-					</td>
-					<td>@dl.Reason</td>
-					<td width="300px"><span style="max-width:150px;white-space:normal">@dl.Message</span></td>
-				</tr>
-		}
+							</script>
+						</td>
+						<td>@dl.Reason</td>
+						<td width="300px"><span style="max-width:150px;white-space:normal">@dl.Message</span></td>
+					</tr>
+				}
 			</tbody>
 		</table>
 		@{
-		var prevDisabled = !Model.DeviceLogs.HasPreviousPage ? "disabled" : "";
-		var nextDisabled = !Model.DeviceLogs.HasNextPage ? "disabled" : "";
+			var prevDisabled = !Model.DeviceLogs.HasPreviousPage ? "disabled" : "";
+			var nextDisabled = !Model.DeviceLogs.HasNextPage ? "disabled" : "";
 		}
 
 		<a asp-action="Index"

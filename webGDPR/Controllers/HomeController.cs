@@ -5,6 +5,8 @@ using System.IO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Mvc.Localization;
+using Microsoft.Extensions.Localization;
 using webGDPR.Infrastructure;
 using webGDPR.Models;
 
@@ -14,6 +16,13 @@ namespace webGDPR.Controllers
 	public class HomeController : Controller
     {
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+		private readonly IHtmlLocalizer<HomeController> _localizer;
+
+		public HomeController(IHtmlLocalizer<HomeController> localizer)
+		{
+			_localizer = localizer;
+		}
 
 		public IActionResult Index()
 		{
@@ -57,7 +66,7 @@ namespace webGDPR.Controllers
 
 		public IActionResult About()
         {
-            ViewData["Message"] = "Your application description page.";
+			ViewData["Message"] = _localizer["Your application description page."];
 
             return View();
         }

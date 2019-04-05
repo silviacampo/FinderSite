@@ -1,0 +1,180 @@
+﻿
+@{
+	ViewData["Title"] = "WS Client";
+}
+
+<h2>
+	<i class="fa fa-robot fa-fw" aria-hidden="true"></i>&nbsp; @ViewData["Title"]
+</h2>
+
+<p id="stateLabel">Ready to connect...</p>
+<div>
+	<label for="connectionUrl">WebSocket Server URL:</label>
+	<input id="connectionUrl" />
+	<button id="connectButton" type="submit">Connect</button>
+</div>
+<p></p>
+<div>
+	<label for="sendMessage">Message to send:</label>
+	<input id="sendMessage" disabled />
+	<button id="sendButton" type="submit" disabled>Send</button>
+	<button id="closeButton" disabled>Close Socket</button>
+</div>
+<div>
+	<button id="loginMessageButton">Login Message</button>
+	<button id="deviceInfoMessageButton">Device Info Message</button>
+	<button id="discoveredBasesMessageButton">Discovered Bases Message</button>
+	<button id="baseStatusMessageButton">Base Status Message</button>
+	<button id="collarStatusMessageButton">Collar Status Message</button>
+	<button id="trackinginfoMessageButton">Tracking Info Message</button>
+	<button id="packageMessageButton">Package Message</button>
+</div>
+
+<h2>Communication Log</h2>
+<table style="width: 800px">
+	<thead>
+		<tr>
+			<td style="width: 100px">From</td>
+			<td style="width: 100px">To</td>
+			<td>Data</td>
+		</tr>
+	</thead>
+	<tbody id="commsLog"></tbody>
+</table>
+
+<script>
+        var connectionForm = document.getElementById("connectionForm");
+        var connectionUrl = document.getElementById("connectionUrl");
+        var connectButton = document.getElementById("connectButton");
+        var stateLabel = document.getElementById("stateLabel");
+        var sendMessage = document.getElementById("sendMessage");
+        var sendButton = document.getElementById("sendButton");
+        var sendForm = document.getElementById("sendForm");
+        var commsLog = document.getElementById("commsLog");
+		var closeButton = document.getElementById("closeButton");
+		var loginMessageButton = document.getElementById("loginMessageButton");
+	var deviceInfoMessageButton = document.getElementById("deviceInfoMessageButton");
+	var discoveredBasesMessageButton = document.getElementById("discoveredBasesMessageButton");
+	var baseStatusMessageButton = document.getElementById("baseStatusMessageButton");
+	var collarStatusMessageButton = document.getElementById("collarStatusMessageButton");
+	var trackinginfoMessageButton = document.getElementById("trackinginfoMessageButton");
+	var packageMessageButton = document.getElementById("packageMessageButton");
+
+        var socket;
+        var scheme = document.location.protocol == "https:" ? "wss" : "ws";
+        var port = document.location.port ? (":" + document.location.port) : "";
+		connectionUrl.value = scheme + "://" + document.location.hostname + port + "/ws?u=SilviaCampo&g=68b73ced-1659-483c-929e-274a97706405" ;
+        function updateState() {
+            function disable() {
+                sendMessage.disabled = true;
+                sendButton.disabled = true;
+                closeButton.disabled = true;
+            }
+            function enable() {
+                sendMessage.disabled = false;
+                sendButton.disabled = false;
+                closeButton.disabled = false;
+            }
+            connectionUrl.disabled = true;
+            connectButton.disabled = true;
+            if (!socket) {
+                disable();
+            } else {
+                switch (socket.readyState) {
+                    case WebSocket.CLOSED:
+                        stateLabel.innerHTML = "Closed";
+                        disable();
+                        connectionUrl.disabled = false;
+                        connectButton.disabled = false;
+                        break;
+                    case WebSocket.CLOSING:
+                        stateLabel.innerHTML = "Closing...";
+                        disable();
+                        break;
+                    case WebSocket.CONNECTING:
+                        stateLabel.innerHTML = "Connecting...";
+                        disable();
+                        break;
+                    case WebSocket.OPEN:
+                        stateLabel.innerHTML = "Open";
+                        enable();
+                        break;
+                    default:
+                        stateLabel.innerHTML = "Unknown WebSocket State: " + htmlEscape(socket.readyState);
+                        disable();
+                        break;
+                }
+            }
+	}
+	loginMessageButton.onclick = function () {
+		sendMessage.value = '{"m":"As!123456","d":1541440447,"u":"SilviaCampo","t":20}';
+	}
+	deviceInfoMessageButton.onclick = function () {
+		sendMessage.value = '{"m":"{\\"t\\":\\"Desktop\\",\\"p\\":\\"WPF\\",\\"n\\":\\"DESKTOP-I5\\",\\"mo\\":\\"\\",\\"ma\\":\\"\\",\\"os\\":\\"Microsoft Windows NT 6.2.9200.0\\"}","d":1545754845,"u":"SilviaCampo","t":5}';
+	}
+	discoveredBasesMessageButton.onclick = function () {
+		sendMessage.value = '{"m":"[\\"102\\",\\"100\\"]","d":1545485962,"u":"SilviaCampo","t":14}';
+	}
+	baseStatusMessageButton.onclick = function () {
+		sendMessage.value = '{"m":"{\\"bn\\":1,\\"co\\":0,\\"cot\\":\\"\\",\\"pl\\":0,\\"ch\\":0,\\"bt\\":0,\\"hbt\\":0,\\"r\\":0}","d":1545518726,"u":"SilviaCampo","t":12}';
+	}
+	collarStatusMessageButton.onclick = function () {
+		sendMessage.value = '{ "m":"{\\"cn\\":1,\\"bn\\":1,\\"co\\":0,\\"cot\\":\\"\\",\\"gps\\":1,\\"b\\":60,\\"r\\":40}","d":"1545518726","u":"SilviaCampo","t":13}';
+	}
+	trackinginfoMessageButton.onclick = function () {
+		sendMessage.value = '{"m":"{\\"cn\\":1,\\"la\\":45.513025,\\"lo\\":-73.720863,\\"d\\":3343659132}","d":1541440470,"u":"SilviaCampo","t":7}';
+	}
+	packageMessageButton.onclick = function () {
+		sendMessage.value = '{"m":"{\\"d\\":\\"VRACAAAAAAAAAABA4gEAAgAAAIM=\\",\\"hw\\":\\"102\\"}","d":1545485964,"u":"SilviaCampo","t":17}';
+	}
+        closeButton.onclick = function () {
+            if (!socket || socket.readyState != WebSocket.OPEN) {
+                alert("socket not connected");
+            }
+            socket.close(1000, "Closing from client");
+        }
+        sendButton.onclick = function () {
+            if (!socket || socket.readyState != WebSocket.OPEN) {
+                alert("socket not connected");
+            }
+			var data = sendMessage.value;
+			socket.send(data);
+            commsLog.innerHTML += '<tr>' +
+                '<td class="commslog-client">Client</td>' +
+                '<td class="commslog-server">Server</td>' +
+                '<td class="commslog-data">' + htmlEscape(data) + '</td></tr>';
+        }
+        connectButton.onclick = function() {
+            stateLabel.innerHTML = "Connecting";
+            socket = new WebSocket(connectionUrl.value);
+            socket.onopen = function (event) {
+                updateState();
+                commsLog.innerHTML += '<tr>' +
+                    '<td colspan="3" class="commslog-data">Connection opened</td>' +
+                '</tr>';
+            };
+            socket.onclose = function (event) {
+                updateState();
+                commsLog.innerHTML += '<tr>' +
+                    '<td colspan="3" class="commslog-data">Connection closed. Code: ' + htmlEscape(event.code) + '. Reason: ' + htmlEscape(event.reason) + '</td>' +
+                '</tr>';
+            };
+            socket.onerror = updateState;
+			socket.onmessage = function (event) {
+                commsLog.innerHTML += '<tr>' +
+                    '<td class="commslog-server">Server</td>' +
+                    '<td class="commslog-client">Client</td>' +
+                    '<td class="commslog-data">' + htmlEscape(event.data) + '</td></tr>';
+            };
+        };
+        function htmlEscape(str) {
+            return str
+                .replace(/&/g, '&amp;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;');
+        }
+</script>
+
+

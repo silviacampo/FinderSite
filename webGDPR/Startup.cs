@@ -17,6 +17,10 @@ using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using webGDPR.Infrastructure.CustomWebSockets;
 using webGDPR.Controllers;
+using Microsoft.AspNetCore.Mvc.Razor;
+using System.Globalization;
+using Microsoft.AspNetCore.Localization;
+using System.Collections.Generic;
 
 namespace webGDPR
 {
@@ -64,10 +68,14 @@ namespace webGDPR
 
 			services.AddAutoMapper();
 
+			services.AddLocalization(options => options.ResourcesPath = "Resources");
+
 			services.AddMvc(options =>
 			{
 				options.Filters.Add(new HostFilter());
-			}).SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+			}).SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+			.AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
+			.AddDataAnnotationsLocalization();
 
 			services.AddScoped<HostFilter>();
 			services.AddSingleton<IEmailConfiguration>(Configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>());
@@ -86,6 +94,19 @@ namespace webGDPR
 
 			//https://www.stevejgordon.co.uk/asp-net-core-2-ihostedservice
 			services.AddHostedService<GPSFileService>();
+
+			services.Configure<RequestLocalizationOptions>(options =>
+			{
+				var supportedCultures = new List<CultureInfo>
+					{
+						new CultureInfo("en-US"),
+						new CultureInfo("fr")
+					};
+
+				options.DefaultRequestCulture = new RequestCulture("en-US");
+				options.SupportedCultures = supportedCultures;
+				options.SupportedUICultures = supportedCultures;
+			});
 
 		}
 
@@ -156,7 +177,24 @@ WantedBy=multi-user.target
 			loggerFactory.AddLog4Net();
 
 			app.UseHttpsRedirection();
-            app.UseStaticFiles();
+
+			var supportedCultures = new[]
+			{
+				new CultureInfo("en-US"),
+				new CultureInfo("fr"),
+			};
+
+			app.UseRequestLocalization(new RequestLocalizationOptions
+			{
+				DefaultRequestCulture = new RequestCulture("en-US"),
+				// Formatting numbers, dates, etc.
+				SupportedCultures = supportedCultures,
+				// UI strings that we have localized.
+				SupportedUICultures = supportedCultures
+			});
+
+
+			app.UseStaticFiles();
             app.UseCookiePolicy();
 
             app.UseAuthentication();

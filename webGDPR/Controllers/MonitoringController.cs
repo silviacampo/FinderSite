@@ -20,6 +20,7 @@ using webGDPR.ViewModels;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Localization;
 
 namespace webGDPR.Controllers
 {
@@ -36,8 +37,9 @@ namespace webGDPR.Controllers
 		ICustomWebSocketMessageHandler _webSocketMessageHandler;
 		ICustomWebSocketFactory _wsFactory;
 		private readonly SignInManager<ApplicationUser> _signInManager;
+		private readonly IStringLocalizer<MonitoringController> _localizer;
 
-		public MonitoringController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IMapper mapper, IHostingEnvironment hostingEnvironment, ICustomWebSocketMessageHandler webSocketMessageHandler, ICustomWebSocketFactory wsFactory, SignInManager<ApplicationUser> signInManager)
+		public MonitoringController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IMapper mapper, IHostingEnvironment hostingEnvironment, ICustomWebSocketMessageHandler webSocketMessageHandler, ICustomWebSocketFactory wsFactory, SignInManager<ApplicationUser> signInManager, IStringLocalizer<MonitoringController> localizer)
 		{
 			_context = context;
 			_userManager = userManager;
@@ -46,6 +48,7 @@ namespace webGDPR.Controllers
 			_webSocketMessageHandler = webSocketMessageHandler;
 			_wsFactory = wsFactory;
 			_signInManager = signInManager;
+			_localizer = localizer;
 		}
 
 		public async Task<IActionResult> Index(string searchString, string currentFilter, int? pageIndex)
@@ -245,6 +248,12 @@ namespace webGDPR.Controllers
 			await _webSocketMessageHandler.SendDownloadFile(new List<string> { localUrl }, _wsFactory, _context);
 			return RedirectToAction(nameof(Upload));
 		}
+
+		public IActionResult WebSocketClient()
+		{
+			return View();
+		}
+
 
 		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
