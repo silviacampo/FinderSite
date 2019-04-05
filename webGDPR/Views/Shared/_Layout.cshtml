@@ -1,5 +1,7 @@
 ﻿@using Microsoft.Extensions.Configuration
+@using Microsoft.AspNetCore.Mvc.Localization
 @inject IConfiguration Configuration
+@inject IViewLocalizer Localizer
 
 <!DOCTYPE html>
 <html>
@@ -17,7 +19,7 @@
 		<link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css"
 			  asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
 			  asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
-        <link href="~/lib/fontawesome-free-5.8.0-web/css/all.min.css" rel="stylesheet" />
+		<link href="~/lib/fontawesome-free-5.8.0-web/css/all.min.css" rel="stylesheet" />
 		<link rel="stylesheet" href='~/css/site_@ViewData["Host"]_.min.css' />
 	</environment>
 
@@ -37,9 +39,9 @@
 			</div>
 			<div class="navbar-collapse collapse">
 				<ul class="nav navbar-nav">
-					<li><a asp-area="" asp-controller="Device" asp-action="DownloadApp"><i class="fa fa-download fa-fw" aria-hidden="true"></i>&nbsp; @*Download App*@</a></li>
+					<li><a asp-area="" asp-controller="Device" asp-action="DownloadApp" title='@Localizer["Download App"]'><i class="fa fa-download fa-fw" aria-hidden="true"></i>&nbsp; @*@Localizer["Download App"]*@</a></li>
 					<li class="dropdown">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-info-circle fa-fw" aria-hidden="true"></i> <span class="caret"></span></a>
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" title='@Localizer["Documentation"]'><i class="fa fa-info-circle fa-fw" aria-hidden="true"></i>&nbsp; @*@Localizer["Documentation"]*@<span class="caret"></span></a>
 						<ul class="dropdown-menu">
 							<li><a href="#">Action</a></li>
 							<li><a href="#">Another action</a></li>
@@ -65,16 +67,16 @@
 			<div class="container text-md-left">
 				<div class="row">
 					<div class="col-md-3 mx-auto">
-						<h5 class="font-weight-bold text-uppercase mt-3 mb-4">Company Info</h5>
+						<h5 class="font-weight-bold text-uppercase mt-3 mb-4">@Localizer["Company Info"]</h5>
 						<ul class="list-unstyled">
-							<li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
-							<li><a asp-area="" asp-controller="Home" asp-action="TermsAndConditions">Terms and Conditions</a></li>
-							<li><a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy Policy</a></li>
-							<li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
+							<li><a asp-area="" asp-controller="Home" asp-action="About">@Localizer["About"]</a></li>
+							<li><a asp-area="" asp-controller="Home" asp-action="TermsAndConditions">@Localizer["Terms and Conditions"]</a></li>
+							<li><a asp-area="" asp-controller="Home" asp-action="Privacy">@Localizer["Privacy Policy"]</a></li>
+							<li><a asp-area="" asp-controller="Home" asp-action="Contact">@Localizer["Contact"]</a></li>
 						</ul>
 					</div>
 					<div class="col-md-3 mx-auto">
-						<h5 class="font-weight-bold text-uppercase mt-3 mb-4">Documentation</h5>
+						<h5 class="font-weight-bold text-uppercase mt-3 mb-4">@Localizer["Documentation"]</h5>
 
 						<ul class="list-unstyled">
 							<li>
@@ -92,7 +94,7 @@
 						</ul>
 					</div>
 					<div class="col-md-3 mx-auto">
-						<h5 class="font-weight-bold text-uppercase mt-3 mb-4">other information</h5>
+						<h5 class="font-weight-bold text-uppercase mt-3 mb-4">@Localizer["Documentation"]</h5>
 
 						<ul class="list-unstyled">
 							<li>
@@ -160,7 +162,7 @@
 		<script src="~/lib/jquery/dist/jquery.easypiechart.min.js"></script>
 		<script src="~/js/site.min.js" asp-append-version="true"></script>
 	</environment>
-	
+
 	@RenderSection("Scripts", required: false)
 </body>
 </html>
