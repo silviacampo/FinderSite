@@ -1,6 +1,9 @@
 ﻿@model List<webGDPR.Infrastructure.TimelineItem>
+@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
 @{
-	ViewData["Title"] = "Connections Timeline";
+	ViewData["Title"] = Localizer["Connections Timeline"];
 }
 <div class="overlay" style="position: absolute; top:0px;bottom:-500px;left:0px;right:0px;"></div>
 <div id="loader"></div>
