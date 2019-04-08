@@ -99,11 +99,12 @@ namespace webGDPR
 			{
 				var supportedCultures = new List<CultureInfo>
 					{
-						new CultureInfo("en-US"),
-						new CultureInfo("fr")
+						new CultureInfo("en"),
+						new CultureInfo("fr"),
+						new CultureInfo("es")
 					};
 
-				options.DefaultRequestCulture = new RequestCulture("en-US");
+				options.DefaultRequestCulture = new RequestCulture("en");
 				options.SupportedCultures = supportedCultures;
 				options.SupportedUICultures = supportedCultures;
 			});
