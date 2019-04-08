@@ -1,6 +1,9 @@
 ﻿@model User
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
 @{
-	ViewData["Title"] = "Pick Location";
+	ViewData["Title"] = Localizer["Pick a location"];
 }
 
 <h2>@ViewData["Title"]</h2>

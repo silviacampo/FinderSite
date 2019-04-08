@@ -1,16 +1,19 @@
 ﻿@model User
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
 @{
-	ViewData["Title"] = "FixMissingSubscription";
+	ViewData["Title"] = Localizer["Fix Missing Subscription"];
 }
 
-<h2>Fix Missing Subscription</h2>
+<h2>@ViewData["Title"]</h2>
 
-You have the following trackers:
+@Localizer["You have the following collars:"]
 <table class="table">
 	<thead>
 		<tr>
 			<th class="visible-md visible-lg">
-				@Html.DisplayNameFor(model => model.Collars[0].CollarNumber) 
+				@Html.DisplayNameFor(model => model.Collars[0].CollarNumber)
 			</th>
 			<th class="visible-md visible-lg">
 				@Html.DisplayNameFor(model => model.Collars[0].HWId)
@@ -38,12 +41,12 @@ You have the following trackers:
 				</td>
 				<td class="visible-md visible-lg">
 					@Html.DisplayFor(modelItem => item.Description)
-				</td>				
+				</td>
 			</tr>
 		}
 	</tbody>
 </table>
-But you are paying a subscription for only one tracker.
+@Localizer["But you are paying only the following subscriptions:"]
 <table class="table">
 	<thead>
 		<tr>

@@ -1,4 +1,7 @@
 ﻿@model User
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
 @*
 	https://developers.google.com/maps/documentation/geocoding/intro
 	https://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&key=
@@ -7,14 +10,14 @@
 
 @if (!string.IsNullOrEmpty(Model.FormattedAddress))
 {
-<p>This is your current location:</p>
-<div class="well well-lg">@Model.FormattedAddress</div>
-<p>If it's wrong, please enter your current location below and click Update.</p>
-<hr />
+	<p>@Localizer["This is your current location:"]</p>
+	<div class="well well-lg">@Model.FormattedAddress</div>
+	<p>@Localizer["If it's wrong, please enter your current location below and click Update."]</p>
+	<hr />
 }
 else
 {
-<p>Please enter your current location below and click Update.</p>
+	<p>@Localizer["Please enter your current location below and click Update."]</p>
 }
 <div class="row">
 	<form asp-controller="User" asp-action="PickLocation" enctype="multipart/form-data">

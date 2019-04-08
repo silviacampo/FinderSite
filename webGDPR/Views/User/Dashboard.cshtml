@@ -17,7 +17,7 @@
 			@if (Model.MissingSubscription)
 			{
 				<li>
-					<b><a style="color:orangered;" asp-action="FixMissingSubscription">@Localizer["Issues"]Missing Subscription</a></b>
+					<b><a style="color:orangered;" asp-action="FixMissingSubscription">@Localizer["Missing Subscription"]</a></b>
 				</li>
 			}
 
@@ -292,7 +292,7 @@
 						<th>
 							<i class="fa fa-paw fa-fw" aria-hidden="true"></i> &nbsp; @Localizer["Collars on Pets"]
 						</th>
-						<th class="small">@Localizer["Delete"]Network Connected</th>
+						<th class="small">@Localizer["Network Connected"]</th>
 						<th class="small visible-md visible-lg visible-sm">@Localizer["GPS Connected"]</th>
 						<th class="small visible-md visible-lg visible-sm">@Localizer["Battery Charge"]</th>
 						<th class="small visible-md visible-lg visible-sm">@Localizer["Radio Strength"]</th>
@@ -694,7 +694,7 @@
 						<span id="collarName"></span>
 					</dd>
 					<dt id="petNameDT" style="display:none;">
-						Pet
+						@Localizer["Pet"]
 					</dt>
 					<dd id="petNameDD" style="display:none;">
 						<span id="collarPet"></span>
