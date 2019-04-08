@@ -117,7 +117,14 @@
 					</div>
 				</div>
 			</div>
-			<p>&copy; 2019 - webGDPR</p>
+			<div class="row">
+				<div class="col-md-6">
+					<p>&copy; @System.DateTime.Now.Year - @ViewData["Host"]</p>
+				</div>
+				<div class="col-md-6 text-right">
+					@await Html.PartialAsync("_SelectLanguagePartial")
+				</div>
+			</div>
 		</footer>
 	</div>
 

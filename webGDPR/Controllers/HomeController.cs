@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Localization;
@@ -86,6 +88,18 @@ namespace webGDPR.Controllers
 		public IActionResult TermsAndConditions()
 		{
 			return View();
+		}
+
+		[HttpPost]
+		public IActionResult SetLanguage(string culture, string returnUrl)
+		{
+			Response.Cookies.Append(
+				CookieRequestCultureProvider.DefaultCookieName,
+				CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture)),
+				new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1) }
+			);
+
+			return LocalRedirect(returnUrl);
 		}
 
 		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
