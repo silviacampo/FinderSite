@@ -497,13 +497,14 @@
 				{
 			 	<text>
 				var strDate = new String('@p.LastTrackingInfo.CreationDate.ToString("MM/dd/yyyy hh:mm:ss tt") UTC');
-				var localTime = new Date(strDate);
-				coordinates.push({ lat: @p.LastTrackingInfo.Latitude, lng: @p.LastTrackingInfo.Longitude, name: "@p.Name", type: "@p.Type", time: localTime.toLocaleString() });
+					var localTime = new Date(strDate);
+
+				coordinates.push({ lat: @p.LastTrackingInfo.Latitude.ToString(new System.Globalization.CultureInfo("en", false)), lng: @p.LastTrackingInfo.Longitude.ToString(new System.Globalization.CultureInfo("en", false)), name: "@p.Name", type: "@p.Type", time: localTime.toLocaleString() });
 				</text>
 				}
 			}
 				</script>
-				<div id="pets-map" class="card-text card-map" data-geo-lat="@Model.Latitude" data-geo-lng="@Model.Longitude"></div>
+				<div id="pets-map" class="card-text card-map" data-geo-lat="@Model.Latitude.ToString(new System.Globalization.CultureInfo("en", false))" data-geo-lng="@Model.Longitude.ToString(new System.Globalization.CultureInfo("en", false))"></div>
 				<div id="panoDashboard"></div>
 			</div>
 		</div>
