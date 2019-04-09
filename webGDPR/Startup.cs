@@ -99,9 +99,9 @@ namespace webGDPR
 			{
 				var supportedCultures = new List<CultureInfo>
 					{
-						new CultureInfo("en"),
-						new CultureInfo("es"),
-						new CultureInfo("fr"),
+						new CultureInfo("en",false),
+						new CultureInfo("es",false),
+						new CultureInfo("fr", false),
 					};
 
 				options.DefaultRequestCulture = new RequestCulture("en");
