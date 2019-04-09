@@ -136,7 +136,7 @@
 		<script src="~/lib/twitter-bootstrap-wizard/jquery.bootstrap.wizard.js"></script>
 		<script src="//cdn.ckeditor.com/4.10.0/standard/ckeditor.js"></script>
 		<script src="~/lib/google/markerclusterer.js"></script>
-		<script src="https://maps.googleapis.com/maps/api/js?key=@Configuration.GetSection("GoogleMapKey")["Dev"]"></script>
+		<script src="https://maps.googleapis.com/maps/api/js?key=@Configuration.GetSection("GoogleMapKey")["Dev"]&language=@Localizer["mapLanguage"]"></script>
 		<script src="~/lib/bootstrap/dist/js/mdb.js"></script>
 		<script src="~/lib/jquery/dist/jquery.easypiechart.js"></script>
 		<script src="~/js/site.js" asp-append-version="true"></script>

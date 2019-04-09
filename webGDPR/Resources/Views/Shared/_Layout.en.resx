@@ -132,6 +132,9 @@
   <data name="Download App" xml:space="preserve">
     <value>Download App</value>
   </data>
+  <data name="mapLanguage" xml:space="preserve">
+    <value>en</value>
+  </data>
   <data name="Privacy Policy" xml:space="preserve">
     <value>Privacy Policy</value>
   </data>

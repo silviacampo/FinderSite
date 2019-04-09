@@ -99,15 +99,27 @@
 		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
 	</resheader>
 	<data name="About" xml:space="preserve">
-    <value>Sur - about Resources\Views.Shared._Layout.fr.resx</value>
+    <value>Nous</value>
+  </data>
+	<data name="Company Info" xml:space="preserve">
+    <value>Renseignements de la company</value>
   </data>
 	<data name="Contact" xml:space="preserve">
     <value>Contact</value>
   </data>
-	<data name="Home" xml:space="preserve">
-    <value>Accueil hm</value>
+	<data name="Documentation" xml:space="preserve">
+    <value>Documentation</value>
   </data>
-	<data name="Toggle navigation" xml:space="preserve">
-    <value>Basculer la navigation-tog nav</value>
+	<data name="Download App" xml:space="preserve">
+    <value>Télécharger l'application</value>
+  </data>
+	<data name="mapLanguage" xml:space="preserve">
+    <value>fr</value>
+  </data>
+	<data name="Privacy Policy" xml:space="preserve">
+    <value>Politique de confidentialité</value>
+  </data>
+	<data name="Terms and Conditions" xml:space="preserve">
+    <value>Terms et Conditions</value>
   </data>
 </root>
