@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using webGDPR.Data;
+using Microsoft.Extensions.Localization;
 
 namespace webGDPR.Areas.Identity.Pages.Account
 {
@@ -17,12 +18,14 @@ namespace webGDPR.Areas.Identity.Pages.Account
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ILogger<LoginModel> _logger;
+		private readonly IStringLocalizer<LoginModel> _localizer;
 
-        public LoginModel(SignInManager<ApplicationUser> signInManager, ILogger<LoginModel> logger)
+		public LoginModel(SignInManager<ApplicationUser> signInManager, ILogger<LoginModel> logger, IStringLocalizer<LoginModel> localizer)
         {
             _signInManager = signInManager;
             _logger = logger;
-        }
+			_localizer = localizer;
+		}
 
         [BindProperty]
         public InputModel Input { get; set; }
@@ -35,15 +38,23 @@ namespace webGDPR.Areas.Identity.Pages.Account
 		[TempData]
         public string ErrorMessage { get; set; }
 
-        public class InputModel
-        {
-			[Required]
+		public class InputModel
+		{
+			//https://github.com/joaofbantunes/AspNetCoreRazorPagesInnerModelLocalizationSample
+			private readonly IStringLocalizer<InputModel> _localizer;
+
+			public InputModel(IStringLocalizer<InputModel> localizer)
+			{
+				_localizer = localizer;
+			}
+
+			[Required(ErrorMessage = "Your Username is required")]
 			[DataType(DataType.Text)]
 			[Display(Name = "Username")]
 			public string Name { get; set; }
 
-			[Required]
-            [DataType(DataType.Password)]
+			[Required(ErrorMessage = "Your Password is required")]
+			[DataType(DataType.Password)]
             public string Password { get; set; }
 
             [Display(Name = "Remember me?")]
@@ -52,6 +63,8 @@ namespace webGDPR.Areas.Identity.Pages.Account
 
         public async Task OnGetAsync(string username = null, string returnUrl = null)
         {
+
+
             if (!string.IsNullOrEmpty(ErrorMessage))
             {
                 ModelState.AddModelError(string.Empty, ErrorMessage);
