@@ -30,7 +30,7 @@
 					<li><a asp-area="" asp-controller="Device" asp-action="Index" title='@Localizer["Devices"]'><i class="fa fa-mobile-alt fa-fw" aria-hidden="true"></i>&nbsp; @Localizer["Devices"]</a></li>
 					<li><a asp-area="" asp-controller="Monitoring" asp-action="Users" title='@Localizer["Users"]'><i class="fa fa-users fa-fw" aria-hidden="true"></i>&nbsp; @Localizer["Users"]</a></li>
 					<li><a asp-area="" asp-controller="Monitoring" asp-action="Upload" title='@Localizer["Upload Files"]'><i class="fa fa-file fa-fw" aria-hidden="true"></i>&nbsp; @Localizer["Upload Files"]</a></li>
-					<li><a asp-area="" asp-controller="Product" asp-action="Index" title='@Localizer["Products"]'><i class="fa fa-cube fa-fw" aria-hidden="true" title="Products"></i>&nbsp; @Localizer["Products"]</a></li>
+					<li><a asp-area="" asp-controller="Product" asp-action="Index" title='@Localizer["Products"]'><i class="fa fa-cube fa-fw" aria-hidden="true"></i>&nbsp; @Localizer["Products"]</a></li>
 				</ul>
 			</li>
 		</ul>
@@ -44,7 +44,7 @@
 				</a>
 			</li>
 			<li>
-				<button type="submit" class="btn btn-link navbar-btn navbar-link">@Localizer["Logout"]</button>
+				<button type="submit" class="btn btn-link navbar-btn navbar-link" title="@Localizer["Logout"]"><i class="fa fa-sign-out-alt fa-fw" aria-hidden="true"></i>&nbsp; @Localizer["Logout"]</button>
 			</li>
 		</ul>
 	</form>
@@ -52,7 +52,7 @@
 else
 {
 	<ul class="nav navbar-nav navbar-right">
-		<li><a asp-area="Identity" asp-page="/Account/Register">@Localizer["Register"]</a></li>
-		<li><a asp-area="Identity" asp-page="/Account/Login">@Localizer["Login"]</a></li>
+		<li><a asp-area="Identity" asp-page="/Account/Register" title="@Localizer["Register"]"><i class="fa fa-user-plus fa-fw" aria-hidden="true"></i>&nbsp; @Localizer["Register"]</a></li>
+		<li><a asp-area="Identity" asp-page="/Account/Login" title="@Localizer["Login"]"><i class="fa fa-sign-in-alt fa-fw" aria-hidden="true"></i>&nbsp; @Localizer["Login"]</a></li>
 	</ul>
 }
