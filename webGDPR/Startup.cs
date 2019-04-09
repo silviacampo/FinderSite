@@ -21,6 +21,7 @@ using Microsoft.AspNetCore.Mvc.Razor;
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
 using System.Collections.Generic;
+using Microsoft.Extensions.Options;
 
 namespace webGDPR
 {
@@ -104,7 +105,7 @@ namespace webGDPR
 						new CultureInfo("fr", false),
 					};
 
-				options.DefaultRequestCulture = new RequestCulture("en");
+				options.DefaultRequestCulture = new RequestCulture("en","en");
 				options.SupportedCultures = supportedCultures;
 				options.SupportedUICultures = supportedCultures;
 			});
@@ -179,21 +180,8 @@ WantedBy=multi-user.target
 
 			app.UseHttpsRedirection();
 
-			var supportedCultures = new[]
-			{
-				new CultureInfo("en-US"),
-				new CultureInfo("fr"),
-			};
-
-			app.UseRequestLocalization(new RequestLocalizationOptions
-			{
-				DefaultRequestCulture = new RequestCulture("en-US"),
-				// Formatting numbers, dates, etc.
-				SupportedCultures = supportedCultures,
-				// UI strings that we have localized.
-				SupportedUICultures = supportedCultures
-			});
-
+			var locOptions = app.ApplicationServices.GetService<IOptions<RequestLocalizationOptions>>();
+			app.UseRequestLocalization(locOptions.Value);
 
 			app.UseStaticFiles();
             app.UseCookiePolicy();
