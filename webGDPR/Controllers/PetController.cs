@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -175,10 +176,9 @@ namespace webGDPR.Controllers
             return NotFound();
         }
 
-		// GET: Pet/Map2?u=SilviaCampo&g=34a33904-49d5-4edc-be95-00af3e64eecd&cn=2
-		//http://localhost:51420/Identity/Account/SilentLogin?Username=SilviaCampo&ReturnUrl=%2FPet%2FMap%3Fusername%3DSilviaCampo%26collarnumber%3D1
+		// GET: Pet/Map2?u=SilviaCampo&g=34a33904-49d5-4edc-be95-00af3e64eecd&cn=2&lg=en
 		[AllowAnonymous]
-		public async Task<IActionResult> Map2(string u, string g, int cn)
+		public async Task<IActionResult> Map2(string u, string g, int cn, string lg)
 		{
 			var device = await _context.Device.FirstOrDefaultAsync(d => d.DeviceId == g && !d.Banned);
 			if (device != null) {
@@ -196,7 +196,11 @@ namespace webGDPR.Controllers
 							{
 								return NotFound();
 							}
-							return View(pet);
+
+                            Response.Cookies.Append(CookieRequestCultureProvider.DefaultCookieName,
+                            CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(lg)),
+                            new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1), IsEssential = true });
+                            return View("Map",pet);
 						}
 						return NotFound();
 					}

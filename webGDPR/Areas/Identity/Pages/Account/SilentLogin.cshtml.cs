@@ -93,11 +93,11 @@ namespace webGDPR.Areas.Identity.Pages.Account
 				{
 					_logger.LogInformation("User logged in.");
 
-					//Response.Cookies.Append(
-				//CookieRequestCultureProvider.DefaultCookieName,
-				//CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(Input.Language)),
-				//new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1), IsEssential = true }
-			//);
+					Response.Cookies.Append(
+				CookieRequestCultureProvider.DefaultCookieName,
+				CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(Input.Language)),
+				new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1), IsEssential = true }
+			);
 
 					string decodedReturn = HttpUtility.UrlDecode(returnUrl);
 					string[] decodedReturnParts = decodedReturn.Split(new char[] { '/', '?', '&', '=' });

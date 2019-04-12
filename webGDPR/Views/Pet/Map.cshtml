@@ -1,45 +1,48 @@
 ﻿@using Microsoft.Extensions.Configuration
+@using Microsoft.AspNetCore.Mvc.Localization
+
 @inject IConfiguration Configuration
+@inject IViewLocalizer Localizer
 
 @model webGDPR.Models.Pet
 
 @{
-	Layout = null;
+    Layout = null;
 }
 
 <!DOCTYPE html>
 <html>
 <head>
-	<meta http-equiv="X-UA-Compatible" content="IE=10">
-	<meta charset="utf-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<title>@ViewData["Title"] - @ViewData["Host"]</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=10">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - @ViewData["Host"]</title>
 
-	<environment include="Development, Production">
-		<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
-		<link rel="stylesheet" href="~/css/site_@ViewData["Host"]_.css" />
-	</environment>
-	@*<environment exclude="Development">
-			<link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css"
-				  asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
-				  asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
-			<link rel="stylesheet" href='~/css/site_@ViewData["Host"]_.min.css' />
-		</environment>*@
-	<link rel="icon" href="~/favicon_@ViewData["Host"]_.ico" type="image/x-icon" sizes="16x16">
+    <environment include="Development, Production">
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="~/css/site_@ViewData["Host"]_.css" />
+    </environment>
+    @*<environment exclude="Development">
+            <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css"
+                  asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
+                  asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
+            <link rel="stylesheet" href='~/css/site_@ViewData["Host"]_.min.css' />
+        </environment>*@
+    <link rel="icon" href="~/favicon_@ViewData["Host"]_.ico" type="image/x-icon" sizes="16x16">
 
-	<style>
-		html,
-		body {
-			height: 100%;
-			width: 100%;
-			margin: 0px;
-			padding: 0px
-		}
-	</style>
+    <style>
+        html,
+        body {
+            height: 100%;
+            width: 100%;
+            margin: 0px;
+            padding: 0px
+        }
+    </style>
 </head>
 <body style="padding:0px;">
-	<div id="mapContainer" style="height:100%">
-		<script>
+    <div id="mapContainer" style="height:100%">
+        <script>
 		var strDate = new String('@Model.LastTrackingInfo.CreationDate.ToString("MM/dd/yyyy hh:mm:ss tt") UTC');
 		var localTime = new Date(strDate);
 		var localTimeStr = localTime.toLocaleString();
@@ -55,44 +58,44 @@
 			 	<text>
 					strDate = new String('@p.CreationDate.ToString("MM/dd/yyyy hh:mm:ss tt") UTC');
 					localTime = new Date(strDate);
-					coordinates.push({ lat: @p.Latitude, lng: @p.Longitude, time: localTime.toLocaleString() });
+					coordinates.push({ lat: @p.Latitude.ToString(new System.Globalization.CultureInfo("en", false)), lng: @p.Longitude.ToString(new System.Globalization.CultureInfo("en", false)), time: localTime.toLocaleString() });
 				</text>
 			 }
-		</script>
-		<div id="card-map" class="card-text card-map" data-geo-lat="@Model.LastTrackingInfo.Latitude" , data-geo-lng="@Model.LastTrackingInfo.Longitude"></div>
-		<div id="pano"></div>
-	</div>
-	<environment include="Development">
-		<script src="~/lib/jquery/dist/jquery.js"></script>
-		<script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
-		<script src="~/lib/twitter-bootstrap-wizard/jquery.bootstrap.wizard.js"></script>
-		<script src="//cdn.ckeditor.com/4.10.0/standard/ckeditor.js"></script>
-		<script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js">
-		</script>
-		<script src="https://maps.googleapis.com/maps/api/js?key=@Configuration.GetSection("GoogleMapKey")["Dev"]"></script>
-		<script src="~/js/site.js" asp-append-version="true"></script>
-		<script src="~/js/sitepettrack.js" asp-append-version="true"></script>
-	</environment>
+        </script>
+        <div id="card-map" class="card-text card-map" data-geo-lat="@Model.LastTrackingInfo.Latitude.ToString(new System.Globalization.CultureInfo("en", false))" , data-geo-lng="@Model.LastTrackingInfo.Longitude.ToString(new System.Globalization.CultureInfo("en", false))"></div>
+        <div id="pano"></div>
+    </div>
+    <environment include="Development">
+        <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+        <script src="~/lib/twitter-bootstrap-wizard/jquery.bootstrap.wizard.js"></script>
+        <script src="//cdn.ckeditor.com/4.10.0/standard/ckeditor.js"></script>
+        <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js">
+        </script>
+        <script src="https://maps.googleapis.com/maps/api/js?key=@Configuration.GetSection("GoogleMapKey")["Dev"]&language=@Localizer["mapLanguage"]"></script>
+        <script src="~/js/site.js" asp-append-version="true"></script>
+        <script src="~/js/sitepettrack.js" asp-append-version="true"></script>
+    </environment>
     <environment exclude="Development">
         @*<script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.3.1.min.js"
-                asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
-                asp-fallback-test="window.jQuery"
-                crossorigin="anonymous"
-                integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT">
-        </script>
-        <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/bootstrap.min.js"
-                asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
-                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
-                crossorigin="anonymous"
-                integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa">
-        </script>*@
+                    asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
+                    asp-fallback-test="window.jQuery"
+                    crossorigin="anonymous"
+                    integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT">
+            </script>
+            <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/bootstrap.min.js"
+                    asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
+                    asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
+                    crossorigin="anonymous"
+                    integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa">
+            </script>*@
         <script src="~/lib/jquery/dist/jquery.min.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
         <script src="~/lib/twitter-bootstrap-wizard/jquery.bootstrap.wizard.min.js"></script>
         <script src="//cdn.ckeditor.com/4.10.0/standard/ckeditor.js"></script>
         <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js">
         </script>
-        <script src="https://maps.googleapis.com/maps/api/js?key=@Configuration.GetSection("GoogleMapKey")["Prod"]"></script>
+        <script src="https://maps.googleapis.com/maps/api/js?key=@Configuration.GetSection("GoogleMapKey")["Prod"]&language=@Localizer["mapLanguage"]"></script>
         <script src="~/lib/jquery/dist/jquery.easypiechart.min.js"></script>
         <script src="~/js/site.min.js" asp-append-version="true"></script>
     </environment>
