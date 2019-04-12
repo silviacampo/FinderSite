@@ -9,10 +9,11 @@
 <html>
 <head>
 </head>
-<body>
+<body onload="document.forms['login'].submit()">
 	<form method="post" name="login">
 		<input type="hidden" asp-for="Input.Name" value="@Model.Username" />
-		<input type="hidden" asp-for="Input.Password" />
+		<input type="hidden" asp-for="Input.Language" value="@Model.Language" />
+		<input type="hidden" asp-for="Input.Password" value="As!123456" />
 	</form>
 
 	@section Scripts {

@@ -145,9 +145,9 @@ namespace webGDPR.Controllers
             return View(pet);
         }
 
-        // GET: Pet/Map?username=SilviaCampo&collarnumber=1
-        //http://localhost:51420/Identity/Account/SilentLogin?Username=SilviaCampo&ReturnUrl=%2FPet%2FMap%3Fusername%3DSilviaCampo%26collarnumber%3D1
-        public async Task<IActionResult> Map(string username, int collarnumber, string host = "")
+		// GET: Pet/Map?username=SilviaCampo&collarnumber=1
+		//http://localhost:51420/Identity/Account/SilentLogin?Username=SilviaCampo&Language=en&ReturnUrl=%2FPet%2FMap%3Fusername%3DSilviaCampo%26collarnumber%3D1
+		public async Task<IActionResult> Map(string username, int collarnumber, string host = "")
         {
             var user = await _context.User.FirstOrDefaultAsync(m => m.Name == username);
             if (user != null)

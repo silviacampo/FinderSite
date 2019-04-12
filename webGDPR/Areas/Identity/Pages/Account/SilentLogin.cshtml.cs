@@ -11,6 +11,9 @@ using Microsoft.Extensions.Logging;
 using webGDPR.Data;
 using webGDPR.Controllers;
 using System.Web;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Http;
+using System;
 
 namespace webGDPR.Areas.Identity.Pages.Account
 {
@@ -36,6 +39,7 @@ namespace webGDPR.Areas.Identity.Pages.Account
 
 		public string ReturnUrl { get; set; }
 		public string Username { get; set; }
+		public string Language { get; set; }
 
 		[TempData]
 		public string ErrorMessage { get; set; }
@@ -47,6 +51,8 @@ namespace webGDPR.Areas.Identity.Pages.Account
 			[Display(Name = "Username")]
 			public string Name { get; set; }
 
+			public string Language { get; set; }
+
 			[Required]
 			[DataType(DataType.Password)]
 			public string Password { get; set; }
@@ -55,7 +61,7 @@ namespace webGDPR.Areas.Identity.Pages.Account
 			public bool RememberMe { get; set; }
 		}
 
-		public async Task OnGetAsync(string username = null, string returnUrl = null)
+		public async Task OnGetAsync(string username = null, string language = null, string returnUrl = null)
 		{
 			if (!string.IsNullOrEmpty(ErrorMessage))
 			{
@@ -71,6 +77,7 @@ namespace webGDPR.Areas.Identity.Pages.Account
 
 			ReturnUrl = returnUrl;
 			Username = username;
+			Language = language;
 		}
 
 		public async Task<IActionResult> OnPostAsync(string returnUrl = null)
@@ -85,6 +92,12 @@ namespace webGDPR.Areas.Identity.Pages.Account
 				if (result.Succeeded)
 				{
 					_logger.LogInformation("User logged in.");
+
+					//Response.Cookies.Append(
+				//CookieRequestCultureProvider.DefaultCookieName,
+				//CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(Input.Language)),
+				//new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1), IsEssential = true }
+			//);
 
 					string decodedReturn = HttpUtility.UrlDecode(returnUrl);
 					string[] decodedReturnParts = decodedReturn.Split(new char[] { '/', '?', '&', '=' });
