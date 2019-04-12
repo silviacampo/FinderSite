@@ -78,7 +78,13 @@ namespace webGDPR.Areas.Identity.Pages.Account
 			ReturnUrl = returnUrl;
 			Username = username;
 			Language = language;
-		}
+
+            Response.Cookies.Append(
+            CookieRequestCultureProvider.DefaultCookieName,
+            CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(Language)),
+            new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1), IsEssential = true }
+            );
+        }
 
 		public async Task<IActionResult> OnPostAsync(string returnUrl = null)
 		{
@@ -92,12 +98,6 @@ namespace webGDPR.Areas.Identity.Pages.Account
 				if (result.Succeeded)
 				{
 					_logger.LogInformation("User logged in.");
-
-					Response.Cookies.Append(
-				CookieRequestCultureProvider.DefaultCookieName,
-				CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(Input.Language)),
-				new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1), IsEssential = true }
-			);
 
 					string decodedReturn = HttpUtility.UrlDecode(returnUrl);
 					string[] decodedReturnParts = decodedReturn.Split(new char[] { '/', '?', '&', '=' });

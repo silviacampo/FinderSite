@@ -178,7 +178,7 @@ namespace webGDPR.Controllers
 
 		// GET: Pet/Map2?u=SilviaCampo&g=34a33904-49d5-4edc-be95-00af3e64eecd&cn=2&lg=en
 		[AllowAnonymous]
-		public async Task<IActionResult> Map2(string u, string g, int cn, string lg)
+		public async Task<IActionResult> Map2(string u, string g, int cn, string lg, bool ck = true)
 		{
 			var device = await _context.Device.FirstOrDefaultAsync(d => d.DeviceId == g && !d.Banned);
 			if (device != null) {
@@ -196,10 +196,13 @@ namespace webGDPR.Controllers
 							{
 								return NotFound();
 							}
+                            if (ck) {
+                                Response.Cookies.Append(CookieRequestCultureProvider.DefaultCookieName,
+                                CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(lg)),
+                                new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1), IsEssential = true });
 
-                            Response.Cookies.Append(CookieRequestCultureProvider.DefaultCookieName,
-                            CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(lg)),
-                            new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1), IsEssential = true });
+                                return LocalRedirect($"~/Pet/Map2?u={u}&g={g}&cn={cn}&lg={lg}&ck=false");
+                            }                            
                             return View("Map",pet);
 						}
 						return NotFound();
