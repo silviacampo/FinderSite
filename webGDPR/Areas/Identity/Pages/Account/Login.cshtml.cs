@@ -41,13 +41,6 @@ namespace webGDPR.Areas.Identity.Pages.Account
 		public class InputModel
 		{
 			//https://github.com/joaofbantunes/AspNetCoreRazorPagesInnerModelLocalizationSample
-			private readonly IStringLocalizer<InputModel> _localizer;
-
-			public InputModel(IStringLocalizer<InputModel> localizer)
-			{
-				_localizer = localizer;
-			}
-
 			[Required(ErrorMessage = "Your Username is required")]
 			[DataType(DataType.Text)]
 			[Display(Name = "Username")]
@@ -55,7 +48,8 @@ namespace webGDPR.Areas.Identity.Pages.Account
 
 			[Required(ErrorMessage = "Your Password is required")]
 			[DataType(DataType.Password)]
-            public string Password { get; set; }
+			[Display(Name = "Password")]
+			public string Password { get; set; }
 
             [Display(Name = "Remember me?")]
             public bool RememberMe { get; set; }
