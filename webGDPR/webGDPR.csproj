@@ -6,6 +6,37 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\lib\fontawesome-free-5.8.0-web\js1\**" />
+    <Compile Remove="wwwroot\lib\fontawesome-free-5.8.0-web\js\**" />
+    <Compile Remove="wwwroot\lib\fontawesome-free-5.8.0-web\metadata\**" />
+    <Compile Remove="wwwroot\lib\fontawesome-free-5.8.0-web\sprites1\**" />
+    <Compile Remove="wwwroot\lib\fontawesome-free-5.8.0-web\sprites\**" />
+    <Compile Remove="wwwroot\lib\fontawesome-free-5.8.0-web\svgs1\**" />
+    <Compile Remove="wwwroot\lib\fontawesome-free-5.8.0-web\svgs\**" />
+    <Content Remove="wwwroot\lib\fontawesome-free-5.8.0-web\js1\**" />
+    <Content Remove="wwwroot\lib\fontawesome-free-5.8.0-web\js\**" />
+    <Content Remove="wwwroot\lib\fontawesome-free-5.8.0-web\metadata\**" />
+    <Content Remove="wwwroot\lib\fontawesome-free-5.8.0-web\sprites1\**" />
+    <Content Remove="wwwroot\lib\fontawesome-free-5.8.0-web\sprites\**" />
+    <Content Remove="wwwroot\lib\fontawesome-free-5.8.0-web\svgs1\**" />
+    <Content Remove="wwwroot\lib\fontawesome-free-5.8.0-web\svgs\**" />
+    <EmbeddedResource Remove="wwwroot\lib\fontawesome-free-5.8.0-web\js1\**" />
+    <EmbeddedResource Remove="wwwroot\lib\fontawesome-free-5.8.0-web\js\**" />
+    <EmbeddedResource Remove="wwwroot\lib\fontawesome-free-5.8.0-web\metadata\**" />
+    <EmbeddedResource Remove="wwwroot\lib\fontawesome-free-5.8.0-web\sprites1\**" />
+    <EmbeddedResource Remove="wwwroot\lib\fontawesome-free-5.8.0-web\sprites\**" />
+    <EmbeddedResource Remove="wwwroot\lib\fontawesome-free-5.8.0-web\svgs1\**" />
+    <EmbeddedResource Remove="wwwroot\lib\fontawesome-free-5.8.0-web\svgs\**" />
+    <None Remove="wwwroot\lib\fontawesome-free-5.8.0-web\js1\**" />
+    <None Remove="wwwroot\lib\fontawesome-free-5.8.0-web\js\**" />
+    <None Remove="wwwroot\lib\fontawesome-free-5.8.0-web\metadata\**" />
+    <None Remove="wwwroot\lib\fontawesome-free-5.8.0-web\sprites1\**" />
+    <None Remove="wwwroot\lib\fontawesome-free-5.8.0-web\sprites\**" />
+    <None Remove="wwwroot\lib\fontawesome-free-5.8.0-web\svgs1\**" />
+    <None Remove="wwwroot\lib\fontawesome-free-5.8.0-web\svgs\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Remove="Data\Migrations\20180727152822_postuser.cs" />
     <Compile Remove="Data\Migrations\20180727152822_postuser.Designer.cs" />
     <Compile Remove="Data\Migrations\20180727153010_postuser1.cs" />
