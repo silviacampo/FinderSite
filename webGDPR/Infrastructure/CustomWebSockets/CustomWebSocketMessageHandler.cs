@@ -236,13 +236,83 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 					if (message.Type == WSMessageType.Packet)
 					{
 						Messages.Packet p = JsonConvert.DeserializeObject<Messages.Packet>(message.Text);
-						var packetContent = Packet.Packet.DeserializeAndValidate(p.Data);
+						Packet.Packet packetContent = Packet.Packet.DeserializeAndValidate(p.Data);
 						List<Tuple<string, string>> values = packetContent.GetValues();
 						string @base = p.HWId;
 						byte collar = packetContent.GetCollar();
 						Packet.PacketType command = packetContent.Header.Command;
 						LogDeviceActivity(dbContext, userWebSocket.DeviceId, "Message from device", $"BaseHWId: {@base}, CollarNumber: {collar}, Command: {command.ToString()}, Content: {packetContent.ToString()}");
 						log.Info(userWebSocket.DeviceId + " - " + $"BaseHWId: {@base}, CollarNumber: {collar}, Command: {command.ToString()}, Content: {packetContent.ToString()}");
+
+						//switch (command) {
+						//	case Packet.PacketType.BaseStatus:
+						//		Base ba2 = dbContext.Base.FirstOrDefault(f => f.HWId == p.HWId && f.UserId == UserId); //f.BaseNumber == bs.BaseNumber &&
+						//		byte chargingStatus = byte.Parse(values.First(v => v.Item1 == "ChargingStatus").Item2); //1= charging , 2=no battery
+						//		List<RadioStrength> strengths = collars.SelectMany(c => c.RadioStrengths).Where(s => s.BaseNumber == ba2.BaseNumber).ToList();
+						//		Messages.BaseStatus bs = new Messages.BaseStatus
+						//		{
+						//			BaseId = ba2.BaseId,
+						//			BaseNumber = ba2.BaseNumber,
+						//			IsConnected = true,
+						//			ConnectedToName = "Me",
+						//			//TODO
+						//			IsPlugged = int.Parse(values.First(v => v.Item1 == "UsbVoltage").Item2) != 0,
+						//			IsCharging = chargingStatus % 2 == 1,
+						//			HasBattery = (chargingStatus % 4) / 2 == 1,
+						//		Radio = strengths.Sum(s => s.BaseRadio) / strengths.Count(),  // int.Parse(values.First(v => v.Item1 == "LoraRxPower").Item2);
+						//		Battery = int.Parse(values.First(v => v.Item1 == "BatVoltage").Item2)
+						//};
+
+							
+						//		break;
+						//	case (byte)Packet.PacketType.CollarStatus:
+						//		string collarn = values.First(v => v.Item1 == "CollarNumber").Item2;
+						//		var collarnumber = byte.Parse(collarn);
+						//		var basenumber = bases.FirstOrDefault(a => a.HWId == HWId).BaseNumber;
+						//		var co = collars.Find(c => c.CollarNumber == collarnumber);
+						//		co.IsConnected = true;
+						//		//TODO: which one locks or seconds
+						//		co.IsGPSConnected = byte.Parse(values.First(v => v.Item1 == "GpsLocks").Item2) != 0;
+
+						//		var radioStrength = co.RadioStrengths.FirstOrDefault(r => r.BaseNumber == basenumber);
+						//		if (radioStrength == null)
+						//		{
+						//			co.RadioStrengths.Add(new RadioStrength() { BaseNumber = basenumber, BaseRadio = int.Parse(values.First(v => v.Item1 == "LoraBasePower").Item2), CollarRadio = int.Parse(values.First(v => v.Item1 == "LoraCollarPower").Item2) });
+						//		}
+						//		else
+						//		{
+						//			radioStrength.CollarRadio = int.Parse(values.First(v => v.Item1 == "LoraCollarPower").Item2);
+						//			radioStrength.BaseRadio = int.Parse(values.First(v => v.Item1 == "LoraBasePower").Item2);
+						//		}
+
+						//		co.Radio = co.RadioStrengths.Sum(r => r.BaseRadio) / co.RadioStrengths.Count();
+
+						//		co.Battery = int.Parse(values.First(v => v.Item1 == "BatVoltage").Item2);
+						//		CollarStatus cs = new CollarStatus
+						//		{
+						//			CollarNumber = co.CollarNumber,
+						//			BaseNumber = bases.FirstOrDefault(a => a.HWId == HWId).BaseNumber,
+						//			IsConnected = true,
+						//			ConnectedTo = "Me",
+						//			IsGPSConnected = co.IsGPSConnected,
+						//			Battery = co.Battery,
+						//			Radio = co.Radio
+						//		};
+
+						//		break;
+						//	case (byte)Packet.PacketType.GpsPoint:
+						//		GPSPoint point = new GPSPoint
+						//		{
+						//			CollarNumber = byte.Parse(values.First(v => v.Item1 == "CollarNumber").Item2),
+						//			CreatedDate = UnixTimestampToDateTime(values.First(v => v.Item1 == "Epoch").Item2),
+						//			Latitude = double.Parse(values.First(v => v.Item1 == "Latitude").Item2) / 10000000f,
+						//			Longitude = double.Parse(values.First(v => v.Item1 == "Longitude").Item2) / 10000000f
+						//		};
+
+						//		break;
+						//	default:
+						//		break;
+						//}
 					}
 					else if (message.Type == WSMessageType.BaseStatus)
 					{
