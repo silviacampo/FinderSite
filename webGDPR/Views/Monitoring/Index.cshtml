@@ -28,7 +28,9 @@
 				{
 					<tr>
 						<td>@ws.Username</td>
-						<td>@ws.Guid</td>
+						<td>@ws.Guid
+							<a class="btn btn-danger active" asp-action="SendCloseConnection" asp-route-guid="@ws.Guid">Send Close</a>
+						</td>
 						<td>@ws.DeviceId</td>
 						<td>
 							@{

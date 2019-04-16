@@ -21,6 +21,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Localization;
+using System.Net.WebSockets;
+using System.Threading;
 
 namespace webGDPR.Controllers
 {
@@ -103,6 +105,23 @@ namespace webGDPR.Controllers
 			vm.Users = await PaginatedList<User>.CreateAsync(
 				_context.User.Where(s => s.UserID.Contains(searchString) || s.Name.Contains(searchString)).OrderBy(d => d.Name).AsNoTracking(), pageIndex ?? 1, pageSize);
 			return View(vm);
+		}
+
+		public async Task<IActionResult> SendCloseConnection(Guid guid)
+		{
+			//Todo: interesting from xamarin 
+			//new ClientWebSocket() { Options = { KeepAliveInterval = TimeSpan.FromSeconds(120) }}
+
+			CustomWebSocket userWebSocket = _wsFactory.Client(guid);
+			try
+			{
+				await userWebSocket.WebSocket.CloseAsync(WebSocketCloseStatus.Empty, string.Empty, CancellationToken.None);
+			}
+			catch (Exception e)
+			{
+				log.Error("MonitoringController - SendCloseConnection: " + e.Message);
+			}
+			return RedirectToAction(nameof(Index));
 		}
 
 		public async Task<IActionResult> MissingSubscriptionOn(string id)
