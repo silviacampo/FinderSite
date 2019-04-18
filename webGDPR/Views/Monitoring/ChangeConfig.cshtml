@@ -1,0 +1,103 @@
+﻿@model webGDPR.ViewModels.MonitoringChangeConfigViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
+@{
+	ViewData["Title"] = Localizer["Change Configuration"];
+}
+<div class="row">
+	<div class="col-md-6">
+		<fieldset class="myfieldset">
+			<h4><i class="fa fa-cog fa-fw" aria-hidden="true"></i>&nbsp; @ViewData["Title"]</h4>
+			<hr />
+			<form asp-action="Create" enctype="multipart/form-data">
+				<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+				<div class="form-row">
+					<div class="col-md-12">
+						<label asp-for="DeviceId" class="control-label"></label>
+						<select asp-for="DeviceId" asp-items="Model.DevicesItems" class="form-control"></select>
+						<span asp-validation-for="DeviceId" class="text-danger"></span>
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="col-md-12">
+						<label asp-for="BaseId" class="control-label"></label>
+						<select asp-for="BaseId" asp-items="Model.BasesItems" class="form-control"></select>
+						<span asp-validation-for="BaseId" class="text-danger"></span>
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="col-md-12">
+						<label asp-for="CollarId" class="control-label"></label>
+						<select asp-for="CollarId" asp-items="Model.CollarsItems" class="form-control"></select>
+						<span asp-validation-for="CollarId" class="text-danger"></span>
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="col-md-12">
+						<label asp-for="CollarNumber" class="control-label"></label>
+						<input asp-for="CollarNumber" class="form-control" readonly="readonly" />
+						<span asp-validation-for="CollarNumber" class="text-danger"></span>
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="col-md-12">
+						<label asp-for="GpsPeriod" class="control-label"></label>
+						<input asp-for="GpsPeriod" class="form-control" />
+						<span asp-validation-for="GpsPeriod" class="text-danger"></span>
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="col-md-12">
+						<label asp-for="GpsDuration" class="control-label"></label>
+						<input asp-for="GpsDuration" class="form-control" />
+						<span asp-validation-for="GpsDuration" class="text-danger"></span>
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="col-md-12">
+						<label asp-for="NewBandwidth" class="control-label"></label>
+						<input asp-for="NewBandwidth" class="form-control" />
+						<span asp-validation-for="NewBandwidth" class="text-danger"></span>
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="col-md-12">
+						<label asp-for="NewSpreadFactor" class="control-label"></label>
+						<input asp-for="NewSpreadFactor" class="form-control" />
+						<span asp-validation-for="NewSpreadFactor" class="text-danger"></span>
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="col-md-12">
+						<label asp-for="BaseTimeout" class="control-label"></label>
+						<input asp-for="BaseTimeout" class="form-control" />
+						<span asp-validation-for="BaseTimeout" class="text-danger"></span>
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="col-md-12">
+						<label asp-for="NewFrequency" class="control-label"></label>
+						<input asp-for="NewFrequency" class="form-control" />
+						<span asp-validation-for="NewFrequency" class="text-danger"></span>
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="col-md-12">
+						<div class="checkbox">
+							<label>
+								<input asp-for="NoInternet" /> @Html.DisplayNameFor(model => model.NoInternet)
+							</label>
+						</div>
+					</div>
+				</div>
+				<br />
+				<div class="form-row">
+					<div class="col-md-12">
+						<input type="submit" value="Save" class="btn btn-default" />
+					</div>
+				</div>
+			</form>
+		</fieldset>
+	</div>
+</div>

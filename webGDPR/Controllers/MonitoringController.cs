@@ -286,37 +286,74 @@ namespace webGDPR.Controllers
 			return View(DevicesItems);
 		}
 
-		public IActionResult SendConfig() {
-			var germanGroup = new SelectListGroup { Name = "German Cars" };
-			var swedishGroup = new SelectListGroup { Name = "Swedish Cars" };
-			List<SelectListItem> Vehicles = new List<SelectListItem>
-		{
-			new SelectListItem
+		public IActionResult ChangeConfig() {
+			MonitoringChangeConfigViewModel model = new MonitoringChangeConfigViewModel();
+
+			List<User> Users = _context.User.ToList();
+			model.DevicesItems = new List<SelectListItem>();
+			List<Device> Devices = _context.Device.ToList();
+			foreach (User u in Users)
 			{
-				Value = "audi",
-				Text = "Audi",
-				Group = germanGroup
-			},
-			new SelectListItem
-			{
-				Value = "mercedes",
-				Text = "Mercedes",
-				Group = germanGroup
-			},
-			new SelectListItem
-			{
-				Value = "saab",
-				Text = "Saab",
-				Group = swedishGroup
-			},
-			new SelectListItem
-			{
-				Value = "volvo",
-				Text = "Volvo",
-				Group = swedishGroup
+				var uGroup = new SelectListGroup { Name = u.Name };
+				foreach (Device c in Devices.Where(d => d.UserId == u.UserID).ToList())
+				{
+					model.DevicesItems.Add(new SelectListItem
+					{
+						Value = c.DeviceId,
+						Text = c.GetPlatform + " - " + c.GetName,
+						Group = uGroup
+					});
+				}
 			}
-		};
-			return View(Vehicles);
+			model.BasesItems = new List<SelectListItem>();
+			List<Base> Bases = _context.Base.ToList();
+			foreach (User u in Users)
+			{
+				var uGroup = new SelectListGroup { Name = u.Name };
+				if (Bases.Where(d => d.UserId == u.UserID).Count() > 0)
+				{
+					model.BasesItems.Add(new SelectListItem
+					{
+						Value = "127",
+						Text = "All",
+						Group = uGroup
+					});
+				}
+				foreach (Base c in Bases.Where(d => d.UserId == u.UserID).ToList())
+				{
+					model.BasesItems.Add(new SelectListItem
+					{
+						Value = c.BaseId,
+						Text = c.BaseNumber + " - " + c.Name,
+						Group = uGroup
+					});
+				}
+			}
+			model.CollarsItems = new List<SelectListItem>();
+			List<Collar> Collars = _context.Collar.ToList();
+			foreach (User u in Users)
+			{
+				var uGroup = new SelectListGroup { Name = u.Name };
+				if (Collars.Where(d => d.UserId == u.UserID).Count() > 0) {
+					model.CollarsItems.Add(new SelectListItem
+					{
+						Value = "127",
+						Text = "All",
+						Group = uGroup
+					});
+				}
+				foreach (Collar c in Collars.Where(d => d.UserId == u.UserID).ToList())
+				{
+					model.CollarsItems.Add(new SelectListItem
+					{
+						Value = c.CollarId,
+						Text = c.CollarNumber + " - " + c.Name,
+						Group = uGroup
+					});
+				}
+			}
+
+			return View(model);
 		}
 
 		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
