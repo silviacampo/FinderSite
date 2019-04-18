@@ -267,19 +267,57 @@ namespace webGDPR.Controllers
 
 		public IActionResult WebSocketClient()
 		{
-			List<Device> Devices = _context.Device.ToList();
+			List<User> Users = _context.User.ToList();
 			List<SelectListItem> DevicesItems = new List<SelectListItem>();
-			foreach (Device c in Devices)
+			List<Device> Devices = _context.Device.ToList();
+			foreach (User u in Users)
 			{
-				DevicesItems.Add(new SelectListItem
+				var uGroup = new SelectListGroup { Name = u.Name };
+				foreach (Device c in Devices.Where(d=>d.UserId == u.UserID).ToList())
 				{
-					Value = c.DeviceId,
-					Text = c.GetPlatform + " - " + c.GetName
-				});
+					DevicesItems.Add(new SelectListItem
+					{
+						Value = c.DeviceId,
+						Text = c.GetPlatform + " - " + c.GetName,
+						Group = uGroup
+					});
+				}
 			}
 			return View(DevicesItems);
 		}
 
+		public IActionResult SendConfig() {
+			var germanGroup = new SelectListGroup { Name = "German Cars" };
+			var swedishGroup = new SelectListGroup { Name = "Swedish Cars" };
+			List<SelectListItem> Vehicles = new List<SelectListItem>
+		{
+			new SelectListItem
+			{
+				Value = "audi",
+				Text = "Audi",
+				Group = germanGroup
+			},
+			new SelectListItem
+			{
+				Value = "mercedes",
+				Text = "Mercedes",
+				Group = germanGroup
+			},
+			new SelectListItem
+			{
+				Value = "saab",
+				Text = "Saab",
+				Group = swedishGroup
+			},
+			new SelectListItem
+			{
+				Value = "volvo",
+				Text = "Volvo",
+				Group = swedishGroup
+			}
+		};
+			return View(Vehicles);
+		}
 
 		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
