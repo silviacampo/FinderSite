@@ -267,7 +267,17 @@ namespace webGDPR.Controllers
 
 		public IActionResult WebSocketClient()
 		{
-			return View();
+			List<Device> Devices = _context.Device.ToList();
+			List<SelectListItem> DevicesItems = new List<SelectListItem>();
+			foreach (Device c in Devices)
+			{
+				DevicesItems.Add(new SelectListItem
+				{
+					Value = c.DeviceId,
+					Text = c.GetPlatform + " - " + c.GetName
+				});
+			}
+			return View(DevicesItems);
 		}
 
 

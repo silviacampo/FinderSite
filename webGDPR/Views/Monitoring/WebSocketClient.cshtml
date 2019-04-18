@@ -1,4 +1,4 @@
-﻿
+﻿@model List<SelectListItem>
 @{
 	ViewData["Title"] = "WS Client";
 }
@@ -9,8 +9,13 @@
 
 <p id="stateLabel">Ready to connect...</p>
 <div>
+	Connect as: <select id="deviceSelect" asp-items="Model" onchange="deviceChange(event)" ></select>
+</div>
+<div>
 	<label for="connectionUrl">WebSocket Server URL:</label>
-	<input id="connectionUrl" />
+	<input id="connectionUrl" size="90" />
+</div>
+<div>
 	<button id="connectButton" type="submit">Connect</button>
 </div>
 <p></p>
@@ -43,16 +48,16 @@
 </table>
 
 <script>
-        var connectionForm = document.getElementById("connectionForm");
-        var connectionUrl = document.getElementById("connectionUrl");
-        var connectButton = document.getElementById("connectButton");
-        var stateLabel = document.getElementById("stateLabel");
-        var sendMessage = document.getElementById("sendMessage");
-        var sendButton = document.getElementById("sendButton");
-        var sendForm = document.getElementById("sendForm");
-        var commsLog = document.getElementById("commsLog");
-		var closeButton = document.getElementById("closeButton");
-		var loginMessageButton = document.getElementById("loginMessageButton");
+	var connectionForm = document.getElementById("connectionForm");
+	var connectionUrl = document.getElementById("connectionUrl");
+	var connectButton = document.getElementById("connectButton");
+	var stateLabel = document.getElementById("stateLabel");
+	var sendMessage = document.getElementById("sendMessage");
+	var sendButton = document.getElementById("sendButton");
+	var sendForm = document.getElementById("sendForm");
+	var commsLog = document.getElementById("commsLog");
+	var closeButton = document.getElementById("closeButton");
+	var loginMessageButton = document.getElementById("loginMessageButton");
 	var deviceInfoMessageButton = document.getElementById("deviceInfoMessageButton");
 	var discoveredBasesMessageButton = document.getElementById("discoveredBasesMessageButton");
 	var baseStatusMessageButton = document.getElementById("baseStatusMessageButton");
@@ -60,52 +65,59 @@
 	var trackinginfoMessageButton = document.getElementById("trackinginfoMessageButton");
 	var packageMessageButton = document.getElementById("packageMessageButton");
 
-        var socket;
-        var scheme = document.location.protocol == "https:" ? "wss" : "ws";
-        var port = document.location.port ? (":" + document.location.port) : "";
-		connectionUrl.value = scheme + "://" + document.location.hostname + port + "/ws?u=SilviaCampo&g=68b73ced-1659-483c-929e-274a97706405" ;
-        function updateState() {
-            function disable() {
-                sendMessage.disabled = true;
-                sendButton.disabled = true;
-                closeButton.disabled = true;
-            }
-            function enable() {
-                sendMessage.disabled = false;
-                sendButton.disabled = false;
-                closeButton.disabled = false;
-            }
-            connectionUrl.disabled = true;
-            connectButton.disabled = true;
-            if (!socket) {
-                disable();
-            } else {
-                switch (socket.readyState) {
-                    case WebSocket.CLOSED:
-                        stateLabel.innerHTML = "Closed";
-                        disable();
-                        connectionUrl.disabled = false;
-                        connectButton.disabled = false;
-                        break;
-                    case WebSocket.CLOSING:
-                        stateLabel.innerHTML = "Closing...";
-                        disable();
-                        break;
-                    case WebSocket.CONNECTING:
-                        stateLabel.innerHTML = "Connecting...";
-                        disable();
-                        break;
-                    case WebSocket.OPEN:
-                        stateLabel.innerHTML = "Open";
-                        enable();
-                        break;
-                    default:
-                        stateLabel.innerHTML = "Unknown WebSocket State: " + htmlEscape(socket.readyState);
-                        disable();
-                        break;
-                }
-            }
+	var socket;
+	var device = "";
+	var scheme = document.location.protocol == "https:" ? "wss" : "ws";
+	var port = document.location.port ? (":" + document.location.port) : "";
+	connectionUrl.value = scheme + "://" + document.location.hostname + port + "/ws?u=SilviaCampo&g=" + device;
+	function updateState() {
+		function disable() {
+			sendMessage.disabled = true;
+			sendButton.disabled = true;
+			closeButton.disabled = true;
+		}
+		function enable() {
+			sendMessage.disabled = false;
+			sendButton.disabled = false;
+			closeButton.disabled = false;
+		}
+		connectionUrl.disabled = true;
+		connectButton.disabled = true;
+		if (!socket) {
+			disable();
+		} else {
+			switch (socket.readyState) {
+				case WebSocket.CLOSED:
+					stateLabel.innerHTML = "Closed";
+					disable();
+					connectionUrl.disabled = false;
+					connectButton.disabled = false;
+					break;
+				case WebSocket.CLOSING:
+					stateLabel.innerHTML = "Closing...";
+					disable();
+					break;
+				case WebSocket.CONNECTING:
+					stateLabel.innerHTML = "Connecting...";
+					disable();
+					break;
+				case WebSocket.OPEN:
+					stateLabel.innerHTML = "Open";
+					enable();
+					break;
+				default:
+					stateLabel.innerHTML = "Unknown WebSocket State: " + htmlEscape(socket.readyState);
+					disable();
+					break;
+			}
+		}
 	}
+
+	function deviceChange(e) {
+		device = e.target.value
+		connectionUrl.value = scheme + "://" + document.location.hostname + port + "/ws?u=SilviaCampo&g=" + device;
+	}
+
 	loginMessageButton.onclick = function () {
 		sendMessage.value = '{"m":"As!123456","d":1541440447,"u":"SilviaCampo","t":20}';
 	}
@@ -127,54 +139,54 @@
 	packageMessageButton.onclick = function () {
 		sendMessage.value = '{"m":"{\\"d\\":\\"VRACAAAAAAAAAABA4gEAAgAAAIM=\\",\\"hw\\":\\"102\\"}","d":1545485964,"u":"SilviaCampo","t":17}';
 	}
-        closeButton.onclick = function () {
-            if (!socket || socket.readyState != WebSocket.OPEN) {
-                alert("socket not connected");
-            }
-            socket.close(1000, "Closing from client");
-        }
-        sendButton.onclick = function () {
-            if (!socket || socket.readyState != WebSocket.OPEN) {
-                alert("socket not connected");
-            }
-			var data = sendMessage.value;
-			socket.send(data);
-            commsLog.innerHTML += '<tr>' +
-                '<td class="commslog-client">Client</td>' +
-                '<td class="commslog-server">Server</td>' +
-                '<td class="commslog-data">' + htmlEscape(data) + '</td></tr>';
-        }
-        connectButton.onclick = function() {
-            stateLabel.innerHTML = "Connecting";
-            socket = new WebSocket(connectionUrl.value);
-            socket.onopen = function (event) {
-                updateState();
-                commsLog.innerHTML += '<tr>' +
-                    '<td colspan="3" class="commslog-data">Connection opened</td>' +
-                '</tr>';
-            };
-            socket.onclose = function (event) {
-                updateState();
-                commsLog.innerHTML += '<tr>' +
-                    '<td colspan="3" class="commslog-data">Connection closed. Code: ' + htmlEscape(event.code) + '. Reason: ' + htmlEscape(event.reason) + '</td>' +
-                '</tr>';
-            };
-            socket.onerror = updateState;
-			socket.onmessage = function (event) {
-                commsLog.innerHTML += '<tr>' +
-                    '<td class="commslog-server">Server</td>' +
-                    '<td class="commslog-client">Client</td>' +
-                    '<td class="commslog-data">' + htmlEscape(event.data) + '</td></tr>';
-            };
-        };
-        function htmlEscape(str) {
-            return str
-                .replace(/&/g, '&amp;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#39;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;');
-        }
+	closeButton.onclick = function () {
+		if (!socket || socket.readyState != WebSocket.OPEN) {
+			alert("socket not connected");
+		}
+		socket.close(1000, "Closing from client");
+	}
+	sendButton.onclick = function () {
+		if (!socket || socket.readyState != WebSocket.OPEN) {
+			alert("socket not connected");
+		}
+		var data = sendMessage.value;
+		socket.send(data);
+		commsLog.innerHTML += '<tr>' +
+			'<td class="commslog-client">Client</td>' +
+			'<td class="commslog-server">Server</td>' +
+			'<td class="commslog-data">' + htmlEscape(data) + '</td></tr>';
+	}
+	connectButton.onclick = function () {
+		stateLabel.innerHTML = "Connecting";
+		socket = new WebSocket(connectionUrl.value);
+		socket.onopen = function (event) {
+			updateState();
+			commsLog.innerHTML += '<tr>' +
+				'<td colspan="3" class="commslog-data">Connection opened</td>' +
+				'</tr>';
+		};
+		socket.onclose = function (event) {
+			updateState();
+			commsLog.innerHTML += '<tr>' +
+				'<td colspan="3" class="commslog-data">Connection closed. Code: ' + htmlEscape(event.code) + '. Reason: ' + htmlEscape(event.reason) + '</td>' +
+				'</tr>';
+		};
+		socket.onerror = updateState;
+		socket.onmessage = function (event) {
+			commsLog.innerHTML += '<tr>' +
+				'<td class="commslog-server">Server</td>' +
+				'<td class="commslog-client">Client</td>' +
+				'<td class="commslog-data">' + htmlEscape(event.data) + '</td></tr>';
+		};
+	};
+	function htmlEscape(str) {
+		return str
+			.replace(/&/g, '&amp;')
+			.replace(/"/g, '&quot;')
+			.replace(/'/g, '&#39;')
+			.replace(/</g, '&lt;')
+			.replace(/>/g, '&gt;');
+	}
 </script>
 
 
