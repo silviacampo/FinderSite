@@ -203,7 +203,16 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 								await SendDeviceBannedMessage(userWebSocket, true);
 								wsFactory.Remove(userWebSocket.Guid);
 								LogDeviceActivity(dbContext, userWebSocket.DeviceId, "WebSocket Remove - Device Banned", JsonConvert.SerializeObject(userWebSocket));
-								await userWebSocket.WebSocket.CloseAsync(WebSocketCloseStatus.Empty, string.Empty, CancellationToken.None);
+								try
+								{
+									await userWebSocket.WebSocket.CloseAsync(WebSocketCloseStatus.Empty, string.Empty, CancellationToken.None);
+								}
+								catch (Exception e)
+								{
+									log.Error("CustomWebSocketManager - CloseAll: " + e.Message);
+								}
+
+								
 							}
 							else
 							{

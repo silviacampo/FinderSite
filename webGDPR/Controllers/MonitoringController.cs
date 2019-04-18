@@ -109,9 +109,6 @@ namespace webGDPR.Controllers
 
 		public async Task<IActionResult> SendCloseConnection(Guid guid)
 		{
-			//Todo: interesting from xamarin 
-			//new ClientWebSocket() { Options = { KeepAliveInterval = TimeSpan.FromSeconds(120) }}
-
 			CustomWebSocket userWebSocket = _wsFactory.Client(guid);
 			try
 			{

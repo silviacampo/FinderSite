@@ -103,13 +103,29 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 					buffer = new byte[1024 * 4];
 					result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
 				}
-				await webSocket.CloseAsync(result.CloseStatus.Value, result.CloseStatusDescription, CancellationToken.None);
+				try
+				{
+					await webSocket.CloseAsync(result.CloseStatus.Value, result.CloseStatusDescription, CancellationToken.None);
+				}
+				catch (Exception e)
+				{
+					_logger.LogError("CustomWebSocketManager - Listen: " + e.Message);
+				}
+
+				
 				wsmHandler.LogDeviceActivity(dbContext, userWebSocket.DeviceId, "WebSocket Remove", JsonConvert.SerializeObject(userWebSocket));
 				wsFactory.Remove(userWebSocket.Guid);
 			}
 			catch (WebSocketException e)
 			{
-				//await webSocket.CloseAsync(WebSocketCloseStatus.Empty, null, CancellationToken.None);
+				try
+				{
+					await webSocket.CloseAsync(WebSocketCloseStatus.Empty, null, CancellationToken.None);
+				}
+				catch (Exception ex)
+				{
+					_logger.LogError("CustomWebSocketManager - Listen: " + ex.Message);
+				}
 				wsmHandler.LogDeviceActivity(dbContext, userWebSocket.DeviceId, "WebSocket Remove", JsonConvert.SerializeObject(userWebSocket));
 				wsFactory.Remove(userWebSocket.Guid);
 			}
@@ -124,13 +140,21 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 				{
 					try
 					{
-						if (userWebSocket.WebSocket.State == WebSocketState.Open)
-						userWebSocket.WebSocket.CloseAsync(WebSocketCloseStatus.Empty, string.Empty, CancellationToken.None);
+						if (userWebSocket.WebSocket.State == WebSocketState.Open) {
+							try
+							{
+								userWebSocket.WebSocket.CloseAsync(WebSocketCloseStatus.Empty, string.Empty, CancellationToken.None);
+							}
+							catch (Exception e)
+							{
+								_logger.LogError("CustomWebSocketManager - CloseAll: " + e.Message);
+							}
+						}						
 						_wsmHandler.LogDeviceActivity(_dbContext, userWebSocket.DeviceId, "WebSocket Remove - Server shutdown", JsonConvert.SerializeObject(userWebSocket));
 					}
 					catch (Exception ex)
 					{
-						_logger.LogError(ex.Message);
+						_logger.LogError("CustomWebSocketManager - CloseAll: " + ex.Message);
 					}
 				}
 				);
