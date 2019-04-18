@@ -34,7 +34,7 @@ namespace webGDPR.Infrastructure.Packet
 			return bytes;
 		}
 
-		public static CustomWebSockets.Messages.ConfigMode BuildMode(byte collarNumber, ConfigModeTypes type) {
+		public static CustomWebSockets.Messages.ConfigMode BuildMode(byte collarNumber, ConfigModeTypes type, byte[] customConfig = null) {
 			byte[] config;
 			switch (type) {
 				case ConfigModeTypes.Emergency:
@@ -57,7 +57,10 @@ namespace webGDPR.Infrastructure.Packet
 					break;				
 				case ConfigModeTypes.Mature:
 					config = BuildVeryLazyMode(collarNumber);
-					break;				
+					break;
+				case ConfigModeTypes.Custom:
+					config = BuildCustomMode(collarNumber, customConfig);
+					break;
 				default:
 					config = new byte[0];
 					break;
@@ -68,6 +71,11 @@ namespace webGDPR.Infrastructure.Packet
 				Config = config,
 				CollarNumber = collarNumber
 			};
+		}
+
+		private static byte[] BuildCustomMode(byte collarNumber, byte[] config)
+		{
+			return BuildModePacket(collarNumber, config[0], config[1], config[2], config[3], config[4], config[5], config[6]);
 		}
 
 		private static byte[] BuildVeryLazyMode(byte collarNumber)

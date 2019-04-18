@@ -803,9 +803,9 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 			await userWebSocket.WebSocket.SendAsync(new ArraySegment<byte>(bytes, 0, bytes.Length), WebSocketMessageType.Text, true, CancellationToken.None);
 		}
 
-		public async Task SendSwitchModeAsync(byte collarNumber, ConfigModeTypes mode, string username, ICustomWebSocketFactory wsFactory)
+		public async Task SendSwitchModeAsync(byte collarNumber, ConfigModeTypes mode, string username, ICustomWebSocketFactory wsFactory, byte[] customConfig = null)
 		{
-			Messages.ConfigMode cm = Packet.PacketHelper.BuildMode(collarNumber, mode);
+			Messages.ConfigMode cm = Packet.PacketHelper.BuildMode(collarNumber, mode, customConfig);
 			string serialisedText = JsonConvert.SerializeObject(cm);
 			var msg = new CustomWebSocketMessage
 			{

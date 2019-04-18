@@ -356,6 +356,29 @@ namespace webGDPR.Controllers
 			return View(model);
 		}
 
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> ChangeConfig(MonitoringChangeConfigViewModel model)
+		{
+			if (ModelState.IsValid)
+			{
+				byte[] customConfig = new byte[7];
+				customConfig[0] = (byte)model.GpsPeriod;
+				customConfig[1] = (byte)model.GpsDuration;
+				customConfig[2] = (byte)model.NewBandwidth;
+				customConfig[3] = (byte)model.NewSpreadFactor;
+				customConfig[4] = (byte)model.BaseTimeout;
+				customConfig[5] = 0; // (byte)model.reserved1;
+				customConfig[6] = 0; // (byte)model.reserver2
+
+				string username = string.Empty;
+
+				await _webSocketMessageHandler.SendSwitchModeAsync((byte)model.CollarNumber, ConfigModeTypes.Custom, username, _wsFactory, customConfig);
+			}
+
+			return RedirectToAction(nameof(ChangeConfig));
+		}
+
 		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

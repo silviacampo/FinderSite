@@ -30,6 +30,7 @@ namespace webGDPR.Models
 		Active = 3,
 		Regular = 4,
 		Lazy = 5,
-		Mature = 6
+		Mature = 6,
+		Custom = 7
 	}
 }
