@@ -33,6 +33,30 @@ namespace webGDPR.Infrastructure.Packet
 		public const byte SwitchModeNormalBandwidth = 5;
 		public const byte SwitchModeNormalSpreadFactor = 10;
 		public const byte SwitchModeNormalBaseTimeout = 10;
+
+		public const byte SwitchModeVeryLazyGpsPeriod = 10;
+		public const byte SwitchModeVeryLazyGpsDuration = 30;
+		public const byte SwitchModeVeryLazyBandwidth = 5;
+		public const byte SwitchModeVeryLazySpreadFactor = 10;
+		public const byte SwitchModeVeryLazyBaseTimeout = 10;
+
+		public const byte SwitchModeVeryActiveGpsPeriod = 10;
+		public const byte SwitchModeVeryActiveGpsDuration = 30;
+		public const byte SwitchModeVeryActiveBandwidth = 5;
+		public const byte SwitchModeVeryActiveSpreadFactor = 10;
+		public const byte SwitchModeVeryActiveBaseTimeout = 10;
+
+		public const byte SwitchModeLazyGpsPeriod = 10;
+		public const byte SwitchModeLazyGpsDuration = 30;
+		public const byte SwitchModeLazyBandwidth = 5;
+		public const byte SwitchModeLazySpreadFactor = 10;
+		public const byte SwitchModeLazyBaseTimeout = 10;
+
+		public const byte SwitchModeActiveGpsPeriod = 10;
+		public const byte SwitchModeActiveGpsDuration = 30;
+		public const byte SwitchModeActiveBandwidth = 5;
+		public const byte SwitchModeActiveSpreadFactor = 10;
+		public const byte SwitchModeActiveBaseTimeout = 10;
 		#endregion
 	}
 }

@@ -80,22 +80,22 @@ namespace webGDPR.Infrastructure.Packet
 
 		private static byte[] BuildVeryLazyMode(byte collarNumber)
 		{
-			return BuildModePacket(collarNumber, Constants.SwitchModeEmergencyGpsPeriod, Constants.SwitchModeEmergencyGpsDuration, Constants.SwitchModeEmergencyBandwidth, Constants.SwitchModeEmergencySpreadFactor, Constants.SwitchModeEmergencyBaseTimeout, 0, 0);
+			return BuildModePacket(collarNumber, Constants.SwitchModeVeryLazyGpsPeriod, Constants.SwitchModeVeryLazyGpsDuration, Constants.SwitchModeVeryLazyBandwidth, Constants.SwitchModeVeryLazySpreadFactor, Constants.SwitchModeVeryLazyBaseTimeout, 0, 0);
 		}
 
 		private static byte[] BuildVeryActiveMode(byte collarNumber)
 		{
-			return BuildModePacket(collarNumber, Constants.SwitchModeEmergencyGpsPeriod, Constants.SwitchModeEmergencyGpsDuration, Constants.SwitchModeEmergencyBandwidth, Constants.SwitchModeEmergencySpreadFactor, Constants.SwitchModeEmergencyBaseTimeout, 0, 0);
+			return BuildModePacket(collarNumber, Constants.SwitchModeVeryActiveGpsPeriod, Constants.SwitchModeVeryActiveGpsDuration, Constants.SwitchModeVeryActiveBandwidth, Constants.SwitchModeVeryActiveSpreadFactor, Constants.SwitchModeVeryActiveBaseTimeout, 0, 0);
 		}
 
 		private static byte[] BuildLazyMode(byte collarNumber)
 		{
-			return BuildModePacket(collarNumber, Constants.SwitchModeEmergencyGpsPeriod, Constants.SwitchModeEmergencyGpsDuration, Constants.SwitchModeEmergencyBandwidth, Constants.SwitchModeEmergencySpreadFactor, Constants.SwitchModeEmergencyBaseTimeout, 0, 0);
+			return BuildModePacket(collarNumber, Constants.SwitchModeLazyGpsPeriod, Constants.SwitchModeLazyGpsDuration, Constants.SwitchModeLazyBandwidth, Constants.SwitchModeLazySpreadFactor, Constants.SwitchModeLazyBaseTimeout, 0, 0);
 		}
 
 		private static byte[] BuildActiveMode(byte collarNumber)
 		{
-			return BuildModePacket(collarNumber, Constants.SwitchModeEmergencyGpsPeriod, Constants.SwitchModeEmergencyGpsDuration, Constants.SwitchModeEmergencyBandwidth, Constants.SwitchModeEmergencySpreadFactor, Constants.SwitchModeEmergencyBaseTimeout, 0, 0);
+			return BuildModePacket(collarNumber, Constants.SwitchModeActiveGpsPeriod, Constants.SwitchModeActiveGpsDuration, Constants.SwitchModeActiveBandwidth, Constants.SwitchModeActiveSpreadFactor, Constants.SwitchModeActiveBaseTimeout, 0, 0);
 		}
 
 		private static byte[] BuildNormalMode(byte collarNumber)
