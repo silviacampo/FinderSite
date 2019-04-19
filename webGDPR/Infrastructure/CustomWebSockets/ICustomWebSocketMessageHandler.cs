@@ -29,6 +29,6 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 		Task SendMissingSubscriptionMessageAsync(bool value, string username, ICustomWebSocketFactory wsFactory);
 		Task SendDownloadFile(List<string> msgFiles, ICustomWebSocketFactory wsFactory, ApplicationDbContext dbContext);
 		void LogDeviceActivity(ApplicationDbContext dbContext, string DeviceId, string Reason, string Message);
-		Task SendSwitchModeAsync(byte collarNumber, ConfigModeTypes mode, string username, ICustomWebSocketFactory wsFactory, byte[] customconfig);
+		Task SendSwitchModeAsync(byte collarNumber, ConfigModeTypes mode, string username, ICustomWebSocketFactory wsFactory, byte[] customconfig = null,string DeviceId = null, string BaseId= null);
 	}
 }

@@ -401,7 +401,7 @@ namespace webGDPR.Controllers
 
 				string username = _context.User.FirstOrDefault(u=>u.UserID == model.UserId).Name;
 
-				await _webSocketMessageHandler.SendSwitchModeAsync((byte)model.CollarNumber, ConfigModeTypes.Custom, username, _wsFactory, customConfig);
+				await _webSocketMessageHandler.SendSwitchModeAsync((byte)model.CollarNumber, ConfigModeTypes.Custom, username, _wsFactory, customConfig, model.DeviceId, model.BaseId);
 			}
 
 			return RedirectToAction(nameof(ChangeConfig));

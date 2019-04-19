@@ -803,7 +803,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 			await userWebSocket.WebSocket.SendAsync(new ArraySegment<byte>(bytes, 0, bytes.Length), WebSocketMessageType.Text, true, CancellationToken.None);
 		}
 
-		public async Task SendSwitchModeAsync(byte collarNumber, ConfigModeTypes mode, string username, ICustomWebSocketFactory wsFactory, byte[] customConfig = null)
+		public async Task SendSwitchModeAsync(byte collarNumber, ConfigModeTypes mode, string username, ICustomWebSocketFactory wsFactory, byte[] customConfig = null, string DeviceId = null, string BaseId = null)
 		{
 			Messages.ConfigMode cm = Packet.PacketHelper.BuildMode(collarNumber, mode, customConfig);
 			string serialisedText = JsonConvert.SerializeObject(cm);
@@ -818,7 +818,16 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 			string serialisedMessage = JsonConvert.SerializeObject(msg);
 			log.Info(serialisedMessage);
 			byte[] bytes = Encoding.ASCII.GetBytes(serialisedMessage);
-			await BroadcastGroup(bytes, username, wsFactory);
+
+			if (DeviceId != "127")
+			{
+				CustomWebSocket ws = wsFactory.ClientByDeviceId(DeviceId);
+				await ws.WebSocket.SendAsync(new ArraySegment<byte>(bytes, 0, bytes.Length), WebSocketMessageType.Text, true, CancellationToken.None);
+			}
+			else
+			{
+				await BroadcastGroup(bytes, username, wsFactory);
+			}
 		}
 
 		public async Task SendMissingSubscriptionMessageAsync(bool value, string username, ICustomWebSocketFactory wsFactory)

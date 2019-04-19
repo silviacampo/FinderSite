@@ -246,3 +246,16 @@ $("#UserSelect").change(function () {
     });
 });
 
+$("#CollarSelect").change(function () {
+  var dID = $('#CollarSelect option:selected').val();
+  if (dID == 127)
+  {
+    $("#collarNumberInput").val(dID);
+  }
+  else {
+    var dText = $('#CollarSelect option:selected').text();
+    dText = dText.substring(0, dText.indexOf("-")).trim();
+    $("#collarNumberInput").val(parseInt(dText));
+  }
+});
+
