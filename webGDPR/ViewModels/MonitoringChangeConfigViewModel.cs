@@ -8,10 +8,12 @@ namespace webGDPR.ViewModels
 {
 	public class MonitoringChangeConfigViewModel
 	{
+		public List<SelectListItem> UsersItems { get; set; }
 		public List<SelectListItem> DevicesItems { get; set; }
 		public List<SelectListItem> BasesItems { get; set; }
 		public List<SelectListItem> CollarsItems { get; set; }
 
+		public string UserId { get; set; }
 		public string DeviceId { get; set; }
 		public string BaseId { get; set; }
 		public string CollarId { get; set; }

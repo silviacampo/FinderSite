@@ -666,7 +666,7 @@ namespace webGDPR.Controllers
 
                     await _context.SaveChangesAsync();
                     var collar = _context.Collar.Find(pet.LastCollar.CollarId);
-                    await _webSocketMessageHandler.SendSwitchModeAsync(collar.CollarNumber, (activate ? type : pet.DefaultMode), _userManager.GetUserName(User), _wsFactory);
+                    await _webSocketMessageHandler.SendSwitchModeAsync(collar.CollarNumber, (activate ? type : pet.DefaultMode), _userManager.GetUserName(User), _wsFactory, new byte[7]);
                 }
                 catch (Exception e)
                 {

@@ -3,72 +3,72 @@
 var domain = 'https://test.whereisfinder.com';
 // Write your JavaScript code.
 $(document).ready(function () {
-    try {
-        $('#rootwizard').bootstrapWizard({
-            onNext: function (tab, navigation, index) {
-                if (index == 1) {
-                    // Make sure we entered the name
-                    if (!$('#name').val()) {
-                        alert('You must enter your name');
-                        $('#name').focus();
-                        return false;
-                    }
-                }
-
-                // Set the name for the next tab
-                $('#tab3').html('Hello, ' + $('#name').val());
-
-            }, onTabShow: function (tab, navigation, index) {
-                var $total = navigation.find('li').length;
-                var $current = index + 1;
-                var $percent = ($current / $total) * 100;
-                $('#rootwizard .progress-bar').css({ width: $percent + '%' });
-            }
-        });
-    }
-    catch (err) {
-        console.log(err);
-    }
-
-    var sheet = document.createElement('style'),
-        $rangeInput = $('.range input'),
-        prefs = ['webkit-slider-runnable-track', 'moz-range-track', 'ms-track'];
-
-    document.body.appendChild(sheet);
-
-    var getTrackStyle = function (el) {
-        var curVal = el.value,
-            val = 10 + (curVal - 1) * 20,
-            style = '';
-
-        // Set active label
-        $('.range-labels li').removeClass('active selected');
-
-        var curLabel = $('.range-labels').find('li:nth-child(' + curVal + ')');
-
-        curLabel.addClass('active selected');
-        curLabel.prevAll().addClass('selected');
-
-        // Change background gradient
-        for (var i = 0; i < prefs.length; i++) {
-            style += '.range {background: linear-gradient(to right, #37adbf 0%, #37adbf ' + val + '%, #fff ' + val + '%, #fff 100%)}';
-            style += '.range input::-' + prefs[i] + '{background: linear-gradient(to right, #37adbf 0%, #37adbf ' + val + '%, #b2b2b2 ' + val + '%, #b2b2b2 100%)}';
+  try {
+    $('#rootwizard').bootstrapWizard({
+      onNext: function (tab, navigation, index) {
+        if (index == 1) {
+          // Make sure we entered the name
+          if (!$('#name').val()) {
+            alert('You must enter your name');
+            $('#name').focus();
+            return false;
+          }
         }
 
-        return style;
+        // Set the name for the next tab
+        $('#tab3').html('Hello, ' + $('#name').val());
+
+      }, onTabShow: function (tab, navigation, index) {
+        var $total = navigation.find('li').length;
+        var $current = index + 1;
+        var $percent = ($current / $total) * 100;
+        $('#rootwizard .progress-bar').css({ width: $percent + '%' });
+      }
+    });
+  }
+  catch (err) {
+    console.log(err);
+  }
+
+  var sheet = document.createElement('style'),
+    $rangeInput = $('.range input'),
+    prefs = ['webkit-slider-runnable-track', 'moz-range-track', 'ms-track'];
+
+  document.body.appendChild(sheet);
+
+  var getTrackStyle = function (el) {
+    var curVal = el.value,
+      val = 10 + (curVal - 1) * 20,
+      style = '';
+
+    // Set active label
+    $('.range-labels li').removeClass('active selected');
+
+    var curLabel = $('.range-labels').find('li:nth-child(' + curVal + ')');
+
+    curLabel.addClass('active selected');
+    curLabel.prevAll().addClass('selected');
+
+    // Change background gradient
+    for (var i = 0; i < prefs.length; i++) {
+      style += '.range {background: linear-gradient(to right, #37adbf 0%, #37adbf ' + val + '%, #fff ' + val + '%, #fff 100%)}';
+      style += '.range input::-' + prefs[i] + '{background: linear-gradient(to right, #37adbf 0%, #37adbf ' + val + '%, #b2b2b2 ' + val + '%, #b2b2b2 100%)}';
     }
 
-    $rangeInput.on('input', function () {
-        sheet.textContent = getTrackStyle(this);
-    });
+    return style;
+  }
 
-    // Change input value on label click
-    $('.range-labels li').on('click', function () {
-        var index = $(this).index();
+  $rangeInput.on('input', function () {
+    sheet.textContent = getTrackStyle(this);
+  });
 
-        $rangeInput.val(index + 2).trigger('input');
+  // Change input value on label click
+  $('.range-labels li').on('click', function () {
+    var index = $(this).index();
 
-    });
+    $rangeInput.val(index + 2).trigger('input');
+
+  });
 
 
 });
@@ -195,4 +195,54 @@ $(document).ready(function () {
 //});
 
 
+
+$("#UserSelect").change(function () {
+  var dID = $('#UserSelect option:selected').val();
+  $.getJSON("/Monitoring/GetUserSubTypes", { id: dID },
+    function (data) {
+
+      //Device
+      var selectDevice = $("#DeviceSelect");
+      selectDevice.empty();
+      selectDevice.append($('<option />', {
+        value: 0,
+        text: "Select a device"
+      }));
+      $.each(data.devicesItems, function (index, itemData) {
+        selectDevice.append($('<option/>', {
+          value: itemData.value,
+          text: itemData.text
+        }));
+      });
+
+      //Base
+      var selectBase = $("#BaseSelect");
+      selectBase.empty();
+      selectBase.append($('<option />', {
+        value: 0,
+        text: "Select a base"
+      }));
+      $.each(data.basesItems, function (index, itemData) {
+        selectBase.append($('<option/>', {
+          value: itemData.value,
+          text: itemData.text
+        }));
+      });
+
+      //Collar
+      var selectCollar = $("#CollarSelect");
+      selectCollar.empty();
+      selectCollar.append($('<option />', {
+        value: 0,
+        text: "Select a collar"
+      }));
+      $.each(data.collarsItems, function (index, itemData) {
+        selectCollar.append($('<option/>', {
+          value: itemData.value,
+          text: itemData.text
+        }));
+      });
+
+    });
+});
 

@@ -290,70 +290,98 @@ namespace webGDPR.Controllers
 			MonitoringChangeConfigViewModel model = new MonitoringChangeConfigViewModel();
 
 			List<User> Users = _context.User.ToList();
-			model.DevicesItems = new List<SelectListItem>();
-			List<Device> Devices = _context.Device.ToList();
+			model.UsersItems = new List<SelectListItem>();
+			model.UsersItems.Add(new SelectListItem
+			{
+				Value = "",
+				Text = "Select a user",
+			});
 			foreach (User u in Users)
 			{
-				var uGroup = new SelectListGroup { Name = u.Name };
-				foreach (Device c in Devices.Where(d => d.UserId == u.UserID).ToList())
+				model.UsersItems.Add(new SelectListItem
 				{
-					model.DevicesItems.Add(new SelectListItem
-					{
-						Value = c.DeviceId,
-						Text = c.GetPlatform + " - " + c.GetName,
-						Group = uGroup
-					});
-				}
-			}
-			model.BasesItems = new List<SelectListItem>();
-			List<Base> Bases = _context.Base.ToList();
-			foreach (User u in Users)
-			{
-				var uGroup = new SelectListGroup { Name = u.Name };
-				if (Bases.Where(d => d.UserId == u.UserID).Count() > 0)
-				{
-					model.BasesItems.Add(new SelectListItem
-					{
-						Value = "127",
-						Text = "All",
-						Group = uGroup
-					});
-				}
-				foreach (Base c in Bases.Where(d => d.UserId == u.UserID).ToList())
-				{
-					model.BasesItems.Add(new SelectListItem
-					{
-						Value = c.BaseId,
-						Text = c.BaseNumber + " - " + c.Name,
-						Group = uGroup
-					});
-				}
-			}
-			model.CollarsItems = new List<SelectListItem>();
-			List<Collar> Collars = _context.Collar.ToList();
-			foreach (User u in Users)
-			{
-				var uGroup = new SelectListGroup { Name = u.Name };
-				if (Collars.Where(d => d.UserId == u.UserID).Count() > 0) {
-					model.CollarsItems.Add(new SelectListItem
-					{
-						Value = "127",
-						Text = "All",
-						Group = uGroup
-					});
-				}
-				foreach (Collar c in Collars.Where(d => d.UserId == u.UserID).ToList())
-				{
-					model.CollarsItems.Add(new SelectListItem
-					{
-						Value = c.CollarId,
-						Text = c.CollarNumber + " - " + c.Name,
-						Group = uGroup
-					});
-				}
+					Value = u.UserID,
+					Text = u.Name,
+				});
 			}
 
+
+			model.DevicesItems = new List<SelectListItem>();
+
+			model.BasesItems = new List<SelectListItem>();
+
+			model.CollarsItems = new List<SelectListItem>();
+
+
 			return View(model);
+		}
+
+		
+		// GET: Monitoring/GetUserSubTypes
+		[HttpGet]
+		public JsonResult GetUserSubTypes(string id)
+		{
+			MonitoringChangeConfigViewModel model = new MonitoringChangeConfigViewModel();
+			model.DevicesItems = new List<SelectListItem>();
+			List<Device> Devices = _context.Device.Where(d=>d.UserId == id).ToList();
+			if (Devices.Count() > 0)
+			{
+				model.DevicesItems.Add(new SelectListItem
+				{
+					Value = "127",
+					Text = "All",
+
+				});
+			}
+			foreach (Device c in Devices)
+			{
+				model.DevicesItems.Add(new SelectListItem
+				{
+					Value = c.DeviceId,
+					Text = c.GetPlatform + " - " + c.GetName
+				});
+			}
+
+			model.BasesItems = new List<SelectListItem>();
+			List<Base> Bases = _context.Base.Where(d => d.UserId == id).ToList();
+			if (Bases.Count() > 0)
+			{
+				model.BasesItems.Add(new SelectListItem
+				{
+					Value = "127",
+					Text = "All",
+
+				});
+			}
+			foreach (Base c in Bases)
+			{
+				model.BasesItems.Add(new SelectListItem
+				{
+					Value = c.BaseId,
+					Text = c.BaseNumber + " - " + c.Name,
+				});
+			}
+			
+			model.CollarsItems = new List<SelectListItem>();
+			List<Collar> Collars = _context.Collar.Where(d => d.UserId == id).ToList();
+			if (Collars.Count() > 0)
+			{
+				model.CollarsItems.Add(new SelectListItem
+				{
+					Value = "127",
+					Text = "All",
+				});
+			}
+			foreach (Collar c in Collars)
+			{
+				model.CollarsItems.Add(new SelectListItem
+				{
+					Value = c.CollarId,
+					Text = c.CollarNumber + " - " + c.Name,
+				});
+			}
+			
+			return Json(model);
 		}
 
 		[HttpPost]
@@ -371,7 +399,7 @@ namespace webGDPR.Controllers
 				customConfig[5] = 0; // (byte)model.reserved1;
 				customConfig[6] = 0; // (byte)model.reserver2
 
-				string username = string.Empty;
+				string username = _context.User.FirstOrDefault(u=>u.UserID == model.UserId).Name;
 
 				await _webSocketMessageHandler.SendSwitchModeAsync((byte)model.CollarNumber, ConfigModeTypes.Custom, username, _wsFactory, customConfig);
 			}

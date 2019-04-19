@@ -10,26 +10,33 @@
 		<fieldset class="myfieldset">
 			<h4><i class="fa fa-cog fa-fw" aria-hidden="true"></i>&nbsp; @ViewData["Title"]</h4>
 			<hr />
-			<form asp-action="Create" enctype="multipart/form-data">
+			<form asp-action="ChangeConfig" enctype="multipart/form-data">
 				<div asp-validation-summary="ModelOnly" class="text-danger"></div>
 				<div class="form-row">
 					<div class="col-md-12">
+						<label asp-for="UserId" class="control-label"></label>
+						<select id="UserSelect" asp-for="UserId" asp-items="Model.UsersItems" class="form-control" required></select>
+						<span asp-validation-for="UserId" class="text-danger"></span>
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="col-md-12">
 						<label asp-for="DeviceId" class="control-label"></label>
-						<select asp-for="DeviceId" asp-items="Model.DevicesItems" class="form-control"></select>
+						<select id="DeviceSelect" asp-for="DeviceId" asp-items="Model.DevicesItems" class="form-control"></select>
 						<span asp-validation-for="DeviceId" class="text-danger"></span>
 					</div>
 				</div>
 				<div class="form-row">
 					<div class="col-md-12">
 						<label asp-for="BaseId" class="control-label"></label>
-						<select asp-for="BaseId" asp-items="Model.BasesItems" class="form-control"></select>
+						<select id="BaseSelect" asp-for="BaseId" asp-items="Model.BasesItems" class="form-control"></select>
 						<span asp-validation-for="BaseId" class="text-danger"></span>
 					</div>
 				</div>
 				<div class="form-row">
 					<div class="col-md-12">
 						<label asp-for="CollarId" class="control-label"></label>
-						<select asp-for="CollarId" asp-items="Model.CollarsItems" class="form-control"></select>
+						<select id="CollarSelect" asp-for="CollarId" asp-items="Model.CollarsItems" class="form-control"></select>
 						<span asp-validation-for="CollarId" class="text-danger"></span>
 					</div>
 				</div>
@@ -101,3 +108,5 @@
 		</fieldset>
 	</div>
 </div>
+
+
