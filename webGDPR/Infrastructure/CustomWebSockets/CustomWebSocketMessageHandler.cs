@@ -819,15 +819,16 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 			log.Info(serialisedMessage);
 			byte[] bytes = Encoding.ASCII.GetBytes(serialisedMessage);
 
-			if (DeviceId != "127")
+			if (DeviceId == "127")
 			{
-				CustomWebSocket ws = wsFactory.ClientByDeviceId(DeviceId);
-				await ws.WebSocket.SendAsync(new ArraySegment<byte>(bytes, 0, bytes.Length), WebSocketMessageType.Text, true, CancellationToken.None);
+                await BroadcastGroup(bytes, username, wsFactory);                
 			}
 			else
 			{
-				await BroadcastGroup(bytes, username, wsFactory);
-			}
+                CustomWebSocket ws = wsFactory.ClientByDeviceId(DeviceId);
+                if (ws != null)
+                await ws.WebSocket.SendAsync(new ArraySegment<byte>(bytes, 0, bytes.Length), WebSocketMessageType.Text, true, CancellationToken.None);
+            }
 		}
 
 		public async Task SendMissingSubscriptionMessageAsync(bool value, string username, ICustomWebSocketFactory wsFactory)
