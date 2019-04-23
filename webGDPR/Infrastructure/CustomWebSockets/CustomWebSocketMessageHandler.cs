@@ -209,7 +209,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 								}
 								catch (Exception e)
 								{
-									log.Error("CustomWebSocketManager - CloseAll: " + e.Message);
+									log.Error("CustomWebSocketMessageHandler - HandleMessage: Device Banned - " + e.Message);
 								}
 
 								
@@ -229,7 +229,14 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 							LogDeviceActivity(dbContext, userWebSocket.DeviceId, "Attempt Sign in fail", JsonConvert.SerializeObject(validCredentials) + " - " + message.Text);
 							wsFactory.Remove(userWebSocket.Guid);
 							LogDeviceActivity(dbContext, userWebSocket.DeviceId, "WebSocket Remove - Wrong Login Credentials", JsonConvert.SerializeObject(userWebSocket));
-							await userWebSocket.WebSocket.CloseAsync(WebSocketCloseStatus.Empty, string.Empty, CancellationToken.None);
+							try
+							{
+								await userWebSocket.WebSocket.CloseAsync(WebSocketCloseStatus.Empty, string.Empty, CancellationToken.None);
+							}
+							catch (Exception e)
+							{
+								log.Error("CustomWebSocketMessageHandler - HandleMessage: Wrong Login Credentials - " + e.Message);
+							}
 						}
 					}
 					else
@@ -237,7 +244,14 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 						LogDeviceActivity(dbContext, userWebSocket.DeviceId, "Attempt without username/password", JsonConvert.SerializeObject(userWebSocket) + " - " + message.Text);
 						wsFactory.Remove(userWebSocket.Guid);
 						LogDeviceActivity(dbContext, userWebSocket.DeviceId, "WebSocket Remove - Missing Login Credentials", JsonConvert.SerializeObject(userWebSocket));
-						await userWebSocket.WebSocket.CloseAsync(WebSocketCloseStatus.Empty, string.Empty, CancellationToken.None);
+						try
+						{
+							await userWebSocket.WebSocket.CloseAsync(WebSocketCloseStatus.Empty, string.Empty, CancellationToken.None);
+						}
+						catch (Exception e)
+						{
+							log.Error("CustomWebSocketMessageHandler - HandleMessage: Missing Login Credentials - " + e.Message);
+						}
 					}
 				}
 				else if (userWebSocket.CredentialsChecked)
@@ -532,7 +546,14 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 				{
 					wsFactory.Remove(userWebSocket.Guid);
 					LogDeviceActivity(dbContext, userWebSocket.DeviceId, "WebSocket Remove - Missing Login Message", JsonConvert.SerializeObject(userWebSocket));
-					await userWebSocket.WebSocket.CloseAsync(WebSocketCloseStatus.Empty, string.Empty, CancellationToken.None);
+					try
+					{
+						await userWebSocket.WebSocket.CloseAsync(WebSocketCloseStatus.Empty, string.Empty, CancellationToken.None);
+					}
+					catch (Exception e)
+					{
+						log.Error("CustomWebSocketMessageHandler - HandleMessage: Missing Login Message - " + e.Message);
+					}
 				}
 			}
 			catch (Exception e)
