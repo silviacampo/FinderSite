@@ -270,7 +270,14 @@ namespace webGDPR.Controllers
 			List<User> Users = _context.User.ToList();
 			List<SelectListItem> DevicesItems = new List<SelectListItem>();
 			List<Device> Devices = _context.Device.ToList();
-			foreach (User u in Users)
+
+            DevicesItems.Add(new SelectListItem
+            {
+                Value = "",
+                Text = "Select a device",
+            });
+
+            foreach (User u in Users)
 			{
 				var uGroup = new SelectListGroup { Name = u.Name };
 				foreach (Device c in Devices.Where(d=>d.UserId == u.UserID).ToList())
