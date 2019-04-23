@@ -126,13 +126,12 @@
 						foreach (Device d in Model.Devices.Where(b => !b.Deleted))
 						{
 							<tr>
-								<td>
+								<td class="small">
 									<div style="position:relative;top:0px;left:0px; min-width:40px;">
 										@d.GetPlatform @d.GetName
 									</div>
 								</td>
-
-								<td>
+								<td class="small">
 									<a asp-controller="Device" asp-action="ConnectionTimeline" asp-route-id="@d.DeviceId" title="@Localizer["View Connections Timeline"]" target="_blank">
 										@if (WebSockets.Exists(w => w.DeviceId == d.DeviceId))
 										{
@@ -144,7 +143,7 @@
 										}
 									</a>
 								</td>
-								<td>
+								<td class="small">
 									<a asp-controller="Device" asp-action="Edit" asp-route-id="@d.DeviceId" title="@Localizer["Edit"]" target="_blank"><i class="fa fa-edit fa-fw" aria-hidden="true"></i></a>
 									@if (d.Banned)
 									{
@@ -166,16 +165,28 @@
 			</table>
 		</div>
 		<div class="well well-lg" style="position:relative;top:0px;left:0px; min-width:200px;">
-			<table class="table" style="position:relative;top:0px;left:0px; min-width:100px;">
+			<table class="table" style="position:relative;top:0px;left:0px;">
 				<theader>
 					<tr>
 						<th>
 							<i class="fa fa-home fa-fw" aria-hidden="true"></i> &nbsp; @Localizer["Bases"]
 						</th>
-						<th class="small">@Localizer["Network Connected"]</th>
-						<th class="small visible-md visible-lg visible-sm">@Localizer["Plug in"]</th>
-						<th class="small visible-md visible-lg visible-sm">@Localizer["Charging battery"]</th>
-						<th class="small visible-md visible-lg visible-sm">@Localizer["Radio Strength"]</th>
+						<th class="small">
+							<span class="visible-lg visible-md visible-sm">@Localizer["Network Connected"]</span>
+							<span class="visible-xs">@Localizer["Con- nect"]</span>
+						</th>
+						<th class="small">
+							<span class="visible-lg visible-md visible-sm">@Localizer["Plug in"]</span>
+							<span class="visible-xs">@Localizer["Pl. in"]</span>
+						</th>
+						<th class="small">
+							<span class="visible-lg visible-md visible-sm">@Localizer["Charging battery"]</span>
+							<span class="visible-xs">@Localizer["Ch. bat."]</span>
+						</th>
+						<th class="small">
+							<span class="visible-lg visible-md visible-sm">@Localizer["Radio Strength"]</span>
+							<span class="visible-xs">@Localizer["Ra. Str."]</span>
+						</th>
 						<th class="small" style="min-width:60px;">@Localizer["Actions"]</th>
 					</tr>
 				</theader>
@@ -183,13 +194,13 @@
 					@foreach (var item in Model.Bases.Where(b => !b.Deleted))
 					{
 						<tr>
-							<td>
-								<div style="position:relative;top:0px;left:0px; min-width:110px;">
+							<td class="small">
+								<div style="position:relative;top:0px;left:0px;">
 									@Html.DisplayFor(modelItem => item.Name)
 								</div>
 							</td>
-							<td>
-								<div style="position:relative;top:0px;left:0px; min-width:20px;">
+							<td class="small">
+								<div style="position:relative;top:0px;left:0px">
 									<a asp-controller="Base" asp-action="Timeline" asp-route-id="@item.BaseId" asp-route-parameter="IsConnected" title="@Localizer["View Connections Timeline"]" target="_blank">
 										@if (item.LastStatus != null && item.LastStatus.IsConnected)
 										{
@@ -206,8 +217,8 @@
 									</a>
 								</div>
 							</td>
-							<td class="visible-md visible-lg visible-sm" valign="middle">
-								<div style="position:relative;top:0px;left:0px; min-width:20px;">
+							<td class="small" valign="middle">
+								<div style="position:relative;top:0px;left:0px;">
 									<a asp-controller="Base" asp-action="Timeline" asp-route-id="@item.BaseId" asp-route-parameter="IsPlugged" title="@Localizer["View Plug In Timeline"]" target="_blank">
 										<i class="fa fa-plug fa-fw" style="color:gray;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
 										@if (!(item.LastStatus != null && item.LastStatus.IsPlugged))
@@ -218,8 +229,8 @@
 								</div>
 
 							</td>
-							<td class="visible-md visible-lg visible-sm">
-								<div style="position:relative;top:0px;left:0px; min-width:20px;">
+							<td class="small">
+								<div style="position:relative;top:0px;left:0px;">
 									<a asp-controller="Base" asp-action="Timeline" asp-route-id="@item.BaseId" asp-route-parameter="Battery" title="@Localizer["View Battery Charging Timeline"]" target="_blank">
 										@if (item.LastStatus != null)
 										{
@@ -260,8 +271,8 @@
 								</div>
 
 							</td>
-							<td class="visible-md visible-lg visible-sm">
-								<div style="position:relative;top:0px;left:0px; min-width:20px;">
+							<td class="small">
+								<div style="position:relative;top:0px;left:0px;">
 									<a asp-controller="Base" asp-action="Timeline" asp-route-id="@item.BaseId" asp-route-parameter="Radio" title="@Localizer["View Radio Strength Timeline"]" target="_blank">
 										<i class="fa fa-signal fa-fw" style="color:gray;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
 										@if (item.LastStatus != null)
@@ -276,7 +287,7 @@
 								</div>
 
 							</td>
-							<td>
+							<td class="small">
 								<a asp-controller="Base" asp-action="Edit" asp-route-id="@item.BaseId" target="_blank" title="@Localizer["Edit"]"><i class="fa fa-edit fa-fw" aria-hidden="true"></i></a>
 								<a class="openDeleteBaseDialog" data-id="@item.BaseId" data-base="@Newtonsoft.Json.JsonConvert.SerializeObject(item)" title="@Localizer["Delete"]"><i class="fa fa-trash fa-fw" aria-hidden="true"></i></a>
 							</td>
@@ -286,16 +297,28 @@
 			</table>
 		</div>
 		<div class="well well-lg" style="position:relative;top:0px;left:0px; min-width:200px;">
-			<table class="table" style="position:relative;top:0px;left:0px; min-width:120px;">
+			<table class="table" style="position:relative;top:0px;left:0px;">
 				<theader>
 					<tr>
 						<th>
 							<i class="fa fa-paw fa-fw" aria-hidden="true"></i> &nbsp; @Localizer["Collars on Pets"]
 						</th>
-						<th class="small">@Localizer["Network Connected"]</th>
-						<th class="small visible-md visible-lg visible-sm">@Localizer["GPS Connected"]</th>
-						<th class="small visible-md visible-lg visible-sm">@Localizer["Battery Charge"]</th>
-						<th class="small visible-md visible-lg visible-sm">@Localizer["Radio Strength"]</th>
+						<th class="small">
+							<span class="visible-lg visible-md visible-sm">@Localizer["Network Connected"]</span>
+							<span class="visible-xs">@Localizer["Con- nect"]</span>
+						</th>
+						<th class="small">
+							<span class="visible-lg visible-md visible-sm">@Localizer["GPS Connected"]</span>
+							<span class="visible-xs">@Localizer["GPS"]</span>
+						</th>
+						<th class="small">
+							<span class="visible-lg visible-md visible-sm">@Localizer["Battery Charge"]</span>
+							<span class="visible-xs">@Localizer["Bat."]</span>
+						</th>
+						<th class="small">
+							<span class="visible-lg visible-md visible-sm">@Localizer["Radio Strength"]</span>
+							<span class="visible-xs">@Localizer["Ra. Str."]</span>
+						</th>
 						<th class="small" style="min-width:60px;">@Localizer["Actions"]</th>
 					</tr>
 				</theader>
@@ -304,13 +327,13 @@
 					{
 						Pet p = Model.Pets.FirstOrDefault(pet => pet.LastCollar != null && pet.LastCollar.CollarId == item.CollarId && !pet.Deleted);
 						<tr>
-							<td>
-								<div style="position:relative;top:0px;left:0px; min-width:60px;">
+							<td class="small">
+								<div style="position:relative;top:0px;left:0px;">
 									@Html.DisplayFor(modelItem => item.Name)
 								</div>
 							</td>
-							<td>
-								<div style="position:relative;top:0px;left:0px; min-width:20px;">
+							<td class="small">
+								<div style="position:relative;top:0px;left:0px;">
 									<a asp-controller="Collar" asp-action="Timeline" asp-route-id="@item.CollarId" asp-route-parameter="IsConnected" title="@Localizer["View Connections Timeline"]" target="_blank">
 										@if (item.LastStatus != null && item.LastStatus.IsConnected)
 										{
@@ -327,8 +350,8 @@
 									</a>
 								</div>
 							</td>
-							<td class="visible-md visible-lg visible-sm" valign="middle">
-								<div style="position:relative;top:0px;left:0px; min-width:20px;">
+							<td class="small" valign="middle">
+								<div style="position:relative;top:0px;left:0px;">
 									<a asp-controller="Collar" asp-action="Timeline" asp-route-id="@item.CollarId" asp-route-parameter="IsGPSConnected" title="@Localizer["View GPS Connections Timeline"]" target="_blank">
 										<i class="fa fa-map-marker fa-fw" style="color:gray;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
 										@if (!(item.LastStatus != null && item.LastStatus.IsGPSConnected))
@@ -338,8 +361,8 @@
 									</a>
 								</div>
 							</td>
-							<td class="visible-md visible-lg visible-sm">
-								<div style="position:relative;top:0px;left:0px; min-width:20px;">
+							<td class="small">
+								<div style="position:relative;top:0px;left:0px;">
 									<a asp-controller="Collar" asp-action="Timeline" asp-route-id="@item.CollarId" asp-route-parameter="Battery" title="@Localizer["View Battery Charge Timeline"]" target="_blank">
 										@if (item.LastStatus != null)
 										{
@@ -371,8 +394,8 @@
 									</a>
 								</div>
 							</td>
-							<td class="visible-md visible-lg visible-sm">
-								<div style="position:relative;top:0px;left:0px; min-width:20px;">
+							<td class="small">
+								<div style="position:relative;top:0px;left:0px; ">
 									<a asp-controller="Collar" asp-action="Timeline" asp-route-id="@item.CollarId" asp-route-parameter="Radio" title="@Localizer["View Radio Strength Timeline"]" target="_blank">
 										<i class="fa fa-signal fa-fw" style="color:gray;position:absolute;top:10px;left:0px" aria-hidden="true"></i>
 										@if (item.LastStatus != null)
@@ -386,7 +409,7 @@
 									</a>
 								</div>
 							</td>
-							<td>
+							<td class="small">
 								<a asp-controller="Collar" asp-action="Edit" asp-route-id="@item.CollarId" target="_blank" title="@Localizer["Edit"]"><i class="fa fa-edit fa-fw" aria-hidden="true"></i></a>
 								<a class="openDeleteCollarDialog" data-id="@item.CollarId" data-collar="@Newtonsoft.Json.JsonConvert.SerializeObject(item)" data-pet="@(p==null? string.Empty: p.Name)" title="@Localizer["Delete"]"><i class="fa fa-trash fa-fw" aria-hidden="true"></i></a>
 							</td>
@@ -394,35 +417,47 @@
 						if (p != null)
 						{
 							<tr>
-								<td>
+								<td class="small">
 									@Localizer["on"]&nbsp; @Html.DisplayFor(modelItem => p.Name)
 								</td>
 
-								<td class="visible-md visible-lg visible-sm">
+								<td class="small">
 									@if (p.LastTrackingInfo != null && (p.LastTrackingInfo.Latitude != default(double) || p.LastTrackingInfo.Longitude != default(double)))
 									{
 										<a class="btn btn-default" asp-controller="Pet" asp-action="Stats" asp-route-id="@p.PetId" target="_blank" style="width:100%; padding:3px 6px 3px 6px" title="@Localizer["Monitor your pet's activity"]"><i class="fa fa-heartbeat fa-fw" aria-hidden="true"></i></a>
 									}
 								</td>
-								<td class="visible-md visible-lg visible-sm">
+								<td class="small">
 									@if (p.LastTrackingInfo != null && (p.LastTrackingInfo.Latitude != default(double) || p.LastTrackingInfo.Longitude != default(double)))
 									{
 										<a class="btn btn-default" asp-controller="Pet" asp-action="Track" asp-route-id="@p.PetId" target="_blank" style="width:100%; padding:3px 6px 3px 6px" title="@Localizer["Check your pet's last locations"]"><i class="fa fa-route fa-fw" aria-hidden="true"></i></a>
 									}
 								</td>
-								<td colspan="2">
+								<td class="small" colspan="2">
 									@if (p.LastMode != null && p.LastMode.Type == ConfigModeTypes.Emergency && p.LastMode.IsActive)
 									{
-									<button class="btn btn-default reportFound" data-id="@p.PetId" data-name="@p.Name" style="width:100%; padding:3px 6px 3px 6px">@Localizer["Report Found"]</button>
-									<button class="btn btn-danger openReportLostDialog" data-id="@p.PetId" data-name="@p.Name" style="width:100%; padding:3px 6px 3px 6px; display:none">@Localizer["Report Lost"]</button>
+									<button class="btn btn-default reportFound" data-id="@p.PetId" data-name="@p.Name" style="width:100%; padding:3px 6px 3px 6px">
+										<span class="visible-lg visible-md visible-sm">@Localizer["Report Found"]</span>
+										<span class="visible-xs">@Localizer["Found"]</span>
+									</button>
+									<button class="btn btn-danger openReportLostDialog" data-id="@p.PetId" data-name="@p.Name" style="width:100%; padding:3px 6px 3px 6px; display:none">
+										<span class="visible-lg visible-md visible-sm">@Localizer["Report Lost"]</span>
+										<span class="visible-xs">@Localizer["Lost"]</span>
+									</button>
 									}
 									else
 									{
-									<button class="btn btn-default reportFound" data-id="@p.PetId" data-name="@p.Name" style="width:100%; padding:3px 6px 3px 6px; display:none;">@Localizer["Report Found"]</button>
-									<button class="btn btn-danger openReportLostDialog" data-id="@p.PetId" data-name="@p.Name" style="width:100%; padding:3px 6px 3px 6px">@Localizer["Report Lost"]</button>
+									<button class="btn btn-default reportFound" data-id="@p.PetId" data-name="@p.Name" style="width:100%; padding:3px 6px 3px 6px; display:none;">
+										<span class="visible-lg visible-md visible-sm">@Localizer["Report Found"]</span>
+										<span class="visible-xs">@Localizer["Found"]</span>
+									</button>
+									<button class="btn btn-danger openReportLostDialog" data-id="@p.PetId" data-name="@p.Name" style="width:100%; padding:3px 6px 3px 6px">
+										<span class="visible-lg visible-md visible-sm">@Localizer["Report Lost"]</span>
+										<span class="visible-xs">@Localizer["Lost"]</span>
+									</button>
 									}
 								</td>
-								<td>
+								<td class="small">
 									<a asp-controller="Pet" asp-action="Edit" asp-route-id="@p.PetId" target="_blank" title="@Localizer["Edit"]"><i class="fa fa-edit fa-fw" aria-hidden="true"></i></a>
 									<a class="openDeletePetDialog" data-id="@p.PetId" data-pet="@Newtonsoft.Json.JsonConvert.SerializeObject(p, Newtonsoft.Json.Formatting.None, new Newtonsoft.Json.JsonSerializerSettings { PreserveReferencesHandling = Newtonsoft.Json.PreserveReferencesHandling.Objects})" data-collar="@item.Name" title="@Localizer["Delete"]"><i class="fa fa-trash fa-fw" aria-hidden="true"></i></a>
 								</td>
@@ -431,7 +466,7 @@
 						else
 						{
 							<tr class="missing">
-								<td>
+								<td class="small">
 									<span style="color:red">@Localizer["Missing Pet"]</span>
 								</td>
 							</tr>
@@ -442,40 +477,52 @@
 						if (item.LastCollar == null)
 						{
 							<tr class="missing">
-								<td>
+								<td class="small">
 									<span style="color:red">@Localizer["Missing Collar"]</span>
 								</td>
 							</tr>
 							<tr>
-								<td>
+								<td class="small">
 									@Localizer["on"]&nbsp; @Html.DisplayFor(modelItem => item.Name)
 								</td>
 
-								<td class="visible-md visible-lg visible-sm">
+								<td class="small">
 									@if (item.LastTrackingInfo != null && (item.LastTrackingInfo.Latitude != default(double) || item.LastTrackingInfo.Longitude != default(double)))
 									{
 										<a class="btn btn-default" asp-controller="Pet" asp-action="Stats" asp-route-id="@item.PetId" target="_blank" style="width:100%; padding:3px 6px 3px 6px" title="@Localizer["Monitor your pet's activity"]"><i class="fa fa-heartbeat fa-fw" aria-hidden="true"></i></a>
 									}
 								</td>
-								<td class="visible-md visible-lg visible-sm">
+								<td class="small">
 									@if (item.LastTrackingInfo != null && (item.LastTrackingInfo.Latitude != default(double) || item.LastTrackingInfo.Longitude != default(double)))
 									{
 										<a class="btn btn-default" asp-controller="Pet" asp-action="Track" asp-route-id="@item.PetId" target="_blank" style="width:100%; padding:3px 6px 3px 6px" title="@Localizer["Check your pet's last locations"]"><i class="fa fa-route fa-fw" aria-hidden="true"></i></a>
 									}
 								</td>
-								<td colspan="2">
+								<td class="small" colspan="2">
 									@if (item.LastMode != null && item.LastMode.Type == ConfigModeTypes.Emergency && item.LastMode.IsActive)
 									{
-									<button class="btn btn-default reportFound" data-id="@item.PetId" data-name="@item.Name" style="width:100%; padding:3px 6px 3px 6px">@Localizer["Report Found"]</button>
-									<button class="btn btn-danger openReportLostDialog" data-id="@item.PetId" data-name="@item.Name" style="width:100%; padding:3px 6px 3px 6px; display:none">@Localizer["Report Lost"]</button>
+									<button class="btn btn-default reportFound" data-id="@item.PetId" data-name="@item.Name" style="width:100%; padding:3px 6px 3px 6px">
+										<span class="visible-lg visible-md visible-sm">@Localizer["Report Found"]</span>
+										<span class="visible-xs">@Localizer["Found"]</span>
+									</button>
+									<button class="btn btn-danger openReportLostDialog" data-id="@item.PetId" data-name="@item.Name" style="width:100%; padding:3px 6px 3px 6px; display:none">
+										<span class="visible-lg visible-md visible-sm">@Localizer["Report Lost"]</span>
+										<span class="visible-xs">@Localizer["Lost"]</span>
+									</button>
 									}
 									else
 									{
-									<button class="btn btn-default reportFound" data-id="@item.PetId" data-name="@item.Name" style="width:100%; padding:3px 6px 3px 6px; display:none;">@Localizer["Report Found"]</button>
-									<button class="btn btn-danger openReportLostDialog" data-id="@item.PetId" data-name="@item.Name" style="width:100%; padding:3px 6px 3px 6px">@Localizer["Report Lost"]</button>
+									<button class="btn btn-default reportFound" data-id="@item.PetId" data-name="@item.Name" style="width:100%; padding:3px 6px 3px 6px; display:none;">
+										<span class="visible-lg visible-md visible-sm">@Localizer["Report Found"]</span>
+										<span class="visible-xs">@Localizer["Found"]</span>
+									</button>
+									<button class="btn btn-danger openReportLostDialog" data-id="@item.PetId" data-name="@item.Name" style="width:100%; padding:3px 6px 3px 6px">
+										<span class="visible-lg visible-md visible-sm">@Localizer["Report Lost"]</span>
+										<span class="visible-xs">@Localizer["Lost"]</span>
+									</button>
 									}
 								</td>
-								<td>
+								<td class="small">
 									<a asp-controller="Pet" asp-action="Edit" asp-route-id="@item.PetId" target="_blank" title="@Localizer["Edit"]"><i class="fa fa-edit fa-fw" aria-hidden="true"></i></a>
 									<a class="openDeletePetDialog" data-id="@item.PetId" data-pet="@Newtonsoft.Json.JsonConvert.SerializeObject(item, Newtonsoft.Json.Formatting.None, new Newtonsoft.Json.JsonSerializerSettings { PreserveReferencesHandling = Newtonsoft.Json.PreserveReferencesHandling.Objects})" data-collar="" title="@Localizer["Delete"]"><i class="fa fa-trash fa-fw" aria-hidden="true"></i></a>
 								</td>
