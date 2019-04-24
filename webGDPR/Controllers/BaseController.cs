@@ -94,7 +94,7 @@ namespace webGDPR.Controllers
 			model.CurrentFilter = searchString;
 			int pageSize = 10;
 			model.BaseStatus = await PaginatedList<BaseStatus>.CreateAsync(
-				_context.BaseStatus.Where(s => s.BaseId == id && s.ConnectedTo.Contains(searchString)).OrderByDescending(d => d.CreationDate).AsNoTracking(), pageIndex ?? 1, pageSize);
+				_context.BaseStatus.Include(s=>s.DeviceConnectedTo).Where(s => s.BaseId == id && s.ConnectedTo.Contains(searchString)).OrderByDescending(d => d.CreationDate).AsNoTracking(), pageIndex ?? 1, pageSize);
 
 			return View(model);
         }
