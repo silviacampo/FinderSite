@@ -8,24 +8,49 @@
 @inject IOptions<RequestLocalizationOptions> LocOptions
 
 	@{
-    var requestCulture = Context.Features.Get<IRequestCultureFeature>();
-    var cultureItems = LocOptions.Value.SupportedUICultures
-        .Select(c => new SelectListItem { Value = c.Name, Text = c.DisplayName })
-        .ToList();
-    var returnUrl = string.IsNullOrEmpty(Context.Request.Path) ? "~/" : $"~{Context.Request.Path.Value}";
+		var requestCulture = Context.Features.Get<IRequestCultureFeature>();
+		var cultureItems = LocOptions.Value.SupportedUICultures
+			.Select(c => new SelectListItem { Value = c.Name, Text = c.DisplayName })
+			.ToList();
+		var returnUrl = string.IsNullOrEmpty(Context.Request.Path) ? "~/" : $"~{Context.Request.Path.Value}";
 	}
 
 	<div title="@Localizer["Request culture provider:"] @requestCulture?.Provider?.GetType().Name">
 		<form id="selectLanguage" asp-controller="Home" asp-action="SetLanguage" asp-route-returnUrl="@returnUrl"
 			  method="post" class="form-horizontal" role="form">
 			@*<label asp-for="@requestCulture.RequestCulture.UICulture.Name">@Localizer["Language:"]</label>*@
-			<select name="culture" onchange="this.form.submit();" asp-for="@requestCulture.RequestCulture.UICulture.Name" asp-items="cultureItems"></select>
-			
-	@*Bootstrap 4
+			@*<select name="culture" onchange="this.form.submit();" asp-for="@requestCulture.RequestCulture.UICulture.Name" asp-items="cultureItems"></select>*@
+			<input type="hidden" name="culture" asp-for="@requestCulture.RequestCulture.UICulture.Name"/>
+			@*Bootstrap 4
 		<select class="selectpicker" data-width="fit">
 				<option data-content='<span class="flag-icon flag-icon-us"></span> English'>English</option>
 				<option data-content='<span class="flag-icon flag-icon-mx"></span> Español'>Español</option>
 			</select>*@
-
+			<ul class="list-inline links-list pull-right">
+				<li class="dropdown language-selector open">
+					Language: &nbsp;
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown" data-close-others="true" aria-expanded="true" style="background-color: black;"> <img src="/images/flag-@{ @requestCulture.RequestCulture.UICulture.Name}.png" width="16" height="16"> </a> 
+					<ul class="dropdown-menu pull-right">
+						@*<li class=@( @requestCulture.RequestCulture.UICulture.Name == "de"? "active":"")> <a > <img src="/images/flag-de.png" width="16" height="16"> <span>Deutsch</span> </a> </li>*@
+						<li class=@( @requestCulture.RequestCulture.UICulture.Name == "en" ? "active" : "")> <a onclick="document.getElementsByName('culture').value = 'en'; document.getElementById('selectLanguage').submit();"> <img src="/images/flag-en.png" width="16" height="16"> <span>English</span> </a> </li>
+						<li class=@( @requestCulture.RequestCulture.UICulture.Name == "fr"? "active":"")> <a onclick="document.getElementsByName('culture').value = 'fr'; document.getElementById('selectLanguage').submit();"> <img src="/images/flag-fr.png" width="16" height="16"> <span>Français</span> </a> </li>
+						<li class=@( @requestCulture.RequestCulture.UICulture.Name == "es"? "active":"")> <a onclick="document.getElementsByName('culture').value = 'es'; document.getElementById('selectLanguage').submit();"> <img src="/images/flag-es.png" width="16" height="16"> <span>Español</span> </a> </li>
+					</ul>
+				</li>
+				@*<li class="sep"></li>
+				<li>
+					<a href="#" data-toggle="chat" data-collapse-sidebar="1">
+						<i class="entypo-chat"></i>
+						Chat
+						<span class="badge badge-success chat-notifications-badge">3</span>
+					</a>
+				</li>
+				<li class="sep"></li>
+				<li>
+					<a href="https://demo.neontheme.com/extra/login/">
+						Log Out <i class="entypo-logout right"></i>
+					</a>
+				</li>*@
+			</ul>
 		</form>
 	</div>
