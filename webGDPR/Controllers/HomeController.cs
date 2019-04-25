@@ -91,7 +91,7 @@ namespace webGDPR.Controllers
 		}
 
 		[HttpPost]
-		public IActionResult SetLanguage(string culture, string returnUrl)
+		public IActionResult SetLanguage([FromForm]string culture, string returnUrl)
 		{
 			Response.Cookies.Append(
 				CookieRequestCultureProvider.DefaultCookieName,
