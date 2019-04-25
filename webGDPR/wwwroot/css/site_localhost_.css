@@ -512,3 +512,12 @@ div.timelineContainer {
 	margin: 1rem -15px 0;
 	border: solid #f8f9fa;
 }
+
+#languagebutton {
+	background: none !important;
+	color: inherit;
+	border: none;
+	cursor: pointer;
+	vertical-align: central;
+	min-height: 44px;
+}
