@@ -36,11 +36,13 @@
 					<span class="icon-bar"></span>
 				</button>
 				<button class="dropdown" id="languagebutton"><partial name="_SelectLanguagePartial" /></button>
+				<a href="#" data-toggle="chat" data-collapse-sidebar="1" title='@Localizer["Chat"]'>
+					<i class="fa fa-comments fa-fw"></i>&nbsp;@Localizer["Chat"]&nbsp;<span class="badge badge-success chat-notifications-badge">3</span>
+				</a>
 				<a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">@ViewData["Host"]</a>
 			</div>
 			<div class="navbar-collapse collapse">				
-				<ul class="nav navbar-nav">
-					
+				<ul class="nav navbar-nav">					
 					<li><a asp-area="" asp-controller="Device" asp-action="DownloadApp" title='@Localizer["Download App"]'><i class="fa fa-download fa-fw" aria-hidden="true"></i>&nbsp; @*@Localizer["Download App"]*@</a></li>
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" title='@Localizer["Documentation"]'><i class="fa fa-info-circle fa-fw" aria-hidden="true"></i>&nbsp; @*@Localizer["Documentation"]*@<span class="caret"></span></a>
