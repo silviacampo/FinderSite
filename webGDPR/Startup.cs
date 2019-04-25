@@ -22,6 +22,7 @@ using System.Globalization;
 using Microsoft.AspNetCore.Localization;
 using System.Collections.Generic;
 using Microsoft.Extensions.Options;
+using webGDPR.Hubs;
 
 namespace webGDPR
 {
@@ -77,6 +78,8 @@ namespace webGDPR
 			}).SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
 			.AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
 			.AddDataAnnotationsLocalization();
+
+			services.AddSignalR();
 
 			services.AddScoped<HostFilter>();
 			services.AddSingleton<IEmailConfiguration>(Configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>());
@@ -196,6 +199,11 @@ WantedBy=multi-user.target
 			app.UseWebSockets(webSocketOptions);
 
 			app.UseCustomWebSocketManager();
+
+			app.UseSignalR(routes =>
+			{
+				routes.MapHub<ChatHub>("/chatHub");
+			});
 
 			app.UseMvc(routes =>
             {
