@@ -36,7 +36,7 @@
 					<span class="icon-bar"></span>
 				</button>
 				<button class="dropdown" id="languagebutton"><partial name="_SelectLanguagePartial" /></button>
-				<a href="#" data-toggle="chat" data-collapse-sidebar="1" title='@Localizer["Chat"]'>
+				<a asp-area="" asp-controller="Home" asp-action="Chat" data-toggle="chat" data-collapse-sidebar="1" title='@Localizer["Chat"]'>
 					<i class="fa fa-comments fa-fw"></i>&nbsp;@Localizer["Chat"]&nbsp;<span class="badge badge-success chat-notifications-badge">3</span>
 				</a>
 				<a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">@ViewData["Host"]</a>

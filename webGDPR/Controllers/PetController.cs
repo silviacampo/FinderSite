@@ -13,8 +13,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using webGDPR.Data;
+using webGDPR.Hubs;
 using webGDPR.Infrastructure;
 using webGDPR.Infrastructure.CustomWebSockets;
 using webGDPR.Models;
@@ -32,9 +34,10 @@ namespace webGDPR.Controllers
         ICustomWebSocketMessageHandler _webSocketMessageHandler;
         ICustomWebSocketFactory _wsFactory;
         private readonly SignInManager<ApplicationUser> _signInManager;
+		private readonly IHubContext<ChatHub> _hubContext;
 
-        public PetController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IMapper mapper, IHostingEnvironment hostingEnvironment, ICustomWebSocketMessageHandler webSocketMessageHandler, ICustomWebSocketFactory wsFactory, SignInManager<ApplicationUser> signInManager)
-        {
+		public PetController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IMapper mapper, IHostingEnvironment hostingEnvironment, ICustomWebSocketMessageHandler webSocketMessageHandler, ICustomWebSocketFactory wsFactory, SignInManager<ApplicationUser> signInManager, IHubContext<ChatHub> hubContext)
+		{
             _context = context;
             _userManager = userManager;
             _mapper = mapper;
@@ -42,10 +45,16 @@ namespace webGDPR.Controllers
             _webSocketMessageHandler = webSocketMessageHandler;
             _wsFactory = wsFactory;
             _signInManager = signInManager;
-        }
+			_hubContext = hubContext;
+		}
+		//https://stackoverflow.com/questions/27299289/how-to-get-signalr-hub-context-in-a-asp-net-core/46319153#46319153
+		public void SendToAll(string message)
+		{
+			_hubContext.Clients.All.SendAsync("Send", message);
+		}
 
-        // GET: Pet
-        public async Task<IActionResult> Index()
+		// GET: Pet
+		public async Task<IActionResult> Index()
         {
             List<PetViewModel> model = new List<PetViewModel>();
             string UserId = _context.User.FirstOrDefault(u => u.OwnerID == _userManager.GetUserId(User)).UserID;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
@@ -102,6 +103,7 @@ namespace webGDPR.Controllers
 			return LocalRedirect(returnUrl);
 		}
 
+		[Authorize]
 		public IActionResult Chat()
 		{
 			return View();
