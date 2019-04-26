@@ -26,6 +26,7 @@
 	<link rel="icon" href="~/favicon_@ViewData["Host"]_.ico" type="image/x-icon" sizes="16x16">
 </head>
 <body>
+	<div id="snackbar">toast</div>
 	<nav class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
 			<div class="navbar-header">
@@ -41,8 +42,8 @@
 				</a>
 				<a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">@ViewData["Host"]</a>
 			</div>
-			<div class="navbar-collapse collapse">				
-				<ul class="nav navbar-nav">					
+			<div class="navbar-collapse collapse">
+				<ul class="nav navbar-nav">
 					<li><a asp-area="" asp-controller="Device" asp-action="DownloadApp" title='@Localizer["Download App"]'><i class="fa fa-download fa-fw" aria-hidden="true"></i>&nbsp; @*@Localizer["Download App"]*@</a></li>
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" title='@Localizer["Documentation"]'><i class="fa fa-info-circle fa-fw" aria-hidden="true"></i>&nbsp; @*@Localizer["Documentation"]*@<span class="caret"></span></a>
@@ -126,8 +127,8 @@
 					<p>&copy; @System.DateTime.Now.Year - @ViewData["Host"]</p>
 				</div>
 				@*<div class="col-md-6 text-right">
-					@await Html.PartialAsync("_SelectLanguagePartial")
-				</div>*@
+						@await Html.PartialAsync("_SelectLanguagePartial")
+					</div>*@
 			</div>
 		</footer>
 	</div>

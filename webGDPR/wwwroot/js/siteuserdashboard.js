@@ -381,4 +381,4 @@ $(function () {
 });
 
 initPetsMap();
-$.notify("Hello World");
+

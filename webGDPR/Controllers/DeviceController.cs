@@ -44,9 +44,28 @@ namespace webGDPR.Controllers
 		}
 
 		//https://stackoverflow.com/questions/27299289/how-to-get-signalr-hub-context-in-a-asp-net-core/46319153#46319153
-		public async Task SendToAllAsync(string message)
+		public async Task SendToAllAsync(string action, Device device)
 		{
-			await _hubContext.Clients.All.SendAsync("ReceiveMessage", _userManager.GetUserName(User), message);
+			string message = string.Empty;
+			string json = JsonConvert.SerializeObject(device);
+			//TODO: localize
+			if (action == nameof(Edit))
+			{
+				message = $"{device.AliasName} modified.";
+			}
+			else if (action == nameof(Delete)) {
+				message = $"{device.AliasName} deleted.";
+			}
+			else if (action == nameof(BanOn))
+			{
+				message = $"{device.AliasName} has been banned.";
+			}
+			else if (action == nameof(BanOff))
+			{
+				message = $"{device.AliasName} hast been authorize to connect.";
+			}
+
+			await _hubContext.Clients.All.SendAsync("ReceiveMessage", _userManager.GetUserName(User), message, json);
 		}
 
 		// GET: Device
@@ -120,28 +139,31 @@ namespace webGDPR.Controllers
 		[HttpPost]
 		public async Task<IActionResult> BanOn([FromForm]string id)
 		{
-			bool result = await SetBanAsync(true, id);
+			Device device = await _context.Device.FirstAsync(c => c.DeviceId == id);
+			bool result = await SetBanAsync(true, device);
 			if (!result)
 			{
 				return NotFound();
 			}
+			await SendToAllAsync(nameof(BanOn), device);
 			return Ok();
 		}
 
 		[HttpPost]
 		public async Task<IActionResult> BanOff([FromForm]string id)
 		{
-			bool result = await SetBanAsync(false, id);
+			Device device = await _context.Device.FirstAsync(c => c.DeviceId == id);
+			bool result = await SetBanAsync(false, device);
 			if (!result)
 			{
 				return NotFound();
 			}
+			await SendToAllAsync(nameof(BanOff), device);
 			return Ok();
 		}
 
-		private async Task<bool> SetBanAsync(bool activate, string id)
+		private async Task<bool> SetBanAsync(bool activate, Device device)
 		{
-			Device device = await _context.Device.FirstAsync(c => c.DeviceId == id);
 			if (device == null)
 			{
 				return false;
@@ -150,7 +172,7 @@ namespace webGDPR.Controllers
 			{
 				device.Banned = activate;
 				_context.Update(device);
-				await _context.SaveChangesAsync();
+				await _context.SaveChangesAsync();				
 
 				CustomWebSocket ws = _wsFactory.ClientByDeviceId(device.DeviceId);
 					if (ws != null)
@@ -292,7 +314,7 @@ namespace webGDPR.Controllers
 						throw;
 					}
 				}
-				await SendToAllAsync("Device - Edit");
+				await SendToAllAsync(nameof(Edit), device);
 				return RedirectToAction(nameof(UserController.Dashboard), "User");
 			}
             return View(device);
@@ -364,6 +386,7 @@ namespace webGDPR.Controllers
 			device.Deleted = true;
 			_context.Device.Update(device);
 			await _context.SaveChangesAsync();
+			await SendToAllAsync(nameof(Delete), device);
 			return RedirectToAction(nameof(Index));
         }
 
