@@ -436,25 +436,25 @@
 								<td class="small" colspan="2">
 									@if (p.LastMode != null && p.LastMode.Type == ConfigModeTypes.Emergency && p.LastMode.IsActive)
 									{
-									<button class="btn btn-default reportFound" data-id="@p.PetId" data-name="@p.Name" style="width:100%; padding:3px 6px 3px 6px">
-										<span class="visible-lg visible-md visible-sm">@Localizer["Report Found"]</span>
-										<span class="visible-xs">@Localizer["Found"]</span>
-									</button>
-									<button class="btn btn-danger openReportLostDialog" data-id="@p.PetId" data-name="@p.Name" style="width:100%; padding:3px 6px 3px 6px; display:none">
-										<span class="visible-lg visible-md visible-sm">@Localizer["Report Lost"]</span>
-										<span class="visible-xs">@Localizer["Lost"]</span>
-									</button>
+										<button class="btn btn-default reportFound" data-id="@p.PetId" data-name="@p.Name" style="width:100%; padding:3px 6px 3px 6px">
+											<span class="visible-lg visible-md visible-sm">@Localizer["Report Found"]</span>
+											<span class="visible-xs">@Localizer["Found"]</span>
+										</button>
+										<button class="btn btn-danger openReportLostDialog" data-id="@p.PetId" data-name="@p.Name" style="width:100%; padding:3px 6px 3px 6px; display:none">
+											<span class="visible-lg visible-md visible-sm">@Localizer["Report Lost"]</span>
+											<span class="visible-xs">@Localizer["Lost"]</span>
+										</button>
 									}
 									else
 									{
-									<button class="btn btn-default reportFound" data-id="@p.PetId" data-name="@p.Name" style="width:100%; padding:3px 6px 3px 6px; display:none;">
-										<span class="visible-lg visible-md visible-sm">@Localizer["Report Found"]</span>
-										<span class="visible-xs">@Localizer["Found"]</span>
-									</button>
-									<button class="btn btn-danger openReportLostDialog" data-id="@p.PetId" data-name="@p.Name" style="width:100%; padding:3px 6px 3px 6px">
-										<span class="visible-lg visible-md visible-sm">@Localizer["Report Lost"]</span>
-										<span class="visible-xs">@Localizer["Lost"]</span>
-									</button>
+										<button class="btn btn-default reportFound" data-id="@p.PetId" data-name="@p.Name" style="width:100%; padding:3px 6px 3px 6px; display:none;">
+											<span class="visible-lg visible-md visible-sm">@Localizer["Report Found"]</span>
+											<span class="visible-xs">@Localizer["Found"]</span>
+										</button>
+										<button class="btn btn-danger openReportLostDialog" data-id="@p.PetId" data-name="@p.Name" style="width:100%; padding:3px 6px 3px 6px">
+											<span class="visible-lg visible-md visible-sm">@Localizer["Report Lost"]</span>
+											<span class="visible-xs">@Localizer["Lost"]</span>
+										</button>
 									}
 								</td>
 								<td class="small">
@@ -501,25 +501,25 @@
 								<td class="small" colspan="2">
 									@if (item.LastMode != null && item.LastMode.Type == ConfigModeTypes.Emergency && item.LastMode.IsActive)
 									{
-									<button class="btn btn-default reportFound" data-id="@item.PetId" data-name="@item.Name" style="width:100%; padding:3px 6px 3px 6px">
-										<span class="visible-lg visible-md visible-sm">@Localizer["Report Found"]</span>
-										<span class="visible-xs">@Localizer["Found"]</span>
-									</button>
-									<button class="btn btn-danger openReportLostDialog" data-id="@item.PetId" data-name="@item.Name" style="width:100%; padding:3px 6px 3px 6px; display:none">
-										<span class="visible-lg visible-md visible-sm">@Localizer["Report Lost"]</span>
-										<span class="visible-xs">@Localizer["Lost"]</span>
-									</button>
+										<button class="btn btn-default reportFound" data-id="@item.PetId" data-name="@item.Name" style="width:100%; padding:3px 6px 3px 6px">
+											<span class="visible-lg visible-md visible-sm">@Localizer["Report Found"]</span>
+											<span class="visible-xs">@Localizer["Found"]</span>
+										</button>
+										<button class="btn btn-danger openReportLostDialog" data-id="@item.PetId" data-name="@item.Name" style="width:100%; padding:3px 6px 3px 6px; display:none">
+											<span class="visible-lg visible-md visible-sm">@Localizer["Report Lost"]</span>
+											<span class="visible-xs">@Localizer["Lost"]</span>
+										</button>
 									}
 									else
 									{
-									<button class="btn btn-default reportFound" data-id="@item.PetId" data-name="@item.Name" style="width:100%; padding:3px 6px 3px 6px; display:none;">
-										<span class="visible-lg visible-md visible-sm">@Localizer["Report Found"]</span>
-										<span class="visible-xs">@Localizer["Found"]</span>
-									</button>
-									<button class="btn btn-danger openReportLostDialog" data-id="@item.PetId" data-name="@item.Name" style="width:100%; padding:3px 6px 3px 6px">
-										<span class="visible-lg visible-md visible-sm">@Localizer["Report Lost"]</span>
-										<span class="visible-xs">@Localizer["Lost"]</span>
-									</button>
+										<button class="btn btn-default reportFound" data-id="@item.PetId" data-name="@item.Name" style="width:100%; padding:3px 6px 3px 6px; display:none;">
+											<span class="visible-lg visible-md visible-sm">@Localizer["Report Found"]</span>
+											<span class="visible-xs">@Localizer["Found"]</span>
+										</button>
+										<button class="btn btn-danger openReportLostDialog" data-id="@item.PetId" data-name="@item.Name" style="width:100%; padding:3px 6px 3px 6px">
+											<span class="visible-lg visible-md visible-sm">@Localizer["Report Lost"]</span>
+											<span class="visible-xs">@Localizer["Lost"]</span>
+										</button>
 									}
 								</td>
 								<td class="small">
@@ -840,3 +840,6 @@
 		</div>
 	</div>
 </div>
+
+<script src="~/lib/signalr/dist/browser/signalr.js"></script>
+<script src="~/js/broadcast.js"></script>

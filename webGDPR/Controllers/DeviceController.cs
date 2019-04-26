@@ -11,9 +11,11 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using webGDPR.Data;
+using webGDPR.Hubs;
 using webGDPR.Infrastructure;
 using webGDPR.Infrastructure.CustomWebSockets;
 using webGDPR.Models;
@@ -29,18 +31,26 @@ namespace webGDPR.Controllers
 		IMapper _mapper;
 		ICustomWebSocketMessageHandler _webSocketMessageHandler;
 		ICustomWebSocketFactory _wsFactory;
+		private readonly IHubContext<BroadcastHub> _hubContext;
 
-		public DeviceController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IMapper mapper, ICustomWebSocketMessageHandler webSocketMessageHandler, ICustomWebSocketFactory wsFactory)
+		public DeviceController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IMapper mapper, ICustomWebSocketMessageHandler webSocketMessageHandler, ICustomWebSocketFactory wsFactory, IHubContext<BroadcastHub> hubContext)
 		{
             _context = context;
 			_userManager = userManager;
 			_mapper = mapper;
 			_webSocketMessageHandler = webSocketMessageHandler;
 			_wsFactory = wsFactory;
+			_hubContext = hubContext;
 		}
 
-        // GET: Device
-        public async Task<IActionResult> Index()
+		//https://stackoverflow.com/questions/27299289/how-to-get-signalr-hub-context-in-a-asp-net-core/46319153#46319153
+		public async Task SendToAllAsync(string message)
+		{
+			await _hubContext.Clients.All.SendAsync("ReceiveMessage", _userManager.GetUserName(User), message);
+		}
+
+		// GET: Device
+		public async Task<IActionResult> Index()
         {
 			//string UserId = _context.User.FirstOrDefault(u => u.OwnerID == _userManager.GetUserId(User)).UserID;
 
@@ -282,6 +292,7 @@ namespace webGDPR.Controllers
 						throw;
 					}
 				}
+				await SendToAllAsync("Device - Edit");
 				return RedirectToAction(nameof(UserController.Dashboard), "User");
 			}
             return View(device);

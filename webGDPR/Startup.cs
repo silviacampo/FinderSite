@@ -203,6 +203,7 @@ WantedBy=multi-user.target
 			app.UseSignalR(routes =>
 			{
 				routes.MapHub<ChatHub>("/chatHub");
+				routes.MapHub<BroadcastHub>("/broadcastHub");
 			});
 
 			app.UseMvc(routes =>
