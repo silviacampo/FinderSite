@@ -14,6 +14,9 @@ using AutoMapper;
 using webGDPR.Models;
 using webGDPR.Infrastructure.CustomWebSockets;
 using webGDPR.Infrastructure;
+using Microsoft.AspNetCore.SignalR;
+using webGDPR.Hubs;
+using Newtonsoft.Json;
 
 namespace webGDPR.Controllers
 {
@@ -25,19 +28,37 @@ namespace webGDPR.Controllers
 		IMapper _mapper;
 		ICustomWebSocketMessageHandler _webSocketMessageHandler;
 		ICustomWebSocketFactory _wsFactory;
+		private readonly IHubContext<BroadcastHub> _hubContext;
 
-
-		public BaseController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IMapper mapper, ICustomWebSocketMessageHandler webSocketMessageHandler,ICustomWebSocketFactory wsFactory)
-        {
+		public BaseController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IMapper mapper, ICustomWebSocketMessageHandler webSocketMessageHandler,ICustomWebSocketFactory wsFactory, IHubContext<BroadcastHub> hubContext)
+		{
             _context = context;
 			_userManager = userManager;
 			_mapper = mapper;
 			_webSocketMessageHandler = webSocketMessageHandler;
 			_wsFactory = wsFactory;
+			_hubContext = hubContext;
 		}
 
-        // GET: Base
-        public async Task<IActionResult> Index()
+		public async Task SendToAllAsync(string action, Base @base)
+		{
+			string message = string.Empty;
+			string json = JsonConvert.SerializeObject(@base);
+			//TODO: localize
+			if (action == nameof(Edit))
+			{
+				message = $"{@base.Name} modified.";
+			}
+			else if (action == nameof(Delete))
+			{
+				message = $"{@base.Name} deleted.";
+			}
+
+			await _hubContext.Clients.All.SendAsync("ReceiveMessage", _userManager.GetUserName(User), message, json);
+		}
+
+		// GET: Base
+		public async Task<IActionResult> Index()
         {
 			List<BaseViewModel> model = new List<BaseViewModel>();
 			//string UserId = _context.User.FirstOrDefault(u => u.OwnerID == _userManager.GetUserId(User)).UserID;
@@ -303,6 +324,7 @@ namespace webGDPR.Controllers
                         throw;
                     }
                 }
+				await SendToAllAsync(nameof(Edit), @base);
 				return RedirectToAction(nameof(UserController.Dashboard), "User");
 			}
             return View(@base);
@@ -343,8 +365,10 @@ namespace webGDPR.Controllers
 			@base.Deleted = true;
 			_context.Base.Update(@base);
 			await _context.SaveChangesAsync();
+			await SendToAllAsync(nameof(Delete), @base);
 			//send message to connected devices
 			await _webSocketMessageHandler.SendDeletedBaseAsync(@base.BaseNumber, _userManager.GetUserName(User), _wsFactory);
+
 			return RedirectToAction(nameof(Index));
         }
 
