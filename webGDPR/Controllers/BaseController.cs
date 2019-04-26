@@ -49,6 +49,10 @@ namespace webGDPR.Controllers
 			{
 				message = $"{@base.Name} modified.";
 			}
+			else if (action == nameof(Create))
+			{
+				message = $"{@base.Name} created.";
+			}
 			else if (action == nameof(Delete))
 			{
 				message = $"{@base.Name} deleted.";
@@ -264,6 +268,7 @@ namespace webGDPR.Controllers
 				}
 				_context.Add(@base);
                 await _context.SaveChangesAsync();
+				await SendToAllAsync(nameof(Create), @base);
 				//send message to connected devices
 				Infrastructure.CustomWebSockets.Messages.Base ba = _mapper.Map<Infrastructure.CustomWebSockets.Messages.Base>(@base);
 				await _webSocketMessageHandler.SendBaseAsync(ba, _userManager.GetUserName(User), _wsFactory);

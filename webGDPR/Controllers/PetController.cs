@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using webGDPR.Data;
 using webGDPR.Hubs;
 using webGDPR.Infrastructure;
@@ -34,9 +35,9 @@ namespace webGDPR.Controllers
         ICustomWebSocketMessageHandler _webSocketMessageHandler;
         ICustomWebSocketFactory _wsFactory;
         private readonly SignInManager<ApplicationUser> _signInManager;
-		private readonly IHubContext<ChatHub> _hubContext;
+		private readonly IHubContext<BroadcastHub> _hubContext;
 
-		public PetController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IMapper mapper, IHostingEnvironment hostingEnvironment, ICustomWebSocketMessageHandler webSocketMessageHandler, ICustomWebSocketFactory wsFactory, SignInManager<ApplicationUser> signInManager, IHubContext<ChatHub> hubContext)
+		public PetController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IMapper mapper, IHostingEnvironment hostingEnvironment, ICustomWebSocketMessageHandler webSocketMessageHandler, ICustomWebSocketFactory wsFactory, SignInManager<ApplicationUser> signInManager, IHubContext<BroadcastHub> hubContext)
 		{
             _context = context;
             _userManager = userManager;
@@ -48,16 +49,50 @@ namespace webGDPR.Controllers
 			_hubContext = hubContext;
 		}
 		//https://stackoverflow.com/questions/27299289/how-to-get-signalr-hub-context-in-a-asp-net-core/46319153#46319153
-		public async Task SendToAllAsync(string message)
+		//public async Task SendToAllAsync(string message)
+		//{
+		//	await _hubContext.Clients.All.SendAsync("ReceiveMessage", _userManager.GetUserName(User), message);
+		//}
+
+		public async Task SendToAllAsync(string action, Pet pet)
 		{
-			await _hubContext.Clients.All.SendAsync("ReceiveMessage", _userManager.GetUserName(User), message);
+			string message = string.Empty;
+			string json = string.Empty;
+			try
+			{
+				json = JsonConvert.SerializeObject(pet);
+			}
+			catch (Exception e) {
+				var test = e.Message;
+			}
+				//TODO: localize
+			if (action == nameof(Edit))
+			{
+				message = $"{pet.Name} modified.";
+			}
+			else if (action == nameof(Create))
+			{
+				message = $"{pet.Name} created.";
+			}
+			else if (action == nameof(Delete))
+			{
+				message = $"{pet.Name} deleted.";
+			}
+			else if (action == nameof(EmergencyOn))
+			{
+				message = $"{pet.Name} has been reported lost.";
+			}
+			else if (action == nameof(EmergencyOff))
+			{
+				message = $"{pet.Name} hast been reported found.";
+			}
+
+			await _hubContext.Clients.All.SendAsync("ReceiveMessage", _userManager.GetUserName(User), message, json);
 		}
 
 		// GET: Pet
 		public async Task<IActionResult> Index()
         {
-			await SendToAllAsync("TEST FROM PET");
-
 			List<PetViewModel> model = new List<PetViewModel>();
             string UserId = _context.User.FirstOrDefault(u => u.OwnerID == _userManager.GetUserId(User)).UserID;
 
@@ -409,8 +444,8 @@ namespace webGDPR.Controllers
                     await _webSocketMessageHandler.SendCollarCoreAsync(cc, _userManager.GetUserName(User), _wsFactory);
                 }
 
-                await SetModeAsync(pet.DefaultMode, true, p.PetId);
-
+                await SetModeAsync(pet.DefaultMode, true, p);
+				await SendToAllAsync(nameof(Create), p);
 				return RedirectToAction(nameof(UserController.Dashboard), "User");
 			}
 			await InitSelectsAsync(pet, null);
@@ -498,10 +533,10 @@ namespace webGDPR.Controllers
 
 					_context.Update(p);
 					await _context.SaveChangesAsync();
-
+					await SendToAllAsync(nameof(Edit), p);
 					if (string.IsNullOrEmpty(p.LastModeId) || pet.DefaultMode != found.DefaultMode)
 					{
-						await SetModeAsync(pet.DefaultMode, true, p.PetId);
+						await SetModeAsync(pet.DefaultMode, true, p);
 					}
 
 					SaveFiles(p, imagesFiles, pageContent); 
@@ -522,8 +557,8 @@ namespace webGDPR.Controllers
                         var foundCollar = await _context.Collar.AsNoTracking().FirstAsync(c => c.CollarId == pet.CollarId && !c.Deleted);
                         foundCollar.Name = pet.Name;
                         Infrastructure.CustomWebSockets.Messages.CollarCore cc = _mapper.Map<Infrastructure.CustomWebSockets.Messages.CollarCore>(foundCollar);
-                        cc.IsLost = isLost;
-                        await _webSocketMessageHandler.SendCollarCoreAsync(cc, _userManager.GetUserName(User), _wsFactory);
+                        cc.IsLost = isLost;						
+						await _webSocketMessageHandler.SendCollarCoreAsync(cc, _userManager.GetUserName(User), _wsFactory);
                     }
                 }
                 catch (DbUpdateConcurrencyException)
@@ -616,35 +651,38 @@ namespace webGDPR.Controllers
                 cc.IsLost = false;
                 await _webSocketMessageHandler.SendCollarCoreAsync(cc, _userManager.GetUserName(User), _wsFactory);
             }
-
-            return RedirectToAction(nameof(Index));
+			await SendToAllAsync(nameof(Delete), pet);
+			return RedirectToAction(nameof(Index));
         }
 
 		[HttpPost]
 		public async Task<IActionResult> EmergencyOn([FromForm]string id)
         {
-            bool result = await SetModeAsync(ConfigModeTypes.Emergency, true, id);
+			Pet pet = _context.Pet.Where(p => p.PetId == id).Include(b => b.LastCollar).FirstOrDefault();
+			bool result = await SetModeAsync(ConfigModeTypes.Emergency, true, pet);
             if (!result)
             {
                 return NotFound();
             }
-            return RedirectToAction(nameof(Index));
+			await SendToAllAsync(nameof(EmergencyOn), pet);
+			return RedirectToAction(nameof(Index));
         }
 
 		[HttpPost]
 		public async Task<IActionResult> EmergencyOff([FromForm]string id)
         {
-            bool result = await SetModeAsync(ConfigModeTypes.Emergency, false, id);
+			Pet pet = _context.Pet.Where(p => p.PetId == id).Include(b => b.LastCollar).FirstOrDefault();
+			bool result = await SetModeAsync(ConfigModeTypes.Emergency, false, pet);
             if (!result)
             {
                 return NotFound();
             }
-            return RedirectToAction(nameof(Index));
+			await SendToAllAsync(nameof(EmergencyOff), pet);
+			return RedirectToAction(nameof(Index));
         }
 
-        private async Task<bool> SetModeAsync(ConfigModeTypes type, bool activate, string id)
+        private async Task<bool> SetModeAsync(ConfigModeTypes type, bool activate, Pet pet)
         {
-            Pet pet = _context.Pet.Where(p => p.PetId == id).Include(b => b.LastCollar).FirstOrDefault();
             if (pet == null)
             {
                 return false;

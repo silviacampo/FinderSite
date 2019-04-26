@@ -5,7 +5,7 @@ var connection = new signalR.HubConnectionBuilder().withUrl("/broadcastHub").bui
 connection.on("ReceiveMessage", function (user, message, json) {
   var msg = message.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
   showToast(msg);
-  alert(json);
+  //alert(json);
 });
 
 connection.start().then(function () {  

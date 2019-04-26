@@ -15,6 +15,9 @@ using webGDPR.ViewModels;
 using webGDPR.Models;
 using webGDPR.Infrastructure.CustomWebSockets;
 using webGDPR.Infrastructure;
+using webGDPR.Hubs;
+using Microsoft.AspNetCore.SignalR;
+using Newtonsoft.Json;
 
 namespace webGDPR.Controllers
 {
@@ -26,18 +29,41 @@ namespace webGDPR.Controllers
 		IMapper _mapper;
 		ICustomWebSocketMessageHandler _webSocketMessageHandler;
 		ICustomWebSocketFactory _wsFactory;
+		private readonly IHubContext<BroadcastHub> _hubContext;
 
-		public CollarController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IMapper mapper, ICustomWebSocketMessageHandler webSocketMessageHandler, ICustomWebSocketFactory wsFactory)
+		public CollarController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IMapper mapper, ICustomWebSocketMessageHandler webSocketMessageHandler, ICustomWebSocketFactory wsFactory, IHubContext<BroadcastHub> hubContext)
 		{
             _context = context;
 			_userManager = userManager;
 			_mapper = mapper;
 			_webSocketMessageHandler = webSocketMessageHandler;
 			_wsFactory = wsFactory;
+			_hubContext = hubContext;
 		}
 
-        // GET: Collar
-        public async Task<IActionResult> Index()
+		public async Task SendToAllAsync(string action, Collar collar)
+		{
+			string message = string.Empty;
+			string json = JsonConvert.SerializeObject(collar);
+			//TODO: localize
+			if (action == nameof(Edit))
+			{
+				message = $"{collar.Name} modified.";
+			}
+			else if (action == nameof(Create))
+			{
+				message = $"{collar.Name} created.";
+			}
+			else if (action == nameof(Delete))
+			{
+				message = $"{collar.Name} deleted.";
+			}
+
+			await _hubContext.Clients.All.SendAsync("ReceiveMessage", _userManager.GetUserName(User), message, json);
+		}
+
+		// GET: Collar
+		public async Task<IActionResult> Index()
         {
 			List<CollarViewModel> model = new List<CollarViewModel>();
 			string UserId = _context.User.FirstOrDefault(u => u.OwnerID == _userManager.GetUserId(User)).UserID;
@@ -271,6 +297,7 @@ namespace webGDPR.Controllers
 				}
 				_context.Add(c);
                 await _context.SaveChangesAsync();
+				await SendToAllAsync(nameof(Create), c);
 				bool isLost = false;
 				if (collar.PetId != null)
 				{
@@ -380,6 +407,7 @@ namespace webGDPR.Controllers
 					else {
 						cc.IsLost = false;
 					}
+					await SendToAllAsync(nameof(Edit), c);
 					await _webSocketMessageHandler.SendCollarCoreAsync(cc, _userManager.GetUserName(User), _wsFactory);
 				}
 				catch (DbUpdateConcurrencyException)
@@ -392,7 +420,7 @@ namespace webGDPR.Controllers
                     {
                         throw;
                     }
-                }
+                }				
 				return RedirectToAction(nameof(UserController.Dashboard), "User");
 			}
 
@@ -465,6 +493,7 @@ namespace webGDPR.Controllers
 			RemovePet(id);
 
 			await _context.SaveChangesAsync();
+			await SendToAllAsync(nameof(Edit), collar);
 			//send message to connected devices
 			await _webSocketMessageHandler.SendDeletedCollarAsync(collar.CollarNumber, _userManager.GetUserName(User), _wsFactory);
 			return RedirectToAction(nameof(Index));
