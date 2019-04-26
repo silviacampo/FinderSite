@@ -48,15 +48,17 @@ namespace webGDPR.Controllers
 			_hubContext = hubContext;
 		}
 		//https://stackoverflow.com/questions/27299289/how-to-get-signalr-hub-context-in-a-asp-net-core/46319153#46319153
-		public void SendToAll(string message)
+		public async Task SendToAllAsync(string message)
 		{
-			_hubContext.Clients.All.SendAsync("Send", message);
+			await _hubContext.Clients.All.SendAsync("ReceiveMessage", _userManager.GetUserName(User), message);
 		}
 
 		// GET: Pet
 		public async Task<IActionResult> Index()
         {
-            List<PetViewModel> model = new List<PetViewModel>();
+			await SendToAllAsync("TEST FROM PET");
+
+			List<PetViewModel> model = new List<PetViewModel>();
             string UserId = _context.User.FirstOrDefault(u => u.OwnerID == _userManager.GetUserId(User)).UserID;
 
             List<Pet> pets = await _context.Pet.AsNoTracking().Include(c => c.LastTrackingInfo).Include(m => m.LastMode).Include(b => b.LastCollar).ThenInclude(c => c.Collar).OrderBy(p=>p.UserId).ToListAsync();
