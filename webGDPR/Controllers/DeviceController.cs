@@ -65,7 +65,7 @@ namespace webGDPR.Controllers
 				message = $"{device.AliasName} hast been authorize to connect.";
 			}
 
-			await _hubContext.Clients.All.SendAsync("ReceiveMessage", _userManager.GetUserName(User), message, json);
+			await _hubContext.Clients.Group(_userManager.GetUserName(User)).SendAsync("ReceiveMessage", _userManager.GetUserName(User), message, json);
 		}
 
 		// GET: Device

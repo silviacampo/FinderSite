@@ -59,7 +59,7 @@ namespace webGDPR.Controllers
 				message = $"{collar.Name} deleted.";
 			}
 
-			await _hubContext.Clients.All.SendAsync("ReceiveMessage", _userManager.GetUserName(User), message, json);
+			await _hubContext.Clients.Group(_userManager.GetUserName(User)).SendAsync("ReceiveMessage", _userManager.GetUserName(User), message, json);
 		}
 
 		// GET: Collar
