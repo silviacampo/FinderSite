@@ -14,6 +14,16 @@
 			_userManager = userManager;
 		}
 
+		public async Task EchoMessage(string user, string message)
+		{
+			await Clients.Caller.SendAsync("ReceiveMessage", _userManager.GetUserName(this.Context.User), message);
+		}
+
+		public async Task RespondMessage(string user, string message, string ConnectionId)
+		{
+			await Clients.Client(ConnectionId).SendAsync("ReceiveMessage", _userManager.GetUserName(this.Context.User), message);
+		}
+
 		public async Task SendMessage(string user, string message)
 		{
 			await Clients.All.SendAsync("ReceiveMessage", _userManager.GetUserName(this.Context.User), message);
