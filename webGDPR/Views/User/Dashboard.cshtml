@@ -144,7 +144,7 @@
 									</a>
 								</td>
 								<td class="small">
-									<a asp-controller="Device" asp-action="Edit" asp-route-id="@d.DeviceId" title="@Localizer["Edit"]" target="_blank"><i class="fa fa-edit fa-fw" aria-hidden="true"></i></a>
+									<a asp-controller="Device" asp-action="Edit" asp-route-id="@d.DeviceId" title="@Localizer["Edit"]"><i class="fa fa-edit fa-fw" aria-hidden="true"></i></a>
 									@if (d.Banned)
 									{
 										<a class="unBan" data-id="@d.DeviceId" data-name="@d.GetName" title="@Localizer["Authorize to connect"]"><i class="fa fa-check-circle fa-fw" aria-hidden="true"></i></a>
@@ -288,7 +288,7 @@
 
 							</td>
 							<td class="small">
-								<a asp-controller="Base" asp-action="Edit" asp-route-id="@item.BaseId" target="_blank" title="@Localizer["Edit"]"><i class="fa fa-edit fa-fw" aria-hidden="true"></i></a>
+								<a asp-controller="Base" asp-action="Edit" asp-route-id="@item.BaseId" title="@Localizer["Edit"]"><i class="fa fa-edit fa-fw" aria-hidden="true"></i></a>
 								<a class="openDeleteBaseDialog" data-id="@item.BaseId" data-base="@Newtonsoft.Json.JsonConvert.SerializeObject(item)" title="@Localizer["Delete"]"><i class="fa fa-trash fa-fw" aria-hidden="true"></i></a>
 							</td>
 						</tr>
@@ -410,7 +410,7 @@
 								</div>
 							</td>
 							<td class="small">
-								<a asp-controller="Collar" asp-action="Edit" asp-route-id="@item.CollarId" target="_blank" title="@Localizer["Edit"]"><i class="fa fa-edit fa-fw" aria-hidden="true"></i></a>
+								<a asp-controller="Collar" asp-action="Edit" asp-route-id="@item.CollarId" title="@Localizer["Edit"]"><i class="fa fa-edit fa-fw" aria-hidden="true"></i></a>
 								<a class="openDeleteCollarDialog" data-id="@item.CollarId" data-collar="@Newtonsoft.Json.JsonConvert.SerializeObject(item)" data-pet="@(p==null? string.Empty: p.Name)" title="@Localizer["Delete"]"><i class="fa fa-trash fa-fw" aria-hidden="true"></i></a>
 							</td>
 						</tr>
@@ -458,7 +458,7 @@
 									}
 								</td>
 								<td class="small">
-									<a asp-controller="Pet" asp-action="Edit" asp-route-id="@p.PetId" target="_blank" title="@Localizer["Edit"]"><i class="fa fa-edit fa-fw" aria-hidden="true"></i></a>
+									<a asp-controller="Pet" asp-action="Edit" asp-route-id="@p.PetId" title="@Localizer["Edit"]"><i class="fa fa-edit fa-fw" aria-hidden="true"></i></a>
 									<a class="openDeletePetDialog" data-id="@p.PetId" data-pet="@Newtonsoft.Json.JsonConvert.SerializeObject(p, Newtonsoft.Json.Formatting.None, new Newtonsoft.Json.JsonSerializerSettings { PreserveReferencesHandling = Newtonsoft.Json.PreserveReferencesHandling.Objects})" data-collar="@item.Name" title="@Localizer["Delete"]"><i class="fa fa-trash fa-fw" aria-hidden="true"></i></a>
 								</td>
 							</tr>
@@ -523,7 +523,7 @@
 									}
 								</td>
 								<td class="small">
-									<a asp-controller="Pet" asp-action="Edit" asp-route-id="@item.PetId" target="_blank" title="@Localizer["Edit"]"><i class="fa fa-edit fa-fw" aria-hidden="true"></i></a>
+									<a asp-controller="Pet" asp-action="Edit" asp-route-id="@item.PetId" title="@Localizer["Edit"]"><i class="fa fa-edit fa-fw" aria-hidden="true"></i></a>
 									<a class="openDeletePetDialog" data-id="@item.PetId" data-pet="@Newtonsoft.Json.JsonConvert.SerializeObject(item, Newtonsoft.Json.Formatting.None, new Newtonsoft.Json.JsonSerializerSettings { PreserveReferencesHandling = Newtonsoft.Json.PreserveReferencesHandling.Objects})" data-collar="" title="@Localizer["Delete"]"><i class="fa fa-trash fa-fw" aria-hidden="true"></i></a>
 								</td>
 							</tr>
