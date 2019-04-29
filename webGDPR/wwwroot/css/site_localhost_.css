@@ -558,8 +558,14 @@ div.timelineContainer {
 	bottom: 5%;
 	right: 5%;
 	width: 400px;
+	
 }
 
 .modal-open {
+	overflow: scroll;
+}
+
+.conversation-body {
+	height: 300px;
 	overflow: scroll;
 }
