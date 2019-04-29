@@ -273,6 +273,7 @@ $("#chatModal").draggable({
 $("#chat-input").keyup(function (event) {
   if (event.keyCode === 13) {
     $(".conversation-body").append('<li class="even read"><span class="user">You</span> <p>' + $("#chat-input").val() + '</p> <span class="time">' + new Date().getHours()+':'+ new Date().getMinutes() +'</span></li>' );
+    $('.conversation-body').animate({ scrollTop: $('.conversation-body').prop("scrollHeight") }, 500);
     $("#chat-input").val("");
   }
 });  

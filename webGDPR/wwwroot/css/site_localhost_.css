@@ -565,7 +565,51 @@ div.timelineContainer {
 	overflow: scroll;
 }
 
+.modal-header {
+	color: #fff;
+	background: #20639b;
+	border-top-left-radius: 25px;
+	border-top-right-radius: 25px;
+}
+
+.modal-header .close {
+	color: #fff;
+}
+
+.modal-content {
+	border-radius: 25px;
+	border-color: #20639b;
+}
+
+.modal-body {
+	background: #20639b;
+	border-bottom-left-radius: 25px;
+	border-bottom-right-radius: 25px;
+}
+
 .conversation-body {
 	height: 300px;
-	overflow: scroll;
+	overflow-y: auto;	
+	list-style: none;
 }
+
+.conversation-body > li {
+	display: list-item;
+}
+
+	.conversation-body > li .user {
+		font-weight: bold;
+		color: #fff;
+	}
+
+	.conversation-body > li p {
+		color: rgba(190, 192, 194, 0.8);
+		font-size: 11px;
+	}
+
+	.conversation-body > li .time {
+		float: right;
+		font-style: italic;
+		color: rgba(190, 192, 194, 0.8);
+		font-size: 11px;
+	}
