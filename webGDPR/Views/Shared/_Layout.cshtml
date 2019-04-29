@@ -26,8 +26,21 @@
 	<link rel="icon" href="~/favicon_@ViewData["Host"]_.ico" type="image/x-icon" sizes="16x16">
 </head>
 <body>
-	<div id="snackbar">toast</div>
-	<nav class="navbar navbar-inverse navbar-fixed-top">
+	<div id="toast">toast</div>
+<div id="chatModal" class="fade chatmodeless">
+		<div class="chatmodal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title">Talk</h4>
+
+				</div>
+				<div class="modal-body">
+					<div class="chat-conversation" style="display: block; top: 241px; opacity: 1;"> <div class="conversation-header"> <a href="#" class="conversation-close"><i class="entypo-cancel"></i></a> <span class="user-status is-offline"></span> <span class="display-name">Daniel A. Pena</span> <small>Offline</small> </div> <ul class="conversation-body"><li class="odd unread"><span class="user">Daniel A. Pena</span><p>I am going out.</p><span class="time">08:21</span></li><li class="odd unread"><span class="user">Daniel A. Pena</span><p>Call me when you see this message.</p><span class="time">08:27</span></li></ul> <div class="chat-textarea"> <textarea class="form-control autogrow" placeholder="Type your message" style="overflow: hidden; overflow-wrap: break-word; resize: horizontal; height: 32px;"></textarea> </div> </div>
+				</div>
+			</div>			
+		</div>
+	</div>	<nav class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
 			<div class="navbar-header">
 				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -36,7 +49,7 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				<button class="dropdown" id="languagebutton"><partial name="_SelectLanguagePartial" /></button>				
+				<button class="dropdown" id="languagebutton"><partial name="_SelectLanguagePartial" /></button>
 				<a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">@ViewData["Host"]</a>
 			</div>
 			<div class="navbar-collapse collapse">
@@ -59,7 +72,6 @@
 			</div>
 		</div>
 	</nav>
-
 	<partial name="_CookieConsentPartial" />
 
 	<div class="container body-content">
@@ -132,6 +144,7 @@
 
 	<environment include="Development">
 		<script src="~/lib/jquery/dist/jquery.js"></script>
+		<script src="~/lib/jqueryui/jquery-ui.js"></script>
 		<script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
 		<script src="~/lib/twitter-bootstrap-wizard/jquery.bootstrap.wizard.js"></script>
 		<script src="//cdn.ckeditor.com/4.10.0/standard/ckeditor.js"></script>
@@ -157,6 +170,7 @@
 				crossorigin="anonymous"
 				integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT">
 		</script>
+		<script src="~/lib/jqueryui/jquery-ui.min.js"></script>
 		<script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/bootstrap.min.js"
 				asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
 				asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"

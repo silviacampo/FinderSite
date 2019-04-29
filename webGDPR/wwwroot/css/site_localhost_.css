@@ -522,7 +522,7 @@ div.timelineContainer {
 	min-height: 44px;
 }
 
-#snackbar {
+#toast {
 	visibility: hidden;
 	min-width: 250px;
 	margin-left: -125px;
@@ -538,8 +538,28 @@ div.timelineContainer {
 	font-size: 17px;
 }
 
-	#snackbar.show {
-		visibility: visible;
-		-webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
-		animation: fadein 0.5s, fadeout 0.5s 2.5s;
-	}
+#toast.show {
+	visibility: visible;
+	-webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+	animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+
+.chatmodal-dialog {
+	margin-right: 0;
+	margin-left: 0;
+	overflow: hidden;
+}
+
+.chatmodeless {
+	position: fixed;
+	z-index: 10;
+	top: auto;
+	left: auto;
+	bottom: 5%;
+	right: 5%;
+	width: 400px;
+}
+
+.modal-open {
+	overflow: scroll;
+}
