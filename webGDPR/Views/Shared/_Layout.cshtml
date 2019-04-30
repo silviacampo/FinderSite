@@ -29,7 +29,7 @@
 	<div id="toast">toast</div>
 
 	<div id="chatModal" class="fade chatmodeless">
-		<div class="chatmodal-dialog">
+		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -48,7 +48,7 @@
 			</div>
 		</div>
 	</div>
-
+	
 	<nav class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
 			<div class="navbar-header">
@@ -161,6 +161,7 @@
 		<script src="https://maps.googleapis.com/maps/api/js?key=@Configuration.GetSection("GoogleMapKey")["Dev"]&language=@Localizer["mapLanguage"]"></script>
 		<script src="~/lib/bootstrap/dist/js/mdb.js"></script>
 		<script src="~/lib/jquery/dist/jquery.easypiechart.js"></script>
+		<script src="~/lib/signalr/dist/browser/signalr.js"></script>
 		<script src="~/js/site.js" asp-append-version="true"></script>
 		<script src="~/js/sitepetedit.js" asp-append-version="true"></script>
 		<script src="~/js/sitepetstats.js" asp-append-version="true"></script>
@@ -192,6 +193,7 @@
 		<script src="https://maps.googleapis.com/maps/api/js?key=@Configuration.GetSection("GoogleMapKey")["Prod"]&language=@Localizer["mapLanguage"]"></script>
 		<script src="~/lib/bootstrap/dist/js/mdb.js"></script>
 		<script src="~/lib/jquery/dist/jquery.easypiechart.min.js"></script>
+		<script src="~/lib/signalr/dist/browser/signalr.min.js"></script>
 		<script src="~/js/site.min.js" asp-append-version="true"></script>
 	</environment>
 

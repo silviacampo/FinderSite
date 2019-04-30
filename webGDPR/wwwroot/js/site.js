@@ -270,11 +270,42 @@ $("#chatModal").draggable({
   handle: ".modal-content"
 });
 
-$("#chat-input").keyup(function (event) {
-  if (event.keyCode === 13) {
-    $(".conversation-body").append('<li class="even read"><span class="user">You</span> <p>' + $("#chat-input").val() + '</p> <span class="time">' + new Date().getHours()+':'+ new Date().getMinutes() +'</span></li>' );
-    $('.conversation-body').animate({ scrollTop: $('.conversation-body').prop("scrollHeight") }, 500);
-    $("#chat-input").val("");
-  }
-});  
+$("#chatModal").resizable({
+  //alsoResize: ".modal-dialog",
+  minHeight: 300,
+  minWidth: 300
+});
+
+$('#chatModal').on('show.bs.modal', function (e) {
+  alert("I want this to appear after the modal has opened!");
+  var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
+  connection.on("ReceiveMessage", function (user, message) {
+    var msg = message.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    var encodedMsg = user + " says " + msg;
+    var li = document.createElement("li");
+    li.textContent = encodedMsg;
+    $(".conversation-body").append(li);
+  });
+  connection.start().then(function () {
+    $("#chat-input").keyup(function (event) {
+      if (event.keyCode === 13) {
+        $(".conversation-body").append('<li class="even read"><span class="user">You</span> <p>' + $("#chat-input").val() + '</p> <span class="time">' + new Date().getHours() + ':' + new Date().getMinutes() + '</span></li>');
+        $('.conversation-body').animate({ scrollTop: $('.conversation-body').prop("scrollHeight") }, 500);
+        connection.invoke("SendMessage", "test", $("#chat-input").val()).catch(function (err) {
+          return console.error(err.toString());
+        });
+        $("#chat-input").val("");
+      }
+    });
+  }).catch(function (err) {
+    return console.error(err.toString());
+  });
+});
+
+$('#chatModal').on('hide.bs.modal', function (e) {
+  alert("I want this to appear after the modal has opened!");
+});
+
+
+ 
 
