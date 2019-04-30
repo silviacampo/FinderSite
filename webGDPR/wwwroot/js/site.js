@@ -304,8 +304,10 @@ $('#chatModal').on('show.bs.modal', function (e) {
 
 $('#chatModal').on('hide.bs.modal', function (e) {
   //alert("I want this to appear after the modal has opened!");
-  connection = null;
   $('#chatModal').css("z-index", 0);
+  connection.stop().then(function () {
+    connection = null;
+  }); 
 });
 
 

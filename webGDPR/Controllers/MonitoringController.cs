@@ -23,6 +23,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Localization;
 using System.Net.WebSockets;
 using System.Threading;
+using webGDPR.Hubs;
+using Microsoft.AspNetCore.SignalR;
 
 namespace webGDPR.Controllers
 {
@@ -40,8 +42,9 @@ namespace webGDPR.Controllers
 		ICustomWebSocketFactory _wsFactory;
 		private readonly SignInManager<ApplicationUser> _signInManager;
 		private readonly IStringLocalizer<MonitoringController> _localizer;
+		private readonly IHubContext<ChatHub> _hubContext;
 
-		public MonitoringController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IMapper mapper, IHostingEnvironment hostingEnvironment, ICustomWebSocketMessageHandler webSocketMessageHandler, ICustomWebSocketFactory wsFactory, SignInManager<ApplicationUser> signInManager, IStringLocalizer<MonitoringController> localizer)
+		public MonitoringController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IMapper mapper, IHostingEnvironment hostingEnvironment, ICustomWebSocketMessageHandler webSocketMessageHandler, ICustomWebSocketFactory wsFactory, SignInManager<ApplicationUser> signInManager, IStringLocalizer<MonitoringController> localizer, IHubContext<ChatHub> hubContext)
 		{
 			_context = context;
 			_userManager = userManager;
@@ -51,6 +54,7 @@ namespace webGDPR.Controllers
 			_wsFactory = wsFactory;
 			_signInManager = signInManager;
 			_localizer = localizer;
+			_hubContext = hubContext;
 		}
 
 		public async Task<IActionResult> Index(string searchString, string currentFilter, int? pageIndex)
@@ -105,6 +109,13 @@ namespace webGDPR.Controllers
 			vm.Users = await PaginatedList<User>.CreateAsync(
 				_context.User.Where(s => s.UserID.Contains(searchString) || s.Name.Contains(searchString)).OrderBy(d => d.Name).AsNoTracking(), pageIndex ?? 1, pageSize);
 			return View(vm);
+		}
+
+		public IActionResult ChatRoom()
+		{
+			var chatClients = _hubContext.Clients.All;
+			//foreach(var test in chatClients)
+			return View();
 		}
 
 		public async Task<IActionResult> SendCloseConnection(Guid guid)
