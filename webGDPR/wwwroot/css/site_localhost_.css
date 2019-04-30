@@ -550,15 +550,13 @@ div.timelineContainer {
 	overflow: hidden;
 }
 
-.chatmodeless {
-	position: fixed;
-	z-index: 10;
+#chatModal {
+	position: fixed;	
 	top: auto;
 	left: auto;
 	bottom: 5%;
 	right: 5%;
 	width: 400px;
-	
 }
 
 .modal-open {

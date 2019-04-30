@@ -275,10 +275,10 @@ $("#chatModal").resizable({
   minHeight: 300,
   minWidth: 300
 });
-
+var connection;
 $('#chatModal').on('show.bs.modal', function (e) {
-  alert("I want this to appear after the modal has opened!");
-  var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
+  $('#chatModal').css("z-index", 10);
+  connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
   connection.on("ReceiveMessage", function (user, message) {
     var msg = message.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
     var encodedMsg = user + " says " + msg;
@@ -303,7 +303,9 @@ $('#chatModal').on('show.bs.modal', function (e) {
 });
 
 $('#chatModal').on('hide.bs.modal', function (e) {
-  alert("I want this to appear after the modal has opened!");
+  //alert("I want this to appear after the modal has opened!");
+  connection = null;
+  $('#chatModal').css("z-index", 0);
 });
 
 
