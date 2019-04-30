@@ -205,7 +205,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 							}
 							else
 							{
-								await SendLoginAsync(userWebSocket);
+								await SendLoginAsync(userWebSocket, dbContext);
 								if (user.MissingSubscription)
 								{
 									await SendMissingSubscriptionMessageAsync(true, userWebSocket.Username, wsFactory);
@@ -455,7 +455,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 
 						//return guid
 						userWebSocket.DeviceId = device.DeviceId;
-						await SendDeviceInformation(userWebSocket, device.DeviceId);
+						await SendDeviceInformation(userWebSocket, device.DeviceId, dbContext);
 
 						LogDeviceActivity(dbContext, userWebSocket.DeviceId, "Device Id", device.DeviceId);
 						#endregion
@@ -554,7 +554,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 			}
 		}
 
-		private async Task SendLoginAsync(CustomWebSocket userWebSocket)
+		private async Task SendLoginAsync(CustomWebSocket userWebSocket, ApplicationDbContext dbContext)
 		{
 			var msg = new CustomWebSocketMessage
 			{
@@ -568,9 +568,10 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 			log.Info(serialisedMessage);
 			byte[] bytes = Encoding.ASCII.GetBytes(serialisedMessage);
 			await userWebSocket.WebSocket.SendAsync(new ArraySegment<byte>(bytes, 0, bytes.Length), WebSocketMessageType.Text, true, CancellationToken.None);
+			LogDeviceActivity(dbContext, userWebSocket.DeviceId, "Send Login OK", serialisedMessage);
 		}
 
-		private async Task SendDeviceInformation(CustomWebSocket userWebSocket, string c)
+		private async Task SendDeviceInformation(CustomWebSocket userWebSocket, string c, ApplicationDbContext dbContext)
 		{
 			string serialisedText = JsonConvert.SerializeObject(c);
 			var msg = new CustomWebSocketMessage
@@ -585,6 +586,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 			log.Info(serialisedMessage);
 			byte[] bytes = Encoding.ASCII.GetBytes(serialisedMessage);
 			await userWebSocket.WebSocket.SendAsync(new ArraySegment<byte>(bytes, 0, bytes.Length), WebSocketMessageType.Text, true, CancellationToken.None);
+			LogDeviceActivity(dbContext, userWebSocket.DeviceId, "Send Device Information GUID", serialisedMessage);
 
 		}
 
