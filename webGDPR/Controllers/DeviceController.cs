@@ -178,6 +178,9 @@ namespace webGDPR.Controllers
 					if (ws != null)
 					{
 						await _webSocketMessageHandler.SendDeviceBannedMessage(ws, device.Banned); //yes or not
+					if (device.Banned) {
+						await _webSocketMessageHandler.RemoveDeviceBanned(ws, _wsFactory, _context);
+					}
 					}				
 				return true;
 			}
@@ -300,6 +303,10 @@ namespace webGDPR.Controllers
 						if (ws != null)
 						{
 							await _webSocketMessageHandler.SendDeviceBannedMessage(ws, device.Banned); //yes or not
+							if (device.Banned)
+							{
+								await _webSocketMessageHandler.RemoveDeviceBanned(ws, _wsFactory, _context);
+							}
 						}
 					}
 				}

@@ -201,18 +201,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 							if (found != null && found.Banned)
 							{
 								await SendDeviceBannedMessage(userWebSocket, true);
-								wsFactory.Remove(userWebSocket.Guid);
-								LogDeviceActivity(dbContext, userWebSocket.DeviceId, "WebSocket Remove - Device Banned", JsonConvert.SerializeObject(userWebSocket));
-								try
-								{
-									await userWebSocket.WebSocket.CloseAsync(WebSocketCloseStatus.Empty, string.Empty, CancellationToken.None);
-								}
-								catch (Exception e)
-								{
-									log.Error("CustomWebSocketMessageHandler - HandleMessage: Device Banned - " + e.Message);
-								}
-
-								
+								await RemoveDeviceBanned(userWebSocket, wsFactory, dbContext);
 							}
 							else
 							{
@@ -822,6 +811,19 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 			log.Info(serialisedMessage);
 			byte[] bytes = Encoding.ASCII.GetBytes(serialisedMessage);
 			await userWebSocket.WebSocket.SendAsync(new ArraySegment<byte>(bytes, 0, bytes.Length), WebSocketMessageType.Text, true, CancellationToken.None);
+		}
+
+		public async Task RemoveDeviceBanned(CustomWebSocket userWebSocket, ICustomWebSocketFactory wsFactory, ApplicationDbContext dbContext) {
+			wsFactory.Remove(userWebSocket.Guid);
+			LogDeviceActivity(dbContext, userWebSocket.DeviceId, "WebSocket Remove - Device Banned", JsonConvert.SerializeObject(userWebSocket));
+			try
+			{
+				await userWebSocket.WebSocket.CloseAsync(WebSocketCloseStatus.Empty, string.Empty, CancellationToken.None);
+			}
+			catch (Exception e)
+			{
+				log.Error("CustomWebSocketMessageHandler - RemoveDeviceBanned - " + e.Message);
+			}
 		}
 
 		public async Task SendSwitchModeAsync(byte collarNumber, ConfigModeTypes mode, string username, ICustomWebSocketFactory wsFactory, byte[] customConfig = null, string DeviceId = null, string BaseId = null)

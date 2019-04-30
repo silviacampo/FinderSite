@@ -544,7 +544,7 @@ div.timelineContainer {
 	animation: fadein 0.5s, fadeout 0.5s 2.5s;
 }
 
-.chatmodal-dialog {
+/*.chatmodal-dialog {
 	margin-right: 0;
 	margin-left: 0;
 	overflow: hidden;
@@ -612,4 +612,4 @@ div.timelineContainer {
 		font-style: italic;
 		color: rgba(190, 192, 194, 0.8);
 		font-size: 11px;
-	}
+	}*/

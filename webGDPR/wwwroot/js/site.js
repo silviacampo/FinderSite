@@ -265,7 +265,7 @@ function showToast(message) {
   x.className = "show";
   setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
 }
-
+/*
 $("#chatModal").draggable({
   handle: ".modal-header"
 });
@@ -276,5 +276,5 @@ $("#chat-input").keyup(function (event) {
     $('.conversation-body').animate({ scrollTop: $('.conversation-body').prop("scrollHeight") }, 500);
     $("#chat-input").val("");
   }
-});  
+}); */ 
 
