@@ -113,7 +113,7 @@ namespace webGDPR.Controllers
 
 		public IActionResult ChatRoom()
 		{
-			var chatClients = _hubContext.Clients.All;
+			IClientProxy chatClients = _hubContext.Clients.All;
 			//foreach(var test in chatClients)
 			return View();
 		}

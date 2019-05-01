@@ -275,7 +275,9 @@ $("#chatModal").resizable({
   minHeight: 300,
   minWidth: 300
 });
+
 var connection;
+
 $('#chatModal').on('show.bs.modal', function (e) {
   $('#chatModal').css("z-index", 10);
   connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();

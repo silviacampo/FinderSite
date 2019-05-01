@@ -548,6 +548,7 @@ div.timelineContainer {
 	margin-right: 0;
 	margin-left: 0;
 	overflow: hidden;
+	width: 300px !important;
 }
 
 #chatModal {
@@ -570,7 +571,7 @@ div.timelineContainer {
 	border-top-right-radius: 5px;
 }
 
-	#chatModal .modal-dialog .modal-content .modal-header .close {
+#chatModal .modal-dialog .modal-content .modal-header .close {
 		color: #fff;
 	}
 
@@ -579,7 +580,7 @@ div.timelineContainer {
 	border-color: #20639b;
 }
 
-	#chatModal .modal-dialog .modal-content .modal-body {
+#chatModal .modal-dialog .modal-content .modal-body {
 		background: #20639b;
 		border-bottom-left-radius: 5px;
 		border-bottom-right-radius: 5px;
@@ -595,17 +596,17 @@ div.timelineContainer {
 	display: list-item;
 }
 
-	.conversation-body > li .user {
+.conversation-body > li .user {
 		font-weight: bold;
 		color: #fff;
 	}
 
-	.conversation-body > li p {
+.conversation-body > li p {
 		color: rgba(190, 192, 194, 0.8);
 		font-size: 11px;
 	}
 
-	.conversation-body > li .time {
+.conversation-body > li .time {
 		float: right;
 		font-style: italic;
 		color: rgba(190, 192, 194, 0.8);
