@@ -272,7 +272,8 @@ $("#chatModal").draggable({
 
 $("#chatModal").resizable({
   //alsoResize: ".modal-dialog",
-  minHeight: 300,
+  containment: 'parent',
+  minHeight: 200,
   minWidth: 300
 });
 

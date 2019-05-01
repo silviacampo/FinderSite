@@ -544,12 +544,7 @@ div.timelineContainer {
 	animation: fadein 0.5s, fadeout 0.5s 2.5s;
 }
 
-#chatModal .modal-dialog {
-	margin-right: 0;
-	margin-left: 0;
-	overflow: hidden;
-	width: 300px !important;
-}
+
 
 #chatModal {
 	position: fixed;	
@@ -557,8 +552,29 @@ div.timelineContainer {
 	left: auto;
 	bottom: 5%;
 	right: 5%;
-	width: 400px;
+	width: 300px;
+	height: 200px;
 }
+
+#chatModal .modal-dialog {
+	margin: 0;
+	width: inherit;
+	height: inherit;
+}
+
+#chatModal .modal-dialog .modal-content {
+	border-radius: 5px;
+	border-color: #20639b;
+	width: inherit;
+	height: inherit;
+}
+
+	#chatModal .modal-dialog .modal-content .modal-body {
+		background: #20639b;
+		border-bottom-left-radius: 5px;
+		border-bottom-right-radius: 5px;
+		height: calc(100% - 56px);
+	}
 
 .modal-open {
 	overflow: scroll;
@@ -575,20 +591,15 @@ div.timelineContainer {
 		color: #fff;
 	}
 
-#chatModal .modal-dialog .modal-content {
-	border-radius: 5px;
-	border-color: #20639b;
+#chatModal .modal-dialog .modal-content .modal-body .chat-textarea {
+	top: auto;
+	bottom: 5%;
 }
 
-#chatModal .modal-dialog .modal-content .modal-body {
-		background: #20639b;
-		border-bottom-left-radius: 5px;
-		border-bottom-right-radius: 5px;
-	}
-
 .conversation-body {
-	height: 300px;
-	overflow-y: auto;	
+	top: 0px;
+	height: calc(100% - 32px);
+	overflow-y: auto;
 	list-style: none;
 }
 
