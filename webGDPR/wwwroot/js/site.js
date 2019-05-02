@@ -285,9 +285,11 @@ $('#chatModal').on('show.bs.modal', function (e) {
   connection.on("ReceiveMessage", function (user, message) {
     var msg = message.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
     var encodedMsg = user + " says " + msg;
-    var li = document.createElement("li");
-    li.textContent = encodedMsg;
-    $(".conversation-body").append(li);
+    //var li = document.createElement("li");
+    //li.textContent = encodedMsg;
+    //$(".conversation-body").append(li);
+    $(".conversation-body").append('<li class="even read"><span class="user">Trentren</span> <p>' + msg+ '</p> <span class="time">' + new Date().getHours() + ':' + new Date().getMinutes() + '</span></li>');
+
   });
   connection.start().then(function () {
     $("#chat-input").keyup(function (event) {

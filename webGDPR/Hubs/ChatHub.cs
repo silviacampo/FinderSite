@@ -26,14 +26,14 @@
 			await Clients.Client(ConnectionId).SendAsync("ReceiveMessage", _userManager.GetUserName(this.Context.User), message);
 		}
 
-		public async Task SendMessage(string message)
+		public void SendMessage(string message)
 		{
 			var chatUser = ChatHandler.ConnectedUsers.Find(c => c.User == Context.User);
 			if (chatUser.Messages == null) {
 				chatUser.Messages = new HashSet<ChatMessage>();
 			}
 			chatUser.Messages.Add(new ChatMessage { Incoming = true, Message = message, Time = DateTime.Now });
-			await Clients.All.SendAsync("ReceiveMessage", _userManager.GetUserName(this.Context.User), message);
+			//await Clients.All.SendAsync("ReceiveMessage", _userManager.GetUserName(this.Context.User), message);
 		}
 
 		public override Task OnConnectedAsync()

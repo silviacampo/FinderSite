@@ -23,7 +23,8 @@
 		"wwwroot/js/siteuserconnectiontimeline.js",
 		"wwwroot/js/sitedeviceconnectiontimeline.js",
 		"wwwroot/js/sitebasetimeline.js",
-		"wwwroot/js/sitecollartimeline.js"
+		"wwwroot/js/sitecollartimeline.js",
+		"wwwroot/js/siteMonitoringChatroom.js"
 	]
   }
 ]

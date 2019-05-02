@@ -120,6 +120,18 @@ namespace webGDPR.Controllers
 			return View(model);
 		}
 
+		public async Task<IActionResult> SendChatroomMessage([FromForm]string id, [FromForm]string message)
+		{
+			await _hubContext.Clients.Client(id).SendAsync("ReceiveMessage", "Trentren", message);
+			var chatUser = ChatHandler.ConnectedUsers.Find(c => c.ConnectedId == id);
+			if (chatUser.Messages == null)
+			{
+				chatUser.Messages = new HashSet<ChatMessage>();
+			}
+			chatUser.Messages.Add(new ChatMessage { Incoming = false, Message = message, Time = DateTime.Now });
+			return RedirectToAction(nameof(Index));
+		}
+
 		public async Task<IActionResult> SendCloseConnection(Guid guid)
 		{
 			CustomWebSocket userWebSocket = _wsFactory.Client(guid);
