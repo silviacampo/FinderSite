@@ -113,9 +113,11 @@ namespace webGDPR.Controllers
 
 		public IActionResult ChatRoom()
 		{
-			IClientProxy chatClients = _hubContext.Clients.All;
-			//foreach(var test in chatClients)
-			return View();
+			MonitoringChatRoomViewModel model = new MonitoringChatRoomViewModel
+			{
+				ChatUsers = ChatHandler.ConnectedUsers
+			};
+			return View(model);
 		}
 
 		public async Task<IActionResult> SendCloseConnection(Guid guid)

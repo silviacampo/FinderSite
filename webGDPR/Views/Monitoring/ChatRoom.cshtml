@@ -1,0 +1,50 @@
+﻿@model webGDPR.ViewModels.MonitoringChatRoomViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Microsoft.AspNetCore.Identity
+@using webGDPR.Data;
+
+@inject IViewLocalizer Localizer
+@inject UserManager<ApplicationUser> UserManager
+@{
+	ViewData["Title"] = Localizer["Chat Room"];
+}
+<h2>
+	<i class="fa fa-comments fa-fw" aria-hidden="true"></i>&nbsp; @ViewData["Title"]
+</h2>
+<div class="row">
+	<div class="col-md-12">
+		<h2>Chat Room</h2>
+		<table class="table">
+			<thead>
+				<tr>
+					<th scope="col">Connection Id</th>
+					<th scope="col">User</th>
+					<th scope="col">#Messages</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (webGDPR.Hubs.ChatUser cu in Model.ChatUsers)
+				{
+					<tr>
+						<td>@cu.ConnectedId</td>
+						<td>@UserManager.GetUserName(cu.User)</td>
+						<td>@cu.Messages?.Count</td>
+					</tr>
+					@if (cu.Messages != null)
+					{
+					<tr>
+						<td colspan="3">
+							<ul style="list-style-type: none;  margin: 0;  padding: 0;">
+								@foreach (var m in cu.Messages)
+								{
+									<li>@(m.Incoming ? ">>": "<<") @m.Message - @m.Time</li>
+								}
+							</ul>
+						</td>
+					</tr>
+					}
+				}
+			</tbody>
+		</table>
+	</div>
+</div>
