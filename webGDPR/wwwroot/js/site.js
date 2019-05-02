@@ -294,7 +294,7 @@ $('#chatModal').on('show.bs.modal', function (e) {
       if (event.keyCode === 13) {
         $(".conversation-body").append('<li class="even read"><span class="user">You</span> <p>' + $("#chat-input").val() + '</p> <span class="time">' + new Date().getHours() + ':' + new Date().getMinutes() + '</span></li>');
         $('.conversation-body').animate({ scrollTop: $('.conversation-body').prop("scrollHeight") }, 500);
-        connection.invoke("SendMessage", "test", $("#chat-input").val()).catch(function (err) {
+        connection.invoke("SendMessage", $("#chat-input").val()).catch(function (err) {
           return console.error(err.toString());
         });
         $("#chat-input").val("");

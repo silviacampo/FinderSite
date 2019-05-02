@@ -21,12 +21,12 @@
 			await Clients.Caller.SendAsync("ReceiveMessage", _userManager.GetUserName(this.Context.User), message);
 		}
 
-		public async Task RespondMessage(string user, string message, string ConnectionId)
+		public async Task RespondMessage(string message, string ConnectionId)
 		{
 			await Clients.Client(ConnectionId).SendAsync("ReceiveMessage", _userManager.GetUserName(this.Context.User), message);
 		}
 
-		public async Task SendMessage(string user, string message)
+		public async Task SendMessage(string message)
 		{
 			var chatUser = ChatHandler.ConnectedUsers.Find(c => c.User == Context.User);
 			if (chatUser.Messages == null) {

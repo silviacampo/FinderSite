@@ -37,12 +37,24 @@
 							<ul style="list-style-type: none;  margin: 0;  padding: 0;">
 								@foreach (var m in cu.Messages)
 								{
-									<li>@(m.Incoming ? ">>": "<<") @m.Message - @m.Time</li>
+									<li>@(m.Incoming ? ">>": "<<") @m.Message -
+										<script type="text/javascript">
+							  var strDate = new String('@m.Time.ToString("MM/dd/yyyy hh:mm:ss tt") UTC');
+							  var localTime = new Date(strDate);
+							  document.write(localTime.toLocaleString());
+										</script>								
+								</li>
 								}
 							</ul>
 						</td>
 					</tr>
 					}
+					<tr>
+						<td colspan="3">
+							<textarea class="chat-response form-control autogrow" placeholder="Type your response" style="overflow: hidden; overflow-wrap: break-word; resize: horizontal; height: 32px;"></textarea>
+							<button value="Send" data-id="@cu.ConnectedId"/>
+						</td>
+					</tr>
 				}
 			</tbody>
 		</table>
