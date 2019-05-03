@@ -1,10 +1,8 @@
 //dotnet aspnet-codegenerator controller -name DeviceController -async -m webGDPR.Models.Device -dc webGDPR.Data.ApplicationDbContext -namespace webGDPR.Controllers -outDir Controllers
 
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -13,6 +11,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using webGDPR.Data;
 using webGDPR.Hubs;
@@ -32,8 +31,9 @@ namespace webGDPR.Controllers
 		ICustomWebSocketMessageHandler _webSocketMessageHandler;
 		ICustomWebSocketFactory _wsFactory;
 		private readonly IHubContext<BroadcastHub> _hubContext;
+		private readonly ILogger<DeviceController> _logger;
 
-		public DeviceController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IMapper mapper, ICustomWebSocketMessageHandler webSocketMessageHandler, ICustomWebSocketFactory wsFactory, IHubContext<BroadcastHub> hubContext)
+		public DeviceController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IMapper mapper, ICustomWebSocketMessageHandler webSocketMessageHandler, ICustomWebSocketFactory wsFactory, IHubContext<BroadcastHub> hubContext, ILogger<DeviceController> logger)
 		{
             _context = context;
 			_userManager = userManager;
@@ -41,6 +41,7 @@ namespace webGDPR.Controllers
 			_webSocketMessageHandler = webSocketMessageHandler;
 			_wsFactory = wsFactory;
 			_hubContext = hubContext;
+			_logger = logger;
 		}
 
 		//https://stackoverflow.com/questions/27299289/how-to-get-signalr-hub-context-in-a-asp-net-core/46319153#46319153

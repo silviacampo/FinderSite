@@ -18,6 +18,7 @@ using webGDPR.Infrastructure;
 using webGDPR.Hubs;
 using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;
+using Microsoft.Extensions.Logging;
 
 namespace webGDPR.Controllers
 {
@@ -30,8 +31,9 @@ namespace webGDPR.Controllers
 		ICustomWebSocketMessageHandler _webSocketMessageHandler;
 		ICustomWebSocketFactory _wsFactory;
 		private readonly IHubContext<BroadcastHub> _hubContext;
+		private readonly ILogger<CollarController> _logger;
 
-		public CollarController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IMapper mapper, ICustomWebSocketMessageHandler webSocketMessageHandler, ICustomWebSocketFactory wsFactory, IHubContext<BroadcastHub> hubContext)
+		public CollarController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IMapper mapper, ICustomWebSocketMessageHandler webSocketMessageHandler, ICustomWebSocketFactory wsFactory, IHubContext<BroadcastHub> hubContext, ILogger<CollarController> logger)
 		{
             _context = context;
 			_userManager = userManager;
@@ -39,6 +41,7 @@ namespace webGDPR.Controllers
 			_webSocketMessageHandler = webSocketMessageHandler;
 			_wsFactory = wsFactory;
 			_hubContext = hubContext;
+			_logger = logger;
 		}
 
 		public async Task SendToAllAsync(string action, Collar collar)
@@ -285,6 +288,7 @@ namespace webGDPR.Controllers
 				}
 				catch (Exception e)
 				{
+					_logger.LogError("CollarController - Create Error:" + e.Message);
 					c.BaseNumber = 0;
 				}
 				try
@@ -293,6 +297,7 @@ namespace webGDPR.Controllers
 				}
 				catch (Exception e)
 				{
+					_logger.LogError("CollarController - Create Error:" + e.Message);
 					c.CollarNumber = 0;
 				}
 				_context.Add(c);

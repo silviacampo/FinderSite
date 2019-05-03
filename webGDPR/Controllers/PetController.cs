@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using webGDPR.Data;
 using webGDPR.Hubs;
@@ -33,11 +34,12 @@ namespace webGDPR.Controllers
         private readonly IHostingEnvironment _hostingEnvironment;
         IMapper _mapper;
         ICustomWebSocketMessageHandler _webSocketMessageHandler;
-        ICustomWebSocketFactory _wsFactory;
+		private readonly ICustomWebSocketFactory _wsFactory;
         private readonly SignInManager<ApplicationUser> _signInManager;
 		private readonly IHubContext<BroadcastHub> _hubContext;
+		private readonly ILogger<PetController> _logger;
 
-		public PetController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IMapper mapper, IHostingEnvironment hostingEnvironment, ICustomWebSocketMessageHandler webSocketMessageHandler, ICustomWebSocketFactory wsFactory, SignInManager<ApplicationUser> signInManager, IHubContext<BroadcastHub> hubContext)
+		public PetController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IMapper mapper, IHostingEnvironment hostingEnvironment, ICustomWebSocketMessageHandler webSocketMessageHandler, ICustomWebSocketFactory wsFactory, SignInManager<ApplicationUser> signInManager, IHubContext<BroadcastHub> hubContext, ILogger<PetController> logger)
 		{
             _context = context;
             _userManager = userManager;
@@ -47,6 +49,7 @@ namespace webGDPR.Controllers
             _wsFactory = wsFactory;
             _signInManager = signInManager;
 			_hubContext = hubContext;
+			_logger = logger;
 		}
 		//https://stackoverflow.com/questions/27299289/how-to-get-signalr-hub-context-in-a-asp-net-core/46319153#46319153
 		//public async Task SendToAllAsync(string message)
@@ -313,7 +316,9 @@ namespace webGDPR.Controllers
 				Tuple<string, List<string>> files = await ReadFiles(pet);
 				ViewData["imagesFilenames"] = files.Item2;
 			}
-			catch (Exception e) { }
+			catch (Exception e) {
+				_logger.LogError("PetController - Stats Error:" + e.Message);
+			}
 
 			model.MediumAvgDistance = new double[24];
 			for (int j = 0; j < 24; j++)
@@ -481,7 +486,9 @@ namespace webGDPR.Controllers
                 ViewData["pageContent"] = files.Item1;
                 ViewData["imagesFilenames"] = files.Item2;
             }
-            catch (Exception e) { }
+            catch (Exception e) {
+				_logger.LogError("PetController - Edit Error:" + e.Message);
+			}
             return View(model);
         }
 

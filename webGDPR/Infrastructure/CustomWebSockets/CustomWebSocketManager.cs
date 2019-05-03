@@ -118,6 +118,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 			}
 			catch (WebSocketException e)
 			{
+				_logger.LogError("CustomWebSocketManager - Listen: " + e.Message);
 				try
 				{
 					await webSocket.CloseAsync(WebSocketCloseStatus.Empty, null, CancellationToken.None);

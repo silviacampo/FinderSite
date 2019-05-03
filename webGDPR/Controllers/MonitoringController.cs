@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using AutoMapper;
-using log4net.Repository.Hierarchy;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
 using webGDPR.Data;
 using webGDPR.Infrastructure;
@@ -25,11 +22,12 @@ using System.Net.WebSockets;
 using System.Threading;
 using webGDPR.Hubs;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Logging;
 
 namespace webGDPR.Controllers
 {
-    //[ServiceFilter(typeof(HostFilter))]
-    [Authorize]
+	//[ServiceFilter(typeof(HostFilter))]
+	[Authorize]
     public class MonitoringController : Controller
     {
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -43,8 +41,9 @@ namespace webGDPR.Controllers
 		private readonly SignInManager<ApplicationUser> _signInManager;
 		private readonly IStringLocalizer<MonitoringController> _localizer;
 		private readonly IHubContext<ChatHub> _hubContext;
+		private readonly ILogger<MonitoringController> _logger;
 
-		public MonitoringController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IMapper mapper, IHostingEnvironment hostingEnvironment, ICustomWebSocketMessageHandler webSocketMessageHandler, ICustomWebSocketFactory wsFactory, SignInManager<ApplicationUser> signInManager, IStringLocalizer<MonitoringController> localizer, IHubContext<ChatHub> hubContext)
+		public MonitoringController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IMapper mapper, IHostingEnvironment hostingEnvironment, ICustomWebSocketMessageHandler webSocketMessageHandler, ICustomWebSocketFactory wsFactory, SignInManager<ApplicationUser> signInManager, IStringLocalizer<MonitoringController> localizer, IHubContext<ChatHub> hubContext, ILogger<MonitoringController> logger)
 		{
 			_context = context;
 			_userManager = userManager;
@@ -55,6 +54,7 @@ namespace webGDPR.Controllers
 			_signInManager = signInManager;
 			_localizer = localizer;
 			_hubContext = hubContext;
+			_logger = logger;
 		}
 
 		public async Task<IActionResult> Index(string searchString, string currentFilter, int? pageIndex)

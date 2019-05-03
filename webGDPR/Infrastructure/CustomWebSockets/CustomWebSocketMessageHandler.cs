@@ -11,6 +11,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using webGDPR.Data;
 using webGDPR.Models;
@@ -19,7 +20,12 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 {
 	public class CustomWebSocketMessageHandler : ICustomWebSocketMessageHandler
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		//private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		static ILogger<CustomWebSocketMessageHandler> _logger;
+		public CustomWebSocketMessageHandler(ILogger<CustomWebSocketMessageHandler> logger)
+		{
+			_logger = logger;
+		}
 
 		public async Task SendInitialMessages(CustomWebSocket userWebSocket, ApplicationDbContext dbContext, IMapper mapper)
 		{
@@ -51,7 +57,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 				};
 
 				string serialisedBasesMessage = JsonConvert.SerializeObject(msg);
-				log.Info("Initial Bases: " + serialisedBasesMessage);
+				_logger.LogInformation("Initial Bases: " + serialisedBasesMessage);
 				byte[] bytes = Encoding.ASCII.GetBytes(serialisedBasesMessage);
 				await webSocket.SendAsync(new ArraySegment<byte>(bytes, 0, bytes.Length), WebSocketMessageType.Text, true, CancellationToken.None);
 
@@ -89,7 +95,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 				};
 
 				string serialisedCollarsMessage = JsonConvert.SerializeObject(msg2);
-				log.Info("Initial Collars: " + serialisedCollarsMessage);
+				_logger.LogInformation("Initial Collars: " + serialisedCollarsMessage);
 				byte[] bytes2 = Encoding.ASCII.GetBytes(serialisedCollarsMessage);
 				await webSocket.SendAsync(new ArraySegment<byte>(bytes2, 0, bytes2.Length), WebSocketMessageType.Text, true, CancellationToken.None);
 
@@ -117,7 +123,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 				};
 
 				string serialisedFilesMessage = JsonConvert.SerializeObject(filesmsg);
-				log.Info("Last Files: " + serialisedFilesMessage);
+				_logger.LogInformation("Last Files: " + serialisedFilesMessage);
 				byte[] filesbytes = Encoding.ASCII.GetBytes(serialisedFilesMessage);
 				await webSocket.SendAsync(new ArraySegment<byte>(filesbytes, 0, filesbytes.Length), WebSocketMessageType.Text, true, CancellationToken.None);
 
@@ -126,7 +132,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 			}
 			catch (Exception e)
 			{
-				log.Error("CustomWebSocketMessageHandler - SendInitialMessages Error: " + e.Message);
+				_logger.LogError("CustomWebSocketMessageHandler - SendInitialMessages Error: " + e.Message);
 			}
 		}
 
@@ -146,7 +152,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 					}
 					catch (Exception e)
 					{
-						log.Error("CustomWebSocketMessageHandler - LogDeviceActivity Error: " + e.Message);
+						_logger.LogError("CustomWebSocketMessageHandler - LogDeviceActivity Error: " + e.Message);
 					}
 				}
 			}
@@ -181,7 +187,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 
 				var message = JsonConvert.DeserializeObject<CustomWebSocketMessage>(msg);
 				LogDeviceActivity(dbContext, userWebSocket.DeviceId, "Message from device", msg);
-				log.Info(userWebSocket.DeviceId + " - " + msg);
+				_logger.LogInformation(userWebSocket.DeviceId + " - " + msg);
 
 				User user = dbContext.User.FirstOrDefault(u => u.Name == userWebSocket.Username);
 				string UserId = user.UserID;
@@ -224,7 +230,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 							}
 							catch (Exception e)
 							{
-								log.Error("CustomWebSocketMessageHandler - HandleMessage: Wrong Login Credentials - " + e.Message);
+								_logger.LogError("CustomWebSocketMessageHandler - HandleMessage: Wrong Login Credentials - " + e.Message);
 							}
 						}
 					}
@@ -239,7 +245,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 						}
 						catch (Exception e)
 						{
-							log.Error("CustomWebSocketMessageHandler - HandleMessage: Missing Login Credentials - " + e.Message);
+							_logger.LogError("CustomWebSocketMessageHandler - HandleMessage: Missing Login Credentials - " + e.Message);
 						}
 					}
 				}
@@ -254,7 +260,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 						byte collar = packetContent.GetCollar();
 						Packet.PacketType command = packetContent.Header.Command;
 						LogDeviceActivity(dbContext, userWebSocket.DeviceId, "Message from device", $"BaseHWId: {@base}, CollarNumber: {collar}, Command: {command.ToString()}, Content: {packetContent.ToString()}");
-						log.Info(userWebSocket.DeviceId + " - " + $"BaseHWId: {@base}, CollarNumber: {collar}, Command: {command.ToString()}, Content: {packetContent.ToString()}");
+						_logger.LogInformation(userWebSocket.DeviceId + " - " + $"BaseHWId: {@base}, CollarNumber: {collar}, Command: {command.ToString()}, Content: {packetContent.ToString()}");
 
 						//switch (command) {
 						//	case Packet.PacketType.BaseStatus:
@@ -434,7 +440,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 						}
 						else
 						{
-							log.Debug($" New device (diff user, type, platform, manufacturer, model or name): { message.Text}");
+							_logger.LogInformation($" New device (diff user, type, platform, manufacturer, model or name): { message.Text}");
 							device = new Device
 							{
 								Manufacturer = d.Manufacturer,
@@ -541,13 +547,13 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 					}
 					catch (Exception e)
 					{
-						log.Error("CustomWebSocketMessageHandler - HandleMessage: Missing Login Message - " + e.Message);
+						_logger.LogError("CustomWebSocketMessageHandler - HandleMessage: Missing Login Message - " + e.Message);
 					}
 				}
 			}
 			catch (Exception e)
 			{
-				log.Error("CustomWebSocketMessageHandler - HandleMessage Error:" + msg + " - " + e.Message);
+				_logger.LogError("CustomWebSocketMessageHandler - HandleMessage Error:" + msg + " - " + e.Message);
 				LogDeviceActivity(dbContext, userWebSocket.DeviceId, "Message from device rejected", msg + " - " + e.Message);
 				//TODO: remove echo the wrong message
 				await userWebSocket.WebSocket.SendAsync(new ArraySegment<byte>(buffer, 0, result.Count), result.MessageType, result.EndOfMessage, CancellationToken.None);
@@ -565,7 +571,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 			};
 
 			string serialisedMessage = JsonConvert.SerializeObject(msg);
-			log.Info(serialisedMessage);
+			_logger.LogInformation(serialisedMessage);
 			byte[] bytes = Encoding.ASCII.GetBytes(serialisedMessage);
 			await userWebSocket.WebSocket.SendAsync(new ArraySegment<byte>(bytes, 0, bytes.Length), WebSocketMessageType.Text, true, CancellationToken.None);
 			LogDeviceActivity(dbContext, userWebSocket.DeviceId, "Send Login OK", serialisedMessage);
@@ -583,7 +589,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 			};
 
 			string serialisedMessage = JsonConvert.SerializeObject(msg);
-			log.Info(serialisedMessage);
+			_logger.LogInformation(serialisedMessage);
 			byte[] bytes = Encoding.ASCII.GetBytes(serialisedMessage);
 			await userWebSocket.WebSocket.SendAsync(new ArraySegment<byte>(bytes, 0, bytes.Length), WebSocketMessageType.Text, true, CancellationToken.None);
 			LogDeviceActivity(dbContext, userWebSocket.DeviceId, "Send Device Information GUID", serialisedMessage);
@@ -601,7 +607,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 			};
 
 			string serialisedMessage = JsonConvert.SerializeObject(msg);
-			log.Info(serialisedMessage);
+			_logger.LogInformation(serialisedMessage);
 			await BroadcastAll(serialisedMessage, wsFactory, dbContext);
 		}
 
@@ -625,7 +631,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 				if (uws.CredentialsChecked)
 					await uws.WebSocket.SendAsync(new ArraySegment<byte>(buffer, 0, buffer.Length), WebSocketMessageType.Text, true, CancellationToken.None);
 				else
-					log.Debug($"Missing Credentials: {uws.DeviceId} - Message: {strMsg} ");
+					_logger.LogInformation($"Missing Credentials: {uws.DeviceId} - Message: {strMsg} ");
 			}
 		}
 
@@ -676,7 +682,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 			};
 
 			string serialisedMessage = JsonConvert.SerializeObject(msg);
-			log.Info(serialisedMessage);
+			_logger.LogInformation(serialisedMessage);
 			byte[] bytes = Encoding.ASCII.GetBytes(serialisedMessage);
 			await BroadcastGroup(bytes, username, wsFactory);
 		}
@@ -693,7 +699,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 			};
 
 			string serialisedMessage = JsonConvert.SerializeObject(msg);
-			log.Info(serialisedMessage);
+			_logger.LogInformation(serialisedMessage);
 			byte[] bytes = Encoding.ASCII.GetBytes(serialisedMessage);
 			await BroadcastGroup(bytes, username, wsFactory);
 		}
@@ -708,7 +714,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 			};
 
 			string serialisedMessage = JsonConvert.SerializeObject(msg);
-			log.Info("CustomWebSocketMessageHandler - SendDeletedBaseAsync " + serialisedMessage);
+			_logger.LogInformation("CustomWebSocketMessageHandler - SendDeletedBaseAsync " + serialisedMessage);
 			byte[] buffer = Encoding.ASCII.GetBytes(serialisedMessage);
 			await userWebSocket.WebSocket.SendAsync(new ArraySegment<byte>(buffer, 0, buffer.Length), WebSocketMessageType.Text, true, CancellationToken.None);
 		}
@@ -725,7 +731,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 			};
 
 			string serialisedMessage = JsonConvert.SerializeObject(msg);
-			log.Info(serialisedMessage);
+			_logger.LogInformation(serialisedMessage);
 			byte[] bytes = Encoding.ASCII.GetBytes(serialisedMessage);
 			await BroadcastGroup(bytes, username, wsFactory);
 		}
@@ -742,7 +748,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 			};
 
 			string serialisedMessage = JsonConvert.SerializeObject(msg);
-			log.Info(serialisedMessage);
+			_logger.LogInformation(serialisedMessage);
 			byte[] bytes = Encoding.ASCII.GetBytes(serialisedMessage);
 			await BroadcastGroup(bytes, username, wsFactory);
 		}
@@ -758,7 +764,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 			};
 
 			string serialisedMessage = JsonConvert.SerializeObject(msg);
-			log.Info("CustomWebSocketMessageHandler - SendDeletedCollarAsync " + serialisedMessage);
+			_logger.LogInformation("CustomWebSocketMessageHandler - SendDeletedCollarAsync " + serialisedMessage);
 			byte[] buffer = Encoding.ASCII.GetBytes(serialisedMessage);
 			await userWebSocket.WebSocket.SendAsync(new ArraySegment<byte>(buffer, 0, buffer.Length), WebSocketMessageType.Text, true, CancellationToken.None);
 		}
@@ -775,7 +781,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 			};
 
 			string serialisedMessage = JsonConvert.SerializeObject(msg);
-			log.Info(serialisedMessage);
+			_logger.LogInformation(serialisedMessage);
 			byte[] bytes = Encoding.ASCII.GetBytes(serialisedMessage);
 			await BroadcastGroup(bytes, username, wsFactory);
 		}
@@ -792,7 +798,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 			};
 
 			string serialisedMessage = JsonConvert.SerializeObject(msg);
-			log.Info(serialisedMessage);
+			_logger.LogInformation(serialisedMessage);
 			byte[] bytes = Encoding.ASCII.GetBytes(serialisedMessage);
 			await BroadcastGroup(bytes, username, wsFactory);
 		}
@@ -810,7 +816,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 			};
 
 			string serialisedMessage = JsonConvert.SerializeObject(msg);
-			log.Info(serialisedMessage);
+			_logger.LogInformation(serialisedMessage);
 			byte[] bytes = Encoding.ASCII.GetBytes(serialisedMessage);
 			await userWebSocket.WebSocket.SendAsync(new ArraySegment<byte>(bytes, 0, bytes.Length), WebSocketMessageType.Text, true, CancellationToken.None);
 		}
@@ -824,7 +830,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 			}
 			catch (Exception e)
 			{
-				log.Error("CustomWebSocketMessageHandler - RemoveDeviceBanned - " + e.Message);
+				_logger.LogInformation("CustomWebSocketMessageHandler - RemoveDeviceBanned - " + e.Message);
 			}
 		}
 
@@ -841,7 +847,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 			};
 
 			string serialisedMessage = JsonConvert.SerializeObject(msg);
-			log.Info(serialisedMessage);
+			_logger.LogInformation(serialisedMessage);
 			byte[] bytes = Encoding.ASCII.GetBytes(serialisedMessage);
 
 			if (DeviceId == "127")
@@ -869,7 +875,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 			};
 
 			string serialisedMessage = JsonConvert.SerializeObject(msg);
-			log.Info(serialisedMessage);
+			_logger.LogInformation(serialisedMessage);
 			byte[] bytes = Encoding.ASCII.GetBytes(serialisedMessage);
 			await BroadcastGroup(bytes, username, wsFactory);
 		}

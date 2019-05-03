@@ -17,6 +17,7 @@ using webGDPR.Infrastructure;
 using Microsoft.AspNetCore.SignalR;
 using webGDPR.Hubs;
 using Newtonsoft.Json;
+using Microsoft.Extensions.Logging;
 
 namespace webGDPR.Controllers
 {
@@ -27,10 +28,11 @@ namespace webGDPR.Controllers
 		UserManager<ApplicationUser> _userManager;
 		IMapper _mapper;
 		ICustomWebSocketMessageHandler _webSocketMessageHandler;
-		ICustomWebSocketFactory _wsFactory;
+		private readonly ICustomWebSocketFactory _wsFactory;
 		private readonly IHubContext<BroadcastHub> _hubContext;
+		private readonly ILogger<BaseController> _logger;
 
-		public BaseController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IMapper mapper, ICustomWebSocketMessageHandler webSocketMessageHandler,ICustomWebSocketFactory wsFactory, IHubContext<BroadcastHub> hubContext)
+		public BaseController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IMapper mapper, ICustomWebSocketMessageHandler webSocketMessageHandler,ICustomWebSocketFactory wsFactory, IHubContext<BroadcastHub> hubContext, ILogger<BaseController> logger)
 		{
             _context = context;
 			_userManager = userManager;
@@ -38,6 +40,7 @@ namespace webGDPR.Controllers
 			_webSocketMessageHandler = webSocketMessageHandler;
 			_wsFactory = wsFactory;
 			_hubContext = hubContext;
+			_logger = logger;
 		}
 
 		public async Task SendToAllAsync(string action, Base @base)
@@ -264,6 +267,7 @@ namespace webGDPR.Controllers
 					@base.BaseNumber = Convert.ToByte(_context.Base.Where(b => b.UserId == @base.UserId).Count() + 1);
 				}
 				catch (Exception e) {
+					_logger.LogError("BaseController - Create Error:" + e.Message);
 					@base.BaseNumber = 0;
 				}
 				_context.Add(@base);

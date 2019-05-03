@@ -18,8 +18,8 @@ namespace webGDPR.Infrastructure
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 		ICustomWebSocketMessageHandler _webSocketMessageHandler;
-		ICustomWebSocketFactory _wsFactory;
-		ApplicationDbContext _dbContext;
+		private readonly ICustomWebSocketFactory _wsFactory;
+		private readonly ApplicationDbContext _dbContext;
 
 		public GPSFileService(ICustomWebSocketMessageHandler webSocketMessageHandler, ICustomWebSocketFactory wsFactory)
 		{

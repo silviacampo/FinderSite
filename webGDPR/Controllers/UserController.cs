@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using webGDPR.Authorization;
 using webGDPR.Data;
@@ -30,14 +31,16 @@ namespace webGDPR.Controllers
 		IMapper _mapper;
 		ICustomWebSocketMessageHandler _webSocketMessageHandler;
 		ICustomWebSocketFactory _wsFactory;
+		private readonly ILogger<UserController> _logger;
 
-		public UserController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IMapper mapper, ICustomWebSocketMessageHandler webSocketMessageHandler, ICustomWebSocketFactory wsFactory)
+		public UserController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IMapper mapper, ICustomWebSocketMessageHandler webSocketMessageHandler, ICustomWebSocketFactory wsFactory, ILogger<UserController> logger)
 		{
 			_context = context;
 			_userManager = userManager;
 			_mapper = mapper;
 			_webSocketMessageHandler = webSocketMessageHandler;
 			_wsFactory = wsFactory;
+			_logger = logger;
 		}
 
 		// GET: /<controller>/

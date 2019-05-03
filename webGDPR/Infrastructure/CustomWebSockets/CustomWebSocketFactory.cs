@@ -1,25 +1,37 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.Logging;
 
 namespace webGDPR.Infrastructure.CustomWebSockets
 {
 	public class CustomWebSocketFactory : ICustomWebSocketFactory
 	{
 		List<CustomWebSocket> List;
+		private readonly ILogger<CustomWebSocketFactory> _logger;
 
-		public CustomWebSocketFactory(){
+		public CustomWebSocketFactory(ILogger<CustomWebSocketFactory> logger)
+		{
 			List = new List<CustomWebSocket>();
+			_logger = logger;
 		}
 
 		//when connect
 		public void Add(CustomWebSocket uws)
 		{
-			List<CustomWebSocket> socketswithsamedevice = List.Where(d => d.DeviceId == uws.DeviceId).ToList();
-			List.Add(uws);
+			try
+			{
+				List<CustomWebSocket> socketswithsamedevice = List.Where(d => d.DeviceId == uws.DeviceId).ToList();
+			_logger.LogWarning("CustomWebSocketFactory - Add Warning: Existing sockets with same device " + socketswithsamedevice.Count);			
 			foreach(CustomWebSocket c in socketswithsamedevice)
 			{
 				List.Remove(c);
+			}
+			List.Add(uws);
+			}
+			catch (Exception e)
+			{
+				_logger.LogError("CustomWebSocketFactory - Add Error: " + e.Message);
 			}
 		}
 
@@ -30,7 +42,7 @@ namespace webGDPR.Infrastructure.CustomWebSockets
 				List.Remove(Client(guid));
 			}
 			catch (Exception e) {
-				var test = e.Message;
+				_logger.LogError("CustomWebSocketFactory - Remove Error: " + e.Message);
 			}
 		}
 
