@@ -293,8 +293,11 @@ $('#chatModal').on('show.bs.modal', function (e) {
   });
 
   connection.start().then(function () {
-    $("#chat-input").keyup(function (event) {
+    $("#chat-input").unbind();
+    $("#chat-input").bind("keyup",function (event) {
       if (event.keyCode === 13) {
+        event.preventDefault();
+        event.stopPropagation();
         $(".conversation-body").append('<li class="even read"><span class="user">You</span> <p>' + $("#chat-input").val() + '</p> <span class="time">' + new Date().getHours() + ':' + new Date().getMinutes() + '</span></li>');
         $('.conversation-body').animate({ scrollTop: $('.conversation-body').prop("scrollHeight") }, 500);
         connection.invoke("SendMessage", $("#chat-input").val()).catch(function (err) {
