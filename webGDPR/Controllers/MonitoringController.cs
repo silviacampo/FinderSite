@@ -115,7 +115,7 @@ namespace webGDPR.Controllers
 		{
 			MonitoringChatRoomViewModel model = new MonitoringChatRoomViewModel
 			{
-				ChatUsers = ChatHandler.ConnectedUsers
+				ChatUsers = ChatHandler.ConnectedUsers.Where(u => !u.IsChatRoom).ToList()
 			};
 			return View(model);
 		}

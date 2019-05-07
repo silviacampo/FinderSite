@@ -4,6 +4,7 @@
 	using Microsoft.AspNetCore.SignalR;
 	using System;
 	using System.Collections.Generic;
+	using System.Linq;
 	using System.Threading.Tasks;
 	using webGDPR.Data;
 
@@ -23,7 +24,18 @@
 
 		public async Task RespondMessage(string message, string ConnectionId)
 		{
-			await Clients.Client(ConnectionId).SendAsync("ReceiveMessage", _userManager.GetUserName(this.Context.User), message);
+			await Clients.Client(ConnectionId).SendAsync("ReceiveMessage", "Trentren", message);
+			var chatUser = ChatHandler.ConnectedUsers.Find(c => c.ConnectedId == ConnectionId);
+			if (chatUser.Messages == null)
+			{
+				chatUser.Messages = new HashSet<ChatMessage>();
+			}
+			chatUser.Messages.Add(new ChatMessage { Incoming = false, Message = message, Time = DateTime.Now });
+		}
+
+		public void IsChatRoom() {
+			var chatUser = ChatHandler.ConnectedUsers.Find(c => c.User == Context.User);
+			chatUser.IsChatRoom = true;
 		}
 
 		public void SendMessage(string message)
@@ -33,18 +45,38 @@
 				chatUser.Messages = new HashSet<ChatMessage>();
 			}
 			chatUser.Messages.Add(new ChatMessage { Incoming = true, Message = message, Time = DateTime.Now });
-			//await Clients.All.SendAsync("ReceiveMessage", _userManager.GetUserName(this.Context.User), message);
+			var ChatRoomUser = ChatHandler.ConnectedUsers.FirstOrDefault(c => c.IsChatRoom);
+			if (ChatRoomUser != null)
+			{
+				Clients.Client(ChatRoomUser.ConnectedId).SendAsync("ReceiveMessage", Context.ConnectionId, message);
+			}
 		}
 
 		public override Task OnConnectedAsync()
 		{
-			ChatHandler.ConnectedUsers.Add(new ChatUser { ConnectedId = Context.ConnectionId, User = Context.User });
+			ChatUser cu = new ChatUser { ConnectedId = Context.ConnectionId, User = Context.User, Messages = new HashSet<ChatMessage>() };
+			ChatHandler.ConnectedUsers.Add(cu);
+			if (ChatHandler.ConnectedUsers.Exists(c => c.IsChatRoom))
+			{
+				try
+				{
+					string serializedConnection = Newtonsoft.Json.JsonConvert.SerializeObject(new { cu.ConnectedId, Name = _userManager.GetUserName(cu.User), cu.Messages });
+					Clients.Client(ChatHandler.ConnectedUsers.Find(c => c.IsChatRoom).ConnectedId).SendAsync("AddUser", serializedConnection);
+				}
+				catch (Exception e) {
+					var test = e.Message;
+				}
+			}
 			return base.OnConnectedAsync();
 		}
 
 		public override Task OnDisconnectedAsync(Exception exception)
 		{
-			ChatHandler.ConnectedUsers.Remove(ChatHandler.ConnectedUsers.Find(c=>c.ConnectedId == Context.ConnectionId));
+			ChatHandler.ConnectedUsers.Remove(ChatHandler.ConnectedUsers.Find(c => c.ConnectedId == Context.ConnectionId));
+			if (ChatHandler.ConnectedUsers.Exists(c => c.IsChatRoom))
+			{
+				Clients.Client(ChatHandler.ConnectedUsers.Find(c => c.IsChatRoom).ConnectedId).SendAsync("RemoveUser", this.Context.ConnectionId);
+			}
 			return base.OnDisconnectedAsync(exception);
 		}
 	}
@@ -59,7 +91,8 @@
 		public string ConnectedId { get; set; }
 		public System.Security.Claims.ClaimsPrincipal User { get; set; }
 		public HashSet<ChatMessage> Messages { get; set; }
-}
+		public bool IsChatRoom { get; set; }
+	}
 
 	public class ChatMessage
 	{

@@ -14,7 +14,7 @@
 <div class="row">
 	<div class="col-md-12">
 		<h2>Chat Room</h2>
-		<table class="table">
+		<table id="chatUsers" class="table">
 			<thead>
 				<tr>
 					<th scope="col">Connection Id</th>
@@ -30,25 +30,27 @@
 						<td>@UserManager.GetUserName(cu.User)</td>
 						<td>@cu.Messages?.Count</td>
 					</tr>
-					@if (cu.Messages != null)
-					{
-					<tr>
-						<td colspan="3">
-							<ul style="list-style-type: none;  margin: 0;  padding: 0;">
-								@foreach (var m in cu.Messages)
-								{
-									<li>@(m.Incoming ? ">>": "<<") @m.Message -
-										<script type="text/javascript">
+					
+						<tr>
+							<td colspan="3">
+								<ul style="list-style-type: none;  margin: 0;  padding: 0;">
+									@if (cu.Messages != null)
+									{
+										@foreach (var m in cu.Messages)
+										{
+											<li>
+												@(m.Incoming ? ">>" : "<<") @m.Message -
+												<script type="text/javascript">
 							  var strDate = new String('@m.Time.ToString("MM/dd/yyyy hh:mm:ss tt") UTC');
 							  var localTime = new Date(strDate);
 							  document.write(localTime.toLocaleString());
-										</script>								
-								</li>
-								}
-							</ul>
-						</td>
-					</tr>
-					}
+												</script>
+											</li>
+										}
+									}
+									</ul>
+							</td>
+						</tr>					
 					<tr>
 						<td colspan="3">
 							<textarea class="chat-response form-control autogrow" placeholder="Type your response" style="overflow: hidden; overflow-wrap: break-word; resize: horizontal; height: 32px;"></textarea>
@@ -60,3 +62,56 @@
 		</table>
 	</div>
 </div>
+
+@section Scripts {
+	<script>
+		var connectionChatRoom = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
+		connectionChatRoom.on("ReceiveMessage", function (connectionId, message) {
+			var localTime = new Date();
+			$("td:contains('" + connectionId + "')").parent().next().children().children('ul').append('<li> >> ' + message  + ' - ' + localTime.toLocaleString() + '</li>');
+		});
+		connectionChatRoom.on("AddUser", function (data) {
+			var table = document.getElementById('chatUsers');
+			rowCount = table.rows.length;
+			var row = table.insertRow(rowCount);
+			var connection = JSON.parse(data);
+			var cell1 = row.insertCell(-1);
+			cell1.innerHTML = connection.ConnectedId;
+			var cell2 = row.insertCell(-1);
+			cell2.innerHTML = connection.Name;
+			var cell3 = row.insertCell(-1);
+			cell3.innerHTML = connection.Messages.length;
+		});
+		connectionChatRoom.on("RemoveUser", function (connectionId) {
+			$("td:contains('" + connectionId + "')").parent().hide();
+			$("td:contains('" + connectionId + "')").parent().next().hide();
+		});
+		connectionChatRoom.start().then(function () {
+			connectionChatRoom.invoke("IsChatRoom").catch(function (err) {
+				return console.error(err.toString());
+			});
+		}).catch(function (err) {
+			return console.error(err.toString());
+			});
+		$(".sendChatroomMessage").click(function () {
+			var connectionid = $(this).attr('data-id');
+			var message = $(this).prev().val();
+			$.ajax({
+				url: '/monitoring/SendChatroomMessage',
+				type: 'POST',
+				data: {
+					'id': connectionid,
+					'message': message
+				},
+				success: function (data) {
+					var currentrow = $(".sendChatroomMessage[data-id='" + connectionid + "']").parent().parent();
+					currentrow.next().children().children('ul').append('<li> >> ' + message + ' - ' + localTime.toLocaleString() + '</li>');
+				},
+				error: function () {
+					alert("error");
+				}
+			});
+		});
+	</script>
+
+}

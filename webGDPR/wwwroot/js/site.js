@@ -291,6 +291,7 @@ $('#chatModal').on('show.bs.modal', function (e) {
     $(".conversation-body").append('<li class="even read"><span class="user">Trentren</span> <p>' + msg+ '</p> <span class="time">' + new Date().getHours() + ':' + new Date().getMinutes() + '</span></li>');
 
   });
+
   connection.start().then(function () {
     $("#chat-input").keyup(function (event) {
       if (event.keyCode === 13) {
