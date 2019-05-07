@@ -81,6 +81,10 @@
 			cell2.innerHTML = connection.Name;
 			var cell3 = row.insertCell(-1);
 			cell3.innerHTML = connection.Messages.length;
+			var row1 = table.insertRow(rowCount);
+			var cell4 = row1.insertCell(-1);
+			cell4.setAttribute("colspan", "3");
+			cell4.innerHTML = '<ul style="list-style-type: none;  margin: 0;  padding: 0;"></ul>';
 		});
 		connectionChatRoom.on("RemoveUser", function (connectionId) {
 			$("td:contains('" + connectionId + "')").parent().hide();
