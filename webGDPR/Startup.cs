@@ -57,7 +57,7 @@ namespace webGDPR
 			//to generate identity pages
 			// dotnet tool install--global dotnet-aspnet - codegenerator
 			// in powershell:
-			//dotnet aspnet-codegenerator identity - dc webGDPR.Data.ApplicationDbContext --force
+			//dotnet aspnet-codegenerator identity -dc webGDPR.Data.ApplicationDbContext --force
 
 			//services.AddAuthentication()
 			//.AddMicrosoftAccount(microsoftOptions => { ... })
