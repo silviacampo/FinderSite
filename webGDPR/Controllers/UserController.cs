@@ -414,15 +414,15 @@ namespace webGDPR.Controllers
 
 					if (!CollarsStatus[i].IsGPSConnected || CollarsStatus[i].Radio < 50)
 					{
-						var lastTracking = PetTrackingInfos.Where(p => p.CreationDate < CollarsStatus[i].CreationDate).OrderByDescending(p => p.CreationDate).First();
-
-						model.PointsServiceLevel.Add(new PointServiceLevel()
-						{
-							Radio = CollarsStatus[i].Radio,
-							GPS = CollarsStatus[i].IsGPSConnected,
-							Latitude = lastTracking.Latitude,
-							Longitude = lastTracking.Longitude
-						});
+						var lastTracking = PetTrackingInfos.Where(p => p.CreationDate < CollarsStatus[i].CreationDate).OrderByDescending(p => p.CreationDate).FirstOrDefault();
+                        if (lastTracking != null)
+						    model.PointsServiceLevel.Add(new PointServiceLevel()
+						    {
+							    Radio = CollarsStatus[i].Radio,
+							    GPS = CollarsStatus[i].IsGPSConnected,
+							    Latitude = lastTracking.Latitude,
+							    Longitude = lastTracking.Longitude
+						    });
 					}
 
 					//time per Battery charge
