@@ -164,15 +164,17 @@ $(function () {
       url: '/device/BanOn',
       type: 'POST',
       data: {
-        'id': id
+        'id': id,
+        '__RequestVerificationToken': '1234' //'@Context.GetAntiforgeryToken()'
       },
       success: function (data) {
         $(".openBanDialog[data-id='" + id + "']").hide();
         $(".openBanDialog[data-id='" + id + "']").siblings(".unBan").show();
         $("#banModal").modal("hide");
       },
-      error: function () {
-        alert("error");
+      error: function (jqXHR, textStatus, errorThrown) {
+        alert(textStatus);
+        alert(errorThrown);
       }
     });
   });

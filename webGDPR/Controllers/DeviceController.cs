@@ -138,6 +138,7 @@ namespace webGDPR.Controllers
 		//this could be a case for patch:
 		//https://www.codeproject.com/Articles/1282080/Accepting-Partial-Resources-with-Newtonsoft-Json
 		[HttpPost]
+		//[ValidateAntiForgeryToken]
 		public async Task<IActionResult> BanOn([FromForm]string id)
 		{
 			Device device = await _context.Device.FirstAsync(c => c.DeviceId == id);
@@ -151,6 +152,7 @@ namespace webGDPR.Controllers
 		}
 
 		[HttpPost]
+		//[ValidateAntiForgeryToken]
 		public async Task<IActionResult> BanOff([FromForm]string id)
 		{
 			Device device = await _context.Device.FirstAsync(c => c.DeviceId == id);
