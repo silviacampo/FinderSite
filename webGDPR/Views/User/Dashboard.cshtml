@@ -1,10 +1,23 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
 
 @model User
 @{
 	ViewData["Title"] = Localizer["Dashboard"];
 }
+
+@functions{
+	public string GetAntiXsrfRequestToken()
+	{
+		return Xsrf.GetAndStoreTokens(Context).RequestToken;
+	}
+}
+
+<script>
+	var RequestVerificationToken = '@GetAntiXsrfRequestToken()';
+	
+</script>
 
 <h2>
 	<i class="fa fa-tachometer-alt fa-fw" aria-hidden="true"></i>&nbsp; @ViewData["Title"]

@@ -163,9 +163,11 @@ $(function () {
     $.ajax({
       url: '/device/BanOn',
       type: 'POST',
+      headers: {
+        'RequestVerificationToken': RequestVerificationToken
+      },
       data: {
-        'id': id,
-        '__RequestVerificationToken': '1234' //'@Context.GetAntiforgeryToken()'
+        'id': id
       },
       success: function (data) {
         $(".openBanDialog[data-id='" + id + "']").hide();
@@ -184,6 +186,9 @@ $(function () {
     $.ajax({
       url: '/device/BanOff',
       type: 'POST',
+      headers: {
+        'RequestVerificationToken': RequestVerificationToken
+      },
       data: {
         'id': caller.data('id')
       },
@@ -191,8 +196,9 @@ $(function () {
         caller.hide();
         caller.siblings(".openBanDialog").show();
       },
-      error: function () {
-        alert("error");
+      error: function (jqXHR, textStatus, errorThrown) {
+        alert(textStatus);
+        alert(errorThrown);
       }
     });
   });
