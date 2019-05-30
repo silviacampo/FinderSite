@@ -118,6 +118,9 @@ $(function () {
     $.ajax({
       url: '/pet/EmergencyOn',
       type: 'POST',
+      headers: {
+        'RequestVerificationToken': RequestVerificationToken
+      },
       data: {
         'id': id
       },
@@ -126,8 +129,9 @@ $(function () {
         $(".openReportLostDialog[data-id='"+id+"']").siblings(".reportFound").show();
         $("#petLostModal").modal("hide");
       },
-      error: function () {
-        alert("error");
+      error: function (jqXHR, textStatus, errorThrown) {
+        alert(textStatus);
+        alert(errorThrown);
       }
     });   
   });
@@ -137,6 +141,9 @@ $(function () {
     $.ajax({
       url: '/pet/EmergencyOff',
       type: 'POST',
+      headers: {
+        'RequestVerificationToken': RequestVerificationToken
+      },
       data: {
         'id': caller.data('id')
       },
@@ -144,8 +151,9 @@ $(function () {
         caller.hide();
         caller.siblings(".openReportLostDialog").show();
       },
-      error: function () {
-        alert("error");
+      error: function (jqXHR, textStatus, errorThrown) {
+        alert(textStatus);
+        alert(errorThrown);
       }
     });
   });
@@ -224,6 +232,9 @@ $(function () {
     $.ajax({
       url: '/device/Delete',
       type: 'POST',
+      headers: {
+        'RequestVerificationToken': RequestVerificationToken
+      },
       data: {
         'id': id
       },
@@ -231,8 +242,9 @@ $(function () {
           $(".openDeleteDeviceDialog[data-id='" + id + "']").parent().parent().hide();
         $("#deleteDeviceModal").modal("hide");
       },
-      error: function () {
-        alert("error");
+      error: function (jqXHR, textStatus, errorThrown) {
+        alert(textStatus);
+        alert(errorThrown);
       }
     });
   });
@@ -263,6 +275,9 @@ $(function () {
     $.ajax({
       url: '/base/Delete',
       type: 'POST',
+      headers: {
+        'RequestVerificationToken': RequestVerificationToken
+      },
       data: {
         'id': id
       },
@@ -270,8 +285,9 @@ $(function () {
         $(".openDeleteBaseDialog[data-id='" + id + "']").parent().parent().hide();
         $("#deleteBaseModal").modal("hide");
       },
-      error: function () {
-        alert("error");
+      error: function (jqXHR, textStatus, errorThrown) {
+        alert(textStatus);
+        alert(errorThrown);
       }
     });
   });
@@ -313,6 +329,9 @@ $(function () {
     $.ajax({
       url: '/collar/Delete',
       type: 'POST',
+      headers: {
+        'RequestVerificationToken': RequestVerificationToken
+      },
       data: {
         'id': id
       },
@@ -327,8 +346,9 @@ $(function () {
 
         $("#deleteCollarModal").modal("hide");
       },
-      error: function () {
-        alert("error");
+      error: function (jqXHR, textStatus, errorThrown) {
+        alert(textStatus);
+        alert(errorThrown);
       }
     });
   });
@@ -366,6 +386,9 @@ $(function () {
     $.ajax({
       url: '/pet/Delete',
       type: 'POST',
+      headers: {
+        'RequestVerificationToken': RequestVerificationToken
+      },
       data: {
         'id': id
       },
@@ -379,12 +402,12 @@ $(function () {
         }        
         $("#deletePetModal").modal("hide");
       },
-      error: function () {
-        alert("error");
+      error: function (jqXHR, textStatus, errorThrown) {
+        alert(textStatus);
+        alert(errorThrown);
       }
     });
   });
-
 
 });
 

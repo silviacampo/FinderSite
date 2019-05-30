@@ -634,7 +634,7 @@ namespace webGDPR.Controllers
 
 		// POST: Pet/Delete/5
 		[HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed([FromForm]string id)
         {
             var pet = await _context.Pet.FindAsync(id);
@@ -663,6 +663,7 @@ namespace webGDPR.Controllers
         }
 
 		[HttpPost]
+		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> EmergencyOn([FromForm]string id)
         {
 			Pet pet = _context.Pet.Where(p => p.PetId == id).Include(b => b.LastCollar).FirstOrDefault();
@@ -676,6 +677,7 @@ namespace webGDPR.Controllers
         }
 
 		[HttpPost]
+		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> EmergencyOff([FromForm]string id)
         {
 			Pet pet = _context.Pet.Where(p => p.PetId == id).Include(b => b.LastCollar).FirstOrDefault();

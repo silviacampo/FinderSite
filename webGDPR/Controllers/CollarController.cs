@@ -487,7 +487,7 @@ namespace webGDPR.Controllers
 
         // POST: Collar/Delete/5
         [HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed([FromForm]string id)
         {
             var collar = await _context.Collar.FindAsync(id);
