@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
+using Newtonsoft.Json;
 
 namespace webGDPR.Models
 {
@@ -8,6 +9,7 @@ namespace webGDPR.Models
 		public string PetCollarId { get; set; }
 		public string PetId { get; set; }
 
+		[JsonIgnore]
 		[ForeignKey("PetId")]
 		public Pet Pet { get; set; }
 
