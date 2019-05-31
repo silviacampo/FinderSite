@@ -272,6 +272,7 @@ namespace webGDPR.Controllers
 				}
 				_context.Add(@base);
                 await _context.SaveChangesAsync();
+				TempData["SuccessSubmitMessage"] = $"{@base.Name} created.";
 				await SendToAllAsync(nameof(Create), @base);
 				//send message to connected devices
 				Infrastructure.CustomWebSockets.Messages.Base ba = _mapper.Map<Infrastructure.CustomWebSockets.Messages.Base>(@base);
@@ -333,6 +334,7 @@ namespace webGDPR.Controllers
                         throw;
                     }
                 }
+				TempData["SuccessSubmitMessage"] = $"{@base.Name} modified.";
 				await SendToAllAsync(nameof(Edit), @base);
 				return RedirectToAction(nameof(UserController.Dashboard), "User");
 			}

@@ -112,10 +112,10 @@
 			<li><a asp-area="" asp-controller="User" asp-action="PickLocation" target="_blank"><i class="fa fa-location-arrow fa-fw" aria-hidden="true"></i>&nbsp; @Localizer["Update your Location"]</a></li>
 			<li><a asp-area="" asp-controller="Device" asp-action="DownloadApp" target="_blank"><i class="fa fa-download fa-fw" aria-hidden="true"></i>&nbsp; @Localizer["Download mobile or desktop application"]</a></li>
 			<li><a asp-area="" asp-controller="Order" asp-action="Create" target="_blank"><i class="fa fa-cart-plus fa-fw" aria-hidden="true"></i>&nbsp; @Localizer["Buy another base or collar"]</a></li>
-			<li><a asp-area="" asp-controller="Base" asp-action="Create" target="_blank"><i class="fa fa-home fa-fw" aria-hidden="true"></i>&nbsp; @Localizer["Add a base"]</a></li>
-			<li><a asp-area="" asp-controller="Collar" asp-action="Create" target="_blank"><i class="fa fa-medal fa-fw" aria-hidden="true"></i>&nbsp; @Localizer["Add a collar"]</a></li>
+			<li><a asp-area="" asp-controller="Base" asp-action="Create"><i class="fa fa-home fa-fw" aria-hidden="true"></i>&nbsp; @Localizer["Add a base"]</a></li>
+			<li><a asp-area="" asp-controller="Collar" asp-action="Create"><i class="fa fa-medal fa-fw" aria-hidden="true"></i>&nbsp; @Localizer["Add a collar"]</a></li>
 			<li>
-				<a asp-area="" asp-controller="Pet" asp-action="Create" target="_blank"><i class="fa fa-paw fa-fw" aria-hidden="true"></i>&nbsp; @Localizer["Add a Pet"]</a>
+				<a asp-area="" asp-controller="Pet" asp-action="Create"><i class="fa fa-paw fa-fw" aria-hidden="true"></i>&nbsp; @Localizer["Add a Pet"]</a>
 				@if (Model.Pets.Count() == 0)
 				{<b>@Localizer["You haven't create any pet...."]</b>}
 			</li>
