@@ -450,6 +450,7 @@ namespace webGDPR.Controllers
                 }
 
                 await SetModeAsync(pet.DefaultMode, true, p);
+				TempData["SuccessSubmitMessage"] = $"{p.Name} created.";
 				await SendToAllAsync(nameof(Create), p);
 				return RedirectToAction(nameof(UserController.Dashboard), "User");
 			}
@@ -540,6 +541,7 @@ namespace webGDPR.Controllers
 
 					_context.Update(p);
 					await _context.SaveChangesAsync();
+					TempData["SuccessSubmitMessage"] = $"{p.Name} modified.";
 					await SendToAllAsync(nameof(Edit), p);
 					if (string.IsNullOrEmpty(p.LastModeId) || pet.DefaultMode != found.DefaultMode)
 					{

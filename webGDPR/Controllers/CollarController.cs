@@ -302,6 +302,7 @@ namespace webGDPR.Controllers
 				}
 				_context.Add(c);
                 await _context.SaveChangesAsync();
+				TempData["SuccessSubmitMessage"] = $"{c.Name} created.";
 				await SendToAllAsync(nameof(Create), c);
 				bool isLost = false;
 				if (collar.PetId != null)
@@ -412,6 +413,7 @@ namespace webGDPR.Controllers
 					else {
 						cc.IsLost = false;
 					}
+					TempData["SuccessSubmitMessage"] = $"{c.Name} modified.";
 					await SendToAllAsync(nameof(Edit), c);
 					await _webSocketMessageHandler.SendCollarCoreAsync(cc, _userManager.GetUserName(User), _wsFactory);
 				}
@@ -498,7 +500,7 @@ namespace webGDPR.Controllers
 			RemovePet(id);
 
 			await _context.SaveChangesAsync();
-			await SendToAllAsync(nameof(Edit), collar);
+			await SendToAllAsync(nameof(Delete), collar);
 			//send message to connected devices
 			await _webSocketMessageHandler.SendDeletedCollarAsync(collar.CollarNumber, _userManager.GetUserName(User), _wsFactory);
 			return RedirectToAction(nameof(Index));
