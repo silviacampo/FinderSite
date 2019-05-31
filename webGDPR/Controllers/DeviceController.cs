@@ -175,7 +175,7 @@ namespace webGDPR.Controllers
 			{
 				device.Banned = activate;
 				_context.Update(device);
-				await _context.SaveChangesAsync();				
+				await _context.SaveChangesAsync();
 
 				CustomWebSocket ws = _wsFactory.ClientByDeviceId(device.DeviceId);
 					if (ws != null)
@@ -298,20 +298,21 @@ namespace webGDPR.Controllers
 				{
 					var found = await _context.Device.AsNoTracking().FirstAsync(c => c.DeviceId == id);
 					device.UserId = found.UserId;
+					device.Banned = found.Banned;
 					_context.Update(device);
 					await _context.SaveChangesAsync();
-					if (found.Banned != device.Banned) //only when value changes
-					{
-						CustomWebSocket ws = _wsFactory.ClientByDeviceId(device.DeviceId);
-						if (ws != null)
-						{
-							await _webSocketMessageHandler.SendDeviceBannedMessage(ws, device.Banned); //yes or not
-							if (device.Banned)
-							{
-								await _webSocketMessageHandler.RemoveDeviceBanned(ws, _wsFactory, _context);
-							}
-						}
-					}
+					//if (found.Banned != device.Banned) //only when value changes
+					//{
+					//	CustomWebSocket ws = _wsFactory.ClientByDeviceId(device.DeviceId);
+					//	if (ws != null)
+					//	{
+					//		await _webSocketMessageHandler.SendDeviceBannedMessage(ws, device.Banned); //yes or not
+					//		if (device.Banned)
+					//		{
+					//			await _webSocketMessageHandler.RemoveDeviceBanned(ws, _wsFactory, _context);
+					//		}
+					//	}
+					//}
 				}
 				catch (DbUpdateConcurrencyException)
 				{
@@ -324,6 +325,7 @@ namespace webGDPR.Controllers
 						throw;
 					}
 				}
+				TempData["SuccessSubmitMessage"] = $"{device.AliasName} modified.";
 				await SendToAllAsync(nameof(Edit), device);
 				return RedirectToAction(nameof(UserController.Dashboard), "User");
 			}
