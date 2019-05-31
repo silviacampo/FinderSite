@@ -12,6 +12,7 @@
 
 	<environment include="Development">
 		<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+		<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap-notify.css" />
 		<link rel="stylesheet" href="~/lib/jqueryui/jquery-ui.css" />
 		<link href="~/lib/fontawesome-free-5.8.0-web/css/all.css" rel="stylesheet" />
 		<link rel="stylesheet" href="~/css/site_@ViewData["Host"]_.css" />
@@ -28,7 +29,8 @@
 	<link rel="icon" href="~/favicon_@ViewData["Host"]_.ico" type="image/x-icon" sizes="16x16">
 </head>
 <body>
-	<div id="toast">toast</div>
+	@*<div id="toast">toast</div>*@
+	@*<div class='notifications bottom-right' style="z-index: 1;"></div>*@
 
 	<div id="chatModal" class="fade modeless">
 		<div class="modal-dialog">
@@ -39,11 +41,13 @@
 				</div>
 				<div class="modal-body">
 					<ul class="conversation-body">
-						<li class="odd unread"><span class="user">Trentren</span><p>Hi, how can I help you?</p><span class="time">
-							<script type="text/javascript">
-								document.write(new Date().getHours() + ':' + new Date().getMinutes());
-							</script>
-						</span></li>
+						<li class="odd unread">
+							<span class="user">Trentren</span><p>Hi, how can I help you?</p><span class="time">
+								<script type="text/javascript">
+									document.write(new Date().getHours() + ':' + new Date().getMinutes());
+								</script>
+							</span>
+						</li>
 					</ul>
 					<div class="chat-textarea"> <textarea id="chat-input" class="form-control autogrow" placeholder="Type your message" style="overflow: hidden; overflow-wrap: break-word; resize: horizontal; height: 32px;"></textarea> </div>
 				</div>
@@ -157,6 +161,7 @@
 		<script src="~/lib/jquery/dist/jquery.js"></script>
 		<script src="~/lib/jqueryui/jquery-ui.js"></script>
 		<script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+		<script src="~/lib/bootstrap/dist/js/bootstrap-notify.js"></script>
 		<script src="~/lib/twitter-bootstrap-wizard/jquery.bootstrap.wizard.js"></script>
 		<script src="//cdn.ckeditor.com/4.10.0/standard/ckeditor.js"></script>
 		<script src="~/lib/google/markerclusterer.js"></script>
