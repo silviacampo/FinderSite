@@ -15,6 +15,12 @@ namespace webGDPR.ViewModels
 		public string Breeding { get; set; }
 		public string Color { get; set; }
 		public string Age { get; set; }
+		public string AgeUnit { get; internal set; }
+		public DateTime Birthdate { get; internal set; }
+		public string Gender { get; internal set; }
+		public string Weigth { get; internal set; }
+		public string WeigthUnit { get; internal set; }
+		
 		public string HealthComments { get; set; }
 
 		public string CollarName { get; set; }
@@ -49,5 +55,6 @@ namespace webGDPR.ViewModels
 		public double MediumAvgDistanceDay { get; set; }
 
 		public List<Tuple<PetTrackingInfo, string>> PointVisited { get; internal set; }
+
 	}
 }

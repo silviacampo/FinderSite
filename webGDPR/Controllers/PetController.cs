@@ -374,8 +374,8 @@ namespace webGDPR.Controllers
 
 			List<SelectListItem> typesItems = new List<SelectListItem>
 			{
-				new SelectListItem { Value = "CAT", Text = "Cat" },
-				new SelectListItem { Value = "DOG", Text = "Dog" }
+				new SelectListItem { Value = "Cat", Text = "Cat" },
+				new SelectListItem { Value = "Dog", Text = "Dog" }
 			};
 
 			model.Types = typesItems;
@@ -384,18 +384,18 @@ namespace webGDPR.Controllers
 
 			List<SelectListItem> genderItems = new List<SelectListItem>
 			{
-				new SelectListItem { Value = "F", Text = "Female" },
-				new SelectListItem { Value = "M", Text = "Male" }
+				new SelectListItem { Value = "Female", Text = "Female" },
+				new SelectListItem { Value = "Male", Text = "Male" }
 			};
 
 			model.Genders = genderItems;
 
 			List<SelectListItem> ageItems = new List<SelectListItem>
 			{
-				new SelectListItem { Value = "Y", Text = "Years" },
-				new SelectListItem { Value = "M", Text = "Months" },
-				new SelectListItem { Value = "W", Text = "Weeks" },
-				new SelectListItem { Value = "D", Text = "Days" }
+				new SelectListItem { Value = "Years", Text = "Years" },
+				new SelectListItem { Value = "Months", Text = "Months" },
+				new SelectListItem { Value = "Weeks", Text = "Weeks" },
+				new SelectListItem { Value = "Days", Text = "Days" }
 			};
 
 			model.AgeUnits = ageItems;
@@ -403,9 +403,9 @@ namespace webGDPR.Controllers
 
 			List<SelectListItem> weightItems = new List<SelectListItem>
 			{
-				new SelectListItem { Value = "K", Text = "Kilo" },
-				new SelectListItem { Value = "P", Text = "Pound" },
-				new SelectListItem { Value = "G", Text = "Grame" }
+				new SelectListItem { Value = "Kilo", Text = "Kilo" },
+				new SelectListItem { Value = "Pound", Text = "Pound" },
+				new SelectListItem { Value = "Grame", Text = "Grame" }
 			};
 
 			model.WeightUnits = weightItems;

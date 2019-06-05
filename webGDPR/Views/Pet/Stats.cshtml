@@ -1,10 +1,15 @@
 ﻿@model webGDPR.ViewModels.PetStatsModel
+@using Microsoft.AspNetCore.Mvc.Localization
 
+@inject IViewLocalizer Localizer
 @{
-	ViewData["Title"] = "Pet Facts";
+	ViewData["Title"] = Localizer["Pet Facts"];
 }
 
-<h4>@ViewData["Title"]</h4>
+<h2>
+	<i class="fa fa-heartbeat fa-fw" aria-hidden="true"></i>&nbsp; @ViewData["Title"]
+</h2>
+
 <div class="panel panel-default">
 	<!-- Default panel contents -->
 	<div class="panel-heading">@Html.DisplayFor(model => model.Name)</div>
@@ -33,7 +38,19 @@
 					@Html.DisplayNameFor(model => model.Age)
 				</dt>
 				<dd>
-					@Html.DisplayFor(model => model.Age)
+					@Html.DisplayFor(model => model.Age) @Localizer[Html.DisplayFor(model => model.AgeUnit).ToString()]
+				</dd>
+				<dt>
+					@Html.DisplayNameFor(model => model.Gender)
+				</dt>
+				<dd>
+					@Localizer[Html.DisplayFor(model => model.Gender).ToString()]
+				</dd>
+				<dt>
+					@Html.DisplayNameFor(model => model.Weigth)
+				</dt>
+				<dd>
+					@Html.DisplayFor(model => model.Weigth)  @Localizer[Html.DisplayFor(model => model.WeigthUnit).ToString()]
 				</dd>
 				<dt>
 					@Html.DisplayNameFor(model => model.HealthComments)
@@ -77,151 +94,152 @@
 		</div>
 	</div>
 </div>
-<div class="btn-group period-btn-group" role="group" aria-label="..." >
+
+<div class="btn-group period-btn-group" role="group" aria-label="...">
 	<button class="btn btn-default active" id="btnWeek" data-period="W" data-petId="@Model.PetId">last week</button>
 	<button class="btn btn-default" id="btnMonth" data-period="M" data-petId="@Model.PetId">last month</button>
 	<button class="btn btn-default" id="btnSemester" data-period="S" data-petId="@Model.PetId">last 6 months</button>
 </div>
 <script>
-	var avgActivity = JSON.parse('@Html.Raw(Json.Serialize(Model.MediumAvgDistance))'); 
+	var avgActivity = JSON.parse('@Html.Raw(Json.Serialize(Model.MediumAvgDistance))');
 </script>
-<div id="activityStats" class="well well-lg period-updatetable-well" >
+<div id="activityStats" class="well well-lg period-updatetable-well">
 	<partial name="_ActivityStatsPartial" model="@Model" />
 </div>
 
 
 
 @*<div class="col-md-12">
-	<h2>Locations</h2>
-	<form asp-action="Details" method="get">
-		<div class="form-actions no-color">
-			<p>
-				Find:
-				<input type="text" name="SearchString" value="@Model.CurrentFilter" />
-				<input type="submit" value="Search" class="btn btn-default" /> |
-				<a asp-action="Details">Back to full List</a>
-			</p>
-		</div>
-	</form>
-	<table class="table">
-		<thead>
-			<tr>
-				<th scope="col">CreationDate</th>
-				<th scope="col">Latitude</th>
-				<th scope="col">Longitude</th>
-				<th scope="col">Collar</th>
-			</tr>
-		</thead>
-		<tbody>
-			@foreach (webGDPR.Models.PetTrackingInfo dl in Model.PetTrackingInfos)
-			{
+		<h2>Locations</h2>
+		<form asp-action="Details" method="get">
+			<div class="form-actions no-color">
+				<p>
+					Find:
+					<input type="text" name="SearchString" value="@Model.CurrentFilter" />
+					<input type="submit" value="Search" class="btn btn-default" /> |
+					<a asp-action="Details">Back to full List</a>
+				</p>
+			</div>
+		</form>
+		<table class="table">
+			<thead>
 				<tr>
-					<td>
-						<script type="text/javascript">
-							  var strDate = new String('@dl.CreationDate.ToString("MM/dd/yyyy hh:mm:ss tt") UTC');
-							  var localTime = new Date(strDate);
-							  document.write(localTime.toLocaleString());
-						</script>
-					</td>
-					<td>@dl.Latitude</td>
-					<td>@dl.Longitude</td>
-					<td>@dl.Collar.Name</td>
+					<th scope="col">CreationDate</th>
+					<th scope="col">Latitude</th>
+					<th scope="col">Longitude</th>
+					<th scope="col">Collar</th>
 				</tr>
-			}
-		</tbody>
-	</table>
-	@{
-		var prevDisabled = !Model.PetTrackingInfos.HasPreviousPage ? "disabled" : "";
-		var nextDisabled = !Model.PetTrackingInfos.HasNextPage ? "disabled" : "";
-	}
-
-	<a asp-action="Details"
-	   asp-route-pageIndex="@(Model.PetTrackingInfos.PageIndex - 1)"
-	   asp-route-currentFilter="@Model.CurrentFilter"
-	   class="btn btn-default @prevDisabled">
-		Previous
-	</a>
-	<a asp-action="Details"
-	   asp-route-pageIndex="@(Model.PetTrackingInfos.PageIndex + 1)"
-	   asp-route-currentFilter="@Model.CurrentFilter"
-	   class="btn btn-default @nextDisabled">
-		Next
-	</a>
-</div>
-
-<div class="col-md-12">
-	<h2>Modes</h2>
-	<form asp-action="Details" method="get">
-		<div class="form-actions no-color">
-			<p>
-				Find:
-				<input type="text" name="SearchString2" value="@Model.CurrentFilterMode" />
-				<input type="submit" value="Search" class="btn btn-default" /> |
-				<a asp-action="Details">Back to full List</a>
-			</p>
-		</div>
-	</form>
-	<table class="table">
-		<thead>
-			<tr>
-				<th scope="col">CreationDate</th>
-				<th scope="col">Type</th>
-				<th scope="col">StartDate</th>
-				<th scope="col">EndDate</th>
-			</tr>
-		</thead>
-		<tbody>
-			@foreach (webGDPR.Models.PetMode dl in Model.PetModes)
-			{
-				<tr>
-					<td>
-						<script type="text/javascript">
-							  var strDate = new String('@dl.CreationDate.ToString("MM/dd/yyyy hh:mm:ss tt") UTC');
-							  var localTime = new Date(strDate);
-							  document.write(localTime.toLocaleString());
-						</script>
-					</td>
-					<td>@dl.Type.ToString()</td>
-					<td>
-						<script type="text/javascript">
-							  var strDate = new String('@dl.StartDate.ToString("MM/dd/yyyy hh:mm:ss tt") UTC');
-							  var localTime = new Date(strDate);
-							  document.write(localTime.toLocaleString());
-						</script>
-					</td>
-					<td>
-						@if (@dl.EndDate.Year != 1)
-						{
+			</thead>
+			<tbody>
+				@foreach (webGDPR.Models.PetTrackingInfo dl in Model.PetTrackingInfos)
+				{
+					<tr>
+						<td>
 							<script type="text/javascript">
-							  var strDate = new String('@dl.EndDate.ToString("MM/dd/yyyy hh:mm:ss tt") UTC');
-							  var localTime = new Date(strDate);
-							  document.write(localTime.toLocaleString());
+								  var strDate = new String('@dl.CreationDate.ToString("MM/dd/yyyy hh:mm:ss tt") UTC');
+								  var localTime = new Date(strDate);
+								  document.write(localTime.toLocaleString());
 							</script>
-						}
+						</td>
+						<td>@dl.Latitude</td>
+						<td>@dl.Longitude</td>
+						<td>@dl.Collar.Name</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+		@{
+			var prevDisabled = !Model.PetTrackingInfos.HasPreviousPage ? "disabled" : "";
+			var nextDisabled = !Model.PetTrackingInfos.HasNextPage ? "disabled" : "";
+		}
 
-					</td>
+		<a asp-action="Details"
+		   asp-route-pageIndex="@(Model.PetTrackingInfos.PageIndex - 1)"
+		   asp-route-currentFilter="@Model.CurrentFilter"
+		   class="btn btn-default @prevDisabled">
+			Previous
+		</a>
+		<a asp-action="Details"
+		   asp-route-pageIndex="@(Model.PetTrackingInfos.PageIndex + 1)"
+		   asp-route-currentFilter="@Model.CurrentFilter"
+		   class="btn btn-default @nextDisabled">
+			Next
+		</a>
+	</div>
+
+	<div class="col-md-12">
+		<h2>Modes</h2>
+		<form asp-action="Details" method="get">
+			<div class="form-actions no-color">
+				<p>
+					Find:
+					<input type="text" name="SearchString2" value="@Model.CurrentFilterMode" />
+					<input type="submit" value="Search" class="btn btn-default" /> |
+					<a asp-action="Details">Back to full List</a>
+				</p>
+			</div>
+		</form>
+		<table class="table">
+			<thead>
+				<tr>
+					<th scope="col">CreationDate</th>
+					<th scope="col">Type</th>
+					<th scope="col">StartDate</th>
+					<th scope="col">EndDate</th>
 				</tr>
-			}
-		</tbody>
-	</table>
-	@{
-		var prevDisabled2 = !Model.PetModes.HasPreviousPage ? "disabled" : "";
-		var nextDisabled2 = !Model.PetModes.HasNextPage ? "disabled" : "";
-	}
+			</thead>
+			<tbody>
+				@foreach (webGDPR.Models.PetMode dl in Model.PetModes)
+				{
+					<tr>
+						<td>
+							<script type="text/javascript">
+								  var strDate = new String('@dl.CreationDate.ToString("MM/dd/yyyy hh:mm:ss tt") UTC');
+								  var localTime = new Date(strDate);
+								  document.write(localTime.toLocaleString());
+							</script>
+						</td>
+						<td>@dl.Type.ToString()</td>
+						<td>
+							<script type="text/javascript">
+								  var strDate = new String('@dl.StartDate.ToString("MM/dd/yyyy hh:mm:ss tt") UTC');
+								  var localTime = new Date(strDate);
+								  document.write(localTime.toLocaleString());
+							</script>
+						</td>
+						<td>
+							@if (@dl.EndDate.Year != 1)
+							{
+								<script type="text/javascript">
+								  var strDate = new String('@dl.EndDate.ToString("MM/dd/yyyy hh:mm:ss tt") UTC');
+								  var localTime = new Date(strDate);
+								  document.write(localTime.toLocaleString());
+								</script>
+							}
 
-	<a asp-action="Details"
-	   asp-route-pageIndex2="@(Model.PetModes.PageIndex - 1)"
-	   asp-route-currentFilter2="@Model.CurrentFilterMode"
-	   class="btn btn-default @prevDisabled2">
-		Previous
-	</a>
-	<a asp-action="Details"
-	   asp-route-pageIndex2="@(Model.PetModes.PageIndex + 1)"
-	   asp-route-currentFilter2="@Model.CurrentFilterMode"
-	   class="btn btn-default @nextDisabled2">
-		Next
-	</a>
-</div>*@
+						</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+		@{
+			var prevDisabled2 = !Model.PetModes.HasPreviousPage ? "disabled" : "";
+			var nextDisabled2 = !Model.PetModes.HasNextPage ? "disabled" : "";
+		}
+
+		<a asp-action="Details"
+		   asp-route-pageIndex2="@(Model.PetModes.PageIndex - 1)"
+		   asp-route-currentFilter2="@Model.CurrentFilterMode"
+		   class="btn btn-default @prevDisabled2">
+			Previous
+		</a>
+		<a asp-action="Details"
+		   asp-route-pageIndex2="@(Model.PetModes.PageIndex + 1)"
+		   asp-route-currentFilter2="@Model.CurrentFilterMode"
+		   class="btn btn-default @nextDisabled2">
+			Next
+		</a>
+	</div>*@
 
 
 <div>
