@@ -50,76 +50,76 @@
   //});
 }
 
-function initCollarCharts() {
-  var chartDisconnection2 = new Chart(document.getElementById("horizontalBar2"), {
-    "type": "horizontalBar",
-    "data": {
-      "labels": namesCollars,
-      "datasets": [{
-        "label": "Time disconnected in minutes",
-        "data": disconnectedTimesCollars,
-        "fill": false,
-        "backgroundColor": ["rgba(201, 203, 207, 0.2)", "rgba(201, 203, 207, 0.2)",
-          "rgba(201, 203, 207, 0.2)", "rgba(201, 203, 207, 0.2)"],
-        "borderColor": ["rgb(201, 203, 207)", "rgb(201, 203, 207)", "rgb(201, 203, 207)", "rgb(201, 203, 207)"],
-        "borderWidth": 1
-      },
-      {
-        "label": "Time GPS disconnected in minutes",
-        "data": gpsDisconnectedTimesCollars,
-        "fill": false,
-        "backgroundColor": ["rgba(201, 203, 207, 0.2)", "rgba(201, 203, 207, 0.2)",
-          "rgba(201, 203, 207, 0.2)", "rgba(201, 203, 207, 0.2)"],
-        "borderColor": ["rgb(201, 203, 207)", "rgb(201, 203, 207)", "rgb(201, 203, 207)", "rgb(201, 203, 207)"],
-        "borderWidth": 1
-      }
-      ]
-    },
-    "options": {
-      "scales": {
-        "xAxes": [{
-          "ticks": {
-            "beginAtZero": true
-          }
-        }]
-      }
-    }
-  });
+//function initCollarCharts() {
+//  var chartDisconnection2 = new Chart(document.getElementById("horizontalBar2"), {
+//    "type": "horizontalBar",
+//    "data": {
+//      "labels": namesCollars,
+//      "datasets": [{
+//        "label": "Time disconnected in minutes",
+//        "data": disconnectedTimesCollars,
+//        "fill": false,
+//        "backgroundColor": ["rgba(201, 203, 207, 0.2)", "rgba(201, 203, 207, 0.2)",
+//          "rgba(201, 203, 207, 0.2)", "rgba(201, 203, 207, 0.2)"],
+//        "borderColor": ["rgb(201, 203, 207)", "rgb(201, 203, 207)", "rgb(201, 203, 207)", "rgb(201, 203, 207)"],
+//        "borderWidth": 1
+//      },
+//      {
+//        "label": "Time GPS disconnected in minutes",
+//        "data": gpsDisconnectedTimesCollars,
+//        "fill": false,
+//        "backgroundColor": ["rgba(201, 203, 207, 0.2)", "rgba(201, 203, 207, 0.2)",
+//          "rgba(201, 203, 207, 0.2)", "rgba(201, 203, 207, 0.2)"],
+//        "borderColor": ["rgb(201, 203, 207)", "rgb(201, 203, 207)", "rgb(201, 203, 207)", "rgb(201, 203, 207)"],
+//        "borderWidth": 1
+//      }
+//      ]
+//    },
+//    "options": {
+//      "scales": {
+//        "xAxes": [{
+//          "ticks": {
+//            "beginAtZero": true
+//          }
+//        }]
+//      }
+//    }
+//  });
 
-  var ctxB2 = document.getElementById("verticalBarChart2").getContext('2d');
-  var myBarChart2 = new Chart(ctxB2, {
-    type: 'bar',
-    data: {
-      labels: namesCollars,
-      datasets: [{
-        label: 'Average Radio Strength',
-        data: radiosCollars,
-        backgroundColor: ["rgb(201, 203, 207)", "rgb(201, 203, 207)", "rgb(201, 203, 207)", "rgb(201, 203, 207)"],
-        borderColor: ["rgb(201, 203, 207)", "rgb(201, 203, 207)", "rgb(201, 203, 207)", "rgb(201, 203, 207)"],
-        borderWidth: 1
-      },
-      {
-        label: 'Average Battery Power',
-        data: batteryCollars,
-        backgroundColor: ["rgb(201, 203, 207)", "rgb(201, 203, 207)", "rgb(201, 203, 207)", "rgb(201, 203, 207)"],
-        borderColor: ["rgb(201, 203, 207)", "rgb(201, 203, 207)", "rgb(201, 203, 207)", "rgb(201, 203, 207)"],
-        borderWidth: 1
-      }
-      ]
-    },
-    options: {
-      scales: {
-        yAxes: [{
+//  var ctxB2 = document.getElementById("verticalBarChart2").getContext('2d');
+//  var myBarChart2 = new Chart(ctxB2, {
+//    type: 'bar',
+//    data: {
+//      labels: namesCollars,
+//      datasets: [{
+//        label: 'Average Radio Strength',
+//        data: radiosCollars,
+//        backgroundColor: ["rgb(201, 203, 207)", "rgb(201, 203, 207)", "rgb(201, 203, 207)", "rgb(201, 203, 207)"],
+//        borderColor: ["rgb(201, 203, 207)", "rgb(201, 203, 207)", "rgb(201, 203, 207)", "rgb(201, 203, 207)"],
+//        borderWidth: 1
+//      },
+//      {
+//        label: 'Average Battery Power',
+//        data: batteryCollars,
+//        backgroundColor: ["rgb(201, 203, 207)", "rgb(201, 203, 207)", "rgb(201, 203, 207)", "rgb(201, 203, 207)"],
+//        borderColor: ["rgb(201, 203, 207)", "rgb(201, 203, 207)", "rgb(201, 203, 207)", "rgb(201, 203, 207)"],
+//        borderWidth: 1
+//      }
+//      ]
+//    },
+//    options: {
+//      scales: {
+//        yAxes: [{
 
-          ticks: {
-            beginAtZero: true, max: 100,
-            min: 0
-          }
-        }]
-      }
-    }
-  });
-}
+//          ticks: {
+//            beginAtZero: true, max: 100,
+//            min: 0
+//          }
+//        }]
+//      }
+//    }
+//  });
+//}
 
 function initCollarMap() {
   try {
@@ -225,6 +225,8 @@ if (typeof names !== 'undefined') {
 initCollarMap();
 
 $('#btnHWWeek, #btnHWMonth, #btnHWSemester').click(function () {
+  $("#loader").show();
+  $('.overlay').show();
   if ($(this).id != 'btnHWWeek') {
     $('#btnHWWeek').removeClass('active');
   }
@@ -239,6 +241,9 @@ $('#btnHWWeek, #btnHWMonth, #btnHWSemester').click(function () {
       $('#HWStats').html(data);
       initDeviceChart();
      // initCollarCharts();
+      $("#loader").hide();
+      $('.overlay').hide();
+
       $(function () {
         $('.chart').easyPieChart({
           easing: 'easeOutBounce',

@@ -623,3 +623,13 @@ div.timelineContainer {
 		color: rgba(190, 192, 194, 0.8);
 		font-size: 11px;
 	}
+
+.period-btn-group {
+	float: right;
+	z-index: 100;
+}
+
+.period-updatetable-well {
+	position: relative;
+	margin-top: 10px;
+}

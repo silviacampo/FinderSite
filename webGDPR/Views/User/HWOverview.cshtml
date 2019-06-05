@@ -83,13 +83,13 @@
 				<text>@Localizer["Most Connected to Base:"] @Model.MostConnectedToBase.Name</text>
 			</div>
 		}
-		<div class="btn-group" role="group" aria-label="..." style="float:right;">
+		<div class="btn-group period-btn-group" role="group" aria-label="..." >
 			<button class="btn btn-default active" id="btnHWWeek" data-period="W">@Localizer["last week"]</button>
 			<button class="btn btn-default" id="btnHWMonth" data-period="M">@Localizer["last month"]</button>
 			<button class="btn btn-default" id="btnHWSemester" data-period="S">@Localizer["last 6 months"]</button>
 		</div>
 
-		<div id="HWStats" class="well well-lg" style="margin-top:10px;">
+		<div id="HWStats" class="well well-lg period-updatetable-well" >
 			<partial name="_HWStatsPartial" model="@Model" />
 		</div>
 	</div>

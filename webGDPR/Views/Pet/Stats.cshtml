@@ -77,7 +77,7 @@
 		</div>
 	</div>
 </div>
-<div class="btn-group" role="group" aria-label="..." style="float:right;z-index:100;">
+<div class="btn-group period-btn-group" role="group" aria-label="..." >
 	<button class="btn btn-default active" id="btnWeek" data-period="W" data-petId="@Model.PetId">last week</button>
 	<button class="btn btn-default" id="btnMonth" data-period="M" data-petId="@Model.PetId">last month</button>
 	<button class="btn btn-default" id="btnSemester" data-period="S" data-petId="@Model.PetId">last 6 months</button>
@@ -85,7 +85,7 @@
 <script>
 	var avgActivity = JSON.parse('@Html.Raw(Json.Serialize(Model.MediumAvgDistance))'); 
 </script>
-<div id="activityStats" class="well well-lg" style="position: relative;margin-top:10px;">
+<div id="activityStats" class="well well-lg period-updatetable-well" >
 	<partial name="_ActivityStatsPartial" model="@Model" />
 </div>
 
