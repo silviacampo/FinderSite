@@ -19,6 +19,7 @@ using webGDPR.Hubs;
 using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Mvc.Localization;
 
 namespace webGDPR.Controllers
 {
@@ -32,8 +33,9 @@ namespace webGDPR.Controllers
 		ICustomWebSocketFactory _wsFactory;
 		private readonly IHubContext<BroadcastHub> _hubContext;
 		private readonly ILogger<CollarController> _logger;
+		private readonly IHtmlLocalizer<CollarController> _localizer;
 
-		public CollarController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IMapper mapper, ICustomWebSocketMessageHandler webSocketMessageHandler, ICustomWebSocketFactory wsFactory, IHubContext<BroadcastHub> hubContext, ILogger<CollarController> logger)
+		public CollarController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IMapper mapper, ICustomWebSocketMessageHandler webSocketMessageHandler, ICustomWebSocketFactory wsFactory, IHubContext<BroadcastHub> hubContext, ILogger<CollarController> logger, IHtmlLocalizer<CollarController> localizer)
 		{
             _context = context;
 			_userManager = userManager;
@@ -42,6 +44,7 @@ namespace webGDPR.Controllers
 			_wsFactory = wsFactory;
 			_hubContext = hubContext;
 			_logger = logger;
+			_localizer = localizer;
 		}
 
 		public async Task SendToAllAsync(string action, Collar collar)

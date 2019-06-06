@@ -23,6 +23,7 @@ using System.Threading;
 using webGDPR.Hubs;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Mvc.Localization;
 
 namespace webGDPR.Controllers
 {
@@ -42,8 +43,9 @@ namespace webGDPR.Controllers
 		private readonly IStringLocalizer<MonitoringController> _localizer;
 		private readonly IHubContext<ChatHub> _hubContext;
 		private readonly ILogger<MonitoringController> _logger;
+		//private readonly IHtmlLocalizer<MonitoringController> _localizer;
 
-		public MonitoringController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IMapper mapper, IHostingEnvironment hostingEnvironment, ICustomWebSocketMessageHandler webSocketMessageHandler, ICustomWebSocketFactory wsFactory, SignInManager<ApplicationUser> signInManager, IStringLocalizer<MonitoringController> localizer, IHubContext<ChatHub> hubContext, ILogger<MonitoringController> logger)
+		public MonitoringController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IMapper mapper, IHostingEnvironment hostingEnvironment, ICustomWebSocketMessageHandler webSocketMessageHandler, ICustomWebSocketFactory wsFactory, SignInManager<ApplicationUser> signInManager, IStringLocalizer<MonitoringController> localizer, IHubContext<ChatHub> hubContext, ILogger<MonitoringController> logger)//,IHtmlLocalizer<MonitoringController> localizer)
 		{
 			_context = context;
 			_userManager = userManager;

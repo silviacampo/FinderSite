@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.SignalR;
 using webGDPR.Hubs;
 using Newtonsoft.Json;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Mvc.Localization;
 
 namespace webGDPR.Controllers
 {
@@ -31,8 +32,9 @@ namespace webGDPR.Controllers
 		private readonly ICustomWebSocketFactory _wsFactory;
 		private readonly IHubContext<BroadcastHub> _hubContext;
 		private readonly ILogger<BaseController> _logger;
+		private readonly IHtmlLocalizer<BaseController> _localizer;
 
-		public BaseController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IMapper mapper, ICustomWebSocketMessageHandler webSocketMessageHandler,ICustomWebSocketFactory wsFactory, IHubContext<BroadcastHub> hubContext, ILogger<BaseController> logger)
+		public BaseController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IMapper mapper, ICustomWebSocketMessageHandler webSocketMessageHandler,ICustomWebSocketFactory wsFactory, IHubContext<BroadcastHub> hubContext, ILogger<BaseController> logger, IHtmlLocalizer<BaseController> localizer)
 		{
             _context = context;
 			_userManager = userManager;
@@ -41,6 +43,7 @@ namespace webGDPR.Controllers
 			_wsFactory = wsFactory;
 			_hubContext = hubContext;
 			_logger = logger;
+			_localizer = localizer;
 		}
 
 		public async Task SendToAllAsync(string action, Base @base)

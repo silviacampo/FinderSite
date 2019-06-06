@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Localization;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
@@ -38,8 +39,9 @@ namespace webGDPR.Controllers
         private readonly SignInManager<ApplicationUser> _signInManager;
 		private readonly IHubContext<BroadcastHub> _hubContext;
 		private readonly ILogger<PetController> _logger;
+		private readonly IHtmlLocalizer<PetController> _localizer;
 
-		public PetController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IMapper mapper, IHostingEnvironment hostingEnvironment, ICustomWebSocketMessageHandler webSocketMessageHandler, ICustomWebSocketFactory wsFactory, SignInManager<ApplicationUser> signInManager, IHubContext<BroadcastHub> hubContext, ILogger<PetController> logger)
+		public PetController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IMapper mapper, IHostingEnvironment hostingEnvironment, ICustomWebSocketMessageHandler webSocketMessageHandler, ICustomWebSocketFactory wsFactory, SignInManager<ApplicationUser> signInManager, IHubContext<BroadcastHub> hubContext, ILogger<PetController> logger, IHtmlLocalizer<PetController> localizer)
 		{
             _context = context;
             _userManager = userManager;
@@ -50,6 +52,7 @@ namespace webGDPR.Controllers
             _signInManager = signInManager;
 			_hubContext = hubContext;
 			_logger = logger;
+			_localizer = localizer;
 		}
 		//https://stackoverflow.com/questions/27299289/how-to-get-signalr-hub-context-in-a-asp-net-core/46319153#46319153
 		//public async Task SendToAllAsync(string message)

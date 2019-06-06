@@ -9,6 +9,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Localization;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -32,8 +33,9 @@ namespace webGDPR.Controllers
 		ICustomWebSocketFactory _wsFactory;
 		private readonly IHubContext<BroadcastHub> _hubContext;
 		private readonly ILogger<DeviceController> _logger;
+		private readonly IHtmlLocalizer<DeviceController> _localizer;
 
-		public DeviceController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IMapper mapper, ICustomWebSocketMessageHandler webSocketMessageHandler, ICustomWebSocketFactory wsFactory, IHubContext<BroadcastHub> hubContext, ILogger<DeviceController> logger)
+		public DeviceController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IMapper mapper, ICustomWebSocketMessageHandler webSocketMessageHandler, ICustomWebSocketFactory wsFactory, IHubContext<BroadcastHub> hubContext, ILogger<DeviceController> logger, IHtmlLocalizer<DeviceController> localizer)
 		{
             _context = context;
 			_userManager = userManager;
@@ -42,6 +44,7 @@ namespace webGDPR.Controllers
 			_wsFactory = wsFactory;
 			_hubContext = hubContext;
 			_logger = logger;
+			_localizer = localizer;
 		}
 
 		//https://stackoverflow.com/questions/27299289/how-to-get-signalr-hub-context-in-a-asp-net-core/46319153#46319153

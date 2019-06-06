@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -32,8 +33,9 @@ namespace webGDPR.Controllers
 		ICustomWebSocketMessageHandler _webSocketMessageHandler;
 		ICustomWebSocketFactory _wsFactory;
 		private readonly ILogger<UserController> _logger;
+		private readonly IHtmlLocalizer<UserController> _localizer;
 
-		public UserController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IMapper mapper, ICustomWebSocketMessageHandler webSocketMessageHandler, ICustomWebSocketFactory wsFactory, ILogger<UserController> logger)
+		public UserController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IMapper mapper, ICustomWebSocketMessageHandler webSocketMessageHandler, ICustomWebSocketFactory wsFactory, ILogger<UserController> logger, IHtmlLocalizer<UserController> localizer)
 		{
 			_context = context;
 			_userManager = userManager;
@@ -41,6 +43,7 @@ namespace webGDPR.Controllers
 			_webSocketMessageHandler = webSocketMessageHandler;
 			_wsFactory = wsFactory;
 			_logger = logger;
+			_localizer = localizer;
 		}
 
 		// GET: /<controller>/
