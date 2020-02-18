@@ -227,9 +227,9 @@ namespace webGDPR.Controllers
             }
             return NotFound();
         }
-
-		// GET: Pet/Map2?u=SilviaCampo&g=34a33904-49d5-4edc-be95-00af3e64eecd&cn=2&lg=en
-		[AllowAnonymous]
+        // https://developers.google.com/maps/documentation/javascript/error-messages#unsupported-browsers
+        // GET: Pet/Map2?u=SilviaCampo&g=34a33904-49d5-4edc-be95-00af3e64eecd&cn=2&lg=en
+        [AllowAnonymous]
 		public async Task<IActionResult> Map2(string u, string g, int cn, string lg, bool ck = true)
 		{
 			var device = await _context.Device.FirstOrDefaultAsync(d => d.DeviceId == g && !d.Banned);
