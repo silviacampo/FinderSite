@@ -265,7 +265,7 @@ $("#CollarSelect").change(function () {
 //  x.className = "show";
 //  setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
 //}
-if ($("#chatModal") != null) {
+if ($("#chatModal").length > 0) {
     $("#chatModal").draggable({
         handle: ".modal-content"
     });
