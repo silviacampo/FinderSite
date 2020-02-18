@@ -537,10 +537,12 @@ namespace webGDPR.Controllers
 		[Authorize]
 		public async Task<IActionResult> PickLocation(string FormattedAddress)
 		{
-			User user = await _context.User.FirstOrDefaultAsync(u => u.OwnerID == _userManager.GetUserId(User));
+			
 			try
 			{
-				IGeocoder geocoder = new GoogleGeocoder() { ApiKey = "AIzaSyCTWrqkwFGLjbd3Xl3vAspkszIefneqFT4" };
+                User user = await _context.User.FirstOrDefaultAsync(u => u.OwnerID == _userManager.GetUserId(User));
+
+                IGeocoder geocoder = new GoogleGeocoder() { ApiKey = "AIzaSyCTWrqkwFGLjbd3Xl3vAspkszIefneqFT4" };
 				IEnumerable<Geocoding.Address> addresses = await geocoder.GeocodeAsync(FormattedAddress);
 				user.Latitude = addresses.First().Coordinates.Latitude;
 				user.Longitude = addresses.First().Coordinates.Longitude;
