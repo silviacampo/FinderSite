@@ -38,19 +38,24 @@
 					@Html.DisplayNameFor(model => model.Age)
 				</dt>
 				<dd>
-					@Html.DisplayFor(model => model.Age) @Localizer[Html.DisplayFor(model => model.AgeUnit).ToString()]
+					@Html.DisplayFor(model => model.Age)
+                    @Html.DisplayFor(model => model.AgeUnit)
+                    @*@Localizer[Html.DisplayFor(model => model.AgeUnit)]*@
 				</dd>
 				<dt>
 					@Html.DisplayNameFor(model => model.Gender)
 				</dt>
 				<dd>
-					@Localizer[Html.DisplayFor(model => model.Gender).ToString()]
+                    @Html.DisplayFor(model => model.Gender)
+					@*@Localizer[Html.DisplayFor(model => model.Gender)]*@
 				</dd>
 				<dt>
 					@Html.DisplayNameFor(model => model.Weigth)
 				</dt>
 				<dd>
-					@Html.DisplayFor(model => model.Weigth)  @Localizer[Html.DisplayFor(model => model.WeigthUnit).ToString()]
+					@Html.DisplayFor(model => model.Weigth)
+                    @Html.DisplayFor(model => model.WeigthUnit)
+                    @*@Localizer[Html.DisplayFor(model => model.WeigthUnit).ToString()]*@
 				</dd>
 				<dt>
 					@Html.DisplayNameFor(model => model.HealthComments)
