@@ -265,59 +265,61 @@ $("#CollarSelect").change(function () {
 //  x.className = "show";
 //  setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
 //}
-
-$("#chatModal").draggable({
-  handle: ".modal-content"
-});
-
-$("#chatModal").resizable({
-  //alsoResize: ".modal-dialog",
-  containment: 'parent',
-  minHeight: 200,
-  minWidth: 300
-});
-
-var connection;
-
-$('#chatModal').on('show.bs.modal', function (e) {
-  $('#chatModal').css("z-index", 10);
-  connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
-  connection.on("ReceiveMessage", function (user, message) {
-    var msg = message.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-    var encodedMsg = user + " says " + msg;
-    //var li = document.createElement("li");
-    //li.textContent = encodedMsg;
-    //$(".conversation-body").append(li);
-    $(".conversation-body").append('<li class="even read"><span class="user">Trentren</span> <p>' + msg+ '</p> <span class="time">' + new Date().getHours() + ':' + new Date().getMinutes() + '</span></li>');
-
-  });
-
-  connection.start().then(function () {
-    $("#chat-input").unbind();
-    $("#chat-input").bind("keyup",function (event) {
-      if (event.keyCode === 13) {
-        event.preventDefault();
-        event.stopPropagation();
-        $(".conversation-body").append('<li class="even read"><span class="user">You</span> <p>' + $("#chat-input").val() + '</p> <span class="time">' + new Date().getHours() + ':' + new Date().getMinutes() + '</span></li>');
-        $('.conversation-body').animate({ scrollTop: $('.conversation-body').prop("scrollHeight") }, 500);
-        connection.invoke("SendMessage", $("#chat-input").val()).catch(function (err) {
-          return console.error(err.toString());
-        });
-        $("#chat-input").val("");
-      }
+if ($("#chatModal") != null) {
+    $("#chatModal").draggable({
+        handle: ".modal-content"
     });
-  }).catch(function (err) {
-    return console.error(err.toString());
-  });
-});
 
-$('#chatModal').on('hide.bs.modal', function (e) {
-  //alert("I want this to appear after the modal has opened!");
-  $('#chatModal').css("z-index", 0);
-  connection.stop().then(function () {
-    connection = null;
-  }); 
-});
+    $("#chatModal").resizable({
+        //alsoResize: ".modal-dialog",
+        containment: 'parent',
+        minHeight: 200,
+        minWidth: 300
+    });
+
+    var connection;
+
+    $('#chatModal').on('show.bs.modal', function (e) {
+        $('#chatModal').css("z-index", 10);
+        connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
+        connection.on("ReceiveMessage", function (user, message) {
+            var msg = message.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            var encodedMsg = user + " says " + msg;
+            //var li = document.createElement("li");
+            //li.textContent = encodedMsg;
+            //$(".conversation-body").append(li);
+            $(".conversation-body").append('<li class="even read"><span class="user">Trentren</span> <p>' + msg + '</p> <span class="time">' + new Date().getHours() + ':' + new Date().getMinutes() + '</span></li>');
+
+        });
+
+        connection.start().then(function () {
+            $("#chat-input").unbind();
+            $("#chat-input").bind("keyup", function (event) {
+                if (event.keyCode === 13) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    $(".conversation-body").append('<li class="even read"><span class="user">You</span> <p>' + $("#chat-input").val() + '</p> <span class="time">' + new Date().getHours() + ':' + new Date().getMinutes() + '</span></li>');
+                    $('.conversation-body').animate({ scrollTop: $('.conversation-body').prop("scrollHeight") }, 500);
+                    connection.invoke("SendMessage", $("#chat-input").val()).catch(function (err) {
+                        return console.error(err.toString());
+                    });
+                    $("#chat-input").val("");
+                }
+            });
+        }).catch(function (err) {
+            return console.error(err.toString());
+        });
+    });
+
+    $('#chatModal').on('hide.bs.modal', function (e) {
+        //alert("I want this to appear after the modal has opened!");
+        $('#chatModal').css("z-index", 0);
+        connection.stop().then(function () {
+            connection = null;
+        });
+    });
+}
+
 
 
  
