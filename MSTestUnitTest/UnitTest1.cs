@@ -6,6 +6,10 @@ Workers=X (X is number of threads to execute tests)
 Scope =ClassLevel (each thread executes a TestClass you have in your project)
 Scope =MethodLevel (each thread executes a TestMethod)
  */
+ /*
+  Think how to test map and map2 in petcontroller
+  Algo que abra la pagina y detecte que no nay error de consola, o que hay un mapa?
+  */
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

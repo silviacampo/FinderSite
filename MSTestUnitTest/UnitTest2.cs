@@ -10,6 +10,7 @@ namespace MSTestUnitTest
 		[TestMethod]
 		public void TestMethod2()
 		{
+            Assert.Equals(1, 1);
 		}
 	}
 }
